@@ -1,0 +1,58 @@
+{
+    "options":{
+        "database":{
+            "database_type": "sqlite",
+            "database_file": "__DIR__/data/ahcrawl.db"
+        },
+        "database_mysql_example":{
+            "database_type": "mysql",
+            "database_name": "ahcrawl",
+            "server": "localhost",
+            "username": "root",
+            "password": "",
+            "charset": "utf8"
+        },
+        "auth": {
+            "user": "admin",
+            "password": "put-md5-hash-here",
+        },
+        "lang": "en",
+        "crawler": {
+            "searchindex":{
+                "simultanousRequests": 2
+            },
+            "ressources":{
+                "simultanousRequests": 2
+            }
+        }
+    },
+    "profiles":{
+        "1": {
+            "label": "My website",
+            "description": "Short description",
+            "userpwd": "username:testpassword",
+
+            "searchindex": {
+                "stickydomain": "www.example.com",
+                "urls2crawl": [
+                    "https://www.example.com/",
+                    ],
+                "iDepth": 7,
+                "include": [
+                ],
+                "includepath": [
+                    "^/home.*",
+                    "^/blog/.*"
+                ],
+                "exclude": [
+                    "/blog/$",
+                    "/blog/[0-9][0-9][0-9][0-9]/$"
+                ]
+            },
+            "searchcategories": {
+                "Complete website": "%",
+                "... Blog": "/blog/%"
+            }
+        }
+    }
+}

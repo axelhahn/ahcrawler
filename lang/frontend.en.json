@@ -1,0 +1,10 @@
+{
+    "btn.search.label": "Search",
+    "label.search": "Term(s)",
+    "input.search.title": "",
+    "input.search.placeholder": "Searchterm ...",
+    
+    "searchout.nohit": "No result :-/",
+    "searchout.too-many-hits": "Remark: You get a lot of hits. You should add one more term for your search.",
+    "searchout.hits": "Results: <strong>%s</strong>"
+}

@@ -1,0 +1,18 @@
+{
+    "options": {
+        "enableGui":1,
+        "enableDump":0
+    },
+    "classes": {
+        "ahsearch": {
+            "file": "search.class.php",
+            "examples": {
+                "a": "123"
+            },
+            "actions": {
+                "searchKeyword": {},
+                "searchTitle": {}
+            }
+        }
+    }
+}
