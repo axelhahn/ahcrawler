@@ -667,7 +667,7 @@ class ressources extends crawler_base {
             if ($sNewUrl){ 
                 $aRel=$this->_prepareRelitem(array(
                     'url'=>$sNewUrl,
-                    'ressourcetype'=>'redirect',
+                    'ressourcetype'=>'page',
                     ),$iId);
                 $aResult = $this->oDB->insert('ressources_rel', $aRel);
                 $this->_checkDbResult($aResult);

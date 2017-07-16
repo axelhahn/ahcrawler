@@ -1609,6 +1609,7 @@ class backend extends crawler_base {
      */
     private function _getContentabout() {
         $sReturn = '';
+        
         $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '</h3>'
                 . '<p>' . $this->lB('about.info') . '</p>'
                 . $this->_getSimpleHtmlTable(
@@ -1625,10 +1626,10 @@ class backend extends crawler_base {
                             array($this->lB('about.thanks.fontawesome'), '<a href="http://fontawesome.io/">http://fontawesome.io/</a>'),
                             array($this->lB('about.thanks.jquery'), '<a href="http://jquery.com/">http://jquery.com/</a>'),
                             array($this->lB('about.thanks.medoo'), '<a href="https://medoo.in/">https://medoo.in/</a>'),
-                            array($this->lB('about.thanks.pure'), '<a href="https://purecss.io/">https://purecss.io/</a>'),
                             array($this->lB('about.thanks.rollingcurl'), '<a href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'),
+                            array($this->lB('about.thanks.pure'), '<a href="https://purecss.io/">https://purecss.io/</a>'),
                         )
-        );
+                );
         return $sReturn;
     }
 

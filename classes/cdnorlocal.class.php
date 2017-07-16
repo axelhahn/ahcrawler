@@ -3,7 +3,10 @@
 namespace axelhahn;
 
 /**
+ * 
+ * CDN OR LOCAL
  * use source from a CDN cdnjs.cloudflare.com or local folder?
+ * class for projects
  *
  * @author hahn
  */
@@ -44,9 +47,6 @@ class cdnorlocal {
      */
     public function __construct($aOptions=false) {
         
-        $this->setVendorUrl('/vendor');
-        $this->setVendorDir($_SERVER['DOCUMENT_ROOT'].'/vendor');
-        
         if(is_array($aOptions)){
             if(array_key_exists('vendordir', $aOptions)){
                 $this->setVendorDir($aOptions['vendordir']);
@@ -54,9 +54,16 @@ class cdnorlocal {
             if(array_key_exists('vendorurl', $aOptions)){
                 $this->setVendorUrl($aOptions['vendorurl']);
             }
+            if(array_key_exists('vendorrelpath', $aOptions)){
+                $this->setVendorWithRelpath($aOptions['vendorrelpath']);
+            }
             if(array_key_exists('debug', $aOptions)){
                 $this->setDebug($aOptions['debug']);
             }
+        }
+        if(!$this->sVendorDir){
+            $this->setVendorUrl('/vendor');
+            $this->setVendorDir($_SERVER['DOCUMENT_ROOT'].'/vendor');
         }
         $this->load(__DIR__.'/'.$this->_libConfig);
         $this->_makeReplace();
@@ -66,7 +73,7 @@ class cdnorlocal {
      * write debug output if the flag was set
      * @param string  $sText  message to show
      */    
-    private function _wd($sText){
+    protected function _wd($sText){
         if ($this->_bDebug){
             echo "DEBUG " . __CLASS__ . " - " . $sText . "<br>\n";
         }
@@ -221,8 +228,24 @@ class cdnorlocal {
      * @param string  $sNewValue  new local dir
      * @return string
      */
-    public function setVendorDir($sNewValue){
+    public function setVendorWithRelpath($sRelpath){
+        $this->_wd(__METHOD__ . "($sRelpath)");
+        $this->setVendorDir(__DIR__ . '/'.$sRelpath);
+        $this->setVendorUrl($sRelpath);
+        return true;
+    }
+    /**
+     * set a vendor dir to scan libraries
+     * @param string  $sNewValue   new local dir
+     * @param boolean $bMustExist  optional flag: ensure that the directory exists
+     * @return string
+     */
+    
+    public function setVendorDir($sNewValue, $bMustExist=false){
         $this->_wd(__METHOD__ . "($sNewValue)");
+        if(!file_exists($sNewValue) && $bMustExist){
+            die(__CLASS__ . ' ' . __METHOD__ . ' - ERROR: directory ['.$sNewValue.'] does not exist.');
+        }
         return $this->sVendorDir=$sNewValue;
     }
 
@@ -236,119 +259,6 @@ class cdnorlocal {
         return $this->sVendorUrl=$sNewValue;
     }
     
-    // ----------------------------------------------------------------------
-    // 
-    // download
-    // 
-    // ----------------------------------------------------------------------
-
-    private function _getCdnMeta($sLibrary) {
-        $this->_wd(__METHOD__ . "($sLibrary)");
-        if (!array_key_exists('_cdn', $this->aLibs[$sLibrary])){
-            
-            // TODO: add cache with TTL
-            
-            $sApiUrl=sprintf($this->sUrlApiPackage, $sLibrary);
-            $this->_wd(__METHOD__ . " fetch $sApiUrl");
-            $aJson=json_decode(file_get_contents($sApiUrl));
-            // echo '<pre>'.print_r($aJson, 1).'</pre>';
-            $this->aLibs[$sLibrary]['_cdn']=$aJson;
-        }
-        return $this->aLibs[$sLibrary]['_cdn'];
-    }
-    
-    private function _getVersionsCdn($sLibrary) {
-        $this->_getCdnMeta($sLibrary);
-        $aReturn=array();
-        if ($this->aLibs[$sLibrary]['_cdn']){
-            foreach ($this->aLibs[$sLibrary]['_cdn']->assets as $aAsset){
-                $aReturn[]=$aAsset->version;
-            }
-        }
-        return $aReturn;
-    }
-    private function _getAssetsCdn($sLibrary, $sVersion=false) {
-        $this->_getCdnMeta($sLibrary);
-        if(!$sVersion){
-            $sVersion=$this->aLibs[$sLibrary]['version'];
-        }
-        /*
-        if($sVersion==='latest'){
-            $sVersion=$this->aLibs[$sLibrary]['_cdn']->assets[0]->version;
-        }
-         */
-        $this->_wd(__METHOD__ . ' version: '. $sVersion);
-        if ($this->aLibs[$sLibrary]['_cdn']){
-            foreach ($this->aLibs[$sLibrary]['_cdn']->assets as $aAsset){
-                if($aAsset->version === $sVersion){
-                    return $aAsset->files;
-                }
-            }
-        }
-        return false;
-    }
-    
-    /**
-     * recursively remove a directory; used in _downloadAssets()
-     * @param string  $dir  name of the directory
-     */
-    private function _rrmdir($dir) {
-        foreach(glob($dir . '/*') as $file) {
-            if(is_dir($file))
-                rrmdir($file);
-            else
-                unlink($file);
-        }
-        rmdir($dir);
-    }
-
-    /**
-     * download all files of a given library.
-     * @param  string  $sLibrary
-     * #return boolean
-     */
-    private function _downloadAssets($sLibrary){
-        if(!array_key_exists($sLibrary, $this->aLibs)){
-            die(__CLASS__ . ' - ERROR in '.__METHOD__.' - a project named ['.$sLibrary.'] does ot exist.');
-        }
-        if(is_dir($this->aLibs[$sLibrary]['local'])){
-            $this->_wd(__METHOD__ . ' remove '. $this->aLibs[$sLibrary]['local']);
-            $this->_rrmdir($this->aLibs[$sLibrary]['local']);
-        }
-        $sTmpdir=$this->aLibs[$sLibrary]['local'].'_';
-        $bAllDownloaded=true;
-        foreach($this->_getAssetsCdn($sLibrary) as $sFilename){
-            
-            $sRemotefile=$this->aLibs[$sLibrary]['cdn'].'/'.$sFilename;
-            $sTmpfile=$sTmpdir.'/'.$sFilename;
-            $sLocalfile=$this->aLibs[$sLibrary]['local'].'/'.$sFilename;
-            
-            if(!file_exists($sLocalfile)){
-                if(!file_exists($sTmpfile)){
-                    $this->_wd(__METHOD__ . ' download '. $sRemotefile);
-                    $sData=file_get_contents($sRemotefile);
-                    if($sData){
-                        if(!is_dir(dirname($sTmpfile))){
-                            $this->_wd(__METHOD__ . ' mkdir '. dirname($sTmpfile));
-                            mkdir(dirname($sTmpfile), 755, 1);
-                        }
-                        $this->_wd(__METHOD__ . ' writing '. $sTmpfile . ' ('. strlen($sData).' byte)');
-                        file_put_contents($sTmpfile, $sData);
-                    } else {
-                        $bAllDownloaded=true;                        
-                    }
-                }
-            }
-        }
-        if($bAllDownloaded){
-            $this->_wd(__METHOD__ . ' move '. $sTmpdir.' to '.$this->aLibs[$sLibrary]['local']);
-            rename($sTmpdir, $this->aLibs[$sLibrary]['local']);
-        }
-        
-        // TODO cleanup older version if a lib
-        
-        return true;
-    }
     
     // ----------------------------------------------------------------------
     // 
@@ -363,6 +273,7 @@ class cdnorlocal {
      * @return string
      */
     private function _getWhatToUse($sLibrary, $sFile){
+        $this->_wd(__METHOD__ . "($sLibrary, $sFile)");
         if(!array_key_exists($sLibrary, $this->aLibs)){
             die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: file or project ' . $sLibrary .' was not configured (yet).' );
         }
@@ -370,6 +281,7 @@ class cdnorlocal {
             die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: _use was not found in key [' . $sLibrary .'] - maybe it was not configured correctly' . print_r($this->aLibs[$sLibrary], 1));
         }
         $sKey=$this->aLibs[$sLibrary]['use'];
+        $this->_wd(__METHOD__ . " -> $sKey");
         return  $this->aLibs[$sLibrary][$sKey] . ($sFile ? '/'.$sFile : '');
         
     }
