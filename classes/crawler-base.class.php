@@ -11,8 +11,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.14',
-        'date'    => '2017-07-17',
+        'version' => 'v0.15',
+        'date'    => '2017-07-18',
         'author'  => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -189,6 +189,9 @@ class crawler_base {
     private function _initDB() {
 
         $this->oDB = new Medoo\Medoo($this->aOptions['database']);
+        if(!$this->_checkDbResult()){
+            die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
+        }
         /*
         $this->oDB->query("DROP TABLE ressources;");
         $this->oDB->query("DROP TABLE ressources_rel;");
@@ -269,6 +272,11 @@ class crawler_base {
         );
     }
 
+    /**
+     * check the status of the last database action and detect if an error occured.
+     * @param array  $aResult  result of database query (used with enabled debug only)
+     * @return boolean
+     */
     protected function _checkDbResult($aResult=false){
         $aErr=$this->oDB->error();
         if ($aErr[1]){
@@ -279,7 +287,7 @@ class crawler_base {
                 .($aResult ? '... DB-RESULT: '.print_r($aResult,1 )."\n" : '')
                 .'... DB-ERROR: '.print_r($this->oDB->error(),1)."\n"
                 ;
-                sleep(10);
+                sleep(3);
             }
             return false;
         }
@@ -359,6 +367,12 @@ class crawler_base {
         return $aData;
     }
 
+    /**
+     * delete database tables for crawled data. as a reminder: this deletes
+     * all data for *all* defined profiles.
+     * 
+     * @param type $aItems
+     */
     public function flushData($aItems){
         $aTables=array();
         $bAll=array_key_exists('all', $aItems) && $aItems['all'];
@@ -386,6 +400,7 @@ class crawler_base {
             }
         }
         echo "flushing was successful.\n";
+        return true;
     }
 
     /**
@@ -416,8 +431,8 @@ class crawler_base {
             }
             $this->iSiteId = $iSiteId;
             $this->aProfile = $aOptions['profiles'][$iSiteId];
-            if (!array_key_exists('includepath', $this->aProfile) || !count($this->aProfile['includepath'])) {
-                $this->aProfile['includepath'][]='.*';
+            if (!array_key_exists('includepath', $this->aProfile['searchindex']) || !count($this->aProfile['searchindex']['includepath'])) {
+                $this->aProfile['searchindex']['includepath'][]='.*';
             }            
         }
     }

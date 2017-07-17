@@ -4,8 +4,9 @@ require_once(dirname(__DIR__) . "/classes/cdnorlocal.class.php");
 
 $oBackend = new backend();
 $oCdn=new axelhahn\cdnorlocal(array(
-    'vendordir'=>__DIR__.'/../vendor/cache',
-    'vendorurl'=>'../vendor/cache',
+    'vendorrelpath'=>'../vendor/cache',
+    // 'vendordir'=>__DIR__.'/../vendor/cache',
+    // 'vendorurl'=>'../vendor/cache',
     'debug'=>0,
     ));
 

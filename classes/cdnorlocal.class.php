@@ -48,6 +48,9 @@ class cdnorlocal {
     public function __construct($aOptions=false) {
         
         if(is_array($aOptions)){
+            if(array_key_exists('debug', $aOptions)){
+                $this->setDebug($aOptions['debug']);
+            }
             if(array_key_exists('vendordir', $aOptions)){
                 $this->setVendorDir($aOptions['vendordir']);
             }
@@ -56,9 +59,6 @@ class cdnorlocal {
             }
             if(array_key_exists('vendorrelpath', $aOptions)){
                 $this->setVendorWithRelpath($aOptions['vendorrelpath']);
-            }
-            if(array_key_exists('debug', $aOptions)){
-                $this->setDebug($aOptions['debug']);
             }
         }
         if(!$this->sVendorDir){

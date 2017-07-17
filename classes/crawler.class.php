@@ -21,7 +21,7 @@ require_once 'analyzer.html.class.php';
  * $o->run();
  * 
  * // or update a single page
- * $o->updateSingleUrl('http://cmstest.axel-hahn.de/kiste/rss-news/digital/');
+ * $o->updateSingleUrl('https://example.com/mypage.html');
  * 
  **/
 class crawler extends crawler_base{
