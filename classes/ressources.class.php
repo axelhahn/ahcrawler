@@ -1,6 +1,7 @@
 <?php
 
 require_once 'crawler-base.class.php';
+require_once 'analyzer.html.class.php';
 
 /**
  * 
@@ -16,11 +17,8 @@ class ressources extends crawler_base {
      * ids of already added ressources
      * @var type 
      */
-    protected $_aRessourceIDs=array();
-    
-    
-    protected $_aUrls2Crawl=array();
-
+    protected $_aRessourceIDs = array();
+    protected $_aUrls2Crawl = array();
     private $iStartCrawl = 0;
     private $iSleep = 0;
 
@@ -39,17 +37,18 @@ class ressources extends crawler_base {
     // ACTIONS CRAWLING
     // ----------------------------------------------------------------------
 
+    /**
+     * get type of an url (internal/ external)
+     * @param string  $sHref  url to check
+     * @return string
+     */
     private function _getUrlType($sHref) {
-        if (array_key_exists('urls2crawl', $this->aProfile) && count($this->aProfile['urls2crawl'])) {
-            $aParse = parse_url($sHref);
-            foreach ($this->aProfile['urls2crawl'] as $sStartUrl) {
-                $aParseStart = parse_url($sStartUrl);
-                if (
-                        $aParse['scheme'] === $aParseStart['scheme'] && $aParse['host'] === $aParseStart['host']
-                ) {
-                    return 'internal';
-                }
-            }
+        $sFirstUrl = (array_key_exists('urls2crawl', $this->aProfile['searchindex']) && count($this->aProfile['searchindex']['urls2crawl'])) 
+            ? $this->aProfile['searchindex']['urls2crawl'][0] 
+            : false;
+        if ($sFirstUrl) {
+            $oHtml = new analyzerHtml('', $sFirstUrl);
+            return $oHtml->getUrlType($sHref);
         }
         return 'external';
     }
@@ -62,15 +61,12 @@ class ressources extends crawler_base {
     private function _getRessourceId($sUrl) {
         // return $this->iSiteId ? md5($sUrl . $this->iSiteId) : false;
         $aCurrent = $this->oDB->select(
-            'ressources', 
-            array('id'), 
-            array(
-                'url' => $sUrl,
-                'siteid' => $this->iSiteId
-            )
+                'ressources', array('id'), array(
+            'url' => $sUrl,
+            'siteid' => $this->iSiteId
+                )
         );
         return count($aCurrent) ? $aCurrent[0]['id'] : false;
-        
     }
 
     /**
@@ -94,7 +90,7 @@ class ressources extends crawler_base {
                 'siteid' => $this->iSiteId,
             ),
         ));
-        $this->_aRessourceIDs=array();
+        $this->_aRessourceIDs = array();
     }
 
     /*
@@ -132,7 +128,7 @@ class ressources extends crawler_base {
      * 
      * @return type
      */
-    protected function _sanitizeRessourceArray($a, $bSkipMissingKeys=false) {
+    protected function _sanitizeRessourceArray($a, $bSkipMissingKeys = false) {
         $aReturn = array();
 
         $aResDefaults = array(
@@ -148,6 +144,7 @@ class ressources extends crawler_base {
             'size_download' => false,
             'rescan' => 1,
             'ts' => false,
+            'tsok' => false,
             'tserror' => false,
             'errorcount' => false,
             'lasterror' => false,
@@ -159,11 +156,11 @@ class ressources extends crawler_base {
 
         $a['type'] = $this->_getUrltype($a['url']);
 
-        $aHeader=(array_key_exists('header', $a) ? $a['header'] :
-            (array_key_exists('lasterror', $a) ? $a['lasterror'] : array())
-            );
+        $aHeader = (array_key_exists('header', $a) ? $a['header'] :
+                (array_key_exists('lasterror', $a) ? $a['lasterror'] : array())
+                );
         if (count($aHeader)) {
-            $a['content_type'] = strtolower($this->_getHeaderVarFromJson($aHeader, 'content_type'));
+            $a['content_type'] = str_replace(array('"', ' '), array('',''), strtolower($this->_getHeaderVarFromJson($aHeader, 'content_type')));
             $a['http_code'] = (int) $this->_getHeaderVarFromJson($aHeader, 'http_code');
             $a['total_time'] = $this->_getHeaderVarFromJson($aHeader, 'total_time') ? (int) ($this->_getHeaderVarFromJson($aHeader, 'total_time') * 1000) / 1 : false;
             $a['size_download'] = (int) $this->_getHeaderVarFromJson($aHeader, 'size_download') / 1;
@@ -171,42 +168,41 @@ class ressources extends crawler_base {
         }
 
         foreach (array_keys($aResDefaults) as $sKey) {
-            if(array_key_exists($sKey, $a) || !$bSkipMissingKeys) {
+            if (array_key_exists($sKey, $a) || !$bSkipMissingKeys) {
                 $aReturn[$sKey] = array_key_exists($sKey, $a) ? $a[$sKey] : $aResDefaults[$sKey];
             }
         }
         return $aReturn;
     }
 
-    
     /**
      * insert or update an url object into ressource table
      * @param type $aData
      */
-    public function addOrUpdateRessource($aData, $bSkipIfExist=false) {
-        
-        // get id if it should exist
-        
-        
+    public function addOrUpdateRessource($aData, $bSkipIfExist = false) {
 
-        $bExists=(array_key_exists($aData['url'], $this->_aRessourceIDs));
-            
+        // get id if it should exist
+
+
+
+        $bExists = (array_key_exists($aData['url'], $this->_aRessourceIDs));
+
 
         // if (count($aCurrent) && $aCurrent[0]['id']) {
         if ($bExists) {
-            if($bSkipIfExist){
+            if ($bSkipIfExist) {
                 // echo 'SKIP ressource ' . $aData['url'] . "\n";
             } else {
                 echo 'UPDATE ressource ' . $aData['url'] . "\n";
                 /*
-                $aCurrent = $this->oDB->select('ressources', array('id'), array(
-                    'url' => $aData['url'],
-                ));
+                  $aCurrent = $this->oDB->select('ressources', array('id'), array(
+                  'url' => $aData['url'],
+                  ));
                  * 
                  */
                 $aResult = $this->oDB->update('ressources', $aData, array(
                     'url' => $aData['url'],
-                    )
+                        )
                 );
                 $this->_checkDbResult($aResult);
             }
@@ -214,15 +210,16 @@ class ressources extends crawler_base {
             echo 'INSERT ressource ' . $aData['url'] . "\n";
             $aResult = $this->oDB->insert('ressources', $aData);
             $this->_checkDbResult($aResult);
-            $this->_aRessourceIDs[$aData['url']]=true;
+            $this->_aRessourceIDs[$aData['url']] = true;
         }
     }
+
     /**
      * insert or update an url object into ressource table
      * @param type $aData
      */
     public function updateRessource($aData) {
-        
+
         // echo 'UPDATE ressource ' . $aData['url'] . "\n";
         // echo print_r($aData) . "\n";
         $aResult = $this->oDB->update('ressources', $aData, array(
@@ -239,32 +236,31 @@ class ressources extends crawler_base {
      * @param  string  $sSourceId  
      * @param  string  $sTargetId
      * @return type
-    public function addOrUpdateRessourcesRel($sSourceId, $sTargetId) {
-        $aCurrent = $this->oDB->select('ressources_rel', array('id'), array(
-            'id_ressource' => $sSourceId,
-            'id_ressource_to' => $sTargetId
-        ));
-        if (!count($aCurrent)) {
-            echo 'INSERT ressources_rel for ' . $sSourceId . ' to ' . $sTargetId . "\n";
-            $aResult = $this->oDB->insert('ressources_rel', array(
-                'id' => $sSourceId . '_' . $sTargetId,
-                'siteid' => $this->iSiteId,
-                'id_ressource' => $sSourceId,
-                'id_ressource_to' => $sTargetId
-                )
-            );
-            
-            // echo $this->oDB->last() . "<br>\n";
-        } else {
-            echo 'SKIP ressources_rel for ' . $sSourceId . ' to ' . $sTargetId . " (already exists)\n";
-        }
-        return $aResult;
-    }
-     */
+      public function addOrUpdateRessourcesRel($sSourceId, $sTargetId) {
+      $aCurrent = $this->oDB->select('ressources_rel', array('id'), array(
+      'id_ressource' => $sSourceId,
+      'id_ressource_to' => $sTargetId
+      ));
+      if (!count($aCurrent)) {
+      echo 'INSERT ressources_rel for ' . $sSourceId . ' to ' . $sTargetId . "\n";
+      $aResult = $this->oDB->insert('ressources_rel', array(
+      'id' => $sSourceId . '_' . $sTargetId,
+      'siteid' => $this->iSiteId,
+      'id_ressource' => $sSourceId,
+      'id_ressource_to' => $sTargetId
+      )
+      );
 
+      // echo $this->oDB->last() . "<br>\n";
+      } else {
+      echo 'SKIP ressources_rel for ' . $sSourceId . ' to ' . $sTargetId . " (already exists)\n";
+      }
+      return $aResult;
+      }
+     */
     public function addRelRessourcesOfAPage($aData) {
         $iLen = strlen($aData['response']);
-        echo "RESPONSE: $iLen byte - " . $aData['url'] ."<br>\n";
+        echo "RESPONSE: $iLen byte - " . $aData['url'] . "<br>\n";
         if ($iLen) {
             echo "----- relitems for " . $aData['url'] . "<br>\n";
             $oHtml = new analyzerHtml($aData['response'], $aData['url']);
@@ -275,18 +271,17 @@ class ressources extends crawler_base {
         }
     }
 
-
     /*
-    Array
-    (
-        [url] => http://www.medizinischelehre.unibe.ch/unibe/css/styles.min.css
-        [siteid] => 4
-        [ressourcetype] => css
-        [href] => /unibe/css/styles.min.css
-        [_url] => http://www.medizinischelehre.unibe.ch/unibe/css/styles.min.css
-        [media] => all
-    )
-    */
+      Array
+      (
+      [url] => http://www.medizinischelehre.unibe.ch/unibe/css/styles.min.css
+      [siteid] => 4
+      [ressourcetype] => css
+      [href] => /unibe/css/styles.min.css
+      [_url] => http://www.medizinischelehre.unibe.ch/unibe/css/styles.min.css
+      [media] => all
+      )
+     */
 
     /**
      * prepare a rel item: insert into ressources and return an array that
@@ -295,12 +290,12 @@ class ressources extends crawler_base {
      * @param  array   $aRelItem   related item (requires key "url")
      * @param  integer $sSourceId  id of the ressource that points to $aRelitem
      */
-    private function _prepareRelitem($aRelItem, $sSourceId){
-        if(!array_key_exists('url', $aRelItem)){
-            echo "ERROR: missing url key in ".print_r($aRelItem, 1)."\n";
+    private function _prepareRelitem($aRelItem, $sSourceId) {
+        if (!array_key_exists('url', $aRelItem)) {
+            echo "ERROR: missing url key in " . print_r($aRelItem, 1) . "\n";
             return false;
         }
-        $aRelItem['siteid']=$this->iSiteId;
+        $aRelItem['siteid'] = $this->iSiteId;
         $aRessource = $this->_sanitizeRessourceArray($aRelItem);
         $this->addOrUpdateRessource($aRessource, true);
         $sRelId = $this->_getRessourceId($aRessource['url']);
@@ -310,13 +305,14 @@ class ressources extends crawler_base {
             'id_ressource_to' => $sRelId
         );
     }
+
     /**
      * add found ressources of a source page
      * @param array  $aData     source item
      * @param array  $aRelData  array of ressource items
      */
     public function addPageRelItems($aData, $aRelData) {
-        
+
         // $sSourceId = $this->_getRessourceId($aData['_url']);
         $sSourceId = $this->_getRessourceId($aData['url']);
         $aGroups = array(
@@ -327,46 +323,45 @@ class ressources extends crawler_base {
         );
         unset($aData['content']);
         unset($aData['response']);
-        $sOut='';
+        $sOut = '';
         // $sOut.=$sSourceId . " - " . $aData['url'] . "\n" . print_r($aRelData); sleep (10);
         if (is_array($aRelData) && count($aRelData)) {
             foreach ($aRelData as $sGroup => $aItems) {
                 if (count($aItems) && array_search($sGroup, $aGroups) !== false) {
-                    $sOut.="--- addPageRelItems ... [" .$aData['url']. "] .  found " . count($aItems) . " items of group $sGroup<br>\n";
-                    $aRel=array();
+                    $sOut .= "--- addPageRelItems ... [" . $aData['url'] . "] .  found " . count($aItems) . " items of group $sGroup<br>\n";
+                    $aRel = array();
                     foreach ($aItems as $aItem) {
                         if (array_key_exists('_url', $aItem)) {
 
                             // $this->_aRessourceIDs
-
                             // add the found ressource
                             $aRelItem = array_merge(array(
                                 'url' => $aItem['_url'],
                                 'siteid' => $this->iSiteId,
-                                // 'rescan' => 1,
+                                    // 'rescan' => 1,
                                     ), $aItem);
                             /*
-                            $aRessource = $this->_sanitizeRessourceArray($aRelItem);
-                            $this->addOrUpdateRessource($aRessource, true);
+                              $aRessource = $this->_sanitizeRessourceArray($aRelItem);
+                              $this->addOrUpdateRessource($aRessource, true);
 
-                            // add the relation from source with found ressource
-                            $sRelId = $this->_getRessourceId($aItem['_url']);
-                            // $this->addRessourcesRel($sSourceId, $sRelId);
-                            $aRel[]=array(
-                                // 'id' => $sSourceId . '_' . $sRelId,
-                                'siteid' => $this->iSiteId,
-                                'id_ressource' => $sSourceId,
-                                'id_ressource_to' => $sRelId
-                            );
+                              // add the relation from source with found ressource
+                              $sRelId = $this->_getRessourceId($aItem['_url']);
+                              // $this->addRessourcesRel($sSourceId, $sRelId);
+                              $aRel[]=array(
+                              // 'id' => $sSourceId . '_' . $sRelId,
+                              'siteid' => $this->iSiteId,
+                              'id_ressource' => $sSourceId,
+                              'id_ressource_to' => $sRelId
+                              );
                              */
-                            $aRel[]=$this->_prepareRelitem($aRelItem, $sSourceId);
+                            $aRel[] = $this->_prepareRelitem($aRelItem, $sSourceId);
                         }
                     }
                     // $sOut.="adding ".count($aRel). " relations.<br>\n" . print_r($aRel);
                     $aResult = $this->oDB->insert('ressources_rel', $aRel);
                     $this->_checkDbResult($aResult);
                 } else {
-                    $sOut.="--- skip " . count($aItems) . " items of group $sGroup<br>\n";
+                    $sOut .= "--- skip " . count($aItems) . " items of group $sGroup<br>\n";
                 }
             }
         }
@@ -383,29 +378,29 @@ class ressources extends crawler_base {
         }
         echo "INFO: reading pages ...<br>\n";
         $aResult = $this->oDB->select(
-                'pages', '*',
-                array(
-                    'AND' => array(
-                        'siteid' => $this->iSiteId,
-                    ),
+                'pages', '*', array(
+            'AND' => array(
+                'siteid' => $this->iSiteId,
+            ),
                 )
         );
 
         if (is_array($aResult) && count($aResult)) {
-            echo "INFO: insert ".count($aResult)." already crawled pages as ressource<br>\n";
+            echo "INFO: insert " . count($aResult) . " already crawled pages as ressource<br>\n";
             // sleep(2);
-            $aPages=array();
+            $aPages = array();
             foreach ($aResult as $aData) {
                 $aData['rescan'] = 0;
                 $aData['ressourcetype'] = 'page';
+                $aData['tsok'] = $aData['ts'];
                 // $aRessource = $this->_sanitizeRessourceArray($aData);
                 // $this->addOrUpdateRessource($aRessource);
                 $aPages[] = $this->_sanitizeRessourceArray($aData);
-                $this->_aRessourceIDs[$aData['url']]=true;
+                $this->_aRessourceIDs[$aData['url']] = true;
             }
             $this->oDB->insert('ressources', $aPages);
             $this->_checkDbResult($aResult);
-            
+
             echo "INFO ... adding relitems of already crawled pages<br>\n";
             sleep(2);
             foreach ($aResult as $aData) {
@@ -415,19 +410,20 @@ class ressources extends crawler_base {
         }
         echo "<br>\n";
     }
-    
+
     // ----------------------------------------------------------------------
     // get resource details for reporting
     // ----------------------------------------------------------------------
 
-    
+
     public function getLastRecord($aFilter = array()) {
-        return $this->getLastTsRecord("ressources", $aFilter ? $aFilter : array('siteid'=>$this->iSiteId));
+        return $this->getLastTsRecord("ressources", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
     }
+
     public function getCount($aFilter = array()) {
-        return $this->getRecordCount("ressources", $aFilter ? $aFilter : array('siteid'=>$this->iSiteId));
+        return $this->getRecordCount("ressources", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
     }
-    
+
     /**
      * get ressources 
      * 
@@ -436,13 +432,11 @@ class ressources extends crawler_base {
      * @param array          $aOrder   sort infos
      * @return array
      */
-    public function getRessources($aFields='*', $aWhere=array(), $aOrder=array("url"=>"asc")){
-        $aReturn=$this->oDB->select(
-                'ressources', 
-                $aFields, 
-                array(
-                    'AND' => $aWhere,
-                    'ORDER' => $aOrder,
+    public function getRessources($aFields = '*', $aWhere = array(), $aOrder = array("url" => "asc")) {
+        $aReturn = $this->oDB->select(
+                'ressources', $aFields, array(
+            'AND' => $aWhere,
+            'ORDER' => $aOrder,
                 )
         );
         // echo "DEBUG ".$this->oDB->last()."<br>";
@@ -454,40 +448,36 @@ class ressources extends crawler_base {
      * @param integer  $iId  ressource id
      * @return array
      */
-    public function getRessourceDetails($iId){
+    public function getRessourceDetails($iId) {
         return $this->oDB->select(
-                'ressources', 
-                '*', 
-                array(
+                        'ressources', '*', array(
                     'AND' => array(
                         'id' => $iId,
                     ),
-                )
+                        )
         );
     }
+
     /**
      * get ressource details by given url
      * 
      * @param stringg $sUrl  url of a resource
      * @return array
      */
-    public function getRessourceDetailsByUrl($sUrl, $bUseLike=false){
-        $aData=$this->getRessources(
-            '*', 
-            array(
-                'url'.($bUseLike ? '[~]' : '' )=>$sUrl,
-                'siteid'=>$this->iSiteId,
-            ), 
-            array('url'=>'ASC')
+    public function getRessourceDetailsByUrl($sUrl, $bUseLike = false) {
+        $aData = $this->getRessources(
+                '*', array(
+            'url' . ($bUseLike ? '[~]' : '' ) => $sUrl,
+            'siteid' => $this->iSiteId,
+                ), array('url' => 'ASC')
         );
         // echo $this->oDB->last()."\n"; 
 
-        if ($aData && is_array($aData) && count($aData)){
+        if ($aData && is_array($aData) && count($aData)) {
             return $aData;
         }
         return false;
     }
-
 
     /**
      * get ressource details of all incoming or outgoing ressources related to 
@@ -496,49 +486,46 @@ class ressources extends crawler_base {
      * @param string   $sDirection    direction; one of (in|out)
      * @return array
      */
-    private function _getRessourceDetailsRelated($iRessourceId, $sDirection){
-        $iId=(int)$iRessourceId;
-        if(!$iId){
+    private function _getRessourceDetailsRelated($iRessourceId, $sDirection) {
+        $iId = (int) $iRessourceId;
+        if (!$iId) {
             return false;
         }
         switch ($sDirection) {
             case 'in':
-                $sSearchRow='id_ressource_to';
-                $sRelRow='id_ressource';
+                $sSearchRow = 'id_ressource_to';
+                $sRelRow = 'id_ressource';
                 break;
             case 'out':
-                $sSearchRow='id_ressource';
-                $sRelRow='id_ressource_to';
+                $sSearchRow = 'id_ressource';
+                $sRelRow = 'id_ressource_to';
                 break;
 
             default:
                 return false;
         }
         $aReturn = $this->oDB->select(
-                'ressources', 
-                array(
-                    '[>]ressources_rel' => array('id'=>$sRelRow)
-                ),
-                '*', 
-                array(
-                    'AND' => array(
-                        'ressources_rel.'.$sSearchRow => $iId,
-                    ),
-                    'ORDER' => array('url'=>'ASC')
+                'ressources', array(
+            '[>]ressources_rel' => array('id' => $sRelRow)
+                ), '*', array(
+            'AND' => array(
+                'ressources_rel.' . $sSearchRow => $iId,
+            ),
+            'ORDER' => array('url' => 'ASC')
                 )
         );
         // echo "SQL: ".$this->oDB->last()."<br>\n<pre>".print_r($aReturn, 1).'</pre>'; 
-        
+
         return $aReturn;
     }
-    
+
     /**
      * get ressource details of all ressources that point to a given
      * ressource id
      * @param integer  $iRessourceId  ressource id
      * @return array
      */
-    public function getRessourceDetailsIncoming($iRessourceId){
+    public function getRessourceDetailsIncoming($iRessourceId) {
         return $this->_getRessourceDetailsRelated($iRessourceId, 'in');
     }
 
@@ -547,23 +534,23 @@ class ressources extends crawler_base {
      * @param integer  $iRessourceId  ressource id
      * @return array
      */
-    public function getRessourceDetailsOutgoing($iRessourceId){
+    public function getRessourceDetailsOutgoing($iRessourceId) {
         return $this->_getRessourceDetailsRelated($iRessourceId, 'out');
     }
-    
+
     // ----------------------------------------------------------------------
     // crawling
     // ----------------------------------------------------------------------
-    
+
     /**
      * mark an url to be crawled. It returns true if it was newly added to
      * the queue; it returns false if it was added or crawled already.
      * @param string $sUrl  url
      * @return boolean
      */
-    private function _addUrl2Crawl($sUrl, $bDebug=false) {
-        echo $bDebug ? __FUNCTION__."($sUrl)\n" : "";
-        
+    private function _addUrl2Crawl($sUrl, $bDebug = false) {
+        echo $bDebug ? __FUNCTION__ . "($sUrl)\n" : "";
+
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
         // ... and spaces
@@ -579,7 +566,6 @@ class ressources extends crawler_base {
             return true;
         }
     }
-
 
     /**
      * get the urls that are known to be crawled (their count can increase
@@ -597,6 +583,7 @@ class ressources extends crawler_base {
         //print_r($aReturn);
         return $aReturn;
     }
+
     /**
      * mark an url that it was crawled already
      * @param string $sUrl
@@ -606,6 +593,7 @@ class ressources extends crawler_base {
         // echo __FUNCTION__."($sUrl)\n";
         return $this->_aUrls2Crawl[$sUrl] = false;
     }
+
     /**
      * do something with the response of a found url...
      * (this is the callback of rollingcurl - it must be public)
@@ -617,137 +605,133 @@ class ressources extends crawler_base {
     public function processResponse($response) {
         $url = $response->getUrl();
         $info = $response->getResponseInfo();
-        $oHttpstatus=new httpstatus($info);
-        
+        $oHttpstatus = new httpstatus($info);
+
         $this->_iUrlsCrawled++;
         $this->_removeUrlFromCrawling($url);
 
         $sType = $oHttpstatus->getContenttype();
         /*
-        if ($info['http_code'] === 0) {
-            echo "ERROR: fetching $url FAILED. There is no connection, it was refused or or there is a problem with SSL.\n";
-        }
+          if ($info['http_code'] === 0) {
+          echo "ERROR: fetching $url FAILED. There is no connection, it was refused or or there is a problem with SSL.\n";
+          }
          */
 
         // print_r($rollingCurl); die();
         // print_r($response); 
         // print_r($info); 
-        
-        $iId=$this->_getRessourceId($url);
-        
+
+        $iId = $this->_getRessourceId($url);
+
         if ($oHttpstatus->isError()) {
-            echo "ERROR: fetching $url FAILED. Status: ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus().".\n";
+            echo "ERROR: fetching $url FAILED. Status: " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . ".\n";
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
                 // 'header' => json_encode($info),
                 // 'rescan' => 0,
                 'errorcount[+]' => 1,
-                'ts'=> false,
-                'tserror'=> date("Y-m-d H:i:s"),
+                'ts' => date("Y-m-d H:i:s"),
+                'tserror' => date("Y-m-d H:i:s"),
                 'lasterror' => json_encode($info),
             );
         }
         if ($oHttpstatus->isRedirect()) {
-            $sNewUrl=$oHttpstatus->getRedirect();
-            echo "REDIRECT: $url ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus()." -> ".$sNewUrl.".\n";
+            $sNewUrl = $oHttpstatus->getRedirect();
+            echo "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . " -> " . $sNewUrl . ".\n";
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
                 'header' => json_encode($info),
                 'rescan' => 0,
-                'ts'=> date("Y-m-d H:i:s"),
-                'tserror'=> false,
+                'ts' => date("Y-m-d H:i:s"),
+                'tsok' => date("Y-m-d H:i:s"),
                 'errorcount' => 0,
-                'tserror'=> false,
+                'tserror' => false,
                 'lasterror' => false,
             );
             // add url
             // if(array_key_exists('redirect_url', $info)){
-            if ($sNewUrl){ 
-                $aRel=$this->_prepareRelitem(array(
-                    'url'=>$sNewUrl,
-                    'ressourcetype'=>'page',
-                    ),$iId);
+            if ($sNewUrl) {
+                $aRel = $this->_prepareRelitem(array(
+                    'url' => $sNewUrl,
+                    'ressourcetype' => 'page',
+                        ), $iId);
                 $aResult = $this->oDB->insert('ressources_rel', $aRel);
                 $this->_checkDbResult($aResult);
                 $this->_addUrl2Crawl($sNewUrl, true);
             }
         }
-        if (! $oHttpstatus->isError() &&!$oHttpstatus->isRedirect()) {
-            echo "OK: http code ".$info['http_code']." $url \n";
+        if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
+            echo "OK: http code " . $info['http_code'] . " $url \n";
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
                 'header' => json_encode($info),
                 'rescan' => 0,
-                'ts'=> date("Y-m-d H:i:s"),
-                'tserror'=> false,
+                'ts' => date("Y-m-d H:i:s"),
+                'tsok' => date("Y-m-d H:i:s"),
                 'errorcount' => 0,
-                'tserror'=> false,
+                'tserror' => false,
                 'lasterror' => false,
             );
         }
         $aRessource = $this->_sanitizeRessourceArray($aRelItem, true);
         // print_r($aRessource);
         $this->updateRessource($aRessource);
-        
+
         // $this->updateRessource($aRelItem, false);
         // echo $this->oDB->last()."\n"; 
         // die("STOP in ".__FUNCTION__);
-        
-        
+
+
         /*
-        switch ($sType) {
-            case 'text/html':
-                $this->_processHtmlPage($response, $info);
-                break;
-            default:
-                echo "WARNING: handling of MIME [$sType] was not implemented (yet). Cannot proceed with url $url ... ".print_r($info)."\n";
-                return false;
-        }
-        */
+          switch ($sType) {
+          case 'text/html':
+          $this->_processHtmlPage($response, $info);
+          break;
+          default:
+          echo "WARNING: handling of MIME [$sType] was not implemented (yet). Cannot proceed with url $url ... ".print_r($info)."\n";
+          return false;
+          }
+         */
         return true;
     }
 
-    
     // TODO
-    public function crawlRessoures(){
-        $this->_aUrls2Crawl=array();
-        $this->_iUrlsCrawled=0;
-        $this->_aRessourceIDs=array();
+    public function crawlRessoures() {
+        $this->_aUrls2Crawl = array();
+        $this->_iUrlsCrawled = 0;
+        $this->_aRessourceIDs = array();
         $this->iStartCrawl = date("U");
-        $bPause=false;
-        $sMsgId='ressources-profile-'.$this->iSiteId;
-        if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)){
+        $bPause = false;
+        $sMsgId = 'ressources-profile-' . $this->iSiteId;
+        if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             echo "ABORT: the action is still running.\n";
             return false;
         }
-        
+
         $aUrls = $this->oDB->select(
-                'ressources', 
-                'url',
-                array(
-                    'AND' => array(
-                        'siteid' => $this->iSiteId,
-                        'OR' => array(
-                            'rescan' => 1,
-                            'http_code' => 0,
-                            'http_code' => 500,
-                        ),
-                    ),
-                    // "LIMIT" => 2,
+                'ressources', 'url', array(
+            'AND' => array(
+                'siteid' => $this->iSiteId,
+                'OR' => array(
+                    'rescan' => 1,
+                    'http_code' => 0,
+                    'http_code' => 500,
+                ),
+            ),
+                // "LIMIT" => 2,
                 )
-                        
         );
         // echo $this->oDB->last()."\n"; die("STOP in ".__FUNCTION__);
 
-        
-        foreach($aUrls as $sUrl){
+
+        foreach ($aUrls as $sUrl) {
             $this->_addUrl2Crawl($sUrl, true);
         }
         echo "\n\n----- start http requests<br>\n";
-        
+
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
@@ -755,34 +739,37 @@ class ressources extends crawler_base {
                 sleep($this->iSleep);
             }
             $bPause = true;
-            $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()). ' ... ');
-            $self=$this;
+            $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()) . ' ... ');
+            $self = $this;
             $rollingCurl = new \RollingCurl\RollingCurl();
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }
+            $iSimRequests=array_key_exists('ressources', $this->aProfile) && array_key_exists('simultanousRequests', $this->aProfile['ressources']) 
+                    ? $this->aProfile['ressources']['simultanousRequests']
+                    : $this->aOptions['crawler']['ressources']['simultanousRequests']
+                    ;
             $rollingCurl
-                ->setOptions(array(
-                    CURLOPT_FOLLOWLOCATION => false,
-                    CURLOPT_HEADER => true,
-                    CURLOPT_NOBODY => true,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_TIMEOUT => 10,
-                    CURLOPT_USERAGENT => $this->sUserAgent,
-                    CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd']:'',
-                    
-                    // TODO: this is unsafe .. better: let the user configure it
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                ))
-                ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl)  use ($self) {
-                    $self->processResponse($request);
-                    $self->touchLocking('processing ' . $request->getUrl());
-                    $rollingCurl->clearCompleted();
-                    $rollingCurl->prunePendingRequestQueue();
-                })
-                ->setSimultaneousLimit($this->aOptions['crawler']['ressources']['simultanousRequests'])
-                ->execute()    
-                ;
+                    ->setOptions(array(
+                        CURLOPT_FOLLOWLOCATION => false,
+                        CURLOPT_HEADER => true,
+                        CURLOPT_NOBODY => true,
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_TIMEOUT => 10,
+                        CURLOPT_USERAGENT => $this->sUserAgent,
+                        CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd'] : '',
+                        // TODO: this is unsafe .. better: let the user configure it
+                        CURLOPT_SSL_VERIFYPEER => 0,
+                    ))
+                    ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
+                        $self->processResponse($request);
+                        $self->touchLocking('processing ' . $request->getUrl());
+                        $rollingCurl->clearCompleted();
+                        $rollingCurl->prunePendingRequestQueue();
+                    })
+                    ->setSimultaneousLimit($iSimRequests)
+                    ->execute()
+            ;
         }
         $this->disableLocking();
         $iUrls = $this->oDB->count('ressources', array('url'), array(
@@ -792,10 +779,10 @@ class ressources extends crawler_base {
         echo "\n"
         . "Ressource Scan has finished.\n\n"
         . "STATUS: \n"
-                . $this->_iUrlsCrawled . " urls were crawled\n"
-                . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
-                . "$iUrls ressource urls for profile [".$this->iSiteId."] are in the index now (table 'ressources')\n"
-                ;
-        
+        . $this->_iUrlsCrawled . " urls were crawled\n"
+        . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
+        . "$iUrls ressource urls for profile [" . $this->iSiteId . "] are in the index now (table 'ressources')\n"
+        ;
     }
+
 }

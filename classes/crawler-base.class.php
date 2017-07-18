@@ -11,8 +11,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.15',
-        'date'    => '2017-07-18',
+        'version' => 'v0.16',
+        'date'    => '2017-07-19',
         'author'  => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -254,6 +254,7 @@ class crawler_base {
             'rescan' => 'BOOL DEFAULT TRUE',
             
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+            'tsok' => 'DATETIME NULL',
             'tserror' => 'DATETIME NULL',
             'errorcount' => 'INTEGER NULL',
             'lasterror' => 'VARCHAR(1024)  NULL',
