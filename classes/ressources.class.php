@@ -392,7 +392,7 @@ class ressources extends crawler_base {
             foreach ($aResult as $aData) {
                 $aData['rescan'] = 0;
                 $aData['ressourcetype'] = 'page';
-                $aData['tsok'] = $aData['ts'];
+                $aData['tsok'] = $aData['tserror'] ? false : $aData['ts'];
                 // $aRessource = $this->_sanitizeRessourceArray($aData);
                 // $this->addOrUpdateRessource($aRessource);
                 $aPages[] = $this->_sanitizeRessourceArray($aData);
@@ -745,10 +745,6 @@ class ressources extends crawler_base {
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }
-            $iSimRequests=array_key_exists('ressources', $this->aProfile) && array_key_exists('simultanousRequests', $this->aProfile['ressources']) 
-                    ? $this->aProfile['ressources']['simultanousRequests']
-                    : $this->aOptions['crawler']['ressources']['simultanousRequests']
-                    ;
             $rollingCurl
                     ->setOptions(array(
                         CURLOPT_FOLLOWLOCATION => false,
@@ -767,7 +763,7 @@ class ressources extends crawler_base {
                         $rollingCurl->clearCompleted();
                         $rollingCurl->prunePendingRequestQueue();
                     })
-                    ->setSimultaneousLimit($iSimRequests)
+                    ->setSimultaneousLimit($this->aProfile['ressources']['simultanousRequests'])
                     ->execute()
             ;
         }

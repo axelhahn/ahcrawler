@@ -6,34 +6,46 @@ namespace axelhahn;
  * 
  * CDN OR LOCAL
  * use source from a CDN cdnjs.cloudflare.com or local folder?
- * class for projects
+ * you need just this class for your projects
  *
- * @author hahn
+ * @example 
+ * $oCdn->new axelhahn\cdnorlocal();
+ * echo $oCdn->getHtmlInclude("jquery/3.2.1/jquery.min.js");
+ * 
+ * @version 1.0
+ * @author Axel Hahn
+ * @link http://www.axel-hahn.de
+ * @license GPL
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
+ * @package cdnorlocal
  */
 class cdnorlocal {
-    //put your code here
-
-    /**
-     * force usage of cdn
-     * @param type $param
-     */
-    var $bForeceCdn=false;
-    /**
-     * force usage of local files (for development: set true to download)
-     * @var type 
-     */
-    var $bForeceLocal=false;
-        
-    var $aLibs=array();
     
-    var $_libConfig='cdnorlocal.json';
+    /**
+     * flag to show debugging infos (used in _wd method [write debug])
+     * @var boolean
+     */
     var $_bDebug=false;
     
+    /**
+     * local vendor dir ... if a lib was downloaded with admin
+     * @var string
+     */
     var $sVendorDir=false;
+    
+    /**
+     * local vendor url ... if a lib was downloaded with admin
+     * this is the prefix for linking in html documents
+     * @var string
+     */
     var $sVendorUrl=false;
-    var $sTplCdnUrl='https://cdnjs.cloudflare.com/ajax/libs';
-    var $sTplRelUrl='[PKG]/[VERSION]';
-    var $sUrlApiPackage='https://api.cdnjs.com/libraries/%s';
+    
+    /**
+     * url prefix of CDNJS
+     * @var string
+     */
+    var $sCdnUrl='https://cdnjs.cloudflare.com/ajax/libs';
+    
 
     // ----------------------------------------------------------------------
     // 
@@ -43,7 +55,10 @@ class cdnorlocal {
     
     /**
      * constructor
-     * @param  array  $aOptions with possible keys vendordir, vendorurl
+     * @param  array  $aOptions with possible keys 
+     *                  - debug
+     *                  - vendordir & vendorurl
+     *                  - vendorrelpath
      */
     public function __construct($aOptions=false) {
         
@@ -52,7 +67,7 @@ class cdnorlocal {
                 $this->setDebug($aOptions['debug']);
             }
             if(array_key_exists('vendordir', $aOptions)){
-                $this->setVendorDir($aOptions['vendordir']);
+                $this->setVendorDir($aOptions['vendordir'], 1);
             }
             if(array_key_exists('vendorurl', $aOptions)){
                 $this->setVendorUrl($aOptions['vendorurl']);
@@ -65,8 +80,6 @@ class cdnorlocal {
             $this->setVendorUrl('/vendor');
             $this->setVendorDir($_SERVER['DOCUMENT_ROOT'].'/vendor');
         }
-        $this->load(__DIR__.'/'.$this->_libConfig);
-        $this->_makeReplace();
     }
 
     /**
@@ -79,116 +92,6 @@ class cdnorlocal {
         }
     }
     
-    /**
-     * return array with subkeys local and cdn
-     * @param type $sLibrary
-     * @param type $sVersion
-     * @return type
-     */
-    private function _getLocations($sLibrary,$sVersion) {
-        $aReturn=array();
-        
-        $aSearch=array();
-        $aReplace=array();
-
-        $aSearch[]='[VERSION]';
-        $aReplace[]=$sVersion;
-        // $aSearch[]='[PKG]';
-        // $aReplace[]=$sProject;
-        $aReturn['local']=$this->sVendorDir.'/'.str_replace($aSearch, $aReplace, $this->sTplRelUrl);
-        $aReturn['cdn']=str_replace($aSearch, $aReplace, $this->sTplCdnUrl.'/'.$this->sTplRelUrl);
-        
-        return $aReturn;
-    }
-    
-    /**
-     * replace placeholders from .json
-     * @return boolean
-     */
-    private function _makeReplace(){
-        foreach ($this->aLibs as $sLibrary=>$aItem){
-            $aSearch=array();
-            $aReplace=array();
-            $aSearch[]='[VERSION]';
-            $aReplace[]=$aItem['version'];
-            $aSearch[]='[PKG]';
-            $aReplace[]=$sLibrary;
-            
-            // $this->aLibs[$sKey]['local']=str_replace($aSearch, $aReplace, $this->aLibs[$sKey]['local']);
-            // $this->aLibs[$sKey]['cdn']=str_replace($aSearch, $aReplace, $this->aLibs[$sKey]['cdn']);
-
-            
-            // $this->aLibs[$sKey]['fs']=$this->sVendorDir.'/'.str_replace($aSearch, $aReplace, $this->sTplRe);
-            
-            $this->aLibs[$sLibrary]['fs']=$this->sVendorDir.'/'.str_replace($aSearch, $aReplace, $this->sTplRelUrl);
-            $this->aLibs[$sLibrary]['local']=$this->sVendorUrl.'/'.str_replace($aSearch, $aReplace, $this->sTplRelUrl);
-            $this->aLibs[$sLibrary]['cdn']=str_replace($aSearch, $aReplace, $this->sTplCdnUrl.'/'.$this->sTplRelUrl);
-            
-            // $this->aLibs[$sKey]['_use']=$this->_getLocalOrCdn($this->aLibs[$sKey]['local'], $this->aLibs[$sKey]['cdn']);
-            $this->aLibs[$sLibrary]['use']=$this->_getKeyLocalOrCdn($sLibrary);
-            
-            // print_r($this->_getVersionsCdn($sLibrary));
-            // print_r($this->_getAssetsCdn($sLibrary));
-            // die();
-        }
-        // echo '<pre>'.print_r($this->aLibs, 1) . '</pre>';die();
-        return true;
-    }
-    
-    /**
-     * helper function; get local url if a path exists or a CDN
-     * @param string  $sLocalDir  local dir below vendor/
-     * @param string  $sCdn       alternative CDN url
-     * @return string
-     */
-    private function ___TODO_DELETE_getLocalOrCdn($sLocalDir, $sCdn){
-        if ($this->bForeceCdn){
-            return $sCdn;
-        }
-        // $sLocal=$_SERVER['DOCUMENT_ROOT'].$this->sVendorDir . $sLocalDir;
-        $sLocal=$this->sVendorDir . $sLocalDir;
-        $this->_wd("checking [$sLocal] ...");
-        $sReturn = (is_dir($sLocal)|| file_exists($sLocal)) ? $this->sVendorUrl.$sLocalDir : $sCdn;
-        $this->_wd("return $sReturn");
-        return $sReturn;
-    }
-    
-    /**
-     * helper function; what url to use: "cdn" or "local" (if local dir exists)
-     * @param string  $sLibrary
-     * @return string
-     */
-    private function _getKeyLocalOrCdn($sLibrary){
-        $this->_wd(__METHOD__ . " - checking " . $this->aLibs[$sLibrary]['fs']);
-        if ($this->bForeceCdn){
-            return 'cdn';
-        }
-        if($this->bForeceLocal && !is_dir($this->aLibs[$sLibrary]['fs'])){
-            $this->_wd(__METHOD__ . " - need to download ");
-            $this->_downloadAssets($sLibrary);
-        }
-        $sReturn = (is_dir($this->aLibs[$sLibrary]['fs'])) ? 'local' : 'cdn';
-        $this->_wd(__METHOD__ . " - return $sReturn");
-        return $sReturn;
-    }
-
-    /**
-     * load a config for libraries
-     * @param type $filename
-     * @return type
-     */
-    public function load($filename){
-        if(!file_exists($filename)){
-            die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: file does not exist ' . $filename .'.' );
-        }
-        $aCfg=json_decode(file_get_contents($filename), 1);
-        if (!is_array($aCfg)){
-            die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: file  ' . $filename .' exists but is not a valid json.' );
-        }
-        $this->_wd("config was loaded: $filename");
-        return $this->aLibs=$aCfg;
-    }
-    
     
     // ----------------------------------------------------------------------
     // 
@@ -196,26 +99,34 @@ class cdnorlocal {
     // 
     // ----------------------------------------------------------------------
 
+    
     /**
-     * get current flag for forcing CDN
-     * @return boolean
+     * return the local filename (maybe it does not exist
+     * 
+     * @param string $sRelUrl  relative url of css/ js file (i.e. "jquery/3.2.1/jquery.min.js")
+     * @return string
      */
-    public function getCdnForce(){
-        return $this->bForeceCdn;
-    }
-
-    /**
-     * set flag for forcing CDN
-     * @return boolean
-     */
-    public function setCdnForce($bNewflag){
-        $this->bForeceCdn=!!$bNewflag;
-        $this->_makeReplace();
-        return true;
+    protected function _getLocalfilename($sRelUrl){
+        return $this->sVendorDir.'/'.$sRelUrl;
     }
     
     /**
+     * return the local filename if it exists
+     * 
+     * @param string $sRelUrl  relative url of css/ js file (i.e. "jquery/3.2.1/jquery.min.js")
+     * @return type
+     */
+    public function getLocalfile($sRelUrl){
+        return file_exists($this->_getLocalfilename($sRelUrl))
+            ? $this->_getLocalfilename($sRelUrl)
+            : false;
+            ;
+    }
+    
+
+    /**
      * set a vendor url to use as link for libraries
+     * 
      * @param string  $sNewValue  new url
      * @return string
      */
@@ -225,6 +136,7 @@ class cdnorlocal {
     }
     /**
      * set a vendor dir to scan libraries
+     * 
      * @param string  $sNewValue  new local dir
      * @return string
      */
@@ -236,6 +148,7 @@ class cdnorlocal {
     }
     /**
      * set a vendor dir to scan libraries
+     * 
      * @param string  $sNewValue   new local dir
      * @param boolean $bMustExist  optional flag: ensure that the directory exists
      * @return string
@@ -251,6 +164,7 @@ class cdnorlocal {
 
     /**
      * set a vendor url to use as link for libraries
+     * 
      * @param string  $sNewValue  new url
      * @return string
      */
@@ -265,47 +179,55 @@ class cdnorlocal {
     // rendering
     // 
     // ----------------------------------------------------------------------
+    
+
 
     /**
-     * helper function 
-     * @param string  $sLibrary  name of the library
-     * @param string  $sFile     optional file inside a library path (without beginning /)
-     * @return string
+     * get full url based on relative filename. It returns the url of
+     * local directory if it exists or a url of CDNJS 
+     * 
+     * To use a local path a library must exist. Default vendor dir
+     * is '[webroot]/vendor' and vendor url is '/vendor'
+     * Use the setVendor* functions to override them.
+     * 
+     * @see setVendorDir()
+     * @see setVendorUrl()
+     * or
+     * @see setVendorWithRelpath()
+     * 
+     * @param string $sRelUrl  relative url of css/ js file (i.e. "jquery/3.2.1/jquery.min.js")
+     * @return type
      */
-    private function _getWhatToUse($sLibrary, $sFile){
-        $this->_wd(__METHOD__ . "($sLibrary, $sFile)");
-        if(!array_key_exists($sLibrary, $this->aLibs)){
-            die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: file or project ' . $sLibrary .' was not configured (yet).' );
-        }
-        if(!array_key_exists('use', $this->aLibs[$sLibrary])){
-            die(__CLASS__.' :: ' . __FUNCTION__ . ' - ERROR: _use was not found in key [' . $sLibrary .'] - maybe it was not configured correctly' . print_r($this->aLibs[$sLibrary], 1));
-        }
-        $sKey=$this->aLibs[$sLibrary]['use'];
-        $this->_wd(__METHOD__ . " -> $sKey");
-        return  $this->aLibs[$sLibrary][$sKey] . ($sFile ? '/'.$sFile : '');
+    public function getFullUrl($sRelUrl){
+        return ($this->getLocalfile($sRelUrl)
+                ? $this->sVendorUrl
+                : $this->sCdnUrl
+                ).'/'.$sRelUrl;
         
     }
     
     /**
-     * get html code to link a css file
-     * @param string  $sLibrary  name of the library
-     * @param string  $sFile     optional file inside a library path (without beginning /)
+     * get html code to include a css or js file (kind of lazy function)
+     * Remark: other file extensions are not supported
+     * Use the method getFullUrl() to get a full url and then embed it directly
+     * 
+     * @see getFullUrl()
+     * 
+     * @param string $sRelUrl  relative url of css/ js file (i.e. "jquery/3.2.1/jquery.min.js")
      * @return string
      */
-    function getCss($sLibrary, $sFile=''){
-        $sUrl=$this->_getWhatToUse($sLibrary, $sFile);
-        return '<link rel="stylesheet" type="text/css" href="'.$sUrl.'">';
+    function getHtmlInclude($sRelUrl){
+        $sUrl=$this->getFullUrl($sRelUrl);
+        $ext = pathinfo($sRelUrl, PATHINFO_EXTENSION);
+        switch ($ext){
+            case 'css': 
+                return '<link rel="stylesheet" type="text/css" href="'.$sUrl.'">';
+            case 'js': 
+                return '<script src="'.$sUrl.'"></script>';
+            default:
+                return "<!-- ERROR: I don't know (yet) how to handle extension [$ext] ... to include $sRelUrl; You can use getFullUrl('$sRelUrl'); -->";
+        }
     }
     
-    /**
-     * get html code to link a javascript
-     * @param string  $sLibrary  name of the library
-     * @param string  $sFile     optional file inside a library path (without beginning /)
-     * @return string
-     */
-    function getJs($sLibrary, $sFile=''){
-        $sUrl=$this->_getWhatToUse($sLibrary, $sFile);
-        return '<script src="'.$sUrl.'"></script>';
-    }
     
 }

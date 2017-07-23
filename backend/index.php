@@ -19,14 +19,14 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <meta name="robots" content="noindex,nofollow">
         <meta name="description" content="">
 
-        <?php echo $oCdn->getCss('pure','pure-min.css'); ?>
-        <?php echo $oCdn->getCss('pure','buttons-min.css'); ?>
-        <?php echo $oCdn->getCss('pure','grids-responsive-min.css'); ?>
-        <?php echo $oCdn->getCss('font-awesome','css/font-awesome.min.css'); ?>
-        <?php echo $oCdn->getCss('datatables','css/jquery.dataTables.min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/pure-min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/buttons-min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/grids-responsive-min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('datatables/1.10.15/css/jquery.dataTables.min.css'); ?>
 
-        <?php echo $oCdn->getJs('jquery','jquery.min.js'); ?>
-        <?php echo $oCdn->getJs('datatables','js/jquery.dataTables.min.js'); ?>
+        <?php echo $oCdn->getHtmlInclude('jquery/3.2.1/jquery.min.js'); ?>
+        <?php echo $oCdn->getHtmlInclude('datatables/1.10.15/js/jquery.dataTables.min.js'); ?>
 
         <link rel="stylesheet" href="main.css">
         <!--

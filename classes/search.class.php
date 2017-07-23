@@ -92,7 +92,7 @@ class ahsearch extends crawler_base {
 
         // echo '<pre>'.print_r($aOptions,1).'</pre>';
         if (!array_key_exists('url', $aOptions)){
-            $aOptions['url']='//'.$this->aProfile['stickydomain'];
+            $aOptions['url']='//'.$this->aProfile['searchindex']['stickydomain'];
         }
         if (array_key_exists('subdir', $aOptions)){
             $aOptions['url'].=str_replace('//','/','/'.$aOptions['subdir']);

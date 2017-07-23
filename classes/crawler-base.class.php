@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/medoo/Medoo.php';
 require_once 'status.class.php';
+
 /**
  * 
  * AXLES CRAWLER BASE CLASS
@@ -11,9 +12,9 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.16',
-        'date'    => '2017-07-19',
-        'author'  => 'Axel Hahn',
+        'version' => 'v0.17',
+        'date' => '2017-07-23',
+        'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
@@ -24,21 +25,38 @@ class crawler_base {
      * @var array
      */
     protected $aOptions = array(
-        'database'=>array(
-            'database_type'=>'sqlite',
-            'database_file'=>'__DIR__/data/ahcrawl.db',
+        'database' => array(
+            'database_type' => 'sqlite',
+            'database_file' => '__DIR__/data/ahcrawl.db',
         ),
-        'auth'=>array(
+        'auth' => array(
         ),
-        'debug'=>'false',
-        'lang'=>'en',
-        'crawler'=>array(
-            'searchindex'=>array(
-                'simultanousRequests'=>2,
+        'debug' => 'false',
+        'lang' => 'en',
+        'crawler' => array(
+            'searchindex' => array(
+                'simultanousRequests' => 2,
             ),
-            'ressources'=>array(
-                'simultanousRequests'=>3,
+            'ressources' => array(
+                'simultanousRequests' => 3,
             ),
+        ),
+    );
+    protected $aProfileDefault = array(
+        'label' => 'no [label]',
+        'description' => 'no [description]',
+        'searchindex' => array(
+            'stickydomain' => 'no [searchindex]->[stickydomain]',
+            'urls2crawl' => array(),
+            'iDepth' => 7,
+            'include' => array(),
+            'includepath' => array(),
+            'exclude' => array(),
+            'simultanousRequests' => false,
+        ),
+        'searchcategories' => array(),
+        'ressources' => array(
+            'simultanousRequests' => false,
         ),
     );
 
@@ -71,13 +89,12 @@ class crawler_base {
      * @var type 
      */
     protected $aLang = array();
-    
+
     /**
      * user agent for the crawler 
      * @var type 
      */
     protected $sUserAgent = false;
-
 
     // ----------------------------------------------------------------------
 
@@ -93,7 +110,7 @@ class crawler_base {
     // ----------------------------------------------------------------------
     // OPTIONS + DATA
     // ----------------------------------------------------------------------
-    
+
     protected function _getOptionsfile() {
         return dirname(__DIR__) . '/config/crawler.config.json';
     }
@@ -119,27 +136,27 @@ class crawler_base {
         }
         return $aOptions;
     }
-    
+
     /**
      * set specialties for PDO queries in sifferent database types
      * 
      * @return array
      */
-    private function _getPdoDbSpecialties(){
-        $aReturn=array();
+    private function _getPdoDbSpecialties() {
+        $aReturn = array();
         switch ($this->aOptions['database']['database_type']) {
             case 'mysql':
-                $aReturn=array(
-                    'tablePre'=>'`',
-                    'tableSuf'=>'`',
-                    'createAppend'=>'CHARACTER SET utf8 COLLATE utf8_general_ci',
+                $aReturn = array(
+                    'tablePre' => '`',
+                    'tableSuf' => '`',
+                    'createAppend' => 'CHARACTER SET utf8 COLLATE utf8_general_ci',
                 );
                 break;
             case 'sqlite':
-                $aReturn=array(
-                    'tablePre'=>'[',
-                    'tableSuf'=>']',
-                    'createAppend'=>'',
+                $aReturn = array(
+                    'tablePre' => '[',
+                    'tableSuf' => ']',
+                    'createAppend' => '',
                 );
                 break;
 
@@ -159,20 +176,20 @@ class crawler_base {
     private function _createTable($sTable, $aFields) {
         $sql = '';
 
-        $aDb=$this->_getPdoDbSpecialties();
+        $aDb = $this->_getPdoDbSpecialties();
         foreach ($aFields as $field => $type) {
             switch ($this->aOptions['database']['database_type']) {
                 case 'mysql':
-                    $type=str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $type);
-                    $type=str_replace('INTEGER', 'INT', $type);
-                    $type=str_replace('TEXT', 'LONGTEXT', $type);
-                    $type=str_replace('DATETIME', 'TIMESTAMP', $type);
+                    $type = str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $type);
+                    $type = str_replace('INTEGER', 'INT', $type);
+                    $type = str_replace('TEXT', 'LONGTEXT', $type);
+                    $type = str_replace('DATETIME', 'TIMESTAMP', $type);
                     break;
             }
-            $sql.= $sql ? ",\n" : '';
-            $sql.= "    ".$aDb['tablePre']."${field}".$aDb['tableSuf']." $type";
+            $sql .= $sql ? ",\n" : '';
+            $sql .= "    " . $aDb['tablePre'] . "${field}" . $aDb['tableSuf'] . " $type";
         }
-        $sql = "CREATE TABLE IF NOT EXISTS ".$aDb['tablePre']."$sTable".$aDb['tableSuf']."(\n" . $sql . "\n)\n".$aDb['createAppend'];
+        $sql = "CREATE TABLE IF NOT EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . "(\n" . $sql . "\n)\n" . $aDb['createAppend'];
 
         //echo "DEBUG: <pre>$sql</pre>";
         if (!$this->oDB->query($sql)) {
@@ -189,14 +206,10 @@ class crawler_base {
     private function _initDB() {
 
         $this->oDB = new Medoo\Medoo($this->aOptions['database']);
-        if(!$this->_checkDbResult()){
+        if (!$this->_checkDbResult()) {
             die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
         }
-        /*
-        $this->oDB->query("DROP TABLE ressources;");
-        $this->oDB->query("DROP TABLE ressources_rel;");
-         */
-        
+
         $this->_createTable("pages", array(
             'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
@@ -205,6 +218,7 @@ class crawler_base {
             'title' => 'VARCHAR(256)  NULL',
             'description' => 'VARCHAR(4096)  NULL',
             'keywords' => 'VARCHAR(1024)  NULL',
+            'lang' => 'VARCHAR(8) NULL',
             'content' => 'TEXT',
             'header' => 'VARCHAR(2048)  NULL',
             'response' => 'TEXT',
@@ -212,7 +226,7 @@ class crawler_base {
             'tserror' => 'DATETIME NULL',
             'errorcount' => 'INTEGER NULL',
             'lasterror' => 'VARCHAR(1024)  NULL',
-            )
+                )
         );
 
         $this->_createTable("words", array(
@@ -233,7 +247,7 @@ class crawler_base {
             'host' => 'VARCHAR(32)  NULL',
             'ua' => 'VARCHAR(128)  NULL',
             'referrer' => 'VARCHAR(128)  NULL'
-            )
+                )
         );
 
         $this->_createTable("ressources", array(
@@ -244,21 +258,19 @@ class crawler_base {
             'ressourcetype' => 'VARCHAR(16) NOT NULL',
             'type' => 'VARCHAR(16) NOT NULL',
             'header' => 'VARCHAR(1024)  NULL',
-            
             // header vars
             'content_type' => 'VARCHAR(32) NULL',
             'http_code' => 'INTEGER NULL',
+            'status' => 'VARCHAR(16) NOT NULL',
             'total_time' => 'INTEGER NULL',
             'size_download' => 'INTEGER NULL',
-            
             'rescan' => 'BOOL DEFAULT TRUE',
-            
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
             'tsok' => 'DATETIME NULL',
             'tserror' => 'DATETIME NULL',
             'errorcount' => 'INTEGER NULL',
             'lasterror' => 'VARCHAR(1024)  NULL',
-            )
+                )
         );
         $this->_createTable("ressources_rel", array(
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
@@ -268,8 +280,8 @@ class crawler_base {
             // 'id_ressource_to' => 'VARCHAR(32) NOT NULL',
             'id_ressource' => 'INTEGER NOT NULL',
             'id_ressource_to' => 'INTEGER NOT NULL',
-            // 'references' => 'INTEGER NOT NULL',
-            )
+                // 'references' => 'INTEGER NOT NULL',
+                )
         );
     }
 
@@ -278,26 +290,25 @@ class crawler_base {
      * @param array  $aResult  result of database query (used with enabled debug only)
      * @return boolean
      */
-    protected function _checkDbResult($aResult=false){
-        $aErr=$this->oDB->error();
-        if ($aErr[1]){
+    protected function _checkDbResult($aResult = false) {
+        $aErr = $this->oDB->error();
+        if ($aErr[1]) {
             echo "!!! Database error detected :-/\n";
-            if($this->aOptions['debug'] || true){
+            if ($this->aOptions['debug'] || true) {
                 echo ''
-                . '... DB-QUERY : '.$this->oDB->last()."\n"
-                .($aResult ? '... DB-RESULT: '.print_r($aResult,1 )."\n" : '')
-                .'... DB-ERROR: '.print_r($this->oDB->error(),1)."\n"
+                . '... DB-QUERY : ' . $this->oDB->last() . "\n"
+                . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
+                . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
                 ;
                 sleep(3);
             }
             return false;
-        }
-        elseif($this->aOptions['debug']){
-            echo '... OK: DB-QUERY : '.substr($this->oDB->last(), 0, 200)." [...]\n";
+        } elseif ($this->aOptions['debug']) {
+            echo '... OK: DB-QUERY : ' . substr($this->oDB->last(), 0, 200) . " [...]\n";
         }
         return true;
     }
-    
+
     /**
      * get count of existing values in a database table.
      * 
@@ -306,30 +317,29 @@ class crawler_base {
      * @param array   $aFilter  array with column name and value to filter
      * @return array
      */
-    public function getCountsOfRow($sTable, $sRow, $aFilter=array()){
+    public function getCountsOfRow($sTable, $sRow, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
-        $sTable=preg_replace('/[^a-z\_\.]/', '', $sTable);
-        $sRow=preg_replace('/[^a-z\_]/', '', $sRow);
-        
-        $sWhere='';
-        if(is_array($aFilter) && count($aFilter)){
-            foreach ($aFilter as $sColumn=>$value){
-                $sWhere.=($sWhere ? 'AND ' : '')
-                    
-                    .$sColumn.' '.( $value=="" ? 'IS NULL' : '='.$this->oDB->quote($value)).' ';
+        $sTable = preg_replace('/[^a-z\_\.]/', '', $sTable);
+        $sRow = preg_replace('/[^a-z\_]/', '', $sRow);
+
+        $sWhere = '';
+        if (is_array($aFilter) && count($aFilter)) {
+            foreach ($aFilter as $sColumn => $value) {
+                $sWhere .= ($sWhere ? 'AND ' : '')
+                        . $sColumn . ' ' . ( $value == "" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
             }
         }
-        $sSql="SELECT $sRow, count(*) as count "
+        $sSql = "SELECT $sRow, count(*) as count "
                 . "FROM $sTable "
-                . ($sWhere ? 'WHERE '.$sWhere : '')
+                . ($sWhere ? 'WHERE ' . $sWhere : '')
                 . "GROUP BY $sRow "
                 . "ORDER BY $sRow ASC";
         // echo "SQL: $sSql\n ... <br>"; print_r($aFilter);
-        $aData=$this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
-        
+        $aData = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
+
         return $aData;
     }
-    
+
     /**
      * get latest record of a db table
      * 
@@ -337,18 +347,16 @@ class crawler_base {
      * @param array   $aFilter  array with column name and value to filter
      * @return array
      */
-    public function getLastTsRecord($sTable, $aFilter=array()){
+    public function getLastTsRecord($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
-        $sDbTable=preg_replace('/[^a-z\_\.]/', '', $sTable);
-        $aData=$this->oDB->max(
-                $sDbTable,
-                "ts",
-                $aFilter
+        $sDbTable = preg_replace('/[^a-z\_\.]/', '', $sTable);
+        $aData = $this->oDB->max(
+                $sDbTable, "ts", $aFilter
         );
         // echo "SQL: " . $this->oDB->last() ."<br>";
         return $aData;
     }
-    
+
     /**
      * get count of records in a db table
      * 
@@ -356,13 +364,11 @@ class crawler_base {
      * @param array   $aFilter  array with column name and value to filter
      * @return array
      */
-    public function getRecordCount($sTable, $aFilter=array()){
+    public function getRecordCount($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
-        $sDbTable=preg_replace('/[^a-z\_\.]/', '', $sTable);
-        $aData=$this->oDB->count(
-                $sDbTable,
-                "*",
-                $aFilter
+        $sDbTable = preg_replace('/[^a-z\_\.]/', '', $sTable);
+        $aData = $this->oDB->count(
+                $sDbTable, "*", $aFilter
         );
         // echo "SQL: " . $this->oDB->last() ."<br>";
         return $aData;
@@ -374,24 +380,24 @@ class crawler_base {
      * 
      * @param type $aItems
      */
-    public function flushData($aItems){
-        $aTables=array();
-        $bAll=array_key_exists('all', $aItems) && $aItems['all'];
-        if ($bAll || (array_key_exists('searchindex', $aItems) && $aItems['searchindex'])){
-            $aTables[]='pages';
-            $aTables[]='words';
+    public function flushData($aItems) {
+        $aTables = array();
+        $bAll = array_key_exists('all', $aItems) && $aItems['all'];
+        if ($bAll || (array_key_exists('searchindex', $aItems) && $aItems['searchindex'])) {
+            $aTables[] = 'pages';
+            $aTables[] = 'words';
         }
-        if ($bAll || (array_key_exists('ressources', $aItems) && $aItems['ressources'])){
-            $aTables[]='ressources';
-            $aTables[]='ressources_rel';
+        if ($bAll || (array_key_exists('ressources', $aItems) && $aItems['ressources'])) {
+            $aTables[] = 'ressources';
+            $aTables[] = 'ressources_rel';
         }
-        if (array_key_exists('searches', $aItems) && $aItems['searches']){
-            $aTables[]='search';
+        if (array_key_exists('searches', $aItems) && $aItems['searches']) {
+            $aTables[] = 'search';
         }
-        if (count($aTables)){
-            $aDb=$this->_getPdoDbSpecialties();
-            foreach ($aTables as $sTable){
-                $sql = "DROP TABLE IF EXISTS ".$aDb['tablePre']."$sTable".$aDb['tableSuf'].";";
+        if (count($aTables)) {
+            $aDb = $this->_getPdoDbSpecialties();
+            foreach ($aTables as $sTable) {
+                $sql = "DROP TABLE IF EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . ";";
                 echo "DEBUG: $sql\n";
                 if (!$this->oDB->query($sql)) {
                     echo $sql . "<br>";
@@ -412,42 +418,60 @@ class crawler_base {
         $aOptions = $this->_loadOptions();
         $this->iSiteId = false;
         $this->aProfile = array();
-        
+
         // builtin default options ... these will be overrided with crawler.config.json
-        if (array_key_exists('options', $aOptions)){
+        if (array_key_exists('options', $aOptions)) {
             $this->aOptions = array_merge($this->aOptions, $aOptions['options']);
         }
 
         // $this->sLang = (array_key_exists('lang', $this->aOptions)) ? $this->sLang = $this->aOptions['lang'] : $this->sLang;
         $this->sLang = $this->aOptions['lang'];
-        
+
         // curl options:
-        $this->sUserAgent = $this->aAbout['product'] . ' '.$this->aAbout['version']. ' (GNU GPL crawler and linkchecker for your website; '.$this->aAbout['urlHome'].')';
-        
+        $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
+
         $this->_initDB();
 
         if ($iSiteId) {
             if (!array_key_exists('profiles', $aOptions) || !array_key_exists($iSiteId, $aOptions['profiles'])) {
-                die("ERROR: a config with SiteId $iSiteId does not exist.");
+                die("ERROR: a config with siteId $iSiteId does not exist.");
             }
             $this->iSiteId = $iSiteId;
-            $this->aProfile = $aOptions['profiles'][$iSiteId];
+            $aProfile = $aOptions['profiles'][$iSiteId];
+
+            // merge defaults with user settings for this profile 
+            $aNewProfile=$this->aProfileDefault;
+            foreach(array_keys($this->aProfileDefault) as $sKey0){
+                if (!is_array($aNewProfile[$sKey0])){
+                    $aNewProfile[$sKey0] = array_key_exists($sKey0, $aProfile) ? $aProfile[$sKey0] : $this->aProfileDefault[$sKey0];
+                } else {
+                    $aNewProfile[$sKey0]=array_key_exists($sKey0, $aProfile) ? array_merge($this->aProfileDefault[$sKey0], $aProfile[$sKey0]) : $this->aProfileDefault[$sKey0];
+                }
+            }
+            $this->aProfile = $aNewProfile;
+
             if (!array_key_exists('includepath', $this->aProfile['searchindex']) || !count($this->aProfile['searchindex']['includepath'])) {
-                $this->aProfile['searchindex']['includepath'][]='.*';
-            }            
+                $this->aProfile['searchindex']['includepath'][] = '.*';
+            }
+            if (!array_key_exists('simultanousRequests', $this->aProfile['searchindex']) || $this->aProfile['searchindex']['simultanousRequests']==false ) {
+                $this->aProfile['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
+            }
+            if (!array_key_exists('simultanousRequests', $this->aProfile['ressources']) || $this->aProfile['ressources']['simultanousRequests']==false ) {
+                $this->aProfile['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
+            }
+            // print_r($this->aProfile); sleep(5);
         }
     }
-    
+
     /**
      * get all existing search profiles
      * @return array
      */
-    public function getProfileIds(){
+    public function getProfileIds() {
         $aOptions = $this->_loadOptions();
         if (
-                is_array($aOptions) 
-                && array_key_exists('profiles',$aOptions)
-        ){
+                is_array($aOptions) && array_key_exists('profiles', $aOptions)
+        ) {
             return array_keys($aOptions['profiles']);
         }
         return false;
@@ -456,13 +480,12 @@ class crawler_base {
     // ----------------------------------------------------------------------
     // content
     // ----------------------------------------------------------------------
-    protected function _getHeaderVarFromJson($sJson, $sKey){
-        $aTmp=json_decode($sJson, 1);
-        return (is_array($aTmp) && array_key_exists($sKey, $aTmp))
-                ? $aTmp[$sKey]
-                : FALSE
-            ;
+    protected function _getHeaderVarFromJson($sJson, $sKey) {
+        $aTmp = json_decode($sJson, 1);
+        return (is_array($aTmp) && array_key_exists($sKey, $aTmp)) ? $aTmp[$sKey] : FALSE
+        ;
     }
+
     // ----------------------------------------------------------------------
     // LANGUAGE
     // ----------------------------------------------------------------------
@@ -510,19 +533,13 @@ class crawler_base {
      * @param type    $sId     id of a text
      * @return string
      */
-    public function getTxt($sPlace, $sId, $sAltId=false) {
+    public function getTxt($sPlace, $sId, $sAltId = false) {
         if (!array_key_exists($sPlace, $this->aLang)) {
             die(__FUNCTION__ . ' init text with setLangNN for ' . $sPlace . ' first.');
         }
-        return array_key_exists($sId, $this->aLang[$sPlace]) 
-                ? $this->aLang[$sPlace][$sId] 
-                : ($sAltId
-                        ? (array_key_exists($sAltId, $this->aLang[$sPlace])
-                            ? $this->aLang[$sPlace][$sAltId] 
-                            : '[' . $sPlace . ': ' . $sId . ']'
-                        )
-                        : '[' . $sPlace . ': ' . $sId . ']'
-                  )
+        return array_key_exists($sId, $this->aLang[$sPlace]) ? $this->aLang[$sPlace][$sId] : ($sAltId ? (array_key_exists($sAltId, $this->aLang[$sPlace]) ? $this->aLang[$sPlace][$sAltId] : '[' . $sPlace . ': ' . $sId . ']'
+                ) : '[' . $sPlace . ': ' . $sId . ']'
+                )
         ;
     }
 
@@ -531,7 +548,7 @@ class crawler_base {
      * @param type    $sId     id of a text
      * @return string
      */
-    public function lB($sId, $sAltId=false) {
+    public function lB($sId, $sAltId = false) {
         return $this->getTxt('backend', $sId, $sAltId);
     }
 
@@ -543,38 +560,39 @@ class crawler_base {
     public function lF($sId) {
         return $this->getTxt('frontend', $sId);
     }
+
     // ----------------------------------------------------------------------
     // STATUS / LOCKING
     // ----------------------------------------------------------------------
 
-    public function enableLocking($sLockitem, $sAction=false, $iProfile=false){
-        $oStatus=new status();
-        $sMsgId=$sLockitem.'-'.$sAction.'-'.$iProfile;
-        if (!$oStatus->startAction($sMsgId, $iProfile)){
+    public function enableLocking($sLockitem, $sAction = false, $iProfile = false) {
+        $oStatus = new status();
+        $sMsgId = $sLockitem . '-' . $sAction . '-' . $iProfile;
+        if (!$oStatus->startAction($sMsgId, $iProfile)) {
             $oStatus->showStatus();
             echo "ABORT: the action is still running.\n";
             return false;
         }
-        $this->aStatus=array(
-            'lockitem'=>$sLockitem,
-            'action'=>$sAction,
-            'profile'=>$iProfile,
-            'messageid'=>$sMsgId,
+        $this->aStatus = array(
+            'lockitem' => $sLockitem,
+            'action' => $sAction,
+            'profile' => $iProfile,
+            'messageid' => $sMsgId,
         );
-        
-        return true;
-    }
-    
-    public function touchLocking($sMessage){
-        $oStatus=new status();
-        $oStatus->updateAction($this->aStatus['messageid'], $sMessage);
-    }
-    public function disableLocking(){
-        $oStatus=new status();
-        $oStatus->finishAction($this->aStatus['messageid']);
-        $this->aStatus=false;
+
         return true;
     }
 
+    public function touchLocking($sMessage) {
+        $oStatus = new status();
+        $oStatus->updateAction($this->aStatus['messageid'], $sMessage);
+    }
+
+    public function disableLocking() {
+        $oStatus = new status();
+        $oStatus->finishAction($this->aStatus['messageid']);
+        $this->aStatus = false;
+        return true;
+    }
 
 }

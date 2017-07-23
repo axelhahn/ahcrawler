@@ -490,8 +490,179 @@ class ressourcesrenderer extends crawler_base {
     }
 
     /**
+     * helper function for vis js
+     * @param array  $aItem    ressource item
+     * @param string $sNodeId  optional id for the node (default is id in ressource item)
+     * @return array
+     */
+    private function _getVisNode($aItem, $sNodeId=''){
+        $sNodeLabel=$aItem['url']."\n(".$aItem['type'].' '.$aItem['ressourcetype'].'; '.$aItem['http_code'].')';
+        $sNodeId=$sNodeId ? $sNodeId : $aItem['id'];
+        return array(
+            'id'=>$sNodeId, 
+            // 'label'=>$this->renderRessourceItemAsLine($aItem),
+            'label'=>$sNodeLabel,
+            'group'=>$aItem['ressourcetype'],
+            'title'=>$sNodeLabel,
+        );
+    }
+    /**
+     * helper function for vis js
+     * @param array  $aItem    ressource item
+     * @param string $sNodeId  optional id for the node (default is id in ressource item)
+     * @return array
+     */
+    private function _getVisEdge($aOptions){
+        $aColors=array(
+            'in'=>'#99bb99',
+            'out'=>'#9999bb',
+        );
+        foreach (array('from', 'to') as $sMustKey){
+            if (!array_key_exists($sMustKey, $aOptions)){
+                echo __METHOD__ . ' WARNING: no '.$sMustKey.' in option array<br>';
+                return false;
+            }
+        }
+        $aReturn=array(
+                    'from'=>$aOptions['from'],
+                    'to'=>$aOptions['to'], 
+        );
+        
+        if(array_key_exists('color', $aOptions) && array_key_exists($aOptions['color'], $aColors)){
+            $aOptions['color']=$aColors[$aOptions['color']];
+        }
+        foreach (array('arrows', 'title', 'color') as $sKey){
+            if (array_key_exists($sKey, $aOptions)){
+                $aReturn[$sKey]=$aOptions[$sKey];
+            }
+        }
+        return $aReturn;
+    }
+    
+    
+        // visualization
+        // https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js
+        // https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css
+
+    /**
      * 
-     * @param type $aItem
+     * @param type $aNodes
+     * @param type $aEdges
+     * @return string
+     */
+    private function _renderNetwork($aNodes, $aEdges){
+        $sIdDiv='visarea';
+        $sVisual=''
+            . '<!-- for header -->'
+            . '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script>'
+            . '<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css" rel="stylesheet" type="text/css" />'
+                . '  <style>
+                    #'.$sIdDiv.'{
+                      height: 500px;
+                      width: 60%;
+                      border:1px solid lightgrey;
+                    }
+                </style>'
+            . '<!-- for body -->'
+                . '<div id="'.$sIdDiv.'"></div>'
+                . '<script language="JavaScript">
+                    var iIconSize=120;
+                    var optionsFA = {
+                      groups: {
+                        css: {
+                          shape: \'icon\',
+                          icon: {
+                            face: \'FontAwesome\',
+                            code: \'\uf15c\',
+                            size: iIconSize,
+                            color: \'#cccccc\'
+                          }
+                        },
+                        image: {
+                          shape: \'icon\',
+                          icon: {
+                            face: \'FontAwesome\',
+                            code: \'\uf1c5\',
+                            size: iIconSize,
+                            color: \'#eecc22\'
+                          }
+                        },
+                        link: {
+                          shape: \'icon\',
+                          icon: {
+                            face: \'FontAwesome\',
+                            code: \'\uf0c1\',
+                            size: iIconSize,
+                            color: \'#888888\'
+                          }
+                        },
+                        page: {
+                          shape: \'box\',
+                          shape: \'icon\',
+                          color: {background:\'pink\', border:\'purple\'},
+                          icon: {
+                            face: \'FontAwesome\',
+                            code: \'\uf15b\',
+                            size: iIconSize,
+                            shape: \'box\'
+                          }
+                        },
+                        script: {
+                          shape: \'icon\',
+                          icon: {
+                            face: \'FontAwesome\',
+                            code: \'\uf1c9\',
+                            size: iIconSize,
+                            color: \'#88cccc\'
+                          }
+                        }
+                      },
+                      layout: {
+                          hierarchical: {
+                              direction: "LR",
+                              sortMethod: "directed",
+
+                              levelSeparation: 500,
+                              nodeSpacing: 200,
+
+                          }
+                      },
+                      interaction: {dragNodes :false},
+                      physics: {
+                          enabled: false
+                      },
+                      configure1: {
+                        showButton:false,
+                        filter: function (option, path) {
+                            if (path.indexOf(\'hierarchical\') !== -1) {
+                                return true;
+                            }
+                            return false;
+                        }
+                      }
+                    };
+
+                    // create a network
+                    var containerFA = document.getElementById(\''.$sIdDiv.'\');
+                    var dataFA = {
+                      nodes: '. json_encode($aNodes).',
+                      edges: '. json_encode($aEdges).'
+                    };
+
+                    var networkFA = new vis.Network(containerFA, dataFA, optionsFA);
+
+                    networkFA.on("click", function (params) {
+                        params.event = "[original event]";
+                        // console.log(\'click event, getNodeAt returns: \' + this.getNodeAt(params.pointer.DOM));
+                        console.log(\'click event - params: \' + params);
+                    });      
+                </script>';
+        return $sVisual;
+    }
+    
+    /**
+     * get html code for full detail of a ressource with properties, in and outs
+     * @param array $aItem  ressource item
      * @return string
      */
     public function renderRessourceItemFull($aItem) {
@@ -500,6 +671,45 @@ class ressourcesrenderer extends crawler_base {
         $aResponsemetadata= json_decode($aItem['header'], 1);
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
+        /*
+        $sReturn.='<pre>$aIn = '.print_r($aIn,1).'</pre>';
+        $sReturn.='<pre>$aOut = '.print_r($aOut,1).'</pre>';
+         * 
+         */
+                
+        $aNodes=array();
+        $aEdges=array();
+        
+        $sNodeLabel=$aItem['url']."\n(".$aItem['type'].' '.$aItem['ressourcetype'].'; '.$aItem['http_code'].')';
+        $aNodes[]=$this->_getVisNode($aItem);
+        if (count($aIn)){
+            foreach ($aIn as $aTmpItem) {
+                $sNodeId=$aTmpItem['id'].'IN';
+                $aNodes[]=$this->_getVisNode($aTmpItem,$sNodeId);
+                $aEdges[]=$this->_getVisEdge(array(
+                    'from'=>$sNodeId,
+                    'to'=>$aNodes[0]['id'], 
+                    'arrows'=>'to',
+                    'color' => 'in',
+                ));
+            }
+        }
+        if (count($aOut)){
+            foreach ($aOut as $aTmpItem) {
+                $sNodeId=$aTmpItem['id'].'OUT';
+                $sNodeLabel=$aTmpItem['url']."\n(".$aTmpItem['type'].' '.$aTmpItem['ressourcetype'].')';
+                $aNodes[]=$this->_getVisNode($aTmpItem,$sNodeId);
+                $aEdges[]=$this->_getVisEdge(array(
+                    'from'=>$aNodes[0]['id'],
+                    'to'=>$sNodeId, 
+                    'arrows'=>'to',
+                    'color' => 'out',
+                ));
+            }
+        }
+        
+
+        
         $sReturn.=''
                 . '<table><tr>'
                 . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
@@ -514,28 +724,26 @@ class ressourcesrenderer extends crawler_base {
                 . '<span class="ressourcecounter"><a href="#listOut">' . count($aOut) . '<br><i class="fa fa-arrow-right"></i></a></span>'
                 . '</td>'
                 . '</tr></table>'
+                . $this->_renderNetwork($aNodes, $aEdges)
                 . '<h3 id="listIn">' . $this->lB('ressources.references-in') . '</h3>'
                 . $this->lB('ressources.itemstotal')
                 . ': <strong>' . count($aIn) . '</strong><br><br>'
         ;
-        /*
-        $sReturn.='<pre>$aIn = '.print_r($aIn,1).'</pre>';
-        $sReturn.='<pre>$aOut = '.print_r($aOut,1).'</pre>';
-         * 
-         */
+        
         if (count($aIn)){
-            foreach ($aIn as $aItem) {
-                $sReturn.=$this->renderRessourceItemAsLine($aItem) . '<br>';
+            foreach ($aIn as $aTmpItem) {
+                // $sReturn.=$this->renderRessourceItemAsLine($aTmpItem) . '<br>';
+                $sReturn.=$this->renderReportForRessource($aTmpItem, false);
             }
         }
         $sReturn.='<h3 id="listOut">' . $this->lB('ressources.references-out') . '</h3>'
                 . $this->lB('ressources.itemstotal') . ': <strong>' . count($aOut) . '</strong><br><br>'
         ;
         if (count($aOut)){
-            foreach ($aOut as $aItem) {
+            foreach ($aOut as $aTmpItem) {
                 // $sReturn.=$oRenderer->renderRessourceItemAsBox($aItem);
                 // $sReturn.=$this->renderRessourceItemAsLine($aItem, true) . '<br>';
-                $sReturn.=$this->renderReportForRessource($aItem, false);
+                $sReturn.=$this->renderReportForRessource($aTmpItem, false);
             }
         }
         return $sReturn;

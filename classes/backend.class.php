@@ -275,7 +275,7 @@ class backend extends crawler_base {
      * find the current tab or take the first id
      * @return type
      */
-    private function _getTab($aTabs) {
+    private function _getTab($aTabs=false) {
         $this->_sTab = (array_key_exists('tab', $_GET) && $_GET['tab']) ? $_GET['tab'] : '';
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
             $this->_sTab = $_COOKIE['tab'];
@@ -491,7 +491,7 @@ class backend extends crawler_base {
      * @param string   $sId  id of search profile
      * @return array
      */
-    private function _getProfileConfig($sId) {
+    private function _getProfileConfig__UNUSED($sId) {
         $aOptions = $this->_loadOptions();
         if (array_key_exists('profiles', $aOptions) && array_key_exists($sId, $aOptions['profiles'])) {
             return $aOptions['profiles'][$sId];
@@ -742,10 +742,15 @@ class backend extends crawler_base {
      */
     private function _getContentprofiles() {
         $sReturn = '';
+        $this->_getTab();
+        $this->setSiteId($this->_sTab);
         $sReturn.=$this->_getNavi2($this->_getProfiles())
-                . '<h3>' . $this->lB('profile.vars.searchprofile') . '</h3>';
+                . '<h3>' . $this->lB('profile.vars.searchprofile') . '</h3>'
+                // . '<pre>' . print_r($this->aProfile, 1) . '</pre>'
+                ;
         $aTbl = array();
-        foreach ($this->_getProfileConfig($this->_sTab) as $sVar => $val) {
+        // foreach ($this->_getProfileConfig($this->_sTab) as $sVar => $val) {
+        foreach ($this->aProfile as $sVar => $val) {
 
             $sTdVal = '';
             if (is_array($val)){

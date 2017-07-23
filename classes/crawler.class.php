@@ -541,10 +541,6 @@ class crawler extends crawler_base{
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }
-            $iSimRequests=array_key_exists('simultanousRequests', $this->aProfile['searchindex']) 
-                    ? $this->aProfile['searchindex']['simultanousRequests']
-                    : $this->aOptions['crawler']['searchindex']['simultanousRequests']
-                    ;
             $rollingCurl->setOptions(array(
                     CURLOPT_FOLLOWLOCATION => false,
                     CURLOPT_RETURNTRANSFER => true,
@@ -555,7 +551,7 @@ class crawler extends crawler_base{
                     // TODO: this is unsafe .. better: let the user configure it
                     CURLOPT_SSL_VERIFYPEER => 0,
                 ))
-                ->setSimultaneousLimit($iSimRequests)
+                ->setSimultaneousLimit($this->aProfile['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
                     // echo "... content: " . substr($request->getResponseText(), 0 ,10) . " (...) \n";
