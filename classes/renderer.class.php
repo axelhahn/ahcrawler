@@ -62,6 +62,9 @@ class ressourcesrenderer extends crawler_base {
         'internal' => 'fa fa-thumb-tack',
         'external' => 'fa fa-globe',
         // content_type/ MIME
+        //
+        'link-to-url' => 'fa fa-external-link',
+
         // http_code
         'http-code-' => 'fa fa-hourglass-o',
         'http-code-0' => 'fa fa-plug',
@@ -424,7 +427,8 @@ class ressourcesrenderer extends crawler_base {
                 . ' '
                 . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
                 . ' '
-                . '<a href="' . $aRessourceItem['url'] . '" target="_blank">'
+                . '<a href="' . $aRessourceItem['url'] . '" target="_blank" title="'.$this->lB('ressources.link-to-url').'">'
+                . $this->_getIcon('link-to-url')
                 . $this->_renderArrayValue('url', $aRessourceItem)
                 . '</a>'
                 . '</div>'
@@ -484,8 +488,8 @@ class ressourcesrenderer extends crawler_base {
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
-                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '">' . $aResourceItem['url'] . '</a>'
-                // . ' <a href="' . $aResourceItem['url'] . '">[...]</a>'
+                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '" title="'.$this->lB('ressources.link-to-details').'">' . $aResourceItem['url'] . '</a>'
+                . ' <a href="' . $aResourceItem['url'] . '" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a>'
             ;
     }
 
@@ -677,6 +681,7 @@ class ressourcesrenderer extends crawler_base {
          * 
          */
                 
+        /*
         $aNodes=array();
         $aEdges=array();
         
@@ -707,7 +712,7 @@ class ressourcesrenderer extends crawler_base {
                 ));
             }
         }
-        
+        */
 
         
         $sReturn.=''
@@ -724,7 +729,7 @@ class ressourcesrenderer extends crawler_base {
                 . '<span class="ressourcecounter"><a href="#listOut">' . count($aOut) . '<br><i class="fa fa-arrow-right"></i></a></span>'
                 . '</td>'
                 . '</tr></table>'
-                . $this->_renderNetwork($aNodes, $aEdges)
+                // . $this->_renderNetwork($aNodes, $aEdges)
                 . '<h3 id="listIn">' . $this->lB('ressources.references-in') . '</h3>'
                 . $this->lB('ressources.itemstotal')
                 . ': <strong>' . count($aIn) . '</strong><br><br>'

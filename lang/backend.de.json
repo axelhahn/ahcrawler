@@ -204,6 +204,8 @@
     "ressources.size-is-zero": "[nicht im Suchindex]",
     
     "ressources.age-scan": "Alter des letzten Scans",
+    "ressources.link-to-details": "Details zu dieser Ressource",
+    "ressources.link-to-url": "Direktlink",
 
     "warnings.check-links": "Link-Check: Verteilung der Statuscodes",
     "warnings.found-http-errors": "Gruppe Http-Fehler",
