@@ -657,10 +657,25 @@ class crawler extends crawler_base{
             // echo "\n";sleep(5);
             return false;
         }
+                
+        // X-Robots-Tag in http response header
+        // see https://developers.google.com/search/reference/robots_meta_tag
+        // to test: $aPage['header']['X-Robots-Tag']='none';
+        $sRobotsX=(isset($aPage['header']['X-Robots-Tag']) ? $aPage['header']['X-Robots-Tag'] : '');
+        if (
+            $sRobotsX && (
+                strpos($sRobotsX, 'noindex') === 0 || strpos($sRobotsX, 'noindex') > 0
+                || strpos($sRobotsX, 'none') === 0 || strpos($sRobotsX, 'none') > 0)
+        ) {
+            echo "Skip: X-Robots-Tag $sRobotsX for url $url\n";
+            return false;
+        }
+        
         $sContent = utf8_decode($aPage['body']);
-        $sRobots = $this->_getMetaHead($sContent, 'robots');
+        $sRobots=$this->_getMetaHead($sContent, 'robots');
+        
         if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
-            echo "Skip Index by meta robots $sRobots\n";
+            echo "Skip: meta robots $sRobots for url $url\n";
             return false;
         }
 
@@ -720,9 +735,10 @@ class crawler extends crawler_base{
      */
     private function _addToSearchIndex($aData) {
         if (!$this->iSiteId) {
-            echo "WARNING: you need to set the siteId first.";
+            echo "WARNING: you need to set the siteId first.\n";
             return false;
         }
+        
         // echo "add to index: ".$aData['url']."\n";
         // first try: update - if it fails, then insert.
         
@@ -738,6 +754,7 @@ class crawler extends crawler_base{
         foreach(array('title','description','keywords','content', 'response') as $sKey){
             $aData[$sKey]= mb_convert_encoding($aData[$sKey], "UTF-8");
         }
+        
         
         if (count($aCurrent) && $aCurrent[0][$sFieldToCompare]) {
         // if ($iPageId) {

@@ -15,7 +15,7 @@
  * - analyze an url:
  * <pre>require_once './analyzer.html.class.php';<br>
  * $oHtml=new analyzerHtml();<br>
- * $oHtml->fetchUrl("http://www.axel-hahn.de/kiste/");<br>
+ * $oHtml->fetchUrl("https://www.axel-hahn.de/kiste/");<br>
  * print_r($oHtml->getReport());</pre>
  * 
  * @example
@@ -428,26 +428,37 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
-     * get follow links information from html head area
+     * get follow links information from html head area and X-Robots-Tag
      * it returns true if is allowed to follow the links in the document
      * @return string
      */
     public function canFollowLinks() {
-        $sRobots = $this->_getMetaHead('robots');
-        if ($sRobots && (strpos($sRobots, 'nofollow') === 0 || strpos($sRobots, 'nofollow') > 0)) {
+        $aHttpHeader=$this->getHttpResponseHeader();
+        $sRobots =(isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'].',' : '')
+         . $this->_getMetaHead('robots');
+        if ($sRobots && (
+                strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
+                || strpos($sRobots, 'nofollow') === 0 || strpos($sRobots, 'nofollow') > 0)
+        ) {
             return false;
         }
+        
         return true;
     }
 
     /**
-     * get follow links information from html head area
+     * get follow links information from html head area and X-Robots-Tag
      * it returns true if is allowed to follow the links in the document
      * @return string
      */
     public function canIndexContent() {
-        $sRobots = $this->_getMetaHead('robots');
-        if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
+        $aHttpHeader=$this->getHttpResponseHeader();
+        $sRobots =(isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'].',' : '')
+         . $this->_getMetaHead('robots');
+        if ($sRobots && (
+                strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
+                || strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)
+        ) {
             return false;
         }
         return true;
@@ -511,7 +522,8 @@ class analyzerHtml {
 
             $anchors = $this->_oDom->getElementsByTagName('link');
             foreach ($anchors as $element) {
-                if ($element->getAttribute('rel') == 'stylesheet' && $element->getAttribute('href')
+                if ($element->getAttribute('rel') == 'stylesheet' 
+                    && $element->getAttribute('href')
                 ) {
                     $sHref = $element->getAttribute('href');
                     $sType = $this->getUrlType($sHref);
@@ -546,10 +558,70 @@ class analyzerHtml {
                     }
                     $this->_add2Array($aReturn[$sType], array(
                         'ressourcetype' => 'image',
-                        'href' => $element->getAttribute('src'),
+                        'href' => $sHref,
                         'alt' => $element->getAttribute('alt'),
                         'title' => $element->getAttribute('title'),
-                        '_url' => $this->getFullUrl($element->getAttribute('src')),
+                        '_url' => $this->getFullUrl($sHref),
+                        '_tag' => 'img',
+                    ));
+                }
+            }
+
+            // thumbs in <link rel="image_src" href="[...]">
+            $anchors = $this->_oDom->getElementsByTagName('link');
+            foreach ($anchors as $element) {
+                if ($element->getAttribute('rel')==='image_src' && $element->getAttribute('href')){
+                    $sHref = $element->getAttribute('href');
+                    $sType = $this->getUrlType($sHref);
+                    if ($sFilterByType && $sFilterByType != $sType) {
+                        continue;
+                    }
+                    $this->_add2Array($aReturn[$sType], array(
+                        'ressourcetype' => 'image',
+                        'href' => $sHref,
+                        'alt' => '',
+                        'title' => '',
+                        '_url' => $this->getFullUrl($sHref),
+                        '_tag' => 'link :: rel=image_src',
+                    ));
+                }
+            }
+            
+            // thumbs in <meta property="og:image" content="[...]" />
+            $anchors = $this->_oDom->getElementsByTagName('meta');
+            foreach ($anchors as $element) {
+                if ($element->getAttribute('property')==='og:image' && $element->getAttribute('content')){
+                    $sHref = $element->getAttribute('content');
+                    $sType = $this->getUrlType($sHref);
+                    if ($sFilterByType && $sFilterByType != $sType) {
+                        continue;
+                    }
+                    $this->_add2Array($aReturn[$sType], array(
+                        'ressourcetype' => 'image',
+                        'href' => $sHref,
+                        'alt' => '',
+                        'title' => '',
+                        '_url' => $this->getFullUrl($sHref),
+                        '_tag' => 'meta :: property=og:image',
+                    ));
+                }
+            }
+            // thumbs in <video poster="[...]" />
+            $anchors = $this->_oDom->getElementsByTagName('video');
+            foreach ($anchors as $element) {
+                if ($element->getAttribute('poster')>''){
+                    $sHref = $element->getAttribute('poster');
+                    $sType = $this->getUrlType($sHref);
+                    if ($sFilterByType && $sFilterByType != $sType) {
+                        continue;
+                    }
+                    $this->_add2Array($aReturn[$sType], array(
+                        'ressourcetype' => 'image',
+                        'href' => $sHref,
+                        'alt' => '',
+                        'title' => '',
+                        '_url' => $this->getFullUrl($sHref),
+                        '_tag' => 'video poster',
                     ));
                 }
             }
