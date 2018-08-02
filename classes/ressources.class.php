@@ -156,14 +156,14 @@ class ressources extends crawler_base {
 
         $a['type'] = $this->_getUrltype($a['url']);
 
-        $aHeader = (array_key_exists('header', $a) ? $a['header'] :
-                (array_key_exists('lasterror', $a) ? $a['lasterror'] : array())
+        $sHeaderJson = (array_key_exists('header', $a) ? $a['header'] :
+                (array_key_exists('lasterror', $a) ? $a['lasterror'] : '[]')
                 );
-        if (count($aHeader)) {
-            $a['content_type'] = str_replace(array('"', ' '), array('',''), strtolower($this->_getHeaderVarFromJson($aHeader, 'content_type')));
-            $a['http_code'] = (int) $this->_getHeaderVarFromJson($aHeader, 'http_code');
-            $a['total_time'] = $this->_getHeaderVarFromJson($aHeader, 'total_time') ? (int) ($this->_getHeaderVarFromJson($aHeader, 'total_time') * 1000) / 1 : false;
-            $a['size_download'] = (int) $this->_getHeaderVarFromJson($aHeader, 'size_download') / 1;
+        if ($sHeaderJson) {
+            $a['content_type'] = str_replace(array('"', ' '), array('',''), strtolower($this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
+            $a['http_code'] = (is_int($this->_getHeaderVarFromJson($sHeaderJson, 'http_code')) ? $this->_getHeaderVarFromJson($sHeaderJson, 'http_code') : -1 );
+            $a['total_time'] = $this->_getHeaderVarFromJson($sHeaderJson, 'total_time') ? (int) ($this->_getHeaderVarFromJson($sHeaderJson, 'total_time') * 1000) / 1 : false;
+            $a['size_download'] = (int) $this->_getHeaderVarFromJson($sHeaderJson, 'size_download') / 1;
             // $aData[''] = $this->_getHeaderVarFromJson($aData['header'], '');
         }
 

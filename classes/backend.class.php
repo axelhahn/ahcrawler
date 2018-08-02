@@ -1141,7 +1141,7 @@ class backend extends crawler_base {
 
                         $iReportCounter++;
                         $sReport.=''
-                                .'['. $iReportCounter.'] '
+                                .'<div class="counter">'. $iReportCounter.'</div>'
                                 .$oRenderer->renderReportForRessource($aRow);
                     }
                     // --- generate table view
@@ -1346,12 +1346,13 @@ class backend extends crawler_base {
                         foreach ($aBoxes[$sSection] as $iHttp_code=>$iCount){
                             $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
                             $shttpStatusDescr=$this->lB('httpcode.'.$iHttp_code.'.descr', 'httpcode.???.descr');
+                            $shttpStatusTodo=$this->lB('httpcode.'.$iHttp_code.'.todo');
                             
                             $sBar.='<div class="bar-'.$sSection.'" style="width: '.($iCount/$iRessourcesCount*100 - 3).'%; float: left;" '
                                     . 'title="'.$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code.'">'.$iCount.'</div>';
                             $sResResult.='<li>'
                                     .'<a href="?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable" class="tile"'
-                                    . 'title="'.$shttpStatusDescr.'">'
+                                    . 'title="'.$iHttp_code.': '.$shttpStatusDescr.($shttpStatusTodo ? "&#13;&#13;".$this->lB('httpcode.todo') .":&#13;". $shttpStatusTodo : '').'">'
                                     . $this->lB('db-ressources.http_code').' '
                                     . $oRenderer->renderValue('http_code', $iHttp_code).'<br><br>'
                                     . '<strong>'
@@ -1364,6 +1365,7 @@ class backend extends crawler_base {
                             $sLegende.='<li>'
                                     . '<strong>'.$iHttp_code.'</strong> '
                                     . $shttpStatusDescr
+                                    . ($shttpStatusTodo ? "<br><em>".$this->lB('httpcode.todo') ."</em>: ". $shttpStatusTodo.'<br>' : '')
                                     ;
                         }
                     }
@@ -1628,8 +1630,8 @@ class backend extends crawler_base {
                 . $this->_getSimpleHtmlTable(
                         array(
                             array($this->lB('about.thanks.datatables'), '<a href="https://datatables.net/">https://datatables.net/</a>'),
-                            array($this->lB('about.thanks.fontawesome'), '<a href="http://fontawesome.io/">http://fontawesome.io/</a>'),
-                            array($this->lB('about.thanks.jquery'), '<a href="http://jquery.com/">http://jquery.com/</a>'),
+                            array($this->lB('about.thanks.fontawesome'), '<a href="https://fontawesome.io/">https://fontawesome.io/</a>'),
+                            array($this->lB('about.thanks.jquery'), '<a href="https://jquery.com/">https://jquery.com/</a>'),
                             array($this->lB('about.thanks.medoo'), '<a href="https://medoo.in/">https://medoo.in/</a>'),
                             array($this->lB('about.thanks.rollingcurl'), '<a href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'),
                             array($this->lB('about.thanks.pure'), '<a href="https://purecss.io/">https://purecss.io/</a>'),

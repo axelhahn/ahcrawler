@@ -159,14 +159,15 @@ class ressourcesrenderer extends crawler_base {
 
             case 'http_code':
                 if (!$sIcon) {
-                    $sIcon = $this->_getIcon('http-code-' . floor($value/100) . 'xx', true);
+                    $sIcon = $this->_getIcon('http-code-' . floor((int)$value/100) . 'xx', true);
                 }
                 if (!$sIcon) {
                     $sIcon = $this->_getIcon('http-code-' . $value, true);
                 }
                 // $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
-                $shttpStatusDescr=$this->lB('httpcode.'.$value.'.descr', 'httpcode.???.descr');
-                $sReturn='<span class="http-code http-code-'.floor($value/100).'xx http-code-'.$value.'" '
+                $shttpStatusDescr=$value.': '.$this->lB('httpcode.'.$value.'.descr', 'httpcode.???.descr')
+                        .($this->lB('httpcode.'.$value.'.todo') ? "&#13;&#13;".$this->lB('httpcode.todo').":&#13;".$this->lB('httpcode.'.$value.'.todo') : '');
+                $sReturn='<span class="http-code http-code-'.floor((int)$value/100).'xx http-code-'.$value.'" '
                         . 'title="'.$shttpStatusDescr.'"'
                         . '>'.$sIcon.$value.'</span>';
                 break;
@@ -294,8 +295,8 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * render redirects in ressource report
-     * @param type $aRessourceItem
-     * @param type $iLevel
+     * @param array    $aRessourceItem  ressource item
+     * @param integer  $iLevel          level
      * @return string
      */
     private function _renderWithRedirects($aRessourceItem, $iLevel = 1) {
@@ -314,10 +315,7 @@ class ressourcesrenderer extends crawler_base {
         if (array_key_exists($iIdRessource, $aUrllist)){
             return $sReturn . ' <span class="error">'
                 . sprintf($this->lB("warnings.loop-detected"), $aRessourceItem['url'])
-                // . ' #'.$iIdRessource.' '
-                // . '[!! OOPS: LOOP DETECTED '.$aOutItem[0]['id'].' points to '.$aRessourceItem['url'].'!!]'
                 . '</span>'
-                // . '<pre>$aRessourceItem = '.print_r($aRessourceItem, 1). '</pre><br>'
                 ;
         }
         $sReturn = ''
@@ -337,26 +335,57 @@ class ressourcesrenderer extends crawler_base {
         }
         return $sReturn;
     }
+    /**
+     * render referencing (incoming) ressources report
+     * @param array  $aRessourceItem  ressource item
+     * @return string
+     */
+    public function _renderIncomingWithRedirects($aRessourceItem) {
+        $iIdRessource=$aRessourceItem['id'];
+        static $aUrllist;
+        if (!$aUrllist){
+            $aUrllist=array();
+        }
+        $sReturn = '';
 
+        if (array_key_exists($iIdRessource, $aUrllist)){
+            return $sReturn . ' <span class="error">'
+                . sprintf($this->lB("warnings.loop-detected"), $aRessourceItem['url'])
+                . '</span>'
+                ;
+        }
+        $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
+        if(count($aResIn)){
+            // $sReport.='|   |<br>';
+            $sReturn.='<div class="references"><br>'
+                . $this->lB('ressources.referenced-in').'<br>';
+                foreach ($aResIn as $aInItem){
+                    $sReturn.=$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external').'<br>';
+                    if ($aInItem['type']=='external'){
+                        $sReturn.=$this->_renderIncomingWithRedirects($aInItem).'<br>';
+                    }
+                }
+            $sReturn.='</div>';
+
+        } else {
+            $sReturn.='<br>';
+        }
+        return $sReturn;
+    }
+
+    /**
+     * get html code for report item with redirects and and its references
+     * 
+     * @param integer  $iRessourceId  id of the ressource
+     * @return string
+     */
     public function renderReportForRessource($aRessourceItem, $bShowIncoming=true) {
         $sReturn = '';
         $this->_initRessource();
         
         $sReturn.=$this->_renderWithRedirects($aRessourceItem);
         if ($bShowIncoming) {
-            $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
-            if(count($aResIn)){
-                // $sReport.='|   |<br>';
-                $sReturn.='<div class="references"><br>'
-                    . $this->lB('ressources.referenced-in').'<br>';
-                    foreach ($aResIn as $aInItem){
-                        $sReturn.=$this->renderRessourceItemAsLine($aInItem, false).'<br>';
-                    }
-                $sReturn.='</div>';
-
-            } else {
-                $sReturn.='<br>';
-            }
+            $sReturn.=$this->_renderIncomingWithRedirects($aRessourceItem);
         }
         
         return '<div class="divRessourceReport">'
