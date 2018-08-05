@@ -78,6 +78,7 @@ class ahsearch extends crawler_base {
      */
     public function search($q, $aOptions = array()) {
         if (!$this->iSiteId) {
+            // echo "ABORT - keine this->iSiteId = ".$this->iSiteId."<br>";
             return false;
         }
         // $this->_scanKeywords();

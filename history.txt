@@ -1,0 +1,19 @@
+----------------------------------------------------------------------
+
+  Axel pimped the Apache-status
+
+  https://www.axel-hahn.de/apachestatus.php
+  https://github.com/axelhahn/pimped-apache-status/
+
+  Docs:
+  https://www.axel-hahn.de/docs/apachestatus/
+
+----------------------------------------------------------------------
+
+2018-08-05: v0.21
+  * added charts in ressources
+  * added: added page for html checks
+  * added: set language of html in column pages.lang
+  * fix: English texts on same level like German
+
+2018-08-02: v0.20

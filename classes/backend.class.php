@@ -25,7 +25,8 @@ class backend extends crawler_base {
             'searches'=>array(),
         ),
         'analysis'=>array(
-            'warnings'=>array(), 
+            'htmlchecks'=>array(), 
+            'linkchecker'=>array(), 
             'ressources'=>array(),
             'checkurl'=>array(), 
             'ressourcedetail'=>array(), 
@@ -46,7 +47,8 @@ class backend extends crawler_base {
             'searches'=>'fa fa-search', 
             'analysis'=>'fa fa-newspaper-o', 
             'ressources'=>'fa fa-file-code-o', 
-            'warnings'=>'fa fa-warning', 
+            'linkchecker'=>'fa fa-warning', 
+            'htmlchecks'=>'fa fa-check', 
             'checkurl'=>'fa fa-globe', 
             'ressourcedetail'=>'fa fa-map-o', 
             'about'=>'fa fa-info-circle', 
@@ -74,6 +76,7 @@ class backend extends crawler_base {
             'type'=>'fa fa-cloud', 
             'content_type'=>'fa fa-file-code-o', 
             'http_code'=>'fa fa-retweet', 
+            'length'=>'fa fa-arrows-h', 
             
             'updateisrunning'=>'fa fa-spinner fa-pulse', 
         ),
@@ -128,7 +131,9 @@ class backend extends crawler_base {
      * @param integer  $iSiteId  site-id of search index
      */
     public function __construct($iSiteId = false) {
-        session_start();
+        if (!isset($_SESSION)) {
+            session_start();
+        }
         $this->setSiteId($iSiteId);
         $this->setLangBackend();
         $this->_getPage();
@@ -880,16 +885,16 @@ class backend extends crawler_base {
                 ;
         if (count($aNewestInIndex)) {
             $sReturn.='<h3>' . $this->lB('status.newest_urls_in_index') . '</h3>'
-                    . $this->_getSearchindexTable($aNewestInIndex, 'pages.');
+                    . $this->_getSearchindexTable($aNewestInIndex, 'db-pages.');
         }
         if (count($aOldestInIndex)) {
             $sReturn.='<h3>' . $this->lB('status.oldest_urls_in_index') . '</h3>'
-                    . $this->_getSearchindexTable($aOldestInIndex, 'pages.');
+                    . $this->_getSearchindexTable($aOldestInIndex, 'db-pages.');
         }
 
         if (count($aEmpty)) {
             $sReturn.='<h3>' . $this->lB('status.empty_data') . '</h3>'
-                    . $this->_getSearchindexTable($aEmpty, 'pages.')
+                    . $this->_getSearchindexTable($aEmpty, 'db-pages.')
             ;
         }
         if ($iUrlsErr) {
@@ -1276,22 +1281,231 @@ class backend extends crawler_base {
         return $sReturn;
     }
 
+    private function _getChart($aOptions){
+        $sReturn='';
+        
+        static $iChartCount;
+        if(!isset($iChartCount)){
+            $iChartCount=0;
+        }
+        $iChartCount++;
+        
+        $sDomIdDiv='chart-div-'.$iChartCount;
+        $sDomIdCanvas='chart-canvas-'.$iChartCount;
+        $sVarChart='chartConfig'.$iChartCount;
+        $sVarCtx='chartCtx'.$iChartCount;
+        
+        if(isset($aOptions['data'])){
+            $aOptions['labels']=array();
+            $aOptions['values']=array();
+            $aOptions['colors']=array();
+            foreach($aOptions['data'] as $aItem){
+                $aOptions['labels'][]=$aItem['label'];
+                $aOptions['values'][]=$aItem['value'];
+                $aOptions['colors'][]=$aItem['color'];
+            }
+        }
+        return '
+            
+            <div id="'.$sDomIdDiv.'" class="piechart">
+		<canvas id="'.$sDomIdCanvas.'"></canvas>
+            </div>
+            <script>
+                var '.$sVarChart.' = {
+                    type: \''.$aOptions['type'].'\',
+                    data: {
+                        datasets: [{
+                                data: '.json_encode($aOptions['values']).',
+                                backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
+                        }],
+                        labels: '.json_encode($aOptions['labels']).'
+                    },
+                    options: {
+                        animation: {
+                            duration: 0
+                        },
+                        legend: {
+                            display: true
+                        },
+                        responsive: true
+                    }
+                    
+                };
 
+                // window.onload = function() {
+                    var '.$sVarCtx.' = document.getElementById("'.$sDomIdCanvas.'").getContext("2d");
+                    window.myPie = new Chart('.$sVarCtx.', '.$sVarChart.');
+                // };
+            </script>
+        ';
+    }
+
+        /**
+         * html check - get count pages with too short element
+         * @param string   $sKey        name of item; one of title|description|keywords
+         * @param integer  $iMinLength  minimal length
+         * @return integer
+         */
+        private function _getHtmlchecksCount($sKey, $iMinLength){
+            $aTmp = $this->oDB->query('
+                    select count(*) count from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and length('.$sKey.')<'.$iMinLength
+                )->fetchAll(PDO::FETCH_ASSOC);
+            return $aTmp[0]['count'];
+        }
+        /**
+         * html check - get get html code for a chart of too short elements
+         * @param string   $sQuery      query to fetch data
+         * @param integer  $iMinLength  minimal length
+         * @return string
+         */
+        private function _getHtmlchecksChart($iTotal, $iValue){
+            return $this->_getChart(array(
+                'type'=>'pie',
+                'data'=>array(
+                    array(
+                        'label'=>$this->lB('htmlchecks.label-warnings'),
+                        'value'=>$iValue,
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warnings\')',
+                        // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    ),
+                    array(
+                        'label'=>$this->lB('htmlchecks.label-ok'),
+                        'value'=>($iTotal-$iValue),
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-ok\')',
+                        // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    ),
+                )
+            ));
+        }
+        /**
+         * html check - get get html code for a table of too short elements
+         * @param string   $sQuery      query to fetch data
+         * @param integer  $iMinLength  minimal length
+         * @return string
+         */
+        private function _getHtmlchecksTable($sQuery){
+            $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
+            $aTableT = array();
+            foreach ($aTmp as $aRow) {
+                $aTableT[] = $aRow;
+            }
+            return $this->_getHtmlTable($aTableT, "db-pages.");
+        }
+    
     /**
-     * page cotent :: Warnings 
+     * page cotent :: Html-check
      */
-    private function _getContentwarnings() {
+    private function _getContenthtmlchecks() {
         $sReturn = '';
-        $sReturn.=$this->_getNavi2($this->_getProfiles());
 
-        $iMinTitleLength=10;
+        $iMinTitleLength=20;
         $iMinDescriptionLength=40;
         $iMinKeywordsLength=10;
         
-        $aPageFields=array('id', 'url', 'description', 'description');
-        $aWhere=array('siteid' => $this->_sTab);
-        $oRessources=new ressources($this->_sTab);
-        $oRenderer=new ressourcesrenderer($this->_sTab);
+        $sReturn.=$this->_getNavi2($this->_getProfiles());
+        $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
+        if (!$iSearchindexCount) {
+            return $sReturn.'<br><div class="warning">'.$this->lB('status.emptyindex').'</div>';
+        }
+        $oCrawler=new crawler($this->_sTab);
+        
+        // --- Warnings from searchindex
+        
+        $sReturn.=''
+                . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
+                . '<p>'.$this->lB('htmlchecks.overview.introtext').'</p>'
+                . '<p>'.$this->lB('status.indexed_urls.label').': <strong>'.$iSearchindexCount.'</strong></p>'
+                ;
+            
+        $iCountCrawlererrors=$oCrawler->getCount(array(
+            'AND' => array(
+                'siteid' => $this->_sTab,
+                'errorcount[>]' => 0,
+            )));
+
+        $iCountShortTitles=$this->_getHtmlchecksCount('title', $iMinTitleLength);
+        $iCountShortDescr=$this->_getHtmlchecksCount('description', $iMinDescriptionLength);
+        $iCountShortKeywords=$this->_getHtmlchecksCount('keywords', $iMinKeywordsLength);
+
+        $sReturn.='<ul class="tiles warnings">'
+            . ($iCountCrawlererrors
+                ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
+            )
+            . ($iCountShortTitles
+                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
+            )
+            . ($iCountShortDescr
+                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
+            )
+            . ($iCountShortKeywords
+                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
+            )
+            . '</ul>'
+            . '<div style="clear: both;"></div>'
+            ;
+
+
+        // table with too short titles
+        if ($iCountCrawlererrors) {
+            $sReturn.= '<h3 id="tblcrawlererrors">' . $this->lB('htmlchecks.tableCrawlererrors') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableCrawlererrors.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountCrawlererrors)    
+                .$this->_getHtmlchecksTable('select title, length(title) as length, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
+                    order by length(title)');
+        }
+        // for the other charts: 
+        $iSearchindexCount=$iSearchindexCount-$iCountCrawlererrors;
+
+        // table with too short titles
+        if ($iCountShortTitles) {
+            $sReturn.= '<h3 id="tblshorttitle">' . $this->lB('htmlchecks.tableShortTitles') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableShortTitles.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortTitles)    
+                .$this->_getHtmlchecksTable('select title, length(title) as length, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and length(title)<'.$iMinTitleLength.'
+                    order by length(title), title');
+        }
+        
+        // table with too short descriptions
+        if ($iCountShortDescr) {
+            $sReturn.= '<h3 id="tblshortdescription">' . $this->lB('htmlchecks.tableShortDescription') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableShortDescription.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortDescr)    
+                .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
+                    order by length, description');
+        }
+        if ($iCountShortKeywords) {
+            $sReturn.= '<h3 id="tblshortkeywords">' . $this->lB('htmlchecks.tableShortKeywords') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableShortKeywords.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortKeywords)    
+                .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
+                    order by length, keywords');
+        }
+
+        $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable({"aaSorting":[[1,"asc"]]});} );</script>';
+
+        
+        return $sReturn;
+    }
+    /**
+     * page cotent :: Linkchecker
+     */
+    private function _getContentlinkchecker() {
+        $sReturn = '';
+        $sReturn.=$this->_getNavi2($this->_getProfiles());
+
         
         $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
         if (!$iSearchindexCount) {
@@ -1302,15 +1516,20 @@ class backend extends crawler_base {
         if (!$iRessourcesCount) {
             return $sReturn.'<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
         }
-        
+
+        $aPageFields=array('id', 'url', 'description', 'description');
+        $aWhere=array('siteid' => $this->_sTab);
+        $oRessources=new ressources($this->_sTab);
+        $oRenderer=new ressourcesrenderer($this->_sTab);
+                
         
         
         if ($iRessourcesCount){
             
             $aCountByStatuscode=$oRessources->getCountsOfRow('ressources', 'http_code', array('siteid'=> $this->_sTab));
+            $aTmpItm=array('status'=>array(), 'total'=>0);
+            $aBoxes=array('todo'=>$aTmpItm, 'errors'=>$aTmpItm,'warnings'=>$aTmpItm, 'ok'=>$aTmpItm);
             
-            
-            $aBoxes=array('todo'=>array(), 'errors'=>array(),'warnings'=>array(), 'ok'=>array());
             // echo '<pre>$aCountByStatuscode = '.print_r($aCountByStatuscode,1).'</pre>';
             // --- http errors
             foreach ($aCountByStatuscode as $aStatusItem){
@@ -1320,38 +1539,64 @@ class backend extends crawler_base {
                 $oHttp->setHttpcode($iHttp_code);
                 
                 if ($oHttp->isError()){
-                   $aBoxes['errors'][$iHttp_code] = $iCount;
+                   $aBoxes['errors']['status'][$iHttp_code] = $iCount;
+                   $aBoxes['errors']['total']+=$iCount;
                 }
                 if ($oHttp->isRedirect()){
-                   $aBoxes['warnings'][$iHttp_code] = $iCount;
+                   $aBoxes['warnings']['status'][$iHttp_code] = $iCount;
+                   $aBoxes['warnings']['total']+=$iCount;
                 }
                 if ($oHttp->isOperationOK()){
-                   $aBoxes['ok'][$iHttp_code] = $iCount;
+                   $aBoxes['ok']['status'][$iHttp_code] = $iCount;
+                   $aBoxes['ok']['total']+=$iCount;
                 }
                 if ($oHttp->isTodo()){
-                   $aBoxes['todo'][$iHttp_code] = $iCount;
+                   $aBoxes['todo']['status'][$iHttp_code] = $iCount;
+                   $aBoxes['todo']['total']+=$iCount;
                 }
             }
             // echo '<pre>$aBoxes = '.print_r($aBoxes,1).'</pre>';
             $sBar='';
             $sResResult='';
             foreach (array_keys($aBoxes) as $sSection){
+                if(!$aBoxes[$sSection]['total']){
+                    continue;
+                }
+                $aChartItems[]=array(
+                    'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
+                    'value'=>$aBoxes[$sSection]['total'],
+                    'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
+                    // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                );
                 $sLegende='';
+                
                 if (array_key_exists($sSection, $aBoxes)){
                     if (count($aBoxes[$sSection])){
+                        $aChartItemsOfSection=array();
                         $sResResult.=''
-                                . '<h4>'.$this->lB('warnings.found-http-'.$sSection).'</h4>'
-                                . '<p>'.$this->lB('warnings.found-http-'.$sSection.'-hint').'</p>'
+                                . '<h3>'.$this->lB('linkchecker.found-http-'.$sSection).'</h3>'
+                                . '<p>'.$this->lB('linkchecker.found-http-'.$sSection.'-hint').'</p>'
                                 . '<ul class="tiles '.$sSection.'">';
-                        foreach ($aBoxes[$sSection] as $iHttp_code=>$iCount){
+                        $iCodeCount=0;
+                        $sBoxes='';
+                        foreach ($aBoxes[$sSection]['status'] as $iHttp_code=>$iCount){
+                            $aChartItemsOfSection[]=array(
+                                'label'=>$iHttp_code,
+                                'value'=>$iCount,
+                                'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCodeCount % 5 + 1).'\')',
+                                'legend'=>$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code,
+                            );
+                            $iCodeCount++;
+
                             $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
                             $shttpStatusDescr=$this->lB('httpcode.'.$iHttp_code.'.descr', 'httpcode.???.descr');
                             $shttpStatusTodo=$this->lB('httpcode.'.$iHttp_code.'.todo');
-                            
+
                             $sBar.='<div class="bar-'.$sSection.'" style="width: '.($iCount/$iRessourcesCount*100 - 3).'%; float: left;" '
                                     . 'title="'.$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code.'">'.$iCount.'</div>';
-                            $sResResult.='<li>'
-                                    .'<a href="?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable" class="tile"'
+                            
+                            $sBoxes.='<li>'
+                                    .'<a href="?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable" class="tile" '
                                     . 'title="'.$iHttp_code.': '.$shttpStatusDescr.($shttpStatusTodo ? "&#13;&#13;".$this->lB('httpcode.todo') .":&#13;". $shttpStatusTodo : '').'">'
                                     . $this->lB('db-ressources.http_code').' '
                                     . $oRenderer->renderValue('http_code', $iHttp_code).'<br><br>'
@@ -1363,133 +1608,43 @@ class backend extends crawler_base {
                                 . '</li>';
                             
                             $sLegende.='<li>'
-                                    . '<strong>'.$iHttp_code.'</strong> '
+                                    . $this->lB('db-ressources.http_code').' '
+                                    . $oRenderer->renderValue('http_code', $iHttp_code)
+                                    // . '<strong>'.$iHttp_code.'</strong> '
+                                    . ' '
+                                    . '<strong>'.$shttpStatusLabel.'</strong><br>'
                                     . $shttpStatusDescr
-                                    . ($shttpStatusTodo ? "<br><em>".$this->lB('httpcode.todo') ."</em>: ". $shttpStatusTodo.'<br>' : '')
+                                    . ($shttpStatusTodo ? "<br><em>".$this->lB('httpcode.todo') ."</em>: ". $shttpStatusTodo : '')
+                                    .'<br><br>'
                                     ;
                         }
                     }
-                    $sResResult.='</ul>'
+                    $sResResult.=''
+                        . '<div style="float: right; margin: 0 0 1em 1em;">'
+                            . $this->_getChart(array(
+                                'type'=>'pie',
+                                'data'=>$aChartItemsOfSection
+                            ))
+                        .'</div>'
+                            . $sBoxes.'</ul>'
+                        . ($sLegende ? '<div style="clear: left;"></div><p>'.$this->lB('linkchecker.legend').'</p><ul>'.$sLegende.'</ul>' : '')
                         . '<div style="clear: both;"></div>'
-                        . ($sLegende ? '<p>'.$this->lB('warnings.legend').'</p><ul>'.$sLegende.'</ul>' : '')
                         ;
                 }
             }
-            $sReturn.='<h3>'.$this->lB("warnings.check-links").'</h3>'
-                    . $oRenderer->renderRessourceStatus()
-                    . '<div class="bar">'.$sBar.'&nbsp;</div><br><br><br><br><br>'
+            $sReturn.='<h3>'.$this->lB("linkchecker.check-links").'</h3>'
+                    . $oRenderer->renderRessourceStatus() 
+                        . $this->_getChart(array(
+                            'type'=>'pie',
+                            'data'=>$aChartItems
+                        ))
+                    
+                    // . '<div class="bar">'.$sBar.'&nbsp;</div><br><br><br><br><br>'
                     . $sResResult
                     ;
             
         }
         
-        // --- Warnings from searchindex
-        
-        $sReturn.=''
-                . '<h3>' . $this->lB('warnings.check-content') . '</h3>'
-                . '<p>'.$this->lB('status.indexed_urls.label').': <strong>'.$iSearchindexCount.'</strong></p>'
-                ;
-        if ($iSearchindexCount){
-            // HINT: length is avialable in SQL for sqlite, mysql
-            $aCountShortTitles = $this->oDB->query('
-                        select count(*) count from pages 
-                        where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength
-                )->fetchAll(PDO::FETCH_ASSOC);
-            $aCountShortDescr = $this->oDB->query('
-                        select count(*) count from pages 
-                        where siteid='.$this->_sTab.' and length(description)<'.$iMinDescriptionLength
-                    )->fetchAll(PDO::FETCH_ASSOC);
-            
-            $aCountShortKeywords = $this->oDB->query('
-                        select count(*) count from pages 
-                        where siteid='.$this->_sTab.' and length(keywords)<'.$iMinKeywordsLength
-                    )->fetchAll(PDO::FETCH_ASSOC);
-            /*
-            $aShortTitles = $this->oDB->query(
-                    '
-                        select length(title), title, url
-                        from pages 
-                        where 
-                            siteid='.$this->_sTab.'
-                            and length(title)<'.$iMinTitleLength.'
-                        order by length(title)
-                    '
-                    )->fetchAll(PDO::FETCH_ASSOC);
-            $aShortDescr = $this->oDB->query(
-                    '
-                        select length(description), description, title, url
-                        from pages 
-                        where 
-                            siteid='.$this->_sTab.'
-                            and length(description)<'.$iMinDescriptionLength.'
-                        order by length(description)
-                    '
-                    )->fetchAll(PDO::FETCH_ASSOC);
-            $aShortKeywords = $this->oDB->query(
-                    '
-                        select length(keywords), keywords, title, url
-                        from pages 
-                        where 
-                            siteid='.$this->_sTab.'
-                            and length(keywords)<'.$iMinKeywordsLength.'
-                        order by length(keywords)
-                    '
-                    )->fetchAll(PDO::FETCH_ASSOC);
-            */
-            
-            // TODO translate
-            $sReturn.='<ul class="tiles warnings">'
-                . ($aCountShortTitles[0]['count']
-                    ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('status.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$aCountShortTitles[0]['count'].'</strong></a></li>'
-                    : '<li><a href="#" class="tile ok">'.sprintf($this->lB('status.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$aCountShortTitles[0]['count'].'</strong></a></li>'
-                )
-                . ($aCountShortDescr[0]['count']
-                    ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('status.tile-check-short-description'), $iMinTitleLength).':<br><strong>'.$aCountShortDescr[0]['count'].'</strong></a></li>'
-                    : '<li><a href="#" class="tile ok">'.sprintf($this->lB('status.tile-check-short-description'), $iMinTitleLength).':<br><strong>'.$aCountShortDescr[0]['count'].'</strong></a></li>'
-                )
-                . ($aCountShortKeywords[0]['count']
-                    ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('status.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$aCountShortKeywords[0]['count'].'</strong></a></li>'
-                    : '<li><a href="#" class="tile ok">'.sprintf($this->lB('status.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$aCountShortKeywords[0]['count'].'</strong></a></li>'
-                )
-                /*
-                . '<li><a href="#tblshorttitle" class="tile">zu kurze Titel<br>(kleiner '.$iMinTitleLength.' Zeichen):<br><strong>'.count($aShortTitles).'</strong></a></li>'
-                . '<li><a href="#tblshortdescription" class="tile">zu kurze Beschreibung<br>(kleiner '.$iMinDescriptionLength.' Zeichen):<br><strong>'.count($aShortDescr).'</strong></a></li>'
-                . '<li><a href="#tblshortkeywords" class="tile">zu kurze Keywords<br>(kleiner '.$iMinKeywordsLength.' Zeichen):<br><strong>'.count($aShortKeywords).'</strong></a></li>'
-                 */
-                . '</ul>'
-                . '<div style="clear: both;"></div>'
-                ;
-        
-            /*
-            if (count($aShortTitles)) {
-                    $aTableT = array();
-                    foreach ($aShortTitles as $aRow) {
-                        $aTableT[] = $aRow;
-                    }
-                    $sReturn.= '<h3 id="tblshorttitle">' . $this->lB('warnings.tableShortTitles') . '</h3>'
-                            .$this->_getHtmlTable($aTableT, "db-pages.");
-            }
-            if (count($aShortDescr)) {
-                    $aTableD = array();
-                    foreach ($aShortDescr as $aRow) {
-                        $aTableD[] = $aRow;
-                    }
-                    $sReturn.= '<h3 id="tblshortdescription">' . $this->lB('warnings.tableShortDescription') . '</h3>'
-                            .$this->_getHtmlTable($aTableD, "db-pages.");
-            }
-            if (count($aShortKeywords)) {
-                    // echo '<pre>'.print_r($aShortKeywords,1).'</pre>';
-                    $aTableK = array();
-                    foreach ($aShortKeywords as $aRow) {
-                        $aTableK[] = $aRow;
-                    }
-                    $sReturn.= '<h3 id="tblshortkeywords">' . $this->lB('warnings.tableShortKeywords') . '</h3>'
-                            .$this->_getHtmlTable($aTableK, "db-pages.");
-            }
-
-            $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable();} );</script>';
-             */
-        }
 
         return $sReturn;
     }
@@ -1581,10 +1736,10 @@ class backend extends crawler_base {
         } else {
             $sReturn.= '<p>' . $this->lB('ressources.searchressourceid-hint') . '</p>'
                     
-                    . '<a href="?page=warnings" class="pure-menu-linkwarnings"'
-                        . ' title="' . $this->lB('nav.warnings.hint') . '"'
-                        . '><i class="'.$this->_aIcons['menu']['warnings'].'"></i> ' 
-                        . $this->lB('nav.warnings.label') 
+                    . '<a href="?page=linkchecker" class="pure-menu-linkwarnings"'
+                        . ' title="' . $this->lB('nav.linkchecker.hint') . '"'
+                        . '><i class="'.$this->_aIcons['menu']['linkchecker'].'"></i> ' 
+                        . $this->lB('nav.linkchecker.label') 
                         .'</a>'
                     .' | '
                     . '<a href="?page=ressources" class="pure-menu-linkressources"'
@@ -1782,11 +1937,12 @@ class backend extends crawler_base {
     }
 
     private function _getOverlayContentsearch() {
-        $sSiteId = $this->_getRequestParam('siteid');
+        $sSiteId = (int)$this->_getRequestParam('siteid');
         $sQuery = $this->_getRequestParam('query');
         $sSubdir = $this->_getRequestParam('subdir');
         $o = new ahsearch($sSiteId);
         $aResult = $o->search($sQuery, array('subdir'=>$sSubdir));
+        // print_r($aResult);
         
         $sSelect='';
         $aCat=$o->getSearchcategories();

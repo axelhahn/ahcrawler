@@ -166,6 +166,8 @@ class crawler extends crawler_base{
             return false;
         }
         $aTmp=explode("\n", $sContent);
+
+        // TODO: remove each()
         while (list ($id, $line) = each($aTmp)) {
             $line=preg_replace('/#.*/', '', $line);
             if (preg_match("/^user-agent: *([^#]+) */i", $line, $regs)) {
@@ -683,6 +685,11 @@ class crawler extends crawler_base{
         $sDescr = $this->_getMetaHead($sContent, 'description');
         $sKeywords = $this->_getMetaHead($sContent, 'keywords');
 
+        // get lang from <html lang=...>
+        preg_match("@\<html.*\ lang=[\"\'](.*)[\"\']@i", $sContent, $aTmp);
+        $sLang=isset($aTmp[1]) ? $aTmp[1] : '';
+        
+
         $sContent = preg_replace("/<link rel[^<>]*>/i", " ", $sContent);
         $sContent = preg_replace("@<!--sphider_noindex-->.*?<!--\/sphider_noindex-->@si", " ", $sContent);
         $sContent = preg_replace("@<!--.*?-->@si", " ", $sContent);
@@ -705,6 +712,9 @@ class crawler extends crawler_base{
                     'description' => $sDescr,
                     'keywords' => $sKeywords,
                     'content' => $sContent,
+                    'lang' => $sLang,
+                    'size' => $aPage['header']['size_download'], // is byte
+                    'time' => $aPage['header']['total_time'] ? (int)($aPage['header']['total_time']*1000) : -1, // is sec as float value
                     'header' => $aPage['header'],
                     'response' => $aPage['body'],
                 )
@@ -773,6 +783,9 @@ class crawler extends crawler_base{
                 'description' => utf8_encode($aData['description']),
                 'keywords' => utf8_encode($aData['keywords']),
                 'content' => utf8_encode($aData['content']),
+                'lang' => utf8_encode($aData['lang']),
+                'size' => $aData['size'],
+                'time' => $aData['time'],
                 'header' => json_encode($aData['header']),
                 'response' => $aData['response'],
                 'ts' => date("Y-m-d H:i:s"),
@@ -799,6 +812,9 @@ class crawler extends crawler_base{
                         'title' => $aData['title'],
                         'description' => $aData['description'],
                         'keywords' => $aData['keywords'],
+                        'lang' => utf8_encode($aData['lang']),
+                        'size' => $aData['size'],
+                        'time' => $aData['time'],
                         'content' => $aData['content'],
                         'header' => json_encode($aData['header']), // TODO: handle umlauts in response
                         'response' => $aData['response'],

@@ -1,8 +1,15 @@
 <?php
 require_once(dirname(__DIR__) . "/classes/backend.class.php");
-$oBackend = new backend();
+require_once(dirname(__DIR__) . "/classes/cdnorlocal.class.php");
 
-$sDirPure = "../vendor/pure-release-1.0.0";
+$oBackend = new backend();
+$oCdn=new axelhahn\cdnorlocal(array(
+    'vendorrelpath'=>'../vendor/cache',
+    'debug'=>0,
+    ));
+
+require_once(dirname(__DIR__) . "/classes/backend.class.php");
+$oBackend = new backend();
 
 ?><!doctype html>
 <html lang="en">
@@ -12,9 +19,10 @@ $sDirPure = "../vendor/pure-release-1.0.0";
 
         <meta name="description" content="">
 
-        <link rel="stylesheet" href="../vendor/font-awesome-4.7.0/css/font-awesome.min.css">
-        <link rel="stylesheet" href="<?php echo $sDirPure; ?>/pure-min.css">
-        <link rel="stylesheet" href="<?php echo $sDirPure; ?>/grids-responsive-min.css">
+        <?php echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/pure-min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/buttons-min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/grids-responsive-min.css'); ?>
         <link rel="stylesheet" href="main.css">
 
     </head>

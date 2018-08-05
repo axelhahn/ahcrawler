@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.20',
-        'date' => '2018-08-02',
+        'version' => 'v0.21',
+        'date' => '2018-08-05',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -82,7 +82,7 @@ class crawler_base {
      * default language
      * @var string
      */
-    protected $sLang = 'de';
+    protected $sLang = 'en';
 
     /**
      * array for language texts
@@ -219,6 +219,8 @@ class crawler_base {
             'description' => 'VARCHAR(4096)  NULL',
             'keywords' => 'VARCHAR(1024)  NULL',
             'lang' => 'VARCHAR(8) NULL',
+            'size' => 'INTEGER NULL',
+            'time' => 'INTEGER NULL',
             'content' => 'TEXT',
             'header' => 'VARCHAR(2048)  NULL',
             'response' => 'TEXT',
@@ -498,8 +500,10 @@ class crawler_base {
      */
     private function _getLangData($sPlace, $sLang = false) {
         if (!$sLang) {
+            // $this->setSiteId(false);
             $sLang = $this->sLang;
         }
+        // echo "DEBUG: loading $sLang<br>";
         $sJsonfile = '/lang/' . $sPlace . '.' . $sLang . '.json';
         $aLang = json_decode(file_get_contents(dirname(__DIR__) . $sJsonfile), true);
         if (!$aLang || !is_array($aLang) || !count($aLang)) {

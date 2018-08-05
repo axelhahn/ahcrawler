@@ -28,6 +28,8 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <?php echo $oCdn->getHtmlInclude('jquery/3.2.1/jquery.min.js'); ?>
         <?php echo $oCdn->getHtmlInclude('datatables/1.10.15/js/jquery.dataTables.min.js'); ?>
 
+        <?php echo $oCdn->getHtmlInclude('Chart.js/2.7.2/Chart.min.js'); ?>
+        
         <link rel="stylesheet" href="main.css">
         <!--
         <link rel="stylesheet" href="skins/sky/theme.css">
@@ -37,7 +39,7 @@ $oCdn=new axelhahn\cdnorlocal(array(
                 var divOverlay=document.getElementById('overlay');
                 var sHtml='';
                 
-                sHtml+='<iframe src="'+sUrl+'" style="width: 100%; border: 0; height: 650px;"></iframe>';
+                sHtml+='<iframe src="'+sUrl+'" style="width: 100%; border: 0; height: 800px;"></iframe>';
                 divOverlay.style.display='block';
                 var divContent=document.getElementById('dialogcontent');
                 divContent.innerHTML=sHtml;
@@ -47,6 +49,43 @@ $oCdn=new axelhahn\cdnorlocal(array(
                 divOverlay.style.display='none';
                 
             }
+            /**
+             * get css value by given property and selector
+             * see https://stackoverflow.com/questions/16965515/how-to-get-a-style-attribute-from-a-css-class-by-javascript-jquery
+             * 
+             * @param {type} style
+             * @param {type} selector
+             * @param {type} sheet
+             * @returns {.sheet@arr;cssRules.style}
+             */
+            function getStyleRuleValue1(style, selector, sheet) {
+                var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
+                for (var i = 0, l = sheets.length; i < l; i++) {
+                    var sheet = sheets[i];
+                    if( !sheet.cssRules ) { continue; }
+                    for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
+                        var rule = sheet.cssRules[j];
+                        if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
+                            return rule.style[style];
+                        }
+                    }
+                }
+                return null;
+            }
+            function getStyleRuleValue(style, selector, sheet) {
+    var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
+    for (var i = 0, l = sheets.length; i < l; i++) {
+        var sheet = sheets[i];
+        if( !sheet.cssRules ) { continue; }
+        for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
+            var rule = sheet.cssRules[j];
+            if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
+                return rule.style[style];
+            }
+        }
+    }
+    return null;
+}
         </script>
 
     </head>
@@ -84,6 +123,8 @@ $oCdn=new axelhahn\cdnorlocal(array(
 
             </div>
         </div>
-
+        <style>
+            span.warning1{background: #ff0000;}
+        </style>
 
     </body></html>
