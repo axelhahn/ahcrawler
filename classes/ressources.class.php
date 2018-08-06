@@ -655,7 +655,8 @@ class ressources extends crawler_base {
             if ($sNewUrl) {
                 $aRel = $this->_prepareRelitem(array(
                     'url' => $sNewUrl,
-                    'ressourcetype' => 'page',
+                    // 'ressourcetype' => 'page',
+                    'ressourcetype' => 'link',
                         ), $iId);
                 $aResult = $this->oDB->insert('ressources_rel', $aRel);
                 $this->_checkDbResult($aResult);
@@ -756,6 +757,10 @@ class ressources extends crawler_base {
                         CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd'] : '',
                         // TODO: this is unsafe .. better: let the user configure it
                         CURLOPT_SSL_VERIFYPEER => 0,
+
+                        // v0.22 cookies
+                        CURLOPT_COOKIEJAR,$this->sCcookieFilename,
+                        CURLOPT_COOKIEFILE,$this->sCcookieFilename,
                     ))
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);

@@ -1,14 +1,21 @@
 ----------------------------------------------------------------------
 
-  Axel pimped the Apache-status
+  AHCRAWLER
 
-  https://www.axel-hahn.de/apachestatus.php
-  https://github.com/axelhahn/pimped-apache-status/
+  SOURCE:
+  https://github.com/axelhahn/ahcrawler/
 
-  Docs:
-  https://www.axel-hahn.de/docs/apachestatus/
+  DOCS:
+  https://www.axel-hahn.de/docs/ahcrawler
+
+  German page:
+  https://www.axel-hahn.de/projects/php/ahcrawler  
+
 
 ----------------------------------------------------------------------
+
+2018-08-06: v0.22
+  * added support for cookies
 
 2018-08-05: v0.21
   * added charts in ressources

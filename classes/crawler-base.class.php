@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.21',
-        'date' => '2018-08-05',
+        'version' => 'v0.22',
+        'date' => '2018-08-06',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -96,6 +96,8 @@ class crawler_base {
      */
     protected $sUserAgent = false;
 
+    protected $sCcookieFilename = false;
+    
     // ----------------------------------------------------------------------
 
     /**
@@ -213,16 +215,16 @@ class crawler_base {
         $this->_createTable("pages", array(
             'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-            'url' => 'VARCHAR(1024)  NOT NULL',
+            'url' => 'VARCHAR(512)  NOT NULL',
             'siteid' => 'INTEGER  NULL',
             'title' => 'VARCHAR(256)  NULL',
-            'description' => 'VARCHAR(4096)  NULL',
+            'description' => 'VARCHAR(1024)  NULL',
             'keywords' => 'VARCHAR(1024)  NULL',
             'lang' => 'VARCHAR(8) NULL',
             'size' => 'INTEGER NULL',
             'time' => 'INTEGER NULL',
             'content' => 'TEXT',
-            'header' => 'VARCHAR(2048)  NULL',
+            'header' => 'VARCHAR(1024) NULL',
             'response' => 'TEXT',
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
             'tserror' => 'DATETIME NULL',
@@ -431,7 +433,8 @@ class crawler_base {
 
         // curl options:
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
-
+        
+        
         $this->_initDB();
 
         if ($iSiteId) {
@@ -461,6 +464,11 @@ class crawler_base {
             if (!array_key_exists('simultanousRequests', $this->aProfile['ressources']) || $this->aProfile['ressources']['simultanousRequests']==false ) {
                 $this->aProfile['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
             }
+            
+            // @since v0.22 
+            $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
+            touch($this->sCcookieFilename);
+            
             // print_r($this->aProfile); sleep(5);
         }
     }
