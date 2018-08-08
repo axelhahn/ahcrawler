@@ -77,6 +77,8 @@ class backend extends crawler_base {
             'content_type'=>'fa fa-file-code-o', 
             'http_code'=>'fa fa-retweet', 
             'length'=>'fa fa-arrows-h', 
+            'size'=>'fa ', 
+            'time'=>'fa fa-clock-o', 
             
             'updateisrunning'=>'fa fa-spinner fa-pulse', 
         ),
@@ -1354,6 +1356,19 @@ class backend extends crawler_base {
             return $aTmp[0]['count'];
         }
         /**
+         * html check - get pages with too large values
+         * @param string   $sKey    name of item; one of size|time
+         * @param integer  $iMax    max value
+         * @return integer
+         */
+        private function _getHtmlchecksLarger($sKey, $iMax){
+            $aTmp = $this->oDB->query('
+                    select count(*) count from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and '.$sKey.'>'.$iMax
+                )->fetchAll(PDO::FETCH_ASSOC);
+            return $aTmp[0]['count'];
+        }
+        /**
          * html check - get get html code for a chart of too short elements
          * @param string   $sQuery      query to fetch data
          * @param integer  $iMinLength  minimal length
@@ -1402,6 +1417,8 @@ class backend extends crawler_base {
         $iMinTitleLength=20;
         $iMinDescriptionLength=40;
         $iMinKeywordsLength=10;
+        $iMaxPagesize=150000; // pages large n byte
+        $iMaxLoadtime=1000;   // load time in ms 
         
         $sReturn.=$this->_getNavi2($this->_getProfiles());
         $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
@@ -1427,6 +1444,8 @@ class backend extends crawler_base {
         $iCountShortTitles=$this->_getHtmlchecksCount('title', $iMinTitleLength);
         $iCountShortDescr=$this->_getHtmlchecksCount('description', $iMinDescriptionLength);
         $iCountShortKeywords=$this->_getHtmlchecksCount('keywords', $iMinKeywordsLength);
+        $iCountLargePages=$this->_getHtmlchecksLarger('size', $iMaxPagesize);
+        $iCountLongload=$this->_getHtmlchecksLarger('time', $iMaxLoadtime);
 
         $sReturn.='<ul class="tiles warnings">'
             . ($iCountCrawlererrors
@@ -1444,6 +1463,14 @@ class backend extends crawler_base {
             . ($iCountShortKeywords
                 ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
+            )
+            . ($iCountLongload
+                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
+            )
+            . ($iCountLargePages
+                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
+                : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
             )
             . '</ul>'
             . '<div style="clear: both;"></div>'
@@ -1484,6 +1511,7 @@ class backend extends crawler_base {
                     where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
                     order by length, description');
         }
+        // table with too short keyword
         if ($iCountShortKeywords) {
             $sReturn.= '<h3 id="tblshortkeywords">' . $this->lB('htmlchecks.tableShortKeywords') . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableShortKeywords.description').'</p>'
@@ -1493,6 +1521,28 @@ class backend extends crawler_base {
                     where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
                     order by length, keywords');
         }
+        if ($iCountLongload) {
+            $sReturn.= '<h3 id="tblloadtimepages">' . $this->lB('htmlchecks.tableLoadtimePages') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountLongload)
+                .$this->_getHtmlchecksTable('select title, time, size, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and time>'.$iMaxLoadtime.'
+                    order by time')
+                ;
+        }
+        if ($iCountLargePages) {
+            $sReturn.= '<h3 id="tbllargepages">' . $this->lB('htmlchecks.tableLargePages') . '</h3>'
+                .'<p>'.$this->lB('htmlchecks.tableLargePages.description').'</p>'
+                .$this->_getHtmlchecksChart($iSearchindexCount, $iCountLargePages)
+                .$this->_getHtmlchecksTable('select title, size, time, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
+                    order by size')
+                ;
+        }
+
+        // 
 
         $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable({"aaSorting":[[1,"asc"]]});} );</script>';
 

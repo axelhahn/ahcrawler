@@ -88,6 +88,8 @@
     "db-pages.errorcount": "Count of errors",
     "db-pages.lasterror": "Last error",
     "db-pages.length": "Length",
+    "db-pages.size": "Size",
+    "db-pages.time": "Load time [ms]",
     "db-pages.actions": "Actions",
     
     "db-ressources.actions": "Actions",
@@ -217,6 +219,14 @@
 
     "htmlchecks.overview": "Overview",
     "htmlchecks.overview.introtext": "Meta tags are evaluated by many search engines. It is not a must, but it helps to index the site better.<br>When using the ahCrawler as a search engine for the website, hits in the metadata have higher priority than the content text.",
+    
+    "htmlchecks.tile-crawlererrors": "Crawl errors",
+    "htmlchecks.tile-check-short-title": "Too short titles<br>(less than %s chars)",
+    "htmlchecks.tile-check-short-description": "Too short descriptions<br>(less that %s chars)",
+    "htmlchecks.tile-check-short-keywords": "Too short keywords<br>(less %s chars)",
+    "htmlchecks.tile-check-loadtime-of-pages": "Long loading pages<br>(longer %s ms)",
+    "htmlchecks.tile-check-large-pages": "Large pages<br>(bigger %s byte)",
+    
     "htmlchecks.tableCrawlererrors": "Crawler errors while building the search index",
     "htmlchecks.tableCrawlererrors.description": "This is just a hint. Details can be found in the search index; the http error is listed in the link checker",
     "htmlchecks.tableShortTitles": "Too short titles in meta tags",
@@ -226,11 +236,11 @@
     "htmlchecks.tableShortKeywords": "Not enough keywords in the meta tags",
     "htmlchecks.tableShortKeywords.description": "Use max 20 keywords, separated by commas. The most important keywords should be mentioned first.",
 
-    
-    "htmlchecks.tile-crawlererrors": "Crawl errors",
-    "htmlchecks.tile-check-short-title": "Too short titles<br>(less than %s chars)",
-    "htmlchecks.tile-check-short-description": "Too short descriptions<br>(less that %s chars)",
-    "htmlchecks.tile-check-short-keywords": "Too short keywords<br>(less %s chars)",
+    "htmlchecks.tableLoadtimePages": "Long loading pages",
+    "htmlchecks.tableLoadtimePages.description": "This is just a hint - not an error.<br>Long loading pages have a bad influence for the ranking in search engines. Additionally: if there are pages with higher traffic they will generate higher load on your webserver - there it is woths to add a cache or optimize the application or its database queries.",
+    "htmlchecks.tableLargePages": "Large pages",
+    "htmlchecks.tableLargePages.description": "This is just a hint - not an error.<br>This part lists larger html code in the response. If it it is a bit more complext html code the browser could have problems while rendereing it.",
+
     "htmlchecks.label-warnings": "Warnings",
     "htmlchecks.label-ok": "OK",
     

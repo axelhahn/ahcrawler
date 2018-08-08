@@ -89,6 +89,8 @@
     "db-pages.errorcount": "Anzahl Fehler",
     "db-pages.lasterror": "letzter Fehler",
     "db-pages.length": "Länge",
+    "db-pages.size": "Grösse",
+    "db-pages.time": "Ladezeit [ms]",
     "db-pages.actions": "Aktionen",
     
     "db-ressources.actions": "Aktionen",
@@ -210,6 +212,14 @@
     
     "htmlchecks.overview": "Zusammenfassung der HTML-Checks",
     "htmlchecks.overview.introtext": "Meta-Tags werden von vielen Suchmaschinen ausgewertet. Es ist kein Muss, hilft aber, die Seite besser zu verschlagworten.<br>Bei der Verwendung des ahCrawlers als Suchmaschine für die Webseite haben Treffer in den Metadatan höhere Priorität, als der Inhaltstext.",
+    "htmlchecks.tile-crawlererrors": "Fehler beim Crawlen",
+
+    "htmlchecks.tile-check-short-title": "Zu kurze Titel<br>(kleiner %s Zeichen)",
+    "htmlchecks.tile-check-short-description": "Zu kurze Beschreibung<br>(kleiner %s Zeichen)",
+    "htmlchecks.tile-check-short-keywords": "Zu kurze Keywords<br>(kleiner %s Zeichen)",
+    "htmlchecks.tile-check-loadtime-of-pages": "Lange Ladezeiten<br>(mehr als %s ms)",
+    "htmlchecks.tile-check-large-pages": "Grosser Content<br>(mehr als %s Byte)",
+
     "htmlchecks.tableCrawlererrors": "Crawler-Fehler beim Aufbau des Suchindex",
     "htmlchecks.tableCrawlererrors.description": "Dies ist lediglich ein Hinweis. Details finden Sie im Suchindex; der Http-Fehler wird im Linkchecker aufgelistet.",
     "htmlchecks.tableShortTitles": "Zu kurze Titel in den Meta-Tags",
@@ -219,10 +229,11 @@
     "htmlchecks.tableShortKeywords": "Zu wenig Keywords in den Meta-Tags",
     "htmlchecks.tableShortKeywords.description": "Verwenden Sie max 20 Schlagworte, mit Komma getrennt. Die wichtigsten Schlagworte sollten dabei zuerst genannt werden.",
     
-    "htmlchecks.tile-crawlererrors": "Fehler beim Crawlen",
-    "htmlchecks.tile-check-short-title": "Zu kurze Titel<br>(kleiner %s Zeichen)",
-    "htmlchecks.tile-check-short-description": "Zu kurze Beschreibung<br>(kleiner %s Zeichen)",
-    "htmlchecks.tile-check-short-keywords": "Zu kurze Keywords<br>(kleiner %s Zeichen)",
+    "htmlchecks.tableLoadtimePages": "Lange ladendende Seiten",
+    "htmlchecks.tableLoadtimePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Seiten mit langer Ladezeit wirken sich schlecht auf das Suchmaschinen-Ranking aus. Weiterhin: wenn es eine Seite mit höherem Traffic ist, generiert es hohe Last auf dem Webserver - dies sind Ansatzpunkte, um einen Cache einzusetzen, die Applikation oder aber deren Datenbank-Queries zu optimieren.",
+    "htmlchecks.tableLargePages": "Grosse Seiten",
+    "htmlchecks.tableLargePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Nachfolgend werden Seiten mit etwas mehr HTML Code aufgelistet. Sofern es komplexeres HTML ist, kann ein Browser Probleme beim Rendern bekommen.",
+
     "htmlchecks.label-warnings": "Warnungen",
     "htmlchecks.label-ok": "OK",
 

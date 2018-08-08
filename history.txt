@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2018-08-06: v0.23
+  * added check for long loading html pages
+  * added check for large html reponse
+
 2018-08-06: v0.22
   * added support for cookies
 

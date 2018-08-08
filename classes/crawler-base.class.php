@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.22',
-        'date' => '2018-08-06',
+        'version' => 'v0.23',
+        'date' => '2018-08-09',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -184,7 +184,7 @@ class crawler_base {
                 case 'mysql':
                     $type = str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $type);
                     $type = str_replace('INTEGER', 'INT', $type);
-                    $type = str_replace('TEXT', 'LONGTEXT', $type);
+                    // $type = str_replace('TEXT', 'LONGTEXT', $type);
                     $type = str_replace('DATETIME', 'TIMESTAMP', $type);
                     break;
             }
