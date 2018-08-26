@@ -25,6 +25,9 @@
     "nav.analysis.label": "Analyse",
     "nav.analysis.hint": "Analyse der Ressourcen der Webseite",
     
+    "nav.httpheaderchecks.label": "Http Header check",
+    "nav.httpheaderchecks.hint": "Analysis of Http header",
+        
     "nav.htmlchecks.label": "HTML-Checks",
     "nav.htmlchecks.hint": "Analyse des Html Code und Hinweise",
     
@@ -184,6 +187,9 @@
     "ressources.itemstotal": "gesamt",
     "ressources.status": "Stand",
     "ressources.filter": "Filter",
+    "ressources.link-is-external-redirect": "externer Redirect",
+    "ressources.link-to-details": "Details zu dieser Url",
+    "ressources.link-to-url": "Url &ouml;ffnen",
     "ressources.list": "Liste der Ressourcen",
     "ressources.list.intro": "Mit der Schaltfl&auml;che [Ansehen] werden ein- und ausgehende Verkn&uuml;pfungen angezeigt.",
     "ressources.empty": "Es wurden keine Ressourcen gefunden. Der Job zum Crawlen der Ressourcen wurde noch nicht gestartet.",
@@ -237,6 +243,28 @@
     "htmlchecks.label-warnings": "Warnungen",
     "htmlchecks.label-ok": "OK",
 
+    
+    "httpheader.securityheaders": "Check der vorhandenen Security-Header",
+    "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
+    "httpheader.starturl": "Start-URL",
+    
+    "httpheader.content-security-policy.description": "Content Security Policy is an effective measure to protect your site from XSS attacks. By whitelisting sources of approved content, you can prevent the browser from loading malicious assets.",
+    "httpheader.expect-ct.description": "Expect-CT allows a site to determine if they are ready for the upcoming Chrome requirements and/or enforce their CT policy.",
+    "httpheader.feature-policy.description": "Feature Policy is a new header that allows a site to control which features and APIs can be used in the browser.",
+    "httpheader.server.description": "This Server header seems to advertise the software being run on the server but you can remove or change this value.",
+    "httpheader.strict-transport-security.description": "HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS.",
+    "httpheader.referrer-policy.description": "Referrer Policy is a new header that allows a site to control how much information the browser includes with navigations away from a document and should be set by all sites.",
+    "httpheader.x-frame-options.description": "X-Frame-Options tells the browser whether you want to allow your site to be framed or not. By preventing a browser from framing your site you can defend against attacks like clickjacking.",
+    "httpheader.x-xss-protection.description": "X-XSS-Protection sets the configuration for the cross-site scripting filters built into most browsers. The best configuration is 'X-XSS-Protection: 1; mode=block'.",
+
+    "httpheader.warnings": "Warnhinweise zu den Http-Headern",
+    "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
+    "httpheader.server.description": "Bei der Angabe des Webservers sollte man bei produktiven Systemen auf Details, wie Version oder Betriebssystem verzichten. Setzen Sie den Server Header nur auf den Produktnamen.",
+    "httpheader.x-powered-by.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
+
+    "httpheader.data": "Http-Header",
+    "httpheader.data.description": "Das ist der von der Startseite übermittelte Http Response Header",
+
     "linkchecker.check-links": "Link-Check: Verteilung der Statuscodes",
     "linkchecker.found-http-errors": "Gruppe Http-Fehler",
     "linkchecker.found-http-errors-hint": "Gefundene Fehler in Links und Ressourcen. Diese sollte man in Ruhe einmal durchgehen.",
@@ -246,6 +274,9 @@
     "linkchecker.found-http-ok-hint": "Und nun die guten Nachrichten. Nachfolgend die erfolgreichen Requests.",
     "linkchecker.found-http-todo": "Gruppe offene Requests",
     "linkchecker.found-http-todo-hint": "Es gibt noch einige zu analysierende URLs. Der Scan ist derzeit am Arbeiten ... oder wurde abgebrochen.",
+    "linkchecker.found-http-external": "Externe Redirects",
+    "linkchecker.found-http-external-hint": "Urls mit reinen Zwischenhops: Redirects, die nicht bei dir in den Seiten verlinkt sind und reine Weiterleitungen auf eine andere Weiterleitung sind (also nicht zu einem Ziel f&uuml;hren).",
+    "linkchecker.found-http-external-todo": "Dies ist nur ein Hinweis. Zielseiten sollten m&ouml;glichst direkt auf die Zielseite gesetzt werden. ",
     
     "linkchecker.ok-none-was-found": "Sehr gut: kein Eintrag gefunden!",
     "linkchecker.loop-detected": "Abbruch: Loop auf %s gefunden.",

@@ -97,6 +97,11 @@ class httpstatus {
     // ----------------------------------------------------------------------
     // SETTER
     // ----------------------------------------------------------------------
+    /**
+     * init http status code class
+     * @param array|integer  $value  http header OR status code
+     * @return boolean
+     */
     public function __construct($value=false) {
         if(is_array($value)){
             return $this->setResponse($value);
@@ -152,6 +157,13 @@ class httpstatus {
      */
     public function isTodo(){
         return ($this->_http_code===-1);
+    }
+    /**
+     * is the request in process? 1xx Informational response
+     * @return boolean
+     */
+    public function isProcessing(){
+        return ($this->_http_code && $this->_http_code>=100 &&  $this->_http_code<200);
     }
     /**
      * was the http request OK? It is true if status is a 2xx.
@@ -255,9 +267,35 @@ class httpstatus {
         if($this->_http_code===false){
             return false;
         }
+        if($this->isTodo()){
+            return 'todo';
+        }
+        if($this->isWrongRequest()){
+            return 'todo';
+        }
+        if($this->isProcessing()){
+            return '1xx processing';
+        }
+        if($this->isOperationOK()){
+            return '2xx ok';
+        }
+        if($this->isRedirect()){
+            return '3xx redirect';
+        }
+        if($this->isError()){
+            return '4xx error';
+        }
+        if($this->isServerError()){
+            return '5xx server-error';
+        }
+        return 'unknown';
+        /*
+        
         return (array_key_exists($this->_http_code, $this->_aHttpStatus)
                 ? $this->_aHttpStatus[$this->_http_code]
                 : $this->_http_code.' - ???'
                 );
+         * 
+         */
     }
 }

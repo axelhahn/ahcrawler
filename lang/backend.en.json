@@ -28,6 +28,9 @@
     "nav.ressources.label": "Ressources",
     "nav.ressources.hint": "Ressources of the website",
     
+    "nav.httpheaderchecks.label": "Http Header check",
+    "nav.httpheaderchecks.hint": "Analysis of Http header",
+        
     "nav.htmlchecks.label": "HTML checks",
     "nav.htmlchecks.hint": "Analysis of html code and recommendations",
         
@@ -185,6 +188,9 @@
     "ressources.itemsnone": "Sorry, not a single hit.",
     "ressources.itemstotal": "total",
     "ressources.filter": "Filter",
+    "ressources.link-is-external-redirect": "external redirect",
+    "ressources.link-to-details": "click to see details for this url",
+    "ressources.link-to-url": "open url",
     "ressources.list": "List of Ressources",
     "ressources.list.intro": "With the button [View] you get an overview of incoming and outgoing links of the selected source.",
     "ressources.empty": "No Ressources were found. The job to index the ressources was not started yet.",
@@ -212,6 +218,9 @@
     "linkchecker.found-http-ok-hint": "We have good news ... these are the successful requests.",
     "linkchecker.found-http-todo": "Group todo",
     "linkchecker.found-http-todo-hint": "There are still open urls that must be analyzed. The scan is still running or was aborted.",
+    "linkchecker.found-http-external": "External redirects",
+    "linkchecker.found-http-external-hint": "Hops that are not linked in your pages and point to another redirect (and not to a target.",
+    "linkchecker.found-http-external-todo": "This is just a hint. Try to set the links to a real target url.",
 
     "linkchecker.ok-none-was-found": "Excellent, no entry was found!",
     "linkchecker.loop-detected": "Abort: A loop to the url %s was found.",

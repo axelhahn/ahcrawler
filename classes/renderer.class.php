@@ -519,6 +519,8 @@ class ressourcesrenderer extends crawler_base {
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
                 . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '" title="'.$this->lB('ressources.link-to-details').'">' . $aResourceItem['url'] . '</a>'
                 . ' <a href="' . $aResourceItem['url'] . '" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a>'
+                . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] ? ' <<< <span class="error">' . $this->lB('ressources.link-is-external-redirect') . '</span>' : '')
+                // . print_r($aResourceItem, 1)
             ;
     }
 

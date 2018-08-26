@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.23',
-        'date' => '2018-08-09',
+        'version' => 'v0.24',
+        'date' => '2018-08-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -216,7 +216,7 @@ class crawler_base {
             'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
             'url' => 'VARCHAR(512)  NOT NULL',
-            'siteid' => 'INTEGER  NULL',
+            'siteid' => 'INTEGER  NOT NULL',
             'title' => 'VARCHAR(256)  NULL',
             'description' => 'VARCHAR(1024)  NULL',
             'keywords' => 'VARCHAR(1024)  NULL',
@@ -237,14 +237,14 @@ class crawler_base {
             'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
             'word' => 'VARCHAR(32) NOT NULL',
             'count' => 'INTEGER',
-            'siteid' => 'INTEGER  NULL',
+            'siteid' => 'INTEGER NOT NULL',
                 )
         );
 
         $this->_createTable("searches", array(
             'page_id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-            'siteid' => 'INTEGER  NULL',
+            'siteid' => 'INTEGER NOT NULL',
             'searchset' => 'VARCHAR(32)  NULL',
             'query' => 'VARCHAR(32)  NULL',
             'results' => 'INTEGER  NULL',
@@ -257,13 +257,17 @@ class crawler_base {
         $this->_createTable("ressources", array(
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
             'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-            'siteid' => 'INTEGER NULL',
-            'url' => 'VARCHAR(1024)  NOT NULL',
+            'siteid' => 'INTEGER NOT NULL',
+            'url' => 'VARCHAR(1024) NOT NULL',
             'ressourcetype' => 'VARCHAR(16) NOT NULL',
             'type' => 'VARCHAR(16) NOT NULL',
             'header' => 'VARCHAR(1024)  NULL',
             // header vars
             'content_type' => 'VARCHAR(32) NULL',
+            'isSource' => 'BOOLEAN NULL',
+            'isLink' => 'BOOLEAN NULL',
+            'isEndpoint' => 'BOOLEAN NULL',
+            'isExternalRedirect' => 'BOOLEAN NULL',
             'http_code' => 'INTEGER NULL',
             'status' => 'VARCHAR(16) NOT NULL',
             'total_time' => 'INTEGER NULL',
@@ -330,7 +334,7 @@ class crawler_base {
         if (is_array($aFilter) && count($aFilter)) {
             foreach ($aFilter as $sColumn => $value) {
                 $sWhere .= ($sWhere ? 'AND ' : '')
-                        . $sColumn . ' ' . ( $value == "" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
+                        . $sColumn . ' ' . ( $value === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
             }
         }
         $sSql = "SELECT $sRow, count(*) as count "

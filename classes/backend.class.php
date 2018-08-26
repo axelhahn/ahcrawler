@@ -25,6 +25,7 @@ class backend extends crawler_base {
             'searches'=>array(),
         ),
         'analysis'=>array(
+            'httpheaderchecks'=>array(), 
             'htmlchecks'=>array(), 
             'linkchecker'=>array(), 
             'ressources'=>array(),
@@ -49,6 +50,7 @@ class backend extends crawler_base {
             'ressources'=>'fa fa-file-code-o', 
             'linkchecker'=>'fa fa-warning', 
             'htmlchecks'=>'fa fa-check', 
+            'httpheaderchecks'=>'fa fa-flag-o', 
             'checkurl'=>'fa fa-globe', 
             'ressourcedetail'=>'fa fa-map-o', 
             'about'=>'fa fa-info-circle', 
@@ -1049,7 +1051,7 @@ class backend extends crawler_base {
     }
     
     /**
-     * page content :: analyzer
+     * page content :: ressources
      */
     private function _getContentressources() {
         $sReturn = '';
@@ -1064,7 +1066,7 @@ class backend extends crawler_base {
         $oRessources=new ressources();
         $oRenderer=new ressourcesrenderer($this->_sTab);
         
-        $aWhere=array('siteid' => $this->_sTab);
+        $aWhere=array('siteid' => $this->_sTab, 'isExternalRedirect'=>0);
         if (array_key_exists('filteritem', $_GET) && array_key_exists('filtervalue', $_GET)){
             for ($i=0; $i<count($_GET['filteritem']); $i++){
                 $aWhere[$_GET['filteritem'][$i]]=($_GET['filtervalue'][$i]==='') ? null : $_GET['filtervalue'][$i];
@@ -1149,6 +1151,7 @@ class backend extends crawler_base {
                         $iReportCounter++;
                         $sReport.=''
                                 .'<div class="counter">'. $iReportCounter.'</div>'
+                                . '<div style="clear: left;"></div>'
                                 .$oRenderer->renderReportForRessource($aRow);
                     }
                     // --- generate table view
@@ -1399,8 +1402,19 @@ class backend extends crawler_base {
          * @param integer  $iMinLength  minimal length
          * @return string
          */
-        private function _getHtmlchecksTable($sQuery){
-            $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
+        private function _getHtmlchecksTable($sQuery, $aQuery=false){
+            if($aQuery){
+                $aTmp = $this->oDB->debug()->select(
+                        $aQuery[0], // table
+                        $aQuery[1], // what to select
+                        $aQuery[2] // params
+                        );
+                echo '<pre>'.print_r($aQuery, 1).'</pre>';
+                echo '<pre>'.print_r($aTmp, 1).'</pre>';
+                
+            } else {
+                $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
+            }
             $aTableT = array();
             foreach ($aTmp as $aRow) {
                 $aTableT[] = $aRow;
@@ -1485,7 +1499,8 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select title, length(title) as length, url
                     from pages 
                     where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
-                    order by length(title)');
+                    order by length(title)'
+                );
         }
         // for the other charts: 
         $iSearchindexCount=$iSearchindexCount-$iCountCrawlererrors;
@@ -1509,7 +1524,23 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
-                    order by length, description');
+                    order by length, description'
+                    /*
+                    ,
+                    array(
+                        'pages',
+                        array('description',  $this->oDB->raw('length(description) as length'),'title', 'url'),
+                        array(
+                            'AND'=>array(
+                                'siteid'=>$this->_sTab,
+                                'length(title)[<]'=>$iMinTitleLength,
+                            ),
+                            'ORDER' => array("length"=>"ASC", 'description'=>'ASC'),
+                        )
+                    )
+                     * 
+                     */
+                );
         }
         // table with too short keyword
         if ($iCountShortKeywords) {
@@ -1550,6 +1581,77 @@ class backend extends crawler_base {
         return $sReturn;
     }
     /**
+     * page cotent :: Html-check
+     */
+    private function _getContenthttpheaderchecks() {
+        $sReturn = '';
+        $sReturn.=$this->_getNavi2($this->_getProfiles());
+        $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
+        if (!$iSearchindexCount) {
+            return $sReturn.'<br><div class="warning">'.$this->lB('status.emptyindex').'</div>';
+        }
+        $aFirstPage = $this->oDB->select(
+            'pages', 
+            array('url', 'header'), 
+            array(
+                'AND' => array(
+                    'siteid' => $this->_sTab,
+                ),
+                "ORDER" => array("id"=>"ASC"),
+                "LIMIT" => 1
+            )
+        );
+        if (count($aFirstPage)===0){
+            return $sReturn;
+        }
+        
+        require_once 'httpheader.class.php';
+        $oHttpheader=new httpheader();
+        $sInfos=$aFirstPage[0]['header'];
+        
+        $aInfos=json_decode($sInfos,1);
+        // _responseheader ?? --> see crawler.class - method processResponse()
+        $oHttpheader->setHeaderAsString($aInfos['_responseheader']);
+        
+        // --- header dump
+        $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
+                . '<p>'
+                . $this->lB('httpheader.data.description').'<br>'
+                .'<strong>'.$this->lB('httpheader.starturl').'</strong>: '
+                .$aFirstPage[0]['url']
+                . '</p>'
+                . '<pre>'.print_r($oHttpheader->getHeaderstring(), 1).'</pre>';
+
+        
+        $aSecHeader=$oHttpheader->checkSecurityHeaders();
+        $sReturn.= '<h3>' . $this->lB('httpheader.securityheaders') . '</h3>'
+            . '<p>'
+                . $this->lB('httpheader.securityheaders.description').'<br>'
+            . '</p>'
+            . $this->_getHtmlchecksChart(count($aSecHeader), $oHttpheader->getCountBadSecurityHeaders())
+            . '<ul class="tiles warnings">';
+        foreach($aSecHeader as $sVar=>$aData){
+            $sReturn.=($aData 
+                    ? '<li><a href="#" class="tile ok">' . $aData['var'].'<br>'.$aData['value'].'</a></li>'
+                    : '<li><a href="#" class="tile error">' . $sVar.'<br><strong>?</strong></a></li>'
+                    );
+        }
+        $sReturn.= '</ul>'
+                . '<div style="clear: both;"></div>';
+        
+        // --- warnings
+        $sReturn.= '<h3>' . $this->lB('httpheader.warnings') . '</h3>'
+                . '<p>'
+                . $this->lB('httpheader.warnings.description')
+                . '</p>';
+        $sReturn.='<pre>'.print_r($oHttpheader->checkUnwantedHeaders(), 1).'</pre>';
+        
+        
+
+        // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
+        return $sReturn;
+    }
+    /**
      * page cotent :: Linkchecker
      */
     private function _getContentlinkchecker() {
@@ -1576,12 +1678,17 @@ class backend extends crawler_base {
         
         if ($iRessourcesCount){
             
-            $aCountByStatuscode=$oRessources->getCountsOfRow('ressources', 'http_code', array('siteid'=> $this->_sTab));
+            $aCountByStatuscode=$oRessources->getCountsOfRow(
+                'ressources', 'http_code', 
+                array(
+                    'siteid'=> $this->_sTab,
+                    'isExternalRedirect'=>'0',
+                )
+            );
             $aTmpItm=array('status'=>array(), 'total'=>0);
             $aBoxes=array('todo'=>$aTmpItm, 'errors'=>$aTmpItm,'warnings'=>$aTmpItm, 'ok'=>$aTmpItm);
-            
+
             // echo '<pre>$aCountByStatuscode = '.print_r($aCountByStatuscode,1).'</pre>';
-            // --- http errors
             foreach ($aCountByStatuscode as $aStatusItem){
                 $iHttp_code=$aStatusItem['http_code'];
                 $iCount=$aStatusItem['count'];
@@ -1608,6 +1715,18 @@ class backend extends crawler_base {
             // echo '<pre>$aBoxes = '.print_r($aBoxes,1).'</pre>';
             $sBar='';
             $sResResult='';
+            
+            $iExternal=$this->oDB->count('ressources',array('siteid'=>$this->_sTab,'isExternalRedirect'=>'1'));
+
+            if($iExternal){
+                $aChartItems[]=array(
+                    'label'=>$this->lB('linkchecker.found-http-external').': '.$iExternal,
+                    'value'=>$iExternal,
+                    'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warnings\')',
+                    //'legend'=>$this->lB('linkchecker.found-http-external-hint'),
+                );
+            }
+            
             foreach (array_keys($aBoxes) as $sSection){
                 if(!$aBoxes[$sSection]['total']){
                     continue;
@@ -1621,14 +1740,44 @@ class backend extends crawler_base {
                 $sLegende='';
                 
                 if (array_key_exists($sSection, $aBoxes)){
+                    $aChartItemsOfSection=array();
+                    $sBoxes='';
+                    $iCodeCount=0;
                     if (count($aBoxes[$sSection])){
-                        $aChartItemsOfSection=array();
                         $sResResult.=''
                                 . '<h3>'.$this->lB('linkchecker.found-http-'.$sSection).'</h3>'
                                 . '<p>'.$this->lB('linkchecker.found-http-'.$sSection.'-hint').'</p>'
                                 . '<ul class="tiles '.$sSection.'">';
-                        $iCodeCount=0;
-                        $sBoxes='';
+                        
+                        
+                        if($sSection==='warnings' && $iExternal){
+                            $aChartItemsOfSection[]=array(
+                                'label'=>$this->lB('linkchecker.found-http-external'),
+                                'value'=>$iExternal,
+                                'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCodeCount % 5 + 1).'\')',
+                                'legend'=>$iExternal.' x '.$this->lB('linkchecker.found-http-external'),
+                            );
+                            $sBoxes.='<li>'
+                                    . '<a href="#" class="tile" title="'.$this->lB('linkchecker.found-http-external-hint').'"'
+                                    . ' onclick="return false;"'
+                                    . '>'
+                                    . $this->lB('linkchecker.found-http-external').' '
+                                    . '<br><br>'
+                                    . '<strong>'
+                                        .$iExternal
+                                    .'</strong><br>'
+                                    . '</a>'
+                                . '</li>';
+                            $iCodeCount++;
+                            $sLegende.='<li>'
+                                    . '<strong>'.$this->lB('linkchecker.found-http-external').'</strong><br>'
+                                    . $this->lB('linkchecker.found-http-external-hint')
+                                    . '<br><em>'.$this->lB('httpcode.todo') .'</em>: '. $this->lB('linkchecker.found-http-external-todo')
+                                    .'<br><br>'
+                                    ;
+                        }
+                        
+                        
                         foreach ($aBoxes[$sSection]['status'] as $iHttp_code=>$iCount){
                             $aChartItemsOfSection[]=array(
                                 'label'=>$iHttp_code,

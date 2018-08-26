@@ -58,34 +58,26 @@ $oCdn=new axelhahn\cdnorlocal(array(
              * @param {type} sheet
              * @returns {.sheet@arr;cssRules.style}
              */
-            function getStyleRuleValue1(style, selector, sheet) {
+            function getStyleRuleValue(style, selector, sheet) {
                 var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
                 for (var i = 0, l = sheets.length; i < l; i++) {
                     var sheet = sheets[i];
-                    if( !sheet.cssRules ) { continue; }
-                    for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
-                        var rule = sheet.cssRules[j];
-                        if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
-                            return rule.style[style];
+                    try {
+                        if( !sheet.cssRules ) { continue; }
+                        for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
+                            var rule = sheet.cssRules[j];
+                            if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
+                                return rule.style[style];
+                            }
+                        }
+                    } catch (e) {
+                        if (e.name !== "SecurityError") {
+                           throw e;
                         }
                     }
                 }
                 return null;
             }
-            function getStyleRuleValue(style, selector, sheet) {
-    var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
-    for (var i = 0, l = sheets.length; i < l; i++) {
-        var sheet = sheets[i];
-        if( !sheet.cssRules ) { continue; }
-        for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
-            var rule = sheet.cssRules[j];
-            if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
-                return rule.style[style];
-            }
-        }
-    }
-    return null;
-}
         </script>
 
     </head>

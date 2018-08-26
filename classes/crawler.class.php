@@ -135,6 +135,7 @@ class crawler extends crawler_base{
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
         $rollingCurl->setOptions(array(
+                CURLOPT_HEADER => true,
                 CURLOPT_FOLLOWLOCATION => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_USERAGENT => $this->sUserAgent,
@@ -354,7 +355,13 @@ class crawler extends crawler_base{
      */
     public function processResponse($response) {
         $url = $response->getUrl();
+        $aResponse=explode("\r\n\r\n", $response->getResponseText(), 2);
+        $sHttpHeader=$aResponse[0];
+        $sHttpBody=$sResponseBody=count($aResponse)>1 ? $aResponse[1] : false;;
+
         $info = $response->getResponseInfo();
+        $info['_responseheader']=$sHttpHeader;
+        
         $oHttpstatus=new httpstatus($info);
         
         $this->_iUrlsCrawled++;
@@ -376,7 +383,7 @@ class crawler extends crawler_base{
         if ($oHttpstatus->isOK()) {
             switch ($oHttpstatus->getContenttype()) {
                 case 'text/html':
-                    $this->_processHtmlPage($response->getResponseText(), $info);
+                    $this->_processHtmlPage($sHttpBody, $info);
                     break;
                 default:
                     echo "WARNING: handling of MIME [".$oHttpstatus->getContenttype()."] was not implemented (yet). Cannot proceed with url $url ... \n";
@@ -544,6 +551,7 @@ class crawler extends crawler_base{
                 $rollingCurl->get($sUrl);
             }
             $rollingCurl->setOptions(array(
+                    CURLOPT_HEADER => true,
                     CURLOPT_FOLLOWLOCATION => false,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_USERAGENT => $this->sUserAgent,
@@ -789,7 +797,7 @@ class crawler extends crawler_base{
                 'header' => json_encode($aData['header']),
                 'response' => $aData['response'],
                 'ts' => date("Y-m-d H:i:s"),
-                'tserror' => false,
+                'tserror' => '0000-00-00 00:00:00',
                 'errorcount' => 0,
                 'lasterror' => '',
                 ), 
@@ -819,7 +827,7 @@ class crawler extends crawler_base{
                         'header' => json_encode($aData['header']), // TODO: handle umlauts in response
                         'response' => $aData['response'],
                         'ts' => date("Y-m-d H:i:s"),
-                        'tserror' => false,
+                        'tserror' => '0000-00-00 00:00:00',
                         'errorcount' => 0,
                     )
             );
