@@ -363,7 +363,7 @@ class ressources extends crawler_base {
                     $sOut .= "--- addPageRelItems ... [" . $aData['url'] . "] .  found " . count($aItems) . " items of group $sGroup<br>\n";
                     $aRel = array();
                     foreach ($aItems as $aItem) {
-                        if (array_key_exists('_url', $aItem)) {
+                        if (array_key_exists('_url', $aItem) && $aItem['_url']!==$aData['url']) {
 
                             // $this->_aRessourceIDs
                             // add the found ressource
@@ -537,8 +537,12 @@ class ressources extends crawler_base {
             'ORDER' => array('url' => 'ASC')
                 )
         );
-        // echo "SQL: ".$this->oDB->last()."<br>\n<pre>".print_r($aReturn, 1).'</pre>'; 
-
+        /*
+        echo "SQL: ".$this->oDB->last()."<br>\n"
+                // . "<pre>".print_r($aReturn, 1).'</pre>'
+                ; 
+        */
+        
         return $aReturn;
     }
 

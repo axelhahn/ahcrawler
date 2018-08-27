@@ -70,7 +70,7 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
             }
             // $this->_aHeader=$aTmp;
         }
-        $this->_sHeader=$sHeader;
+        $this->_sHeader=$sHeader."\r\n";
         return $this->_aHeader;
     }
 

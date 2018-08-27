@@ -355,6 +355,7 @@ class ressourcesrenderer extends crawler_base {
                 ;
         }
         $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
+        $aUrllist[$iIdRessource]=true;
         if(count($aResIn)){
             // $sReport.='|   |<br>';
             $sReturn.='<div class="references"><br>'

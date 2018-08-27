@@ -216,6 +216,7 @@ div.warning{background: #fc6; padding: 1em;}
 /* --- ressources --- */
 .http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff;}
 .http-code-{background:#ccd;}
+.http-code--1 {background: #d0d0d8;}
 .http-code-2xx {background:#8b4;}
 .http-code-3xx,.http-code-4xx{background:#ea5;}
 .http-code-0,.http-code-301, .http-code-404, .http-code-410, .http-code-9xx {background:#e55;}
