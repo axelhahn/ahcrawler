@@ -12,12 +12,13 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.26',
-        'date' => '2018-08-27',
+        'version' => 'v0.27',
+        'date' => '2018-08-29',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
+        'urlSource' => 'https://github.com/axelhahn/ahcrawler',
     );
 
     /**
