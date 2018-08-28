@@ -26,7 +26,7 @@
     "nav.analysis.hint": "Analyse der Ressourcen der Webseite",
     
     "nav.httpheaderchecks.label": "Http Header check",
-    "nav.httpheaderchecks.hint": "Analysis of Http header",
+    "nav.httpheaderchecks.hint": "Analyse des Http Response Headers der Startseite",
         
     "nav.htmlchecks.label": "HTML-Checks",
     "nav.htmlchecks.hint": "Analyse des Html Code und Hinweise",
