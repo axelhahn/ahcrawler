@@ -631,7 +631,13 @@ class ressources extends crawler_base {
      */
     public function processResponse($response) {
         $url = $response->getUrl();
+        
+        $aResponse=explode("\r\n\r\n", $response->getResponseText(), 2);
+        $sHttpHeader=$aResponse[0];
+        // $sHttpBody=$sResponseBody=count($aResponse)>1 ? $aResponse[1] : false;;
         $info = $response->getResponseInfo();
+        $info['_responseheader']=$sHttpHeader;
+
         $oHttpstatus = new httpstatus($info);
 
         $this->_iUrlsCrawled++;

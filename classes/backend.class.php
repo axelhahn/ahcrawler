@@ -518,7 +518,7 @@ class backend extends crawler_base {
      * @param string $sLangTxtPrefix   langtext prefix
      * @return string
      */
-    private function _getHtmlTable($aResult, $sLangTxtPrefix = '') {
+    private function _getHtmlTable($aResult, $sLangTxtPrefix = '', $sTableId=false) {
         $sReturn = '';
         $aFields = false;
         if (!is_array($aResult) || !count($aResult)) {
@@ -542,7 +542,7 @@ class backend extends crawler_base {
                 $sTh.='<th class="th-' . $sField . '">' . $sIcon . $this->lB($sLangTxtPrefix . $sField) . '</th>';
             }
             // $sReturn = '<table class="pure-table pure-table-horizontal pure-table-striped datatable">'
-            $sReturn = '<table class="pure-table pure-table-horizontal datatable">'
+            $sReturn = '<table'.($sTableId ? ' id="'.$sTableId.'"' : '').' class="pure-table pure-table-horizontal datatable">'
                     . '<thead><tr>' . $sTh . '</tr></thead>'
                     . '<tbody>' . $sReturn . ''
                     . '</tbody>'
@@ -1398,28 +1398,28 @@ class backend extends crawler_base {
         }
         /**
          * html check - get get html code for a table of too short elements
-         * @param string   $sQuery      query to fetch data
-         * @param integer  $iMinLength  minimal length
+         * @param string|array   $sQuery      query to fetch data
+         * @param string         $iMinLength  table id
          * @return string
          */
-        private function _getHtmlchecksTable($sQuery, $aQuery=false){
-            if($aQuery){
+        private function _getHtmlchecksTable($sQuery, $sTableId=false){
+            if(is_array($sQuery)){
                 $aTmp = $this->oDB->debug()->select(
-                        $aQuery[0], // table
-                        $aQuery[1], // what to select
-                        $aQuery[2] // params
+                        $sQuery[0], // table
+                        $sQuery[1], // what to select
+                        $sQuery[2]  // params
                         );
-                echo '<pre>'.print_r($aQuery, 1).'</pre>';
+                echo '<pre>'.print_r($sQuery, 1).'</pre>';
                 echo '<pre>'.print_r($aTmp, 1).'</pre>';
                 
             } else {
                 $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
             }
-            $aTableT = array();
+            $aTable = array();
             foreach ($aTmp as $aRow) {
-                $aTableT[] = $aRow;
+                $aTable[] = $aRow;
             }
-            return $this->_getHtmlTable($aTableT, "db-pages.");
+            return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
         }
     
     /**
@@ -1463,27 +1463,27 @@ class backend extends crawler_base {
 
         $sReturn.='<ul class="tiles warnings">'
             . ($iCountCrawlererrors
-                ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
+                ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong><br>'.floor($iCountCrawlererrors/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
             )
             . ($iCountShortTitles
-                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
+                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.floor($iCountShortTitles/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
             )
             . ($iCountShortDescr
-                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
+                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.floor($iCountShortDescr/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
             )
             . ($iCountShortKeywords
-                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
+                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.floor($iCountShortKeywords/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
             )
             . ($iCountLongload
-                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
+                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.floor($iCountLongload/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
             )
             . ($iCountLargePages
-                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
+                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.floor($iCountLargePages/$iSearchindexCount*100).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
             )
             . '</ul>'
@@ -1499,7 +1499,8 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select title, length(title) as length, url
                     from pages 
                     where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
-                    order by length(title)'
+                    order by length(title)',
+                    'tableCrawlerErrors'
                 );
         }
         // for the other charts: 
@@ -1513,7 +1514,9 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select title, length(title) as length, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and length(title)<'.$iMinTitleLength.'
-                    order by length(title), title');
+                    order by length(title), title',
+                    'tableShortTitles'
+                );
         }
         
         // table with too short descriptions
@@ -1524,7 +1527,7 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
-                    order by length, description'
+                    order by length, description'                        
                     /*
                     ,
                     array(
@@ -1540,6 +1543,8 @@ class backend extends crawler_base {
                     )
                      * 
                      */
+                    ,
+                    'tableShortDescr'
                 );
         }
         // table with too short keyword
@@ -1550,7 +1555,9 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
-                    order by length, keywords');
+                    order by length, keywords',
+                    'tableShortKeywords'
+                );
         }
         if ($iCountLongload) {
             $sReturn.= '<h3 id="tblloadtimepages">' . $this->lB('htmlchecks.tableLoadtimePages') . '</h3>'
@@ -1559,8 +1566,9 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select title, time, size, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and time>'.$iMaxLoadtime.'
-                    order by time')
-                ;
+                    order by time',
+                    'tableLongLoad'
+                );
         }
         if ($iCountLargePages) {
             $sReturn.= '<h3 id="tbllargepages">' . $this->lB('htmlchecks.tableLargePages') . '</h3>'
@@ -1569,13 +1577,22 @@ class backend extends crawler_base {
                 .$this->_getHtmlchecksTable('select title, size, time, url
                     from pages 
                     where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
-                    order by size')
-                ;
+                    order by size',
+                    'tableLargePages'
+                );
         }
 
         // 
 
-        $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable({"aaSorting":[[1,"asc"]]});} );</script>';
+        $sReturn.='<script>$(document).ready(function () {'
+                . '$(\'#tableCrawlerErrors\').DataTable({"aaSorting":[[1,"asc"]]});'
+                . '$(\'#tableShortTitles\').DataTable({"aaSorting":[[1,"asc"]]});'
+                . '$(\'#tableShortDescr\').DataTable({"aaSorting":[[1,"asc"]]});'
+                . '$(\'#tableShortKeywords\').DataTable({"aaSorting":[[1,"asc"]]});'
+                . '$(\'#tableLongLoad\').DataTable({"aaSorting":[[1,"desc"]]});'
+                . '$(\'#tableLargePages\').DataTable({"aaSorting":[[1,"desc"]]});'
+                . '} );'
+                . '</script>';
 
         
         return $sReturn;
@@ -1607,6 +1624,8 @@ class backend extends crawler_base {
         
         require_once 'httpheader.class.php';
         $oHttpheader=new httpheader();
+        $oRenderer=new ressourcesrenderer($this->_sTab);
+
         $sInfos=$aFirstPage[0]['header'];
         
         $aInfos=json_decode($sInfos,1);
@@ -1662,12 +1681,13 @@ class backend extends crawler_base {
         $sLegendeSec='';
         foreach($aSecHeader as $sVar=>$aData){
             $sReturn.=($aData 
-                    ? '<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
-                    : '<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><strong>?</strong></a></li>'
+                    ? '<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>'
+                    : '<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>'
                     );
-            $sLegendeSec.='<li><strong>' . $sVar. '</strong><br>'
-                    . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '')
-                    . $this->lB('httpheader.'.$sVar.'.description').'<br><br></li>'
+            $sLegendeSec.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
+                    . ' <strong>' . $sVar. '</strong><br>'
+                    . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
+                    . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
                     ;
         }
         $sReturn.= '</ul>'

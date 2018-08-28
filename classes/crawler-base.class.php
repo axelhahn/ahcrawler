@@ -12,7 +12,7 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.25',
+        'version' => 'v0.26',
         'date' => '2018-08-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
@@ -224,7 +224,7 @@ class crawler_base {
             'size' => 'INTEGER NULL',
             'time' => 'INTEGER NULL',
             'content' => 'TEXT',
-            'header' => 'VARCHAR(1024) NULL',
+            'header' => 'VARCHAR(2048) NULL',
             'response' => 'TEXT',
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
             'tserror' => 'DATETIME NULL',
@@ -261,7 +261,7 @@ class crawler_base {
             'url' => 'VARCHAR(1024) NOT NULL',
             'ressourcetype' => 'VARCHAR(16) NOT NULL',
             'type' => 'VARCHAR(16) NOT NULL',
-            'header' => 'VARCHAR(1024)  NULL',
+            'header' => 'VARCHAR(2048) NULL',
             // header vars
             'content_type' => 'VARCHAR(32) NULL',
             'isSource' => 'BOOLEAN NULL',
@@ -515,7 +515,7 @@ class crawler_base {
             // $this->setSiteId(false);
             $sLang = $this->sLang;
         }
-        // echo "DEBUG: loading $sLang<br>";
+        // echo __METHOD__ . "DEBUG: loading $sLang<br>";
         $sJsonfile = '/lang/' . $sPlace . '.' . $sLang . '.json';
         $aLang = json_decode(file_get_contents(dirname(__DIR__) . $sJsonfile), true);
         if (!$aLang || !is_array($aLang) || !count($aLang)) {

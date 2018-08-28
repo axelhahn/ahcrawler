@@ -73,9 +73,11 @@ class ressourcesrenderer extends crawler_base {
         'http-code-4xx' => 'fa fa-bolt',
         'http-code-5xx' => 'fa fa-spinner',
         'http-code-9xx' => 'fa fa-bolt',
+
         'ressources.showtable' => 'fa fa-table',
         'ressources.showreport' => 'fa fa-file-o',
         'ressources.ignorelimit' => 'fa fa-unlock',
+
         'button.close' => 'fa fa-close',
         'button.crawl' => 'fa fa-play',
         'button.delete' => 'fa fa-trash',
@@ -86,6 +88,9 @@ class ressourcesrenderer extends crawler_base {
         'button.search' => 'fa fa-search',
         'button.truncateindex' => 'fa fa-trash',
         'button.view' => 'fa fa-eye',
+        
+        'ico.found' => 'fa fa-check',
+        'ico.miss' => 'fa fa-ban',
     );
 
     // ----------------------------------------------------------------------
@@ -476,8 +481,12 @@ class ressourcesrenderer extends crawler_base {
             '_size_download',
             'ts',
         ))
-        . '<br>'
-        . $this->_renderItemAsTable($aRessourceItem, array(
+        ;
+        $aHeaderJson=json_decode($aRessourceItem['header'], 1);
+        if($aHeaderJson && $aHeaderJson['_responseheader']){
+            $sReturn.='<pre>'.print_r($aHeaderJson['_responseheader'], 1).'</pre>';
+        }
+        $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
             '_meta_total_time', 
             '_meta_namelookup_time', 
             '_meta_connect_time', 
@@ -486,7 +495,7 @@ class ressourcesrenderer extends crawler_base {
             '_meta_redirect_time', 
                 // '_dlspeed'
         ));
-
+                
 
         if ($aRessourceItem['errorcount']) {
             $aJson = json_decode($aRessourceItem['lasterror'], true);
@@ -800,7 +809,7 @@ class ressourcesrenderer extends crawler_base {
                 . '</p>'
                 ;
     }
-    public function renderBar(){
-        return true;
+    public function renderShortInfo($sType){
+        return $this->_getIcon('ico.'.$sType);
     }
 }
