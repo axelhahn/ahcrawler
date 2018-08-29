@@ -1432,7 +1432,7 @@ class backend extends crawler_base {
         $iMinDescriptionLength=40;
         $iMinKeywordsLength=10;
         $iMaxPagesize=150000; // pages large n byte
-        $iMaxLoadtime=1000;   // load time in ms 
+        $iMaxLoadtime=500;   // load time in ms 
         
         $sReturn.=$this->_getNavi2($this->_getProfiles());
         $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
