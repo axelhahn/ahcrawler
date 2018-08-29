@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2018-08-29: v0.28
+  * increase column size for url, content, response
+  * bugfix: add site id in ressource updates
+  * remove each() (it showed a deprecated warning in PHP 7.2)
+  * smaller boxes in linkchecker section; show percent of the counters
+
 2018-08-29: v0.27
   * about page: added link to sources and chart.js
 

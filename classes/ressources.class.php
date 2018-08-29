@@ -43,9 +43,7 @@ class ressources extends crawler_base {
      * @return string
      */
     private function _getUrlType($sHref) {
-        $sFirstUrl = (array_key_exists('urls2crawl', $this->aProfile['searchindex']) && count($this->aProfile['searchindex']['urls2crawl'])) 
-            ? $this->aProfile['searchindex']['urls2crawl'][0] 
-            : false;
+        $sFirstUrl = (array_key_exists('urls2crawl', $this->aProfile['searchindex']) && count($this->aProfile['searchindex']['urls2crawl'])) ? $this->aProfile['searchindex']['urls2crawl'][0] : false;
         if ($sFirstUrl) {
             $oHtml = new analyzerHtml('', $sFirstUrl);
             return $oHtml->getUrlType($sHref);
@@ -166,14 +164,14 @@ class ressources extends crawler_base {
                 );
         if ($sHeaderJson) {
 
-            $a['content_type'] = str_replace(array('"', ' '), array('',''), strtolower($this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
+            $a['content_type'] = str_replace(array('"', ' '), array('', ''), strtolower($this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
             $a['http_code'] = (is_int($this->_getHeaderVarFromJson($sHeaderJson, 'http_code')) ? $this->_getHeaderVarFromJson($sHeaderJson, 'http_code') : -1 );
             $a['total_time'] = $this->_getHeaderVarFromJson($sHeaderJson, 'total_time') ? (int) ($this->_getHeaderVarFromJson($sHeaderJson, 'total_time') * 1000) / 1 : false;
             $a['size_download'] = (int) $this->_getHeaderVarFromJson($sHeaderJson, 'size_download') / 1;
             // $aData[''] = $this->_getHeaderVarFromJson($aData['header'], '');
         }
         $oHttpstatus = new httpstatus($a['http_code']);
-        $a['status']=$oHttpstatus->getStatus();
+        $a['status'] = $oHttpstatus->getStatus();
 
         foreach (array_keys($aResDefaults) as $sKey) {
             if (array_key_exists($sKey, $a) || !$bSkipMissingKeys) {
@@ -209,8 +207,11 @@ class ressources extends crawler_base {
                  * 
                  */
                 $aResult = $this->oDB->update('ressources', $aData, array(
-                    'url' => $aData['url'],
+                    'AND' => array(
+                        'url' => $aData['url'],
+                        'siteid' => $this->iSiteId
                         )
+                    )
                 );
                 $this->_checkDbResult($aResult);
             }
@@ -231,32 +232,32 @@ class ressources extends crawler_base {
         // echo 'UPDATE ressource ' . $aData['url'] . "\n";
         // echo print_r($aData) . "\n";
         $aResult = $this->oDB->update('ressources', $aData, array(
-            'url' => $aData['url'],
+            'AND' => array(
+                'url' => $aData['url'],
+                'siteid' => $this->iSiteId
                 )
+            )
         );
         $this->_checkDbResult($aResult);
         // echo $this->oDB->last() . "\n\n";
         return $aResult;
     }
+
     public function updateExternalRedirect() {
-        
+
         // reset all
-        $aResult = $this->oDB->update('ressources', 
-            array('isExternalRedirect'=>false),
-            array(
-                'siteid' => $this->iSiteId,
-            )
+        $aResult = $this->oDB->update('ressources', array('isExternalRedirect' => false), array(
+            'siteid' => $this->iSiteId,
+                )
         );
-        
+
         // set 
-        $aResult = $this->oDB->update('ressources', 
-            array('isExternalRedirect'=>true),
-            array(
-                'isSource' => 0,
-                'isLink' => 0,
-                'isEndpoint' => 0,
-                'siteid' => $this->iSiteId,
-            )
+        $aResult = $this->oDB->update('ressources', array('isExternalRedirect' => true), array(
+            'isSource' => 0,
+            'isLink' => 0,
+            'isEndpoint' => 0,
+            'siteid' => $this->iSiteId,
+                )
         );
         return true;
     }
@@ -363,7 +364,7 @@ class ressources extends crawler_base {
                     $sOut .= "--- addPageRelItems ... [" . $aData['url'] . "] .  found " . count($aItems) . " items of group $sGroup<br>\n";
                     $aRel = array();
                     foreach ($aItems as $aItem) {
-                        if (array_key_exists('_url', $aItem) && $aItem['_url']!==$aData['url']) {
+                        if (array_key_exists('_url', $aItem) && $aItem['_url'] !== $aData['url']) {
 
                             // $this->_aRessourceIDs
                             // add the found ressource
@@ -538,11 +539,11 @@ class ressources extends crawler_base {
                 )
         );
         /*
-        echo "SQL: ".$this->oDB->last()."<br>\n"
-                // . "<pre>".print_r($aReturn, 1).'</pre>'
-                ; 
-        */
-        
+          echo "SQL: ".$this->oDB->last()."<br>\n"
+          // . "<pre>".print_r($aReturn, 1).'</pre>'
+          ;
+         */
+
         return $aReturn;
     }
 
@@ -631,12 +632,11 @@ class ressources extends crawler_base {
      */
     public function processResponse($response) {
         $url = $response->getUrl();
+
+        list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
         
-        $aResponse=explode("\r\n\r\n", $response->getResponseText(), 2);
-        $sHttpHeader=$aResponse[0];
-        // $sHttpBody=$sResponseBody=count($aResponse)>1 ? $aResponse[1] : false;;
         $info = $response->getResponseInfo();
-        $info['_responseheader']=$sHttpHeader;
+        $info['_responseheader'] = $sHttpHeader;
 
         $oHttpstatus = new httpstatus($info);
 
@@ -793,10 +793,9 @@ class ressources extends crawler_base {
                         CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd'] : '',
                         // TODO: this is unsafe .. better: let the user configure it
                         CURLOPT_SSL_VERIFYPEER => 0,
-
                         // v0.22 cookies
-                        CURLOPT_COOKIEJAR,$this->sCcookieFilename,
-                        CURLOPT_COOKIEFILE,$this->sCcookieFilename,
+                        CURLOPT_COOKIEJAR, $this->sCcookieFilename,
+                        CURLOPT_COOKIEFILE, $this->sCcookieFilename,
                     ))
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);

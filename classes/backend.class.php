@@ -1463,27 +1463,27 @@ class backend extends crawler_base {
 
         $sReturn.='<ul class="tiles warnings">'
             . ($iCountCrawlererrors
-                ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong><br>'.floor($iCountCrawlererrors/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong><br>'.(floor($iCountCrawlererrors/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
             )
             . ($iCountShortTitles
-                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.floor($iCountShortTitles/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.(floor($iCountShortTitles/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
             )
             . ($iCountShortDescr
-                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.floor($iCountShortDescr/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.(floor($iCountShortDescr/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
             )
             . ($iCountShortKeywords
-                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.floor($iCountShortKeywords/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.(floor($iCountShortKeywords/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
             )
             . ($iCountLongload
-                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.floor($iCountLongload/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.(floor($iCountLongload/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
             )
             . ($iCountLargePages
-                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.floor($iCountLargePages/$iSearchindexCount*100).'%</a></li>'
+                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.(floor($iCountLargePages/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
             )
             . '</ul>'
@@ -1784,7 +1784,7 @@ class backend extends crawler_base {
                     'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
                     'value'=>$aBoxes[$sSection]['total'],
                     'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
-                    // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
                 );
                 $sLegende='';
                 
@@ -1815,6 +1815,7 @@ class backend extends crawler_base {
                                     . '<strong>'
                                         .$iExternal
                                     .'</strong><br>'
+                                    .(floor($iExternal/$iRessourcesCount*1000)/10).'%'
                                     . '</a>'
                                 . '</li>';
                             $iCodeCount++;
@@ -1851,7 +1852,8 @@ class backend extends crawler_base {
                                     . '<strong>'
                                         .$iCount
                                     .'</strong><br>'
-                                    . $shttpStatusLabel.'<br>'
+                                    .(floor($iCount/$iRessourcesCount*1000)/10).'%'
+                                    //. $shttpStatusLabel.'<br>'
                                     . '</a>'
                                 . '</li>';
                             

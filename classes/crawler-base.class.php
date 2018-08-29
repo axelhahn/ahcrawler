@@ -12,7 +12,7 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.27',
+        'version' => 'v0.28',
         'date' => '2018-08-29',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
@@ -216,7 +216,7 @@ class crawler_base {
         $this->_createTable("pages", array(
             'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
             // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-            'url' => 'VARCHAR(512)  NOT NULL',
+            'url' => 'VARCHAR(1024)  NOT NULL',
             'siteid' => 'INTEGER  NOT NULL',
             'title' => 'VARCHAR(256)  NULL',
             'description' => 'VARCHAR(1024)  NULL',
@@ -224,9 +224,9 @@ class crawler_base {
             'lang' => 'VARCHAR(8) NULL',
             'size' => 'INTEGER NULL',
             'time' => 'INTEGER NULL',
-            'content' => 'TEXT',
+            'content' => 'MEDIUMTEXT',
             'header' => 'VARCHAR(2048) NULL',
-            'response' => 'TEXT',
+            'response' => 'MEDIUMTEXT',
             'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
             'tserror' => 'DATETIME NULL',
             'errorcount' => 'INTEGER NULL',

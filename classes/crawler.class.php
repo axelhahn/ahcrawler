@@ -166,10 +166,8 @@ class crawler extends crawler_base{
         if (!$sContent){
             return false;
         }
-        $aTmp=explode("\n", $sContent);
-
-        // TODO: remove each()
-        while (list ($id, $line) = each($aTmp)) {
+        foreach(explode("\n", $sContent) as $line) {
+            // echo "DEBUG: $line\n";
             $line=preg_replace('/#.*/', '', $line);
             if (preg_match("/^user-agent: *([^#]+) */i", $line, $regs)) {
                 $this_agent = trim($regs[1]);
@@ -202,7 +200,7 @@ class crawler extends crawler_base{
                 }
             }
         }
-        // print_r($this->aProfile['exclude']); die();
+        // print_r($this->aProfile['searchindex']['exclude']); die();
         return true;
         
     }
@@ -355,9 +353,7 @@ class crawler extends crawler_base{
      */
     public function processResponse($response) {
         $url = $response->getUrl();
-        $aResponse=explode("\r\n\r\n", $response->getResponseText(), 2);
-        $sHttpHeader=$aResponse[0];
-        $sHttpBody=$sResponseBody=count($aResponse)>1 ? $aResponse[1] : false;;
+        list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
 
         $info = $response->getResponseInfo();
         $info['_responseheader']=$sHttpHeader;
