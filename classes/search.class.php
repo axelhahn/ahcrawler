@@ -82,7 +82,7 @@ class ahsearch extends crawler_base {
             return false;
         }
         // $this->_scanKeywords();
-        // echo "q = $q<br>\n<pre>".print_r($aOptions, 1)."</pre><br>\n";
+        // echo "DEBUG: q = $q<br>\n<pre>".print_r($aOptions, 1)."</pre><br>\n";
         if (!$q) {
             return false;
         }
@@ -132,7 +132,7 @@ class ahsearch extends crawler_base {
                         "LIMIT" => 55
                 )
         );
-        // echo $this->oDB->last() . '<br>';
+        // echo 'DEBUG: ' . $this->oDB->last() . '<br>';
         if (is_array($aResult) && count($aResult)) {
             $aResult = $this->_reorderByRanking($aResult, $q);
         }
@@ -337,16 +337,16 @@ class ahsearch extends crawler_base {
                 } else {
                     $sOut = '
                         <style>
-                        .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; font-family: arial; border-left: 0px solid #eee; padding: 0.5em;}
+                        .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
                         .searchresult:hover{background:#fafafa;}
-                        .searchresult a{color:#44a;}
+                        .searchresult a{color:#44a; font-size: 120%;}
                         .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
                         .searchresult .url{color:#393;}
-                        .searchresult .detail{color:#888; font-size: 80%;}
+                        .searchresult .detail{color:#888;}
                         .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
                         .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
                         
-                        .searchresult .mark1{background:#ff3;}
+                        .searchresult .mark1{background:#fd3;}
                         .searchresult .mark2{background:#3f3;}
                         .searchresult .mark3{background:#f88;}
                         .searchresult .mark4{background:#ccf;}
@@ -430,7 +430,10 @@ class ahsearch extends crawler_base {
             default:
                 break;
         }
-        return $sOut;
+        return $sOut 
+                . '<br>'
+                . 'powered by <a href="'.$this->aAbout['urlDocs'].'">' . $this->aAbout['product'].' '.$this->aAbout['version'].'</a>: '
+                . $this->LF('about.infostring');
     }
 
 }

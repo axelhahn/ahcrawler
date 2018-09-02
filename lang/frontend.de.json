@@ -8,5 +8,7 @@
     
     "searchout.nohit": "Kein Treffer :-/",
     "searchout.too-many-hits": "Hinweis: Es kommen zu viele Treffer - ich denke, Du solltest einen weiteren Begriff in der Suche hinzuf&uuml;gen. Mehrere Suchbegriffe werden mit UND verkn&uuml;pft und reduzieren die Treffer.",
-    "searchout.hits": "Treffer: <strong>%s</strong>"
+    "searchout.hits": "Treffer: <strong>%s</strong>",
+    
+    "about.infostring": "OpenSource Suchmaschine und Webseitenanalyse"
 }

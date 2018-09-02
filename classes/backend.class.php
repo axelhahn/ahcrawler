@@ -751,12 +751,11 @@ class backend extends crawler_base {
      */
     private function _getContentprofiles() {
         $sReturn = '';
-        $this->_getTab();
-        $this->setSiteId($this->_sTab);
         $sReturn.=$this->_getNavi2($this->_getProfiles())
                 . '<h3>' . $this->lB('profile.vars.searchprofile') . '</h3>'
                 // . '<pre>' . print_r($this->aProfile, 1) . '</pre>'
                 ;
+        $this->setSiteId($this->_sTab);
         $aTbl = array();
         // foreach ($this->_getProfileConfig($this->_sTab) as $sVar => $val) {
         foreach ($this->aProfile as $sVar => $val) {
@@ -932,7 +931,7 @@ class backend extends crawler_base {
      */
     private function _getContentsearches() {
         $sReturn = '';
-        $aFields = array('ts', 'searchset', 'query', 'results', 'host', 'ua', 'referrer');
+        $aFields = array('ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer');
         $sReturn.=$this->_getNavi2($this->_getProfiles());
         $aLastSearches = $this->oDB->select(
                 'searches', 
@@ -980,14 +979,25 @@ class backend extends crawler_base {
         if (count($aLastSearches)) {
             $aTable = array();
             foreach ($aLastSearches as $aRow) {
-                $aTmp=  unserialize($aRow['searchset']);
+                $aTmp=unserialize($aRow['searchset']);
+                /*
                 $sSubdir=(is_array($aTmp) && array_key_exists('subdir', $aTmp)) 
                     ? $aTmp['subdir'] 
                     : (is_array($aTmp) && array_key_exists('url', $aTmp))
                         ? preg_replace('#//.*[/%]#', '/', $aTmp['url'], 1)
                         : '/'
                     ;
+                 */
+                $sSubdir=(isset($aTmp['subdir']) && $aTmp['subdir']) 
+                    ? $aTmp['subdir'] 
+                    : '%'
+                    ;
                 // $sSubdir=(is_array($aTmp) && array_key_exists('subdir', $aTmp)) ? $aTmp['subdir'] : '';
+                
+                // unset($aRow['searchset']);
+                // $aRow['searchset']=print_r($aTmp,1);
+                // $aRow['searchset']=$sSubdir;
+                
                 $aRow['actions'] = $this->_getButton(array(
                     'href' => 'overlay.php?action=search&query=' . $aRow['query'] . '&siteid=' . $this->_sTab . '&subdir=' . $sSubdir,
                     'class' => 'button-secondary',

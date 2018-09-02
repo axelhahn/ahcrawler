@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.28',
-        'date' => '2018-08-29',
+        'version' => 'v0.29',
+        'date' => '2018-09-02',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -61,6 +61,82 @@ class crawler_base {
         ),
     );
 
+    protected $_aDbSettings=array(
+        'tables'=>array(
+            "pages"=>array(
+                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                'url' => 'VARCHAR(1024)  NOT NULL',
+                'siteid' => 'INTEGER  NOT NULL',
+                'title' => 'VARCHAR(256)  NULL',
+                'description' => 'VARCHAR(1024)  NULL',
+                'keywords' => 'VARCHAR(1024)  NULL',
+                'lang' => 'VARCHAR(8) NULL',
+                'size' => 'INTEGER NULL',
+                'time' => 'INTEGER NULL',
+                'content' => 'MEDIUMTEXT',
+                'header' => 'VARCHAR(2048) NULL',
+                'response' => 'MEDIUMTEXT',
+                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                'tserror' => 'DATETIME NULL',
+                'errorcount' => 'INTEGER NULL',
+                'lasterror' => 'VARCHAR(1024)  NULL',
+            ),
+            "words"=>array(
+                'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'word' => 'VARCHAR(32) NOT NULL',
+                'count' => 'INTEGER',
+                'siteid' => 'INTEGER NOT NULL',
+            ),
+            "searches"=> array(
+                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                'siteid' => 'INTEGER NOT NULL',
+                'searchset' => 'VARCHAR(128)  NULL',
+                'query' => 'VARCHAR(256)  NULL',
+                'results' => 'INTEGER  NULL',
+                'host' => 'VARCHAR(64)  NULL', // ipv4 and ipv6
+                'ua' => 'VARCHAR(256)  NULL',
+                'referrer' => 'VARCHAR(1024)  NULL'
+            ),
+            "ressources" => array(
+                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'siteid' => 'INTEGER NOT NULL',
+                'url' => 'VARCHAR(1024) NOT NULL',
+                'ressourcetype' => 'VARCHAR(16) NOT NULL',
+                'type' => 'VARCHAR(16) NOT NULL',
+                'header' => 'VARCHAR(2048) NULL',
+                // header vars
+                'content_type' => 'VARCHAR(32) NULL',
+                'isSource' => 'BOOLEAN NULL',
+                'isLink' => 'BOOLEAN NULL',
+                'isEndpoint' => 'BOOLEAN NULL',
+                'isExternalRedirect' => 'BOOLEAN NULL',
+                'http_code' => 'INTEGER NULL',
+                'status' => 'VARCHAR(16) NOT NULL',
+                'total_time' => 'INTEGER NULL',
+                'size_download' => 'INTEGER NULL',
+                'rescan' => 'BOOL DEFAULT TRUE',
+                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                'tsok' => 'DATETIME NULL',
+                'tserror' => 'DATETIME NULL',
+                'errorcount' => 'INTEGER NULL',
+                'lasterror' => 'VARCHAR(1024)  NULL',
+            ),
+            "ressources_rel"=> array(
+                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                'id_rel_ressources' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                'siteid' => 'INTEGER NOT NULL',
+                // 'id_ressource' => 'VARCHAR(32) NOT NULL',
+                // 'id_ressource_to' => 'VARCHAR(32) NOT NULL',
+                'id_ressource' => 'INTEGER NOT NULL',
+                'id_ressource_to' => 'INTEGER NOT NULL',
+                // 'references' => 'INTEGER NOT NULL',
+            ),
+        ),
+    );
+        
     /**
      * the current set site ID (search profile)
      * @var integer
@@ -207,91 +283,15 @@ class crawler_base {
      * @param type $aOptions
      */
     private function _initDB() {
-
         $this->oDB = new Medoo\Medoo($this->aOptions['database']);
         if (!$this->_checkDbResult()) {
             die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
         }
+        // TODO: put creation of tables into setup/ update
+        foreach($this->_aDbSettings['tables'] as $sTable=>$aSettings){
+            $this->_createTable($sTable, $aSettings);
+        }
 
-        $this->_createTable("pages", array(
-            'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-            // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-            'url' => 'VARCHAR(1024)  NOT NULL',
-            'siteid' => 'INTEGER  NOT NULL',
-            'title' => 'VARCHAR(256)  NULL',
-            'description' => 'VARCHAR(1024)  NULL',
-            'keywords' => 'VARCHAR(1024)  NULL',
-            'lang' => 'VARCHAR(8) NULL',
-            'size' => 'INTEGER NULL',
-            'time' => 'INTEGER NULL',
-            'content' => 'MEDIUMTEXT',
-            'header' => 'VARCHAR(2048) NULL',
-            'response' => 'MEDIUMTEXT',
-            'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-            'tserror' => 'DATETIME NULL',
-            'errorcount' => 'INTEGER NULL',
-            'lasterror' => 'VARCHAR(1024)  NULL',
-                )
-        );
-
-        $this->_createTable("words", array(
-            'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
-            'word' => 'VARCHAR(32) NOT NULL',
-            'count' => 'INTEGER',
-            'siteid' => 'INTEGER NOT NULL',
-                )
-        );
-
-        $this->_createTable("searches", array(
-            'page_id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-            'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-            'siteid' => 'INTEGER NOT NULL',
-            'searchset' => 'VARCHAR(32)  NULL',
-            'query' => 'VARCHAR(32)  NULL',
-            'results' => 'INTEGER  NULL',
-            'host' => 'VARCHAR(32)  NULL',
-            'ua' => 'VARCHAR(128)  NULL',
-            'referrer' => 'VARCHAR(128)  NULL'
-                )
-        );
-
-        $this->_createTable("ressources", array(
-            // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-            'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-            'siteid' => 'INTEGER NOT NULL',
-            'url' => 'VARCHAR(1024) NOT NULL',
-            'ressourcetype' => 'VARCHAR(16) NOT NULL',
-            'type' => 'VARCHAR(16) NOT NULL',
-            'header' => 'VARCHAR(2048) NULL',
-            // header vars
-            'content_type' => 'VARCHAR(32) NULL',
-            'isSource' => 'BOOLEAN NULL',
-            'isLink' => 'BOOLEAN NULL',
-            'isEndpoint' => 'BOOLEAN NULL',
-            'isExternalRedirect' => 'BOOLEAN NULL',
-            'http_code' => 'INTEGER NULL',
-            'status' => 'VARCHAR(16) NOT NULL',
-            'total_time' => 'INTEGER NULL',
-            'size_download' => 'INTEGER NULL',
-            'rescan' => 'BOOL DEFAULT TRUE',
-            'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-            'tsok' => 'DATETIME NULL',
-            'tserror' => 'DATETIME NULL',
-            'errorcount' => 'INTEGER NULL',
-            'lasterror' => 'VARCHAR(1024)  NULL',
-                )
-        );
-        $this->_createTable("ressources_rel", array(
-            // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-            'id_rel_ressources' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
-            'siteid' => 'INTEGER NOT NULL',
-            // 'id_ressource' => 'VARCHAR(32) NOT NULL',
-            // 'id_ressource_to' => 'VARCHAR(32) NOT NULL',
-            'id_ressource' => 'INTEGER NOT NULL',
-            'id_ressource_to' => 'INTEGER NOT NULL',
-                // 'references' => 'INTEGER NOT NULL',
-                )
-        );
     }
 
     /**

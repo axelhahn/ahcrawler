@@ -170,7 +170,7 @@ class ressources extends crawler_base {
             $a['size_download'] = (int) $this->_getHeaderVarFromJson($sHeaderJson, 'size_download') / 1;
             // $aData[''] = $this->_getHeaderVarFromJson($aData['header'], '');
         }
-        $oHttpstatus = new httpstatus($a['http_code']);
+        $oHttpstatus = new httpstatus(isset($a['http_code']) ? $a['http_code'] : 0);
         $a['status'] = $oHttpstatus->getStatus();
 
         foreach (array_keys($aResDefaults) as $sKey) {
@@ -297,7 +297,7 @@ class ressources extends crawler_base {
             $oHtml = new analyzerHtml($aData['response'], $aData['url']);
             $this->addPageRelItems($aData, $oHtml->getCss());
             $this->addPageRelItems($aData, $oHtml->getImages());
-            $this->addPageRelItems($aData, $oHtml->getLinks());
+            $this->addPageRelItems($aData, $oHtml->getLinks(false,false));
             $this->addPageRelItems($aData, $oHtml->getScripts());
         }
     }
@@ -633,7 +633,8 @@ class ressources extends crawler_base {
     public function processResponse($response) {
         $url = $response->getUrl();
 
-        list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
+        // list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
+        $sHttpHeader=explode("\r\n\r\n", $response->getResponseText(), 1);
         
         $info = $response->getResponseInfo();
         $info['_responseheader'] = $sHttpHeader;
@@ -792,7 +793,9 @@ class ressources extends crawler_base {
                         CURLOPT_USERAGENT => $this->sUserAgent,
                         CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd'] : '',
                         // TODO: this is unsafe .. better: let the user configure it
-                        CURLOPT_SSL_VERIFYPEER => 0,
+                        CURLOPT_SSL_VERIFYHOST => false,
+                        CURLOPT_SSL_VERIFYPEER => false,
+                        CURLOPT_SSL_VERIFYSTATUS => false,
                         // v0.22 cookies
                         CURLOPT_COOKIEJAR, $this->sCcookieFilename,
                         CURLOPT_COOKIEFILE, $this->sCcookieFilename,

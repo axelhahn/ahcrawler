@@ -108,12 +108,7 @@
     "db-ressources.url": "URL",
     "db-ressources._dlspeed": "Geschwindigkeit",
     "db-ressources._size_download": "Gr&ouml;sse",
-    "db-ressources._meta_total_time": "total_time",
-    "db-ressources._meta_namelookup_time": "namelookup_time",
-    "db-ressources._meta_connect_time": "connect_time",
-    "db-ressources._meta_pretransfer_time": "pretransfer_time",
-    "db-ressources._meta_starttransfer_time": "starttransfer_time",
-    "db-ressources._meta_redirect_time": "redirect_time",
+    "db-ressources._meta_total_time": "Transferdauer [s]",
 
     "hr-size-byte":"Byte",
     "hr-size-kb":"kB",

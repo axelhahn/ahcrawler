@@ -17,7 +17,7 @@
     $sSubdir=array_key_exists('subdir',$_GET)?$_GET['subdir']:'%';
     $sPrefUrl='//'.$_SERVER['SERVER_NAME'];
     
-    $sRadios='';
+    $sSelect='';
     $aCat=$o->getSearchcategories();
     if ($aCat){
         foreach ($aCat as $sLabel=>$sUrl){

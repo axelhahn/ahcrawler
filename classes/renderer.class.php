@@ -335,7 +335,9 @@ class ressourcesrenderer extends crawler_base {
             $aOutItem = $this->oRes->getRessourceDetailsOutgoing($iIdRessource);
             // $sReturn .= count($aOutItem) .  " sub elements ... recursion with <pre>" . print_r($aOutItem, 1) . "</pre><br>";
             if ($aOutItem && count($aOutItem)) {
-                $sReturn .= str_repeat('&nbsp;&nbsp;&nbsp;', $iLevel++) . '&gt;&gt;&gt;' . $this->_renderWithRedirects($aOutItem[0], $iLevel++);
+                $iLevel++;
+                // $sReturn .= str_repeat('&nbsp;&nbsp;&nbsp;', $iLevel++) . '&gt; ' . $this->_renderWithRedirects($aOutItem[0], $iLevel++);
+                $sReturn .= '<div style="margin-left: '.($iLevel*1) . 'em;">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
             }
         }
         return $sReturn;
@@ -480,12 +482,14 @@ class ressourcesrenderer extends crawler_base {
             'content_type',
             '_size_download',
             'ts',
+            '_meta_total_time', 
         ))
         ;
         $aHeaderJson=json_decode($aRessourceItem['header'], 1);
         if($aHeaderJson && $aHeaderJson['_responseheader']){
             $sReturn.='<pre>'.print_r($aHeaderJson['_responseheader'], 1).'</pre>';
         }
+        /*
         $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
             '_meta_total_time', 
             '_meta_namelookup_time', 
@@ -495,6 +499,7 @@ class ressourcesrenderer extends crawler_base {
             '_meta_redirect_time', 
                 // '_dlspeed'
         ));
+         */
                 
 
         if ($aRessourceItem['errorcount']) {

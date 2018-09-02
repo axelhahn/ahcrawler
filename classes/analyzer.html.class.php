@@ -103,6 +103,7 @@ class analyzerHtml {
         $self = $this;
         $rollingCurl->setOptions(array(
                     CURLOPT_FOLLOWLOCATION => false,
+                    // CURLOPT_HEADER => true,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36',
                     CURLOPT_VERBOSE => false,
@@ -132,7 +133,8 @@ class analyzerHtml {
      */
     public function processResponse($response) {
         $url = $response->getUrl();
-        $this->setHtml($response->getResponseText(), $url);
+        $this->_aHttpResponseHeader = $response->getResponseInfo();
+        $this->setHtml($response->getResponseText(), $url);        
     }
 
     // ---------------------------------------------------------------------- 
@@ -700,10 +702,11 @@ class analyzerHtml {
      *      script    script (javascript, jscript or vbscript)
      *      other     other protocol than http(s)
      * 
-     * @param string  $sFilterByType  return links of this type only
+     * @param string  $sFilterByType  return links of this type only; deault: return all links
+     * @param string  $bShowNofollow  skip links with attribute rel="nofollow"? default: return nofollow links
      * @return array
      */
-    public function getLinks($sFilterByType = false) {
+    public function getLinks($sFilterByType = false, $bShowNofollow=true) {
         $aReturn = array();
         if ($this->_oDom) {
 
@@ -715,7 +718,11 @@ class analyzerHtml {
                 $sHref = $element->getAttribute('_href');
 
                 // skip link tag with rel="stylesheet" - these are fetched in getCss
-                if ($element->getAttribute('rel') && $element->getAttribute('rel') === 'stylesheet') {
+                if ($element->getAttribute('rel') && (
+                        $element->getAttribute('rel') === 'stylesheet'
+                        || (!$bShowNofollow && $element->getAttribute('rel') === 'nofollow')
+                        )
+                ) {
                     continue;
                 }
 

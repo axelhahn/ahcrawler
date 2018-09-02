@@ -256,7 +256,7 @@ div.warning{background: #fc6; padding: 1em;}
 .counter{background: rgba(0,0,0,0.05); float: left; margin-top: 1em; padding: 1em;}
 .divRessourceReport{border: 1px solid #eee; padding: 0.5em; background: linear-gradient(#f8f8f8,#fff,#f8f8f8);}
 .pure-table tr:hover, .divRessourceReport:hover{background:#ce8; background:linear-gradient(90deg,#ce8,#f8f8f8) !important;}
-.divRessourceReport .references{border-left: 3px solid #ccc; margin: 0 0 0 3em; padding-left: 0.5em;}
+.divRessourceReport .references{border-left: 1px dotted #ccc; margin: 0 0 0 1em; padding-left: 0.5em;}
 
 /* --- tables --- */
 

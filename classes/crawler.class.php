@@ -142,7 +142,10 @@ class crawler extends crawler_base{
                 CURLOPT_VERBOSE => false,
 
                 // TODO: this is unsafe .. better: let the user configure it
-                CURLOPT_SSL_VERIFYPEER => 0,
+                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYSTATUS => false,
+
             ))
             ->get($urlRobots)
             ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
@@ -353,7 +356,10 @@ class crawler extends crawler_base{
      */
     public function processResponse($response) {
         $url = $response->getUrl();
-        list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
+        // list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
+        $aTmp=explode("\r\n\r\n", $response->getResponseText(), 2);
+        $sHttpHeader=$aTmp[0];
+        $sHttpBody=isset($aTmp[1]) ? $aTmp[1] : false;
 
         $info = $response->getResponseInfo();
         $info['_responseheader']=$sHttpHeader;
@@ -366,6 +372,7 @@ class crawler extends crawler_base{
         // echo "DEBUG: ".__FUNCTION__."$url  - STATUS " . $oHttpstatus->getHttpcode() . "\n";
         if ($oHttpstatus->isError()) {
             echo "ERROR: fetching $url FAILED. Status: ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus().".\n";
+            print_r($aTmp); sleep(5);
             return false;
         }
         if ($oHttpstatus->isRedirect()) {
@@ -463,7 +470,9 @@ class crawler extends crawler_base{
         } else {
             // ... starturls in config
             echo "RESCAN complete index.\n";
-            if (array_key_exists('urls2crawl', $this->aProfile['searchindex'])) {
+            if(!isset($this->aProfile['searchindex']['urls2crawl'])){
+                echo 'WARNING: no urls in profiles->'.$this->iSiteId.'->urls2crawl->searchindex<br>'."\n";
+            } else  {
                 foreach ($this->aProfile['searchindex']['urls2crawl'] as $sUrl) {
                     $aStartUrls[]=$sUrl;
                 }
@@ -555,7 +564,12 @@ class crawler extends crawler_base{
                     CURLOPT_VERBOSE => false,
 
                     // TODO: this is unsafe .. better: let the user configure it
-                    CURLOPT_SSL_VERIFYPEER => 0,
+                    CURLOPT_SSL_VERIFYHOST => false,
+                    CURLOPT_SSL_VERIFYPEER => false,
+                    CURLOPT_SSL_VERIFYSTATUS => false,
+                    // v0.22 cookies
+                    CURLOPT_COOKIEJAR, $this->sCcookieFilename,
+                    CURLOPT_COOKIEFILE, $this->sCcookieFilename,
                 ))
                 ->setSimultaneousLimit($this->aProfile['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {

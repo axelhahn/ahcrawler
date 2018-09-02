@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2018-09-02: v0.29
+  * fix db column sizes for search and mysql 
+  * fix nofollow
+
 2018-08-29: v0.28
   * increase column size for url, content, response
   * bugfix: add site id in ressource updates
