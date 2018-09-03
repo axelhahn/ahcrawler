@@ -961,16 +961,34 @@ class backend extends crawler_base {
         
         $aDays=array(7,30,90,365);
         foreach($aDays as $iDays){
-            $oResult=$this->oDB->query(''
+            $sQuery=''
                     . 'SELECT query, count(query) as count, results '
-                    . 'FROM "searches" '
-                    . 'WHERE "siteid" = "'.$this->_sTab.'" '
-                    . 'AND "ts" > "'.date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))).'" '
+                    . 'FROM searches '
+                    . 'WHERE siteid = '.$this->_sTab.' '
+                    . 'AND ts > \''.date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))).'\' '
                     . 'GROUP BY query '
                     . 'ORDER BY count desc, query asc '
-                    . 'LIMIT 0,10'
-            );
+                    . 'LIMIT 0,10';
+            $oResult=$this->oDB->query($sQuery);
             
+            /*
+             * TODO: FIX ME
+            $oResult = $this->oDB->select(
+                    'searches', 
+                    array('ts', 'query', 'count(query) as count', 'results'),
+                    array(
+                        'AND' => array(
+                            'siteid' => $this->_sTab,
+                            '[>]ts' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))),
+                        ),
+                        "GROUP" => "query",
+                        "ORDER" => array("count"=>"DESC", "query"=>"asc"),
+                        "LIMIT" => 10
+                    )
+            );
+             */
+            
+            // echo "$sQuery ".($oResult ? "OK" : "fail")."<br>";
             $aSearches[$iDays]=($oResult ? $oResult->fetchAll(PDO::FETCH_ASSOC) : array());
         }
         
@@ -1017,12 +1035,28 @@ class backend extends crawler_base {
         foreach($aDays as $iDays){
             if (count($aSearches[$iDays])) {
                 $aTable = array();
+                $aChartitems=array();
+                $iCount=0;
                 foreach ($aSearches[$iDays] as $aRow) {
+                    $iCount++;
                     $aTable[] = $aRow;
+                    $aChartitems[]=array(
+                        'label'=>$aRow['query'],
+                        'value'=>$aRow['count'],
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCount % 5 + 1).'\')',
+                        // 'legend'=>$iExternal.' x '.$this->lB('linkchecker.found-http-external'),
+                    );
                 }
 
-                $sReturn.= '<h3>' . sprintf($this->lB('profile.searches.top10lastdays'), $iDays) . '</h3>' 
-                        . $this->_getHtmlTable($aTable, "searches.");
+                $sReturn.= '<h3>' . sprintf($this->lB('profile.searches.top10lastdays'), $iDays) . '</h3>'
+                        . '<div style="float: right;">' 
+                        . $this->_getChart(array(
+                            'type'=>'pie',
+                            'data'=>$aChartitems
+                            ))
+                        . '</div>'
+                        . $this->_getHtmlTable($aTable, "searches.")
+                        ;
             }         
         }
         /*

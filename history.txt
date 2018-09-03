@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2018-09-03: v0.30
+  * fix search stats in mysql
+  * show charts in search stats
+
 2018-09-02: v0.29
   * fix db column sizes for search and mysql 
   * fix nofollow
