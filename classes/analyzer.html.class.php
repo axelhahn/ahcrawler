@@ -102,7 +102,7 @@ class analyzerHtml {
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
         $rollingCurl->setOptions(array(
-                    CURLOPT_FOLLOWLOCATION => false,
+                    CURLOPT_FOLLOWLOCATION => true,
                     // CURLOPT_HEADER => true,
                     CURLOPT_RETURNTRANSFER => true,
                     CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36',

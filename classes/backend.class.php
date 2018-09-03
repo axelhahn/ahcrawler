@@ -1228,7 +1228,7 @@ class backend extends crawler_base {
                 // table array for ressources
                 //
                 if(count($aRessourcelist)){
-                    $aTableFilter[]=array('<strong>'.$this->lB('ressources.itemstotal').'</strong>', '' ,'<strong>'.count($aRessourcelist).'</strong>');
+                    $aTableFilter[]=array('<strong>'.$this->lB('ressources.total').'</strong>', '' ,'<strong>'.count($aRessourcelist).'</strong>');
                 }
             }
             
@@ -1687,6 +1687,19 @@ class backend extends crawler_base {
 
         // --- warnings
         $sReturn.= '<h3>' . $this->lB('httpheader.warnings') . '</h3>';
+        
+        if(strstr($aFirstPage[0]['url'], 'http://')){
+            // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
+            $sReturn.= '<ul class="tiles errors">'
+                    . '<li>'
+                        .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
+                        .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
+                        . $this->lB('httpheader.httponly.hint')
+                        .'</a>'
+                    . '</li>'
+                    . '</ul><div style="clear: both;"></div>'
+                    ;
+        }
         $sLegendeWarn='';
         $aWarnheader=$oHttpheader->checkUnwantedHeaders();
         if(is_array($aWarnheader) && count($aWarnheader)){
@@ -1972,7 +1985,7 @@ class backend extends crawler_base {
             
             if ($aData && count($aData)){
                 $sReturn.='<h3>exact results '.count($aData).' </h3>'
-                        . $this->lB('ressources.itemstotal')
+                        . $this->lB('ressources.total')
                         . ': <strong>' . count($aData) . '</strong><br><br>'
                         ;
                 foreach($aData as $aItem){

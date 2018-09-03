@@ -12,7 +12,7 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.30',
+        'version' => 'v0.31',
         'date' => '2018-09-03',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
@@ -516,7 +516,6 @@ class crawler_base {
             // $this->setSiteId(false);
             $sLang = $this->sLang;
         }
-        // echo __METHOD__ . "DEBUG: loading $sLang<br>";
         $sJsonfile = '/lang/' . $sPlace . '.' . $sLang . '.json';
         $aLang = json_decode(file_get_contents(dirname(__DIR__) . $sJsonfile), true);
         if (!$aLang || !is_array($aLang) || !count($aLang)) {
@@ -532,6 +531,7 @@ class crawler_base {
      * @return array
      */
     public function setLangBackend($sLang = false) {
+        $this->setSiteId(false);
         return $this->_getLangData('backend', $sLang);
     }
 

@@ -159,6 +159,7 @@ class ressourcesrenderer extends crawler_base {
      * @return string
      */
     public function renderValue($sType, $value) {
+
         $sIcon = $this->_getIcon($value, true);
         switch ($sType) {
 
@@ -777,7 +778,7 @@ class ressourcesrenderer extends crawler_base {
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 . '<h3 id="listIn">' . $this->lB('ressources.references-in') . '</h3>'
-                . $this->lB('ressources.itemstotal')
+                . $this->lB('ressources.total')
                 . ': <strong>' . count($aIn) . '</strong><br><br>'
         ;
         
@@ -788,7 +789,7 @@ class ressourcesrenderer extends crawler_base {
             }
         }
         $sReturn.='<h3 id="listOut">' . $this->lB('ressources.references-out') . '</h3>'
-                . $this->lB('ressources.itemstotal') . ': <strong>' . count($aOut) . '</strong><br><br>'
+                . $this->lB('ressources.total') . ': <strong>' . count($aOut) . '</strong><br><br>'
         ;
         if (count($aOut)){
             foreach ($aOut as $aTmpItem) {
@@ -807,7 +808,7 @@ class ressourcesrenderer extends crawler_base {
         $dateLast=$this->oRes->getLastRecord();
         return ''
                 . '<p>'
-                    . $this->lB('ressources.itemstotal').': <strong>'.$iRessourcesCount.'</strong><br>'
+                    . sprintf($this->lB('ressources.itemstotal'), $iRessourcesCount).'<br>'
                     // . $this->lB('ressources.status').': <strong>'.$this->oRes->getLastRecord().'</strong> '
                     . $this->lB('ressources.age-scan').': '.$this->hrAge(date("U", strtotime($dateLast)))
                     . '<!-- siteid: '.$this->oRes->iSiteId.' -->'
