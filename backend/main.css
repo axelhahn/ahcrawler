@@ -33,6 +33,7 @@ body{
             border-bottom-right-radius: 0.3em;
             text-align: center;
 }
+.brand-title span{font-size: 0.5em;}
 
 /* --- menu left --- */
 .pure-menu{margin-left: 1.0em; background: rgba(255,255,255,0.5); width: 90%;}
@@ -218,14 +219,24 @@ div.warning{background: #fc6; padding: 1em;}
 .http-code-{background:#ccd;}
 .http-code--1 {background: #d0d0d8;}
 .http-code-2xx {background:#8b4;}
-.http-code-3xx,.http-code-4xx{background:#ea5;}
-.http-code-0,.http-code-301, .http-code-404, .http-code-410, .http-code-9xx {background:#e55;}
+.http-code-3xx{background:#ea5;}
+.http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {background:#e55;}
 .http-code-5xx {background:#b6b;}
 
 /* --- types --- */
 .type-external{color:#0066cc;}
 .type-internal{color:#009999;}
 .type-local{color:#aaaaaa;}
+
+/* --- icons --- */
+.ico-security{color:#48a;}
+.ico-httpv1{color:#083;}
+.ico-unknown{color:#c8c;}
+.ico-warn{color:#fa2;}
+.ico-non-standard{color:#083;}
+
+.ico-miss{color:#c42;}
+.ico-found{color:#083;}
 
 /*
 .ressourcetype{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff;}

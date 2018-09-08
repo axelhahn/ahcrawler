@@ -711,7 +711,11 @@ class analyzerHtml {
         if ($this->_oDom) {
 
             $anchors = array_merge(
-                    $this->_getNodesByTagAndAttribute('a', 'href'), $this->_getNodesByTagAndAttribute('area', 'href'), $this->_getNodesByTagAndAttribute('link', 'href'), $this->_getNodesByTagAndAttribute('frame', 'src'), $this->_getNodesByTagAndAttribute('iframe', 'src')
+                    $this->_getNodesByTagAndAttribute('a', 'href'), 
+                    $this->_getNodesByTagAndAttribute('area', 'href'), 
+                    $this->_getNodesByTagAndAttribute('link', 'href'), 
+                    $this->_getNodesByTagAndAttribute('frame', 'src'), 
+                    $this->_getNodesByTagAndAttribute('iframe', 'src')
             );
 
             foreach ($anchors as $element) {
@@ -720,6 +724,12 @@ class analyzerHtml {
                 // skip link tag with rel="stylesheet" - these are fetched in getCss
                 if ($element->getAttribute('rel') && (
                         $element->getAttribute('rel') === 'stylesheet'
+                        || $element->getAttribute('rel') === 'dns-prefetch'
+                        || $element->getAttribute('rel') === 'preconnect'
+                        || $element->getAttribute('rel') === 'prefetch'
+                        || $element->getAttribute('rel') === 'subresource'
+                        || $element->getAttribute('rel') === 'prerender'
+                        || $element->getAttribute('rel') === 'preload'
                         || (!$bShowNofollow && $element->getAttribute('rel') === 'nofollow')
                         )
                 ) {

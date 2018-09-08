@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.31',
-        'date' => '2018-09-03',
+        'version' => 'v0.32',
+        'date' => '2018-09-08',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -136,6 +136,7 @@ class crawler_base {
             ),
         ),
     );
+    protected $_aCurlopt=array();
         
     /**
      * the current set site ID (search profile)
@@ -214,6 +215,37 @@ class crawler_base {
             $aOptions['options']['database']['database_file'] = str_replace('__DIR__/', dirname(__DIR__) . '/', $aOptions['options']['database']['database_file']);
         }
         return $aOptions;
+    }
+    
+    protected function _getCurlCanHttp2(){
+        return (curl_version()["features"] & CURL_VERSION_HTTP2 !== 0);
+    }
+
+
+    protected function _getCurlOptions(){
+        $aReturn=array(
+            CURLOPT_HEADER => true,
+            CURLOPT_FOLLOWLOCATION => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERAGENT => $this->sUserAgent,
+            CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd']:false,
+            CURLOPT_VERBOSE => false,
+            CURLOPT_ENCODING => '',  // to fetch encoding
+
+            // TODO: this is unsafe .. better: let the user configure it
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_SSL_VERIFYPEER => false,
+            // CURLOPT_SSL_VERIFYSTATUS => false,
+            // v0.22 cookies
+            CURLOPT_COOKIEJAR, $this->sCcookieFilename,
+            CURLOPT_COOKIEFILE, $this->sCcookieFilename,
+            
+            CURLOPT_TIMEOUT => 10,
+        );
+        if($this->_getCurlCanHttp2()){
+            $aReturn[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2_0;
+        }
+        return $aReturn;
     }
 
     /**
@@ -348,7 +380,7 @@ class crawler_base {
 
         return $aData;
     }
-
+    
     /**
      * get latest record of a db table
      * 

@@ -36,49 +36,141 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
         ),
         // en: https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
         // de: https://de.wikipedia.org/wiki/Liste_der_HTTP-Headerfelder
-        'standard'=>array(
-            'Accept-Ranges'=>array(),
-            'Age'=>array(),
-            'Allow'=>array(),
-            'Cache-Control'=>array(),
-            'Connection'=>array(),
-            'Content-Encoding'=>array(),
-            'Content-Language'=>array(),
-            'Content-Length'=>array(),
-            'Content-Location'=>array(),
-            'Content-MD5'=>array(),
-            'Content-Disposition'=>array(),
-            'Content-Range'=>array(),
-            'Content-Security-Policy'=>array(),
-            'Content-Type'=>array(),
-            'Date'=>array(),
-            'ETag'=>array(),
-            'Expires'=>array(),
-            'Last-Modified'=>array(),
-            'Link'=>array(),
-            'Location'=>array(),
-            'P3P'=>array(),
-            'Pragma'=>array(),
-            'Proxy-Authenticate'=>array(),
-            'Refresh'=>array(),
-            'Retry-After'=>array(),
-            'Server'=>array(),
-            'Set-Cookie'=>array(),
-            'Trailer'=>array(),
-            'Transfer-Encoding'=>array(),
-            'Vary'=>array(),
-            'Via'=>array(),
-            'Warning'=>array(),
-            'WWW-Authenticate'=>array(),
+        'httpv1'=>array(
+            '_status'                   =>array(),
+            'A-IM'                      =>array(),
+            'Accept'                    =>array(),
+            'Accept-Additions'          =>array(),
+            'Accept-Charset'            =>array(),
+            'Accept-Encoding'           =>array(),
+            'Accept-Features'           =>array(),
+            'Accept-Language'           =>array(),
+            'Accept-Ranges'             =>array(),
+            'Age'                       =>array(),
+            'Allow'                     =>array(),
+            'Alternates'                =>array(),
+            'Authentication-Info'       =>array(),
+            'Authorization'             =>array(),
+            'C-Ext'                     =>array(),
+            'C-Man'                     =>array(),
+            'C-Opt'                     =>array(),
+            'C-PEP'                     =>array(),
+            'C-PEP-Info'                =>array(),
+            'Cache-Control'             =>array(),
+            'Connection'                =>array(),
+            'Content-Base'              =>array(),
+            'Content-Disposition'       =>array(),
+            'Content-Encoding'          =>array(),
+            'Content-ID'                =>array(),
+            'Content-Language'          =>array(),
+            'Content-Length'            =>array(),
+            'Content-Location'          =>array(),
+            'Content-MD5'               =>array(),
+            'Content-Range'             =>array(),
+            'Content-Script-Type'       =>array(),
+            'Content-Style-Type'        =>array(),
+            'Content-Type'              =>array(),
+            'Content-Version'           =>array(),
+            'Cookie'                    =>array(),
+            'Cookie2'                   =>array(),
+            'DAV'                       =>array(),
+            'Date'                      =>array(),
+            'Default-Style'             =>array(),
+            'Delta-Base'                =>array(),
+            'Depth'                     =>array(),
+            'Derived-From'              =>array(),
+            'Destination'               =>array(),
+            'Differential-ID'           =>array(),
+            'Digest'                    =>array(),
+            'ETag'                      =>array(),
+            'Expect'                    =>array(),
+            'Expires'                   =>array(),
+            'Ext'                       =>array(),
+            'From'                      =>array(),
+            'GetProfile'                =>array(),
+            'Host'                      =>array(),
+            'IM'                        =>array(),
+            'If'                        =>array(),
+            'If-Match'                  =>array(),
+            'If-Modified-Since'         =>array(),
+            'If-None-Match'             =>array(),
+            'If-Range'                  =>array(),
+            'If-Unmodified-Since'       =>array(),
+            'Keep-Alive'                =>array(),
+            'Label'                     =>array(),
+            'Last-Modified'             =>array(),
+            'Link'                      =>array(),
+            'Location'                  =>array(),
+            'Lock-Token'                =>array(),
+            'MIME-Version'              =>array(),
+            'Man'                       =>array(),
+            'Max-Forwards'              =>array(),
+            'Meter'                     =>array(),
+            'Negotiate'                 =>array(),
+            'Opt'                       =>array(),
+            'Ordering-Type'             =>array(),
+            'Overwrite'                 =>array(),
+            'P3P'                       =>array(),
+            'PEP'                       =>array(),
+            'PICS-Label'                =>array(),
+            'Pep-Info'                  =>array(),
+            'Position'                  =>array(),
+            'Pragma'                    =>array(),
+            'ProfileObject'             =>array(),
+            'Protocol'                  =>array(),
+            'Protocol-Info'             =>array(),
+            'Protocol-Query'            =>array(),
+            'Protocol-Request'          =>array(),
+            'Proxy-Authenticate'        =>array(),
+            'Proxy-Authentication-Info' =>array(),
+            'Proxy-Authorization'       =>array(),
+            'Proxy-Features'            =>array(),
+            'Proxy-Instruction'         =>array(),
+            'Public'                    =>array(),
+            'Range'                     =>array(),
+            'Referer'                   =>array(),
+            'Retry-After'               =>array(),
+            'Safe'                      =>array(),
+            'Security-Scheme'           =>array(),
+            'Server'                    =>array(),
+            'Set-Cookie'                =>array(),
+            'Set-Cookie2'               =>array(),
+            'SetProfile'                =>array(),
+            'SoapAction'                =>array(),
+            'Status-URI'                =>array(),
+            'Surrogate-Capability'      =>array(),
+            'Surrogate-Control'         =>array(),
+            'TCN'                       =>array(),
+            'TE'                        =>array(),
+            'Timeout'                   =>array(),
+            'Trailer'                   =>array(),
+            'Transfer-Encoding'         =>array(),
+            'URI'                       =>array(),
+            'Upgrade'                   =>array(),
+            'User-Agent'                =>array(),
+            'Variant-Vary'              =>array(),
+            'Vary'                      =>array(),
+            'Via'                       =>array(),
+            'WWW-Authenticate'          =>array(),
+            'Want-Digest'               =>array(),
+            'Warning'                   =>array(),
         ),
+        // see  https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_response_fields
         'non-standard'=>array(
-            'X-UA-Compatible'=>array(),
-            'X-Robots-Tag'=>array(),
+            'Content-Security-Policy'=>array(),
+            'X-Content-Security-Policy'=>array(),
+            'X-WebKit-CSP'=>array(),
+            'Refresh'=>array(),
+            'Status'=>array(),
+            'Timing-Allow-Origin'=>array(),
+            'X-Content-Duration'=>array(),
             'X-Content-Type-Options'=>array(),
-            'X-Frame-Options'=>array(),
-            'X-XSS-Protection'=>array(),
             'X-Powered-By'=>array(),
+            'X-Request-ID'=>array(),
+            'X-Correlation-ID'=>array(),
             'X-UA-Compatible'=>array(),
+            'X-XSS-Protection'=>array(),
+            'X-Robots-Tag'=>array(),
         ),
     );
     
@@ -107,13 +199,16 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
         $this->_aHeader=array();
         $this->_sHeader='';
         $aTmp=explode("\r\n", $sHeader);
-        // echo $sHeader."<br>";
+        // echo "DEBUG: " . $sHeader."<br>";
         if($aTmp && is_array($aTmp) && count($aTmp)){
             foreach($aTmp as $sLine){
+                if(!$sLine){
+                    continue;
+                }
                 $aTmp=explode(":", $sLine, 2);
                 $sVarname=count($aTmp)>1 ? $aTmp[0]:'_status';
-                $value=count($aTmp)>1 ? $aTmp[1]:$aTmp[0];
-                $this->_aHeader[$sVarname]=$value;
+                $value=count($aTmp)>1 ? $aTmp[1]:$sLine;
+                $this->_aHeader[$sVarname]=trim($value);
             }
             // $this->_aHeader=$aTmp;
         }
@@ -160,7 +255,62 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
     // ----------------------------------------------------------------------
     // Bad Headers
     // ----------------------------------------------------------------------
+    public function checkHeaders(){
+        $aReturn=array();
+        $aKnownHeader=array_merge($this->_aHeaderVars['httpv1'], $this->_aHeaderVars['security']);
+        
+        foreach($this->_aHeader as $varname=>$val){
+            $sFound=false;
+            $sBad=false;
+            foreach(array('non-standard', 'httpv1', 'security') as $sSection){
+                foreach($this->_aHeaderVars[$sSection] as $sVar=>$aChecks){
+                    if(strtolower($varname)=== strtolower($sVar)){
+                        $sFound=$sSection;
+                    }
+                }
+            }
+            $sSection='unwanted';
+            foreach($this->_aHeaderVars[$sSection] as $sVar=>$aChecks){
+
+                if(isset($aChecks['badregex'])){
+                    preg_match('/('.$sVar.'):\ (.*'.$aChecks['badregex'].'.*)/i', "$varname: $val", $aMatches);
+                    if(count($aMatches)){
+                        $sBad=$sSection;
+                    }
+                } else {
+                    if(strtolower($varname)=== strtolower($sVar)){
+                        $sBad=$sSection;
+                    }
+                }
+            }
+            
+            $aReturn[strtolower($varname)]=array(
+                'var'=>$varname,
+                'value'=>$val,
+                'found'=>$sFound ? $sFound : 'unknown',
+                'bad'=>$sBad ? $sBad : false,
+            );
+        }
+        return $aReturn;        
+    }
+    public function checkUnknowHeaders(){
+        $aReturn=array();
+        foreach($this->checkHeaders() as $sVar => $aData){
+            if($aData['found']==='unknown'){
+                $aReturn[$sVar]=$aData;
+            }
+        }
+        return $aReturn;
+    }
     public function checkUnwantedHeaders(){
+        $aReturn=array();
+        foreach($this->checkHeaders() as $sVar => $aData){
+            if($aData['bad']){
+                $aReturn[$sVar]=array('var'=>$sVar, 'value'=>$aData['value']);;
+            }
+        }
+        return $aReturn;
+        /*
         $aReturn=array();
         foreach($this->_aHeaderVars['unwanted'] as $sVar=>$aChecks){
             
@@ -174,6 +324,6 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
             }
         }
         return $aReturn;        
-        
+        */
     }
 }

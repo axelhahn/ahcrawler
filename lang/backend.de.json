@@ -245,35 +245,45 @@
     "htmlchecks.label-warnings": "Warnungen",
     "htmlchecks.label-ok": "OK",
 
-    
-    "httpheader.securityheaders": "Check der vorhandenen Security-Header",
-    "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
-    "httpheader.starturl": "Start-URL",
-    
+
     "httpheader.Content-Security-Policy.description": "Die Content Security Policy ist eine wirksame Maßnahme, um Ihre Website vor XSS-Angriffen zu schützen. Durch die Whitelistung von Quellen für freigegebene Inhalte können Sie verhindern, dass der Browser bösartige Inhalte lädt",
     "httpheader.Expect-CT.description": "Expect-CT erlaubt es einer Website, festzustellen, ob sie für die kommenden Chrome-Anforderungen bereit ist und/oder ihre CT-Richtlinien durchsetzt.",
     "httpheader.Feature-Policy.description": "Feature Policy ist ein neuer Header, der es einer Website erlaubt zu kontrollieren, welche Features und APIs im Browser verwendet werden können.",
-    "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server läuft, aber Sie können diesen Wert entfernen oder ändern",
+    "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server l&auml;uft. Sie können die Versionsnummer l&ouml;schen oder aber den Wert ganz entfernen.",
     "httpheader.Strict-Transport-Security.description": "HTTP Strict Transport Security ist ein hervorragendes Feature zur Unterstützung Ihrer Website und stärkt Ihre Implementierung von TLS, indem der User Agent die Verwendung von HTTPS erzwingt",
     "httpheader.Referrer-Policy.description": "Die Referrer Policy ist ein neuer Header, der es einer Seite erlaubt, zu steuern, wie viele Informationen der Browser bei der Navigation außerhalb eines Dokuments enthält und von allen Seiten gesetzt werden sollte",
     "httpheader.X-Content-Type-Options.description": "Die X-Content-Type-Options ist eine Markierung, die vom Server verwendet wird, um anzuzeigen, dass die in den Content-Type-Headern beworbenen MIME-Typen nicht geändert und befolgt werden sollten",
     "httpheader.X-Frame-Options.description": "X-Frame-Options teilt dem Browser mit, ob Sie das Framen Ihrer Seite zulassen wollen oder nicht. Indem Sie einen Browser daran hindern, Ihre Website zu framen, können Sie sich gegen Angriffe wie Clickjacking wehren",
     "httpheader.X-XSS-Protection.description": "X-XSS-Protection legt die Konfiguration für die in den meisten Browsern integrierten Cross-Site-Scripting-Filter fest. Die beste Konfiguration ist'X-XSS-Protection': 1; Modus=Block'.",
     "httpheader.no-value": "kein Wert",
+    
 
+
+    "httpheader.data": "Http-Header",
+    "httpheader.data.description": "Das ist der von der Startseite übermittelte Http Response Header",
+    "httpheader.varfound.httpv1": "",
+    "httpheader.varfound.security": "Security Header",
+    "httpheader.varfound.unknown": "unbekannte Header-Variable",
+    "httpheader.varfound.non-standard": "Gebr&auml;uchlich, aber kein Http-Standard",
+    
     "httpheader.warnings": "Warnhinweise zu den Http-Headern",
+    "httpheader.httponly": "Keine Verschl&uuml;sselung,",
+    "httpheader.httponly.description": "kein Https!",
+    "httpheader.httponly.hint": "Browser melden eine unsichere Seite",
+
+    "httpheader.unknown.description": "Es wurden unbekannte Headervariablen im Http Response gefunden.",
+    "httpheader.unknown.todo": "Bitte diese Variablen pr&uuml;fen:",
+
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
     "httpheader.warnings.ok": "OK",
     "httpheader.Server.description": "Bei der Angabe des Webservers sollte man bei produktiven Systemen auf Details, wie Version oder Betriebssystem verzichten. Setzen Sie den Server Header nur auf den Produktnamen.",
     "httpheader.X-Powered-By.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
 
-    "httpheader.data": "Http-Header",
-    "httpheader.data.description": "Das ist der von der Startseite übermittelte Http Response Header",
-    "httpheader.httponly": "Keine Verschl&uuml;sselung,",
-    "httpheader.httponly.description": "kein Https!",
-    "httpheader.httponly.hint": "Browser melden eine unsichere Seite",
-
+    "httpheader.securityheaders": "Check der vorhandenen Security-Header",
+    "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
+    "httpheader.starturl": "Start-URL",
+    
     "linkchecker.check-links": "Link-Check: Verteilung der Statuscodes",
     "linkchecker.found-http-errors": "Gruppe Http-Fehler",
     "linkchecker.found-http-errors-hint": "Gefundene Fehler in Links und Ressourcen. Diese sollte man in Ruhe einmal durchgehen.",

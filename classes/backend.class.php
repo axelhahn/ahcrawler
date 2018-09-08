@@ -1679,53 +1679,92 @@ class backend extends crawler_base {
         // --- header dump
         $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
                 . '<p>'
-                . $this->lB('httpheader.data.description').'<br>'
+                . $this->lB('httpheader.data.description').'<br><br>'
                 .'<strong>'.$this->lB('httpheader.starturl').'</strong>: '
                 .$aFirstPage[0]['url']
                 . '</p>'
-                . '<pre>'.print_r($oHttpheader->getHeaderstring(), 1).'</pre>';
+                // . '<pre>'.print_r($oHttpheader->getHeaderstring(), 1).'</pre>'
+                . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+                ;
 
         // --- warnings
         $sReturn.= '<h3>' . $this->lB('httpheader.warnings') . '</h3>';
+        $bHasWarning=false;
         
-        if(strstr($aFirstPage[0]['url'], 'http://')){
-            // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
-            $sReturn.= '<ul class="tiles errors">'
-                    . '<li>'
-                        .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
-                        .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
-                        . $this->lB('httpheader.httponly.hint')
-                        .'</a>'
-                    . '</li>'
-                    . '</ul><div style="clear: both;"></div>'
-                    ;
-        }
-        $sLegendeWarn='';
-        $aWarnheader=$oHttpheader->checkUnwantedHeaders();
-        if(is_array($aWarnheader) && count($aWarnheader)){
-            $sReturn.= '<p>'
-                . $this->lB('httpheader.warnings.description')
-                . '</p>'
-                    . '<ul class="tiles warnings">';
-            foreach($aWarnheader as $sKey=>$aHeaderitem){
-                $sReturn .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.'.$sKey.'.description').'">' . $aHeaderitem['var'].'<br><strong>'.$aHeaderitem['value'].'</strong></a></li>';
-                $sLegendeWarn .='<li>'
-                        . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+            // --- http only?
+            if(strstr($aFirstPage[0]['url'], 'http://')){
+                $bHasWarning=true;
+                // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
+                $sReturn.= '<ul class="tiles">'
+                        . '<li>'
+                            .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
+                            .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
+                            . $this->lB('httpheader.httponly.hint')
+                            .'</a>'
+                        . '</li>'
+                        . '</ul><div style="clear: both;"></div>'
                         ;
             }
-            $sReturn.= '</ul>'
-                . '<div style="clear: both;"></div>'
-                . '<ul>'.$sLegendeWarn.'</ul>'
-                ;
-        } else {
-            $sReturn.= '<ul class="tiles warnings">'
-                . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
-                . '</ul>'
-                . '<div style="clear: both;"></div>'
-                ;
-            
-        }
-        // $sReturn.='<pre>'.print_r($aWarnheader, 1).'</pre>';
+            $sLegendeUnknown='';
+            $sLegendeWarn='';
+
+            // --- unknown header vars
+            // $sReturn.= '<pre>'.print_r($oHttpheader->checkHeaders(),1).'</pre>';
+            $aUnknownheader=$oHttpheader->checkUnknowHeaders();
+            // $sReturn.= '<pre>'.print_r($aUnknownheader,1).'</pre>';
+            if(is_array($aUnknownheader) && count($aUnknownheader)){
+                $bHasWarning=true;
+                $sReturn.= '<p>'
+                    . $this->lB('httpheader.unknown.description')
+                    . '</p>'
+                        . '<ul class="tiles warnings">';
+                foreach($aUnknownheader as $sKey=>$aHeaderitem){
+                    $sReturn .= '<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>';
+                    $sLegendeUnknown .='<li>'. '<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
+                }
+                $sReturn.= '</ul>'
+                    . '<div style="clear: both;"></div>'
+                    . $this->lB('httpheader.unknown.todo')
+                    . '<ul>'.$sLegendeUnknown.'</ul><br>'
+                    ;
+            }
+            // --- unwanted header vars
+            $aWarnheader=$oHttpheader->checkUnwantedHeaders();
+            if(is_array($aWarnheader) && count($aWarnheader)){
+                $bHasWarning=true;
+                $sReturn.= '<p>'
+                    . $this->lB('httpheader.warnings.description')
+                    . '</p>'
+                        . '<ul class="tiles warnings">';
+                foreach($aWarnheader as $sKey=>$aHeaderitem){
+                    $sReturn .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.'.$sKey.'.description').'">' . $aHeaderitem['var'].'<br><strong>'.$aHeaderitem['value'].'</strong></a></li>';
+                    $sLegendeWarn .='<li>'
+                            . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+                            ;
+                }
+                /*
+                foreach($aUnknownheader as $sKey=>$aHeaderitem){
+                    $sReturn .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.unknown').'">' . $this->lB('httpheader.unknown').'<br><strong>'.$aHeaderitem['var'].'</strong></a></li>';
+                    $sLegendeWarn .='<li>'
+                            . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+                            ;
+                }
+                 * 
+                 */
+                $sReturn.= '</ul>'
+                    . '<div style="clear: both;"></div>'
+                    . '<ul>'.$sLegendeWarn.'</ul>'
+                    ;
+            } 
+            if(!$bHasWarning){
+                $sReturn.= '<ul class="tiles warnings">'
+                    . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
+                    . '</ul>'
+                    . '<div style="clear: both;"></div>'
+                    ;
+
+            }
+            // $sReturn.='<pre>'.print_r($aWarnheader, 1).'</pre>';
         
         // --- security header
         $aSecHeader=$oHttpheader->checkSecurityHeaders();
@@ -1896,7 +1935,7 @@ class backend extends crawler_base {
 
                             $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
                             $shttpStatusDescr=$this->lB('httpcode.'.$iHttp_code.'.descr', 'httpcode.???.descr');
-                            $shttpStatusTodo=$this->lB('httpcode.'.$iHttp_code.'.todo');
+                            $shttpStatusTodo=$this->lB('httpcode.'.$iHttp_code.'.todo', 'httpcode.???.todo');
 
                             $sBar.='<div class="bar-'.$sSection.'" style="width: '.($iCount/$iRessourcesCount*100 - 3).'%; float: left;" '
                                     . 'title="'.$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code.'">'.$iCount.'</div>';

@@ -783,23 +783,11 @@ class ressources extends crawler_base {
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }
-            $rollingCurl
-                    ->setOptions(array(
-                        CURLOPT_FOLLOWLOCATION => false,
-                        CURLOPT_HEADER => true,
-                        CURLOPT_NOBODY => true,
-                        CURLOPT_RETURNTRANSFER => true,
-                        CURLOPT_TIMEOUT => 10,
-                        CURLOPT_USERAGENT => $this->sUserAgent,
-                        CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd'] : '',
-                        // TODO: this is unsafe .. better: let the user configure it
-                        CURLOPT_SSL_VERIFYHOST => false,
-                        CURLOPT_SSL_VERIFYPEER => false,
-                        CURLOPT_SSL_VERIFYSTATUS => false,
-                        // v0.22 cookies
-                        CURLOPT_COOKIEJAR, $this->sCcookieFilename,
-                        CURLOPT_COOKIEFILE, $this->sCcookieFilename,
-                    ))
+
+            $aCurlOpt=$this->_getCurlOptions();
+            $aCurlOpt[CURLOPT_NOBODY]=true; // means: fetch the ressponse header only
+            
+            $rollingCurl->setOptions($aCurlOpt)
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);
                         $self->touchLocking('processing ' . $request->getUrl());

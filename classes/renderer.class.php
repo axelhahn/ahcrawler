@@ -1,6 +1,7 @@
 <?php
 
 require_once ('ressources.class.php');
+require_once 'httpheader.class.php';
 
 /**
  * Description of ressources-renderer
@@ -91,6 +92,12 @@ class ressourcesrenderer extends crawler_base {
         
         'ico.found' => 'fa fa-check',
         'ico.miss' => 'fa fa-ban',
+        
+        'ico.unknown' => 'fa fa-question-circle',
+        'ico.httpv1' => 'fa fa-check',
+        'ico.non-standard' => 'fa fa-check-circle',
+        'ico.security' => 'fa fa-lock',
+        'ico.warn' => 'fa fa-exclamation-triangle',
     );
 
     // ----------------------------------------------------------------------
@@ -128,9 +135,9 @@ class ressourcesrenderer extends crawler_base {
         return true;
     }
 
-    private function _getIcon($sKey, $bEmptyIfMissing = false) {
+    private function _getIcon($sKey, $bEmptyIfMissing = false, $sClass=false) {
         if (array_key_exists($sKey."", $this->_aIcons)) {
-            return '<i class="' . $this->_aIcons[$sKey] . '"></i> ';
+            return '<i class="' . $this->_aIcons[$sKey] . ($sClass ? ' '.$sClass : '' ) .'"></i> ';
         }
         return $bEmptyIfMissing ? '' : '<span title="missing icon [' . $sKey . ']">[' . $sKey . ']</span>';
     }
@@ -151,6 +158,40 @@ class ressourcesrenderer extends crawler_base {
         return false;
     }
 
+    /**
+     * render a table to show http header
+     * @param array $aHeaderWithChecks  array of header vars; user the return of [httpheader]->checkHeaders();
+     *     [expires] => Array
+     *        (
+     *            [var] => expires
+     *            [value] => Wed, 05 Sep 2018 19:24:03 GMT
+     *            [found] => httpv1
+     *            [bad] => 
+     *        )
+     *
+     * @return string
+     */
+    public function renderHttpheaderAsTable($aHeaderWithChecks){
+        $sReturn='';
+        foreach($aHeaderWithChecks as $aEntry){
+            $sReturn.='<tr title="'.$aEntry['var'].': '.$aEntry['value'].'">'
+                    . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
+                    . '<td style="max-width: 20em; overflow: hidden;">'.$aEntry['value'].'</td>'
+                    . '<td>'
+                        . $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found']) 
+                        . ($aEntry['bad'] ? $this->_getIcon('ico.warn', false, 'ico-warn') : '')
+                    .'</td>'
+                    . '<td>'. $this->lB('httpheader.varfound.'.$aEntry['found']) .'</td>'
+                    . '</tr>'
+                    ;
+        }
+        if ($sReturn) {
+            return '<table class="pure-table pure-table-bordered">'
+                    . $sReturn
+                    . '</table>';
+        }
+        return$sReturn;
+    }
     /**
      * render a ressource value and add css class
      * 
@@ -338,7 +379,7 @@ class ressourcesrenderer extends crawler_base {
             if ($aOutItem && count($aOutItem)) {
                 $iLevel++;
                 // $sReturn .= str_repeat('&nbsp;&nbsp;&nbsp;', $iLevel++) . '&gt; ' . $this->_renderWithRedirects($aOutItem[0], $iLevel++);
-                $sReturn .= '<div style="margin-left: '.($iLevel*1) . 'em;">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
+                $sReturn .= '<div style="margin-left: 1em;">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
             }
         }
         return $sReturn;
@@ -486,9 +527,16 @@ class ressourcesrenderer extends crawler_base {
             '_meta_total_time', 
         ))
         ;
-        $aHeaderJson=json_decode($aRessourceItem['header'], 1);
+        
+        $aHeaderJson=json_decode($aRessourceItem['header'] ? $aRessourceItem['header'] : $aRessourceItem['lasterror'], 1);
         if($aHeaderJson && $aHeaderJson['_responseheader']){
-            $sReturn.='<pre>'.print_r($aHeaderJson['_responseheader'], 1).'</pre>';
+            
+            $oHttpheader=new httpheader();
+            $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
+            // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+            $sReturn.='<br>'.$this->lB('httpheader.data').'<br><br>'
+                    .$this->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+            
         }
         /*
         $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
@@ -805,10 +853,13 @@ class ressourcesrenderer extends crawler_base {
         // $iRessourcesCount=$this->oDB->count('ressources',array('siteid'=>$this->iSiteId));
         $this->_initRessource();
         $iRessourcesCount=$this->oRes->getCount();
+        $iExternal=$this->oRes->getCount(array('siteid'=>$this->oRes->iSiteId,'isExternalRedirect'=>'1'));
+        
         $dateLast=$this->oRes->getLastRecord();
         return ''
                 . '<p>'
                     . sprintf($this->lB('ressources.itemstotal'), $iRessourcesCount).'<br>'
+                    . ($iExternal ? $this->lB('linkchecker.found-http-external').': '.$iExternal.'<br>' : '')
                     // . $this->lB('ressources.status').': <strong>'.$this->oRes->getLastRecord().'</strong> '
                     . $this->lB('ressources.age-scan').': '.$this->hrAge(date("U", strtotime($dateLast)))
                     . '<!-- siteid: '.$this->oRes->iSiteId.' -->'
@@ -816,6 +867,6 @@ class ressourcesrenderer extends crawler_base {
                 ;
     }
     public function renderShortInfo($sType){
-        return $this->_getIcon('ico.'.$sType);
+        return $this->_getIcon('ico.'.$sType, false, 'ico-'.$sType);
     }
 }

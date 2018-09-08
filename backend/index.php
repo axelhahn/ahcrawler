@@ -106,7 +106,10 @@ $oCdn=new axelhahn\cdnorlocal(array(
             <div class="header">
                 <h1 class="brand-title"><a href="?">
                         <?php echo $oBackend->aAbout['product']; ?>
+                        <span><?php echo $oBackend->aAbout['version']; ?></span>
                     </a></h1>
+                    
+                        
                 <div class="pure-menu">
                     
                     <?php echo $oBackend->getNavi(); ?>

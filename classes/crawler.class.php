@@ -134,19 +134,10 @@ class crawler extends crawler_base{
         echo "ROBOTS.TXT: reading $urlRobots\n";    
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
-        $rollingCurl->setOptions(array(
-                CURLOPT_HEADER => true,
-                CURLOPT_FOLLOWLOCATION => false,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_USERAGENT => $this->sUserAgent,
-                CURLOPT_VERBOSE => false,
 
-                // TODO: this is unsafe .. better: let the user configure it
-                CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYSTATUS => false,
+        $aCurlOpt=$this->_getCurlOptions();
 
-            ))
+        $rollingCurl->setOptions($aCurlOpt)
             ->get($urlRobots)
             ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                 $self->addExcludesFromRobotsTxt($request->getResponseText());
@@ -372,7 +363,7 @@ class crawler extends crawler_base{
         // echo "DEBUG: ".__FUNCTION__."$url  - STATUS " . $oHttpstatus->getHttpcode() . "\n";
         if ($oHttpstatus->isError()) {
             echo "ERROR: fetching $url FAILED. Status: ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus().".\n";
-            print_r($aTmp); sleep(5);
+            // print_r($aTmp); sleep(5);
             return false;
         }
         if ($oHttpstatus->isRedirect()) {
@@ -555,22 +546,9 @@ class crawler extends crawler_base{
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }
-            $rollingCurl->setOptions(array(
-                    CURLOPT_HEADER => true,
-                    CURLOPT_FOLLOWLOCATION => false,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_USERAGENT => $this->sUserAgent,
-                    CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd']:false,
-                    CURLOPT_VERBOSE => false,
 
-                    // TODO: this is unsafe .. better: let the user configure it
-                    CURLOPT_SSL_VERIFYHOST => false,
-                    CURLOPT_SSL_VERIFYPEER => false,
-                    CURLOPT_SSL_VERIFYSTATUS => false,
-                    // v0.22 cookies
-                    CURLOPT_COOKIEJAR, $this->sCcookieFilename,
-                    CURLOPT_COOKIEFILE, $this->sCcookieFilename,
-                ))
+            $aCurlOpt=$this->_getCurlOptions();
+            $rollingCurl->setOptions($aCurlOpt)
                 ->setSimultaneousLimit($this->aProfile['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
@@ -580,7 +558,7 @@ class crawler extends crawler_base{
                     $rollingCurl->clearCompleted();
                     $rollingCurl->prunePendingRequestQueue();
                 })
-                ->execute()    
+                ->execute()
                 ;
             
         }
