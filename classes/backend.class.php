@@ -331,7 +331,7 @@ class backend extends crawler_base {
                 $sNavi.='</li>';
             }
         }
-        if($sNavi){
+        if($sNavi || true){
             $sNavi='<ul class="pure-menu-list">'.$sNavi.'</ul>';
         }
         
@@ -1537,7 +1537,7 @@ class backend extends crawler_base {
 
         // table with too short titles
         if ($iCountCrawlererrors) {
-            $sReturn.= '<h3 id="tblcrawlererrors">' . $this->lB('htmlchecks.tableCrawlererrors') . '</h3>'
+            $sReturn.= '<h3 id="tblcrawlererrors">' . sprintf($this->lB('htmlchecks.tableCrawlererrors'), $iCountCrawlererrors) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableCrawlererrors.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountCrawlererrors)    
                 .$this->_getHtmlchecksTable('select title, length(title) as length, url
@@ -1552,7 +1552,7 @@ class backend extends crawler_base {
 
         // table with too short titles
         if ($iCountShortTitles) {
-            $sReturn.= '<h3 id="tblshorttitle">' . $this->lB('htmlchecks.tableShortTitles') . '</h3>'
+            $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableShortTitles.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortTitles)    
                 .$this->_getHtmlchecksTable('select title, length(title) as length, url
@@ -1565,7 +1565,7 @@ class backend extends crawler_base {
         
         // table with too short descriptions
         if ($iCountShortDescr) {
-            $sReturn.= '<h3 id="tblshortdescription">' . $this->lB('htmlchecks.tableShortDescription') . '</h3>'
+            $sReturn.= '<h3 id="tblshortdescription">' . sprintf($this->lB('htmlchecks.tableShortDescription'), $iCountShortDescr) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableShortDescription.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortDescr)    
                 .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
@@ -1593,7 +1593,7 @@ class backend extends crawler_base {
         }
         // table with too short keyword
         if ($iCountShortKeywords) {
-            $sReturn.= '<h3 id="tblshortkeywords">' . $this->lB('htmlchecks.tableShortKeywords') . '</h3>'
+            $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableShortKeywords.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountShortKeywords)    
                 .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
@@ -1604,7 +1604,7 @@ class backend extends crawler_base {
                 );
         }
         if ($iCountLongload) {
-            $sReturn.= '<h3 id="tblloadtimepages">' . $this->lB('htmlchecks.tableLoadtimePages') . '</h3>'
+            $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountLongload)
                 .$this->_getHtmlchecksTable('select title, time, size, url
@@ -1615,7 +1615,7 @@ class backend extends crawler_base {
                 );
         }
         if ($iCountLargePages) {
-            $sReturn.= '<h3 id="tbllargepages">' . $this->lB('htmlchecks.tableLargePages') . '</h3>'
+            $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
                 .'<p>'.$this->lB('htmlchecks.tableLargePages.description').'</p>'
                 .$this->_getHtmlchecksChart($iSearchindexCount, $iCountLargePages)
                 .$this->_getHtmlchecksTable('select title, size, time, url
@@ -1688,14 +1688,14 @@ class backend extends crawler_base {
                 ;
 
         // --- warnings
-        $sReturn.= '<h3>' . $this->lB('httpheader.warnings') . '</h3>';
-        $bHasWarning=false;
-        
+        $iWarnings=0;
+        $sWarnings='';
+
             // --- http only?
             if(strstr($aFirstPage[0]['url'], 'http://')){
-                $bHasWarning=true;
+                $iWarnings++;
                 // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
-                $sReturn.= '<ul class="tiles">'
+                $sWarnings.= '<ul class="tiles errors">'
                         . '<li>'
                             .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
                             .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
@@ -1713,16 +1713,17 @@ class backend extends crawler_base {
             $aUnknownheader=$oHttpheader->checkUnknowHeaders();
             // $sReturn.= '<pre>'.print_r($aUnknownheader,1).'</pre>';
             if(is_array($aUnknownheader) && count($aUnknownheader)){
-                $bHasWarning=true;
-                $sReturn.= '<p>'
+                $iWarnings+=count($aUnknownheader);
+
+                $sWarnings.= '<p>'
                     . $this->lB('httpheader.unknown.description')
                     . '</p>'
                         . '<ul class="tiles warnings">';
                 foreach($aUnknownheader as $sKey=>$aHeaderitem){
-                    $sReturn .= '<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>';
+                    $sWarnings .= '<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>';
                     $sLegendeUnknown .='<li>'. '<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
                 }
-                $sReturn.= '</ul>'
+                $sWarnings.= '</ul>'
                     . '<div style="clear: both;"></div>'
                     . $this->lB('httpheader.unknown.todo')
                     . '<ul>'.$sLegendeUnknown.'</ul><br>'
@@ -1731,13 +1732,13 @@ class backend extends crawler_base {
             // --- unwanted header vars
             $aWarnheader=$oHttpheader->checkUnwantedHeaders();
             if(is_array($aWarnheader) && count($aWarnheader)){
-                $bHasWarning=true;
-                $sReturn.= '<p>'
+                $iWarnings+=count($aWarnheader);
+                $sWarnings.= '<p>'
                     . $this->lB('httpheader.warnings.description')
                     . '</p>'
                         . '<ul class="tiles warnings">';
                 foreach($aWarnheader as $sKey=>$aHeaderitem){
-                    $sReturn .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.'.$sKey.'.description').'">' . $aHeaderitem['var'].'<br><strong>'.$aHeaderitem['value'].'</strong></a></li>';
+                    $sWarnings .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.'.$sKey.'.description').'">' . $aHeaderitem['var'].'<br><strong>'.$aHeaderitem['value'].'</strong></a></li>';
                     $sLegendeWarn .='<li>'
                             . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
                             ;
@@ -1751,45 +1752,65 @@ class backend extends crawler_base {
                 }
                  * 
                  */
-                $sReturn.= '</ul>'
+                $sWarnings.= '</ul>'
                     . '<div style="clear: both;"></div>'
                     . '<ul>'.$sLegendeWarn.'</ul>'
                     ;
             } 
-            if(!$bHasWarning){
-                $sReturn.= '<ul class="tiles warnings">'
-                    . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
-                    . '</ul>'
-                    . '<div style="clear: both;"></div>'
-                    ;
-
-            }
+            $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h3>'
+                . ($iWarnings
+                    ? $sWarnings
+                    : '<ul class="tiles warnings">'
+                        . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
+                        . '</ul>'
+                        . '<div style="clear: both;"></div>'
+                )
+                ;
             // $sReturn.='<pre>'.print_r($aWarnheader, 1).'</pre>';
         
         // --- security header
         $aSecHeader=$oHttpheader->checkSecurityHeaders();
-        $sReturn.= '<h3>' . $this->lB('httpheader.securityheaders') . '</h3>'
+        
+        $sSecOk='';
+        $sSecMiss='';
+        $sLegendeSecOk='';
+        $sLegendeSecMiss='';
+        $iFoundSecHeader=0;
+        foreach($aSecHeader as $sVar=>$aData){
+            if($aData){
+                $iFoundSecHeader++;
+                $sSecOk.='<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>';
+                $sLegendeSecOk.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
+                        . ' <strong>' . $sVar. '</strong><br>'
+                        . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
+                        . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
+                        ;
+                
+                
+            } else {
+                $sSecMiss.='<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>';
+                $sLegendeSecMiss.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
+                        . ' <strong>' . $sVar. '</strong><br>'
+                        . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
+                        . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
+                        ;
+            }
+        }
+        $sReturn.= '<h3>' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
             . '<p>'
                 . $this->lB('httpheader.securityheaders.description').'<br>'
             . '</p>'
             . $this->_getHtmlchecksChart(count($aSecHeader), $oHttpheader->getCountBadSecurityHeaders())
-            . '<ul class="tiles warnings">';
-        $sLegendeSec='';
-        foreach($aSecHeader as $sVar=>$aData){
-            $sReturn.=($aData 
-                    ? '<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>'
-                    : '<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>'
-                    );
-            $sLegendeSec.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
-                    . ' <strong>' . $sVar. '</strong><br>'
-                    . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
-                    . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
-                    ;
-        }
-        $sReturn.= '</ul>'
-                . '<div style="clear: both;"></div>'
-                . '<ul>' . $sLegendeSec . '</ul>'
-                ;
+            . '<ul class="tiles warnings">'
+            . $sSecOk
+            . $sSecMiss
+            . '</ul>'
+            . '<div style="clear: both;"></div>'
+            . '<ul>' 
+                . $sLegendeSecOk
+                . $sLegendeSecMiss
+            . '</ul>'
+            ;
         
         
 
@@ -1890,7 +1911,7 @@ class backend extends crawler_base {
                     $iCodeCount=0;
                     if (count($aBoxes[$sSection])){
                         $sResResult.=''
-                                . '<h3>'.$this->lB('linkchecker.found-http-'.$sSection).'</h3>'
+                                . '<h3>'.sprintf($this->lB('linkchecker.found-http-'.$sSection), $aBoxes[$sSection]['total']).'</h3>'
                                 . '<p>'.$this->lB('linkchecker.found-http-'.$sSection.'-hint').'</p>'
                                 . '<ul class="tiles '.$sSection.'">';
                         
@@ -2066,7 +2087,8 @@ class backend extends crawler_base {
         // echo '<pre>'.print_r($aData, 1).'</pre>' . count($aData);
         if (count($aData)){
             foreach($aData as $aItem){
-                $sReturn.=$oRenderer->renderRessourceItemFull($aItem);
+                $sReturn.='<h3>'.$this->lB('ressources.ressourceitemfull').'</h3>'
+                    .$oRenderer->renderRessourceItemFull($aItem);
                 /*
                 if ((int)$aItem['http_code']===200 && strpos($aItem['content_type'], 'html')>0){
                     $oHtml=new analyzerHtml();
@@ -2416,25 +2438,6 @@ class backend extends crawler_base {
                     );
 
             }
-            /*
-            $aTableFilter[]=array('<strong>'.$this->lB('ressources.itemstotal').'</strong>', '' ,'<strong>'.count($aRessourcelist).'</strong>');
-            foreach ($aFilter as $sKey){
-                $sRessourcelabel=(array_key_exists($sKey, $this->_aIcons['cols']) ? '<i class="'.$this->_aIcons['cols'][$sKey].'"></i> ' : '') . $sKey;
-                $aTableFilter[]=array('<strong>'.$sRessourcelabel.'</strong>', '', '');
-                foreach ($aCounter[$sKey] as $sCounter=>$iValue){
-                    $aTableFilter[]=array(
-                        '', 
-                        (count($aCounter[$sKey])>1
-                            ? '<a href="?'.$sSelfUrl.'&amp;filteritem[]='.$sKey.'&amp;filtervalue[]='.$sCounter.'">'.$sCounter.'</a>'
-                            : $sCounter
-                        )
-                        , 
-                        $iValue
-                    );
-                }
-            }
-             * 
-             */
         } else {
             $sReturn.=' :-/ ';
         }

@@ -30,55 +30,11 @@ $oCdn=new axelhahn\cdnorlocal(array(
 
         <?php echo $oCdn->getHtmlInclude('Chart.js/2.7.2/Chart.min.js'); ?>
         
+        <script src="javascript/functions.js"></script>      
         <link rel="stylesheet" href="main.css">
         <!--
         <link rel="stylesheet" href="skins/sky/theme.css">
         -->
-        <script>
-            function showModal(sUrl){
-                var divOverlay=document.getElementById('overlay');
-                var sHtml='';
-                
-                sHtml+='<iframe src="'+sUrl+'" style="width: 100%; border: 0; height: 800px;"></iframe>';
-                divOverlay.style.display='block';
-                var divContent=document.getElementById('dialogcontent');
-                divContent.innerHTML=sHtml;
-            }
-            function hideModal(){
-                var divOverlay=document.getElementById('overlay');
-                divOverlay.style.display='none';
-                
-            }
-            /**
-             * get css value by given property and selector
-             * see https://stackoverflow.com/questions/16965515/how-to-get-a-style-attribute-from-a-css-class-by-javascript-jquery
-             * 
-             * @param {type} style
-             * @param {type} selector
-             * @param {type} sheet
-             * @returns {.sheet@arr;cssRules.style}
-             */
-            function getStyleRuleValue(style, selector, sheet) {
-                var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
-                for (var i = 0, l = sheets.length; i < l; i++) {
-                    var sheet = sheets[i];
-                    try {
-                        if( !sheet.cssRules ) { continue; }
-                        for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
-                            var rule = sheet.cssRules[j];
-                            if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
-                                return rule.style[style];
-                            }
-                        }
-                    } catch (e) {
-                        if (e.name !== "SecurityError") {
-                           throw e;
-                        }
-                    }
-                }
-                return null;
-            }
-        </script>
 
     </head>
     <body>
@@ -121,5 +77,8 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <style>
             span.warning1{background: #ff0000;}
         </style>
+        <script>
+            initPage();
+        </script>
 
     </body></html>

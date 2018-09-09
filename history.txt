@@ -15,6 +15,10 @@
 ----------------------------------------------------------------------
 
 
+2018-09-09: v0.33
+  * backend: add h3 headers in menu including counters
+  * update colors
+
 2018-09-08: v0.32
   * html analyzer: exclude a few link rel combinations
   * curl: added param to fetch encoding

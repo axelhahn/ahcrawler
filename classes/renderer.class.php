@@ -825,18 +825,20 @@ class ressourcesrenderer extends crawler_base {
                 . '</td>'
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
-                . '<h3 id="listIn">' . $this->lB('ressources.references-in') . '</h3>'
+                ;
+        
+
+        $sReturn.='<h3 id="listIn">' . sprintf($this->lB('ressources.references-h3-in'), count($aIn)) . '</h3>'
                 . $this->lB('ressources.total')
                 . ': <strong>' . count($aIn) . '</strong><br><br>'
         ;
-        
         if (count($aIn)){
             foreach ($aIn as $aTmpItem) {
                 // $sReturn.=$this->renderRessourceItemAsLine($aTmpItem) . '<br>';
                 $sReturn.=$this->renderReportForRessource($aTmpItem, false);
             }
         }
-        $sReturn.='<h3 id="listOut">' . $this->lB('ressources.references-out') . '</h3>'
+        $sReturn.='<h3 id="listOut">' . sprintf($this->lB('ressources.references-h3-out'), count($aOut)) . '</h3>'
                 . $this->lB('ressources.total') . ': <strong>' . count($aOut) . '</strong><br><br>'
         ;
         if (count($aOut)){
@@ -857,13 +859,22 @@ class ressourcesrenderer extends crawler_base {
         
         $dateLast=$this->oRes->getLastRecord();
         return ''
-                . '<p>'
-                    . sprintf($this->lB('ressources.itemstotal'), $iRessourcesCount).'<br>'
-                    . ($iExternal ? $this->lB('linkchecker.found-http-external').': '.$iExternal.'<br>' : '')
-                    // . $this->lB('ressources.status').': <strong>'.$this->oRes->getLastRecord().'</strong> '
-                    . $this->lB('ressources.age-scan').': '.$this->hrAge(date("U", strtotime($dateLast)))
-                    . '<!-- siteid: '.$this->oRes->iSiteId.' -->'
-                . '</p>'
+                . '<table class="pure-table pure-table-bordered">'
+                . '<tbody>'
+                . '<tr>'
+                    . '<td>' . $this->lB('ressources.itemstotal') . '</td>'
+                    . '<td>' . $iRessourcesCount .'</td>'
+                . '</tr>'
+                . '<tr>'
+                    . '<td>' . $this->lB('linkchecker.found-http-external') . '</td>'
+                    . '<td>' . $iExternal .'</td>'
+                . '</tr>'
+                . '<tr>'
+                    . '<td>' . $this->lB('ressources.age-scan') . '</td>'
+                    . '<td>' . $this->hrAge(date("U", strtotime($dateLast))) .'</td>'
+                . '</tr>'
+                . '</tr>'
+                . '</tbody></table><br>'
                 ;
     }
     public function renderShortInfo($sType){
