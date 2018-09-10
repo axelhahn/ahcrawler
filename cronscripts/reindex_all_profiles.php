@@ -42,7 +42,7 @@ $oCrawler=new crawler();
 $aIds=$oCrawler->getProfileIds();
 
 // ----- FLUSH
-$sParams = '--action flush --data all --profile '.$iProfile;
+$sParams = '--action flush --data all';
 $iRc=run("php " . __DIR__ . '/../bin/cli.php '.$sParams);
 
 

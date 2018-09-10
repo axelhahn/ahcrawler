@@ -218,7 +218,7 @@ class crawler_base {
     }
     
     protected function _getCurlCanHttp2(){
-        return (curl_version()["features"] & CURL_VERSION_HTTP2 !== 0);
+        return (curl_version()["features"] & CURL_VERSION_HTTP2) !== 0;
     }
 
 

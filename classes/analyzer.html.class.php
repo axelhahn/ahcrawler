@@ -728,7 +728,7 @@ class analyzerHtml {
                         || $element->getAttribute('rel') === 'preconnect'
                         || $element->getAttribute('rel') === 'prefetch'
                         || $element->getAttribute('rel') === 'subresource'
-                        || $element->getAttribute('rel') === 'prerender'
+                        || $element->getAttribute('rel') === 'pingback'
                         || $element->getAttribute('rel') === 'preload'
                         || (!$bShowNofollow && $element->getAttribute('rel') === 'nofollow')
                         )

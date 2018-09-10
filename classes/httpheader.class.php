@@ -19,16 +19,20 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
 */
     
     protected $_aHeaderVars=array(
+        // see https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#tab=Headers
         'security'=>array(
             'Content-Security-Policy'=>array(),
             'Expect-CT'=>array(),
             'Feature-Policy'=>array(),
+            'Public-Key-Pins'=>array(),
             'Referrer-Policy'=>array(),
             'Strict-Transport-Security'=>array(),
             'X-Content-Type-Options'=>array(),
             'X-Frame-Options'=>array(),
+            'X-Permitted-Cross-Domain-Policies'=>array(),
             'X-XSS-Protection'=>array(),
         ),
+        // keys will be handled as lowercase
         'unwanted'=>array(
             'Referrer-Policy'=>array('badregex'=>'unsafe\-url'), // not recommended
             'Server'=>array('badregex'=>'[0-9]\.[0-9]'), // only with a version i.e. Apache/2.4.34 (Unix)
@@ -158,19 +162,20 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
         // see  https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_response_fields
         'non-standard'=>array(
             'Content-Security-Policy'=>array(),
-            'X-Content-Security-Policy'=>array(),
-            'X-WebKit-CSP'=>array(),
             'Refresh'=>array(),
             'Status'=>array(),
             'Timing-Allow-Origin'=>array(),
             'X-Content-Duration'=>array(),
+            'X-Content-Security-Policy'=>array(),
             'X-Content-Type-Options'=>array(),
+            'X-Correlation-ID'=>array(),
+            'X-Pingback'=>array(), // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
             'X-Powered-By'=>array(),
             'X-Request-ID'=>array(),
-            'X-Correlation-ID'=>array(),
-            'X-UA-Compatible'=>array(),
-            'X-XSS-Protection'=>array(),
             'X-Robots-Tag'=>array(),
+            'X-UA-Compatible'=>array(),
+            'X-WebKit-CSP'=>array(),
+            'X-XSS-Protection'=>array(),
         ),
     );
     

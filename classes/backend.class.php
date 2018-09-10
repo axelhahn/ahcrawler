@@ -1276,8 +1276,8 @@ class backend extends crawler_base {
             'popup' => false
         ));
         $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
-                . '<p>'.$this->lB('ressources.overview.intro').'</p>'
                 . $oRenderer->renderRessourceStatus()
+                . '<p>'.$this->lB('ressources.overview.intro').'</p>'
                 . $sFilter
                 ;
         
@@ -1511,23 +1511,23 @@ class backend extends crawler_base {
                 : '<li><a href="#" class="tile ok">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
             )
             . ($iCountShortTitles
-                ? '<li><a href="#tblshorttitle" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.(floor($iCountShortTitles/$iSearchindexCount*1000)/10).'%</a></li>'
+                ? '<li><a href="#tblshorttitle" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.(floor($iCountShortTitles/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
             )
             . ($iCountShortDescr
-                ? '<li><a href="#tblshortdescription" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.(floor($iCountShortDescr/$iSearchindexCount*1000)/10).'%</a></li>'
+                ? '<li><a href="#tblshortdescription" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.(floor($iCountShortDescr/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
             )
             . ($iCountShortKeywords
-                ? '<li><a href="#tblshortkeywords" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.(floor($iCountShortKeywords/$iSearchindexCount*1000)/10).'%</a></li>'
+                ? '<li><a href="#tblshortkeywords" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.(floor($iCountShortKeywords/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
             )
             . ($iCountLongload
-                ? '<li><a href="#tblloadtimepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.(floor($iCountLongload/$iSearchindexCount*1000)/10).'%</a></li>'
+                ? '<li><a href="#tblloadtimepages" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.(floor($iCountLongload/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
             )
             . ($iCountLargePages
-                ? '<li><a href="#tbllargepages" class="tile">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.(floor($iCountLargePages/$iSearchindexCount*1000)/10).'%</a></li>'
+                ? '<li><a href="#tbllargepages" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.(floor($iCountLargePages/$iSearchindexCount*1000)/10).'%</a></li>'
                 : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
             )
             . '</ul>'

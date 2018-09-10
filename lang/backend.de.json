@@ -240,7 +240,7 @@
     "htmlchecks.tableShortKeywords": "Zu wenig Keywords in den Meta-Tags (%s)",
     "htmlchecks.tableShortKeywords.description": "Verwenden Sie max 20 Schlagworte, mit Komma getrennt. Die wichtigsten Schlagworte sollten dabei zuerst genannt werden.",
     
-    "htmlchecks.tableLoadtimePages": "Lange ladendende Seiten (%s)",
+    "htmlchecks.tableLoadtimePages": "Lange ladende Seiten (%s)",
     "htmlchecks.tableLoadtimePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Seiten mit langer Ladezeit wirken sich schlecht auf das Suchmaschinen-Ranking aus. Weiterhin: wenn es eine Seite mit höherem Traffic ist, generiert es hohe Last auf dem Webserver - dies sind Ansatzpunkte, um einen Cache einzusetzen, die Applikation oder aber deren Datenbank-Queries zu optimieren.",
     "htmlchecks.tableLargePages": "Grosse Seiten (%s)",
     "htmlchecks.tableLargePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Nachfolgend werden Seiten mit etwas mehr HTML Code aufgelistet. Sofern es komplexeres HTML ist, kann ein Browser Probleme beim Rendern bekommen.",
@@ -249,17 +249,17 @@
     "htmlchecks.label-ok": "OK",
 
 
-    "httpheader.Content-Security-Policy.description": "Die Content Security Policy ist eine wirksame Maßnahme, um Ihre Website vor XSS-Angriffen zu schützen. Durch die Whitelistung von Quellen für freigegebene Inhalte können Sie verhindern, dass der Browser bösartige Inhalte lädt",
+    "httpheader.Content-Security-Policy.description": "Die Content Security Policy ist eine wirksame Massnahme, um Ihre Website vor XSS-Angriffen zu schützen. Durch die Whitelistung von Quellen für freigegebene Inhalte können Sie verhindern, dass der Browser bösartige Inhalte lädt",
     "httpheader.Expect-CT.description": "Expect-CT erlaubt es einer Website, festzustellen, ob sie für die kommenden Chrome-Anforderungen bereit ist und/oder ihre CT-Richtlinien durchsetzt.",
     "httpheader.Feature-Policy.description": "Feature Policy ist ein neuer Header, der es einer Website erlaubt zu kontrollieren, welche Features und APIs im Browser verwendet werden können.",
-    "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server l&auml;uft. Sie können die Versionsnummer l&ouml;schen oder aber den Wert ganz entfernen.",
-    "httpheader.Strict-Transport-Security.description": "HTTP Strict Transport Security ist ein hervorragendes Feature zur Unterstützung Ihrer Website und stärkt Ihre Implementierung von TLS, indem der User Agent die Verwendung von HTTPS erzwingt",
+    "httpheader.Public-Key-Pins.description": "HTTP Public Key Pinning (HPKP) ist ein Sicherheitsmechanismus, der es HTTPS-Websites ermöglicht, das Fälschen mit falsch ausgestellten oder anderweitig betrügerischen Zertifikaten zu verhindern.",
     "httpheader.Referrer-Policy.description": "Die Referrer Policy ist ein neuer Header, der es einer Seite erlaubt, zu steuern, wie viele Informationen der Browser bei der Navigation außerhalb eines Dokuments enthält und von allen Seiten gesetzt werden sollte",
+    "httpheader.Strict-Transport-Security.description": "HTTP Strict Transport Security ist ein hervorragendes Feature zur Unterstützung Ihrer Website und stärkt Ihre Implementierung von TLS, indem der User Agent die Verwendung von HTTPS erzwingt",
     "httpheader.X-Content-Type-Options.description": "Die X-Content-Type-Options ist eine Markierung, die vom Server verwendet wird, um anzuzeigen, dass die in den Content-Type-Headern beworbenen MIME-Typen nicht geändert und befolgt werden sollten",
     "httpheader.X-Frame-Options.description": "X-Frame-Options teilt dem Browser mit, ob Sie das Framen Ihrer Seite zulassen wollen oder nicht. Indem Sie einen Browser daran hindern, Ihre Website zu framen, können Sie sich gegen Angriffe wie Clickjacking wehren",
+    "httpheader.X-Permitted-Cross-Domain-Policies.description": "Eine domänenübergreifende Richtliniendatei ist ein XML-Dokument, das einem Web-Client, wie beispielsweise Adobe Flash Player oder Adobe Acrobat (wenn auch nicht unbedingt darauf beschränkt), die Berechtigung erteilt, Daten domänenübergreifend zu verarbeiten.",
     "httpheader.X-XSS-Protection.description": "X-XSS-Protection legt die Konfiguration für die in den meisten Browsern integrierten Cross-Site-Scripting-Filter fest. Die beste Konfiguration ist'X-XSS-Protection': 1; Modus=Block'.",
     "httpheader.no-value": "kein Wert",
-    
 
 
     "httpheader.data": "Http-Header",
@@ -280,8 +280,8 @@
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
     "httpheader.warnings.ok": "OK",
-    "httpheader.Server.description": "Bei der Angabe des Webservers sollte man bei produktiven Systemen auf Details, wie Version oder Betriebssystem verzichten. Setzen Sie den Server Header nur auf den Produktnamen.",
-    "httpheader.X-Powered-By.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
+    "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server l&auml;uft. Sie können die Versionsnummer l&ouml;schen: setzen Sie den Server Header nur auf den Produktnamen oder aber entfernen Sie den Wert ganz.",
+    "httpheader.x-powered-by.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
 
     "httpheader.securityheaders": "Check der vorhandenen Security-Header (%s/ %s)",
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",

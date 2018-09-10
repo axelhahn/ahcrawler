@@ -176,7 +176,7 @@ class ressourcesrenderer extends crawler_base {
         foreach($aHeaderWithChecks as $aEntry){
             $sReturn.='<tr title="'.$aEntry['var'].': '.$aEntry['value'].'">'
                     . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
-                    . '<td style="max-width: 20em; overflow: hidden;">'.$aEntry['value'].'</td>'
+                    . '<td style="max-width: 20em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
                     . '<td>'
                         . $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found']) 
                         . ($aEntry['bad'] ? $this->_getIcon('ico.warn', false, 'ico-warn') : '')
@@ -186,7 +186,7 @@ class ressourcesrenderer extends crawler_base {
                     ;
         }
         if ($sReturn) {
-            return '<table class="pure-table pure-table-bordered">'
+            return '<table class="pure-table pure-table-horizontal">'
                     . $sReturn
                     . '</table>';
         }
@@ -264,7 +264,7 @@ class ressourcesrenderer extends crawler_base {
             }
         }
         if ($sReturn) {
-            return '<table class="pure-table pure-table-striped">'
+            return '<table class="pure-table pure-table-horizontal">'
                     . $sReturn
                     . '</table>';
         }
@@ -859,7 +859,7 @@ class ressourcesrenderer extends crawler_base {
         
         $dateLast=$this->oRes->getLastRecord();
         return ''
-                . '<table class="pure-table pure-table-bordered">'
+                . '<table class="pure-table pure-table-horizontal">'
                 . '<tbody>'
                 . '<tr>'
                     . '<td>' . $this->lB('ressources.itemstotal') . '</td>'

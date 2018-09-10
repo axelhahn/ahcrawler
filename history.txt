@@ -15,6 +15,14 @@
 ----------------------------------------------------------------------
 
 
+2018-09-10: v0.34
+  * cronscript: remove iProfile in flush command
+  * httpheader: added security header Public-Key-Pins,X-Permitted-Cross-Domain-Policies
+  * httpheader: added X-Pingback
+  * backend: show html code in httpheader data (i.e. link variable)
+  * crawler: fix detection of http2 in current curl installation
+  * html checks: added soft scrolling linksin warning tiles
+
 2018-09-09: v0.33
   * backend: add h3 headers in menu including counters
   * update colors
