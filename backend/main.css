@@ -112,7 +112,7 @@ border-bottom: 1px dotted; text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #d
 p.pageHint{ background:#e0e8f0; background:linear-gradient(90deg, #e0e8f0,#fff); 
             background:linear-gradient(90deg, #fff0d0, #fff);
             background:linear-gradient(90deg, #ede, #fff);
-          color:#567; font-size: 120%; padding: 1.5em; margin-top: 0; margin-bottom: 9em; position: relative; top: 6.5em; }
+          color:#567; font-size: 120%; padding: 1.5em; margin-top: 0; margin-bottom: 9em; position: relative; top: 5em; }
 h3{ color: #79b; font-size: 170%; border-top: 1px solid #fca; padding-top: 1em; margin: 2em 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 

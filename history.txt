@@ -15,6 +15,9 @@
 ----------------------------------------------------------------------
 
 
+2018-09-11: v0.35
+  * httpheader: fix title tag displaying html code
+
 2018-09-10: v0.34
   * cronscript: remove iProfile in flush command
   * httpheader: added security header Public-Key-Pins,X-Permitted-Cross-Domain-Policies

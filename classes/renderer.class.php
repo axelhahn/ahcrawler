@@ -174,7 +174,7 @@ class ressourcesrenderer extends crawler_base {
     public function renderHttpheaderAsTable($aHeaderWithChecks){
         $sReturn='';
         foreach($aHeaderWithChecks as $aEntry){
-            $sReturn.='<tr title="'.$aEntry['var'].': '.$aEntry['value'].'">'
+            $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'">'
                     . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
                     . '<td style="max-width: 20em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
                     . '<td>'
