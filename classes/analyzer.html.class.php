@@ -31,6 +31,7 @@ class analyzerHtml {
     private $_sHtml = false;
     private $_oDom = false;
     private $_sUrl = false;
+    private $_sBaseHref = false;
     private $_sScheme = false;
     private $_sDomain = false;
     private $_aHttpResponseHeader = array();
@@ -54,6 +55,48 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
+     * get base url from url of the document or base href
+     * @return boolean
+     */
+    private function _getBaseHref(){
+        $this->_sBaseHref = false;
+        if (!$this->_oDom){
+            return false;
+        }
+        $anchors=$this->_getNodesByTagAndAttribute('base', 'href');
+        if (!count(($anchors))){
+            return false;
+        }
+        foreach ($anchors as $element) {
+            $sBaseHref = $element->getAttribute('_href');
+            break;
+        }
+        $partsBaseHref = parse_url($sBaseHref);
+        $partsUrl = parse_url($this->_sUrl);
+        $this->_sBaseHref = ''
+                
+                // start with scheme
+                .(isset($partsBaseHref['scheme']) ? $partsBaseHref['scheme'] : $partsUrl['scheme'])
+                .'://'
+                
+                // add user + password ... if they exist "[user]:[pass]@"
+                .(isset($partsBaseHref['user']) 
+                    ? $partsBaseHref['user'].':'.$partsBaseHref['pass'].'@' 
+                    : (isset($partsUrl['user'])
+                        ? $partsUrl['user'].':'.$partsUrl['pass'].'@'
+                        : ''
+                    )
+                 )
+                 // 
+                .(isset($partsBaseHref['host']) ? $partsBaseHref['host']     : $partsUrl['host'])
+                .(isset($partsBaseHref['port']) ? ':'.$partsBaseHref['port'] : ':'.$partsUrl['port'])
+                .(isset($partsBaseHref['path']) ? $partsBaseHref['path']     : $partsUrl['path'])
+            
+            ;
+        return $this->_sBaseHref;
+    }
+    
+    /**
      * set a new html document with its sourcecode and url;
      * If you don't have the html source then use the method fetchUrl($sUrl)
      * 
@@ -66,8 +109,10 @@ class analyzerHtml {
 
         $this->_sHtml = $sHtmlcode;
         $this->_sUrl = $sUrl;
+        $this->_sBaseHref = false;
         $this->_sScheme = false;
         $this->_sDomain = false;
+        $this->_oDom = false;
         if ($sUrl) {
             $parts = parse_url($this->_sUrl);
             $this->_sScheme = $parts['scheme'];
@@ -75,7 +120,6 @@ class analyzerHtml {
         }
         $this->_aReport = array();
 
-        $this->_oDom = false;
         $this->_oDom = new DOMDocument('1.0');
         @$this->_oDom->loadHTML($sHtmlcode);
 
@@ -83,6 +127,7 @@ class analyzerHtml {
             echo "WARNING: this is no valid DOM $sUrl \n<br>";
             return false;
         }
+        $this->_getBaseHref();
         return true;
     }
 
@@ -208,7 +253,8 @@ class analyzerHtml {
             return $sRelUrl;
         }
         if(!$sDocUrl){
-            $sDocUrl=$this->_sUrl;
+            // $sDocUrl=$this->_sUrl;
+            $sDocUrl=$this->_sBaseHref;
         }
 
         if (!$sDocUrl) {
@@ -248,7 +294,7 @@ class analyzerHtml {
             $aPartsReturn['path']=$aPartsDoc['path'];
         }
         
-        // take user + password ... only if schme + host match
+        // take user + password ... only if scheme + host match
         if (
                 $aPartsReturn['scheme']===$aPartsDoc['scheme']
                 && $aPartsReturn['host']===$aPartsDoc['host']
@@ -841,6 +887,7 @@ class analyzerHtml {
         return array(
             'document' => array(
                 'url' => $this->_sUrl,
+                'basehref' => $this->_sBaseHref,
                 'size' => strlen($this->_sHtml),
                 'isXml' => is_object($this->_oDom),
             ),

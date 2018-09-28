@@ -15,6 +15,10 @@
 ----------------------------------------------------------------------
 
 
+2018-09-29: v0.36
+  * http analyzer: detect base href
+  * core: show a warning if no starting url was found in searchindex.urls2crawl
+
 2018-09-11: v0.35
   * httpheader: fix title tag displaying html code
 

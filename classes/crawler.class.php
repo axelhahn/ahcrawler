@@ -404,7 +404,7 @@ class crawler extends crawler_base{
             // TODO:
             // use external links too and check domain with sticky domain array
             $aLinks=$oHtml->getLinks("internal");
-            if (array_key_exists('internal', $aLinks) && count($aLinks['internal'])){
+            if (array_key_exists('internal', $aLinks) && is_array($aLinks['internal']) && count($aLinks['internal'])){
                 foreach ($aLinks['internal'] as $aLink){
                     if (!array_key_exists('rel', $aLink) 
                         || (array_key_exists('rel', $aLink) && $aLink['rel']!='nofollow')){
@@ -461,7 +461,7 @@ class crawler extends crawler_base{
         } else {
             // ... starturls in config
             echo "RESCAN complete index.\n";
-            if(!isset($this->aProfile['searchindex']['urls2crawl'])){
+            if(!count($this->aProfile['searchindex']['urls2crawl'])){
                 echo 'WARNING: no urls in profiles->'.$this->iSiteId.'->urls2crawl->searchindex<br>'."\n";
             } else  {
                 foreach ($this->aProfile['searchindex']['urls2crawl'] as $sUrl) {
@@ -508,7 +508,8 @@ class crawler extends crawler_base{
         // echo "--- ".__FUNCTION__."([array], [$bFollowLinks]) \n";
         $sMsgId='crawler-'.($bFollowLinks ? 'index':'update').'-profile-'.$this->iSiteId;
         if (!is_array($aUrls) || !count($aUrls)){
-            echo "INFO: list of starting urls is empty.\n";
+            echo "WARNING: list of starting urls is empty. This seems to be a misconfiguration.\n";
+            sleep(5);
             return false;
         }
         if (!$this->enableLocking(__CLASS__, ($bFollowLinks ? 'index':'update'), $this->iSiteId)){
