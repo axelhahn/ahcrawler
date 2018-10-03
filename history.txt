@@ -15,6 +15,9 @@
 ----------------------------------------------------------------------
 
 
+2018-10-03: v0.37
+  * backend: added check for ssl certificate
+
 2018-09-29: v0.36
   * http analyzer: detect base href
   * core: show a warning if no starting url was found in searchindex.urls2crawl

@@ -283,7 +283,18 @@
     "httpheader.securityheaders": "Check of existing security headers (%s/ %s)",
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
     "httpheader.starturl": "Starting url",
-    
+
+    "httpheader.sslcheck": "SSL-Certificate",
+    "httpheader.sslcheck.description": "Information about the used SSL certificate.",
+    "httpheader.sslcheck.CN": "Common Name",
+    "httpheader.sslcheck.issuer": "Issuer",
+    "httpheader.sslcheck.CA": "CA",
+    "httpheader.sslcheck.DNS": "DNS names",
+    "httpheader.sslcheck.validfrom": "valid from",
+    "httpheader.sslcheck.validto": "valid from",
+    "httpheader.sslcheck.validleft": "still valid (in days)",
+    "httpheader.sslcheck.raw": "Raw data",
+        
     "linkchecker.check-links": "Link check overview",
     "linkchecker.found-http-errors": "Http errors (%s)",
     "linkchecker.found-http-errors-hint": "Found errors in links and ressources. You should check all of them.",

@@ -287,6 +287,17 @@
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
     "httpheader.starturl": "Start-URL",
     
+    "httpheader.sslcheck": "SSL-Zertifikat",
+    "httpheader.sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
+    "httpheader.sslcheck.CN": "Common Name",
+    "httpheader.sslcheck.issuer": "Aussteller",
+    "httpheader.sslcheck.CA": "CA",
+    "httpheader.sslcheck.DNS": "DNS-Namen",
+    "httpheader.sslcheck.validfrom": "g&uuml;ltig von",
+    "httpheader.sslcheck.validto": "g&uuml;ltig bis",
+    "httpheader.sslcheck.validleft": "noch g&uuml;ltig (in Tagen)",
+    "httpheader.sslcheck.raw": "Rohdaten",
+    
     "linkchecker.check-links": "Verteilung der Statuscodes",
     "linkchecker.found-http-errors": "Http-Fehler (%s)",
     "linkchecker.found-http-errors-hint": "Gefundene Fehler in Links und Ressourcen. Diese sollte man in Ruhe einmal durchgehen.",

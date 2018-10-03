@@ -1691,20 +1691,6 @@ class backend extends crawler_base {
         $iWarnings=0;
         $sWarnings='';
 
-            // --- http only?
-            if(strstr($aFirstPage[0]['url'], 'http://')){
-                $iWarnings++;
-                // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
-                $sWarnings.= '<ul class="tiles errors">'
-                        . '<li>'
-                            .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
-                            .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
-                            . $this->lB('httpheader.httponly.hint')
-                            .'</a>'
-                        . '</li>'
-                        . '</ul><div style="clear: both;"></div>'
-                        ;
-            }
             $sLegendeUnknown='';
             $sLegendeWarn='';
 
@@ -1812,7 +1798,66 @@ class backend extends crawler_base {
             . '</ul>'
             ;
         
-        
+        // --- https certificate
+        $sReturn.= '<h3>' . $this->lB('httpheader.sslcheck') . '</h3>'
+            . '<p>'
+                . $this->lB('httpheader.sslcheck.description').'<br>'
+            . '</p>'
+                ;
+            // --- http only?
+            if(strstr($aFirstPage[0]['url'], 'http://')){
+                $iWarnings++;
+                // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
+                $sReturn.= '<ul class="tiles errors">'
+                        . '<li>'
+                            .'<a href="#" onclick="return false;" class="tile">'.$this->lB('httpheader.httponly')
+                            .'<br><strong>'.$this->lB('httpheader.httponly.description').'</strong><br>'
+                            . $this->lB('httpheader.httponly.hint')
+                            .'</a>'
+                        . '</li>'
+                        . '</ul><div style="clear: both;"></div>'
+                        ;
+            } else {
+
+                require_once 'sslinfo.class.php';
+                $oSsl=new sslinfo();
+                $aSslInfos=$oSsl->getSimpleInfosFromUrl($aFirstPage[0]['url']);
+                $sStatus=$oSsl->getStatus();
+                $aTbl=array();
+                foreach(array(
+                    'CN', 
+                    'issuer',
+                    'CA',
+                    'DNS',
+                    'validfrom',
+                    'validto',
+                ) as $sKey){
+                    $aTbl[]=array($this->lB('httpheader.sslcheck.'.$sKey), $aSslInfos[$sKey]);
+                }
+                
+                $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
+                $aTbl[]=array($this->lB('httpheader.sslcheck.validleft'), $iDaysleft);
+
+                $sReturn.= '<ul class="tiles '.$sStatus.' '.$sStatus.'s">'
+                        . '<li>'
+                            .'<a href="#" onclick="return false;" class="tile">'
+                            . $aSslInfos['CN']
+                            .'<br><strong>'.$aSslInfos['issuer'].'</strong><br>'
+                            . $aSslInfos['validto'].' ('.$iDaysleft.' d)'
+                            .'</a>'
+                        . '</li>'
+                        . '</ul><div style="clear: both;"></div>'
+                        . $this->_getSimpleHtmlTable($aTbl)
+                        /*
+                        . '<br>'
+                        . '<p>'.$this->lB('httpheader.sslcheck.raw').':</p>'
+                        . '<pre>'
+                        . print_r($oSsl->getCertinfos($aFirstPage[0]['url']), 1)
+                        . '</pre>'
+                         */
+                        ;
+
+        }
 
         // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
         return $sReturn;
