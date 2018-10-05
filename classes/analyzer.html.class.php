@@ -60,18 +60,24 @@ class analyzerHtml {
      */
     private function _getBaseHref(){
         $this->_sBaseHref = false;
+        $partsBaseHref=array();
         if (!$this->_oDom){
             return false;
         }
         $anchors=$this->_getNodesByTagAndAttribute('base', 'href');
+        /*
         if (!count(($anchors))){
             return false;
         }
-        foreach ($anchors as $element) {
-            $sBaseHref = $element->getAttribute('_href');
-            break;
+         * 
+         */
+        if (count(($anchors))){
+            foreach ($anchors as $element) {
+                $sBaseHref = $element->getAttribute('_href');
+                break;
+            }
+            $partsBaseHref = parse_url($sBaseHref);
         }
-        $partsBaseHref = parse_url($sBaseHref);
         $partsUrl = parse_url($this->_sUrl);
         $this->_sBaseHref = ''
                 
@@ -88,9 +94,9 @@ class analyzerHtml {
                     )
                  )
                  // 
-                .(isset($partsBaseHref['host']) ? $partsBaseHref['host']     : $partsUrl['host'])
-                .(isset($partsBaseHref['port']) ? ':'.$partsBaseHref['port'] : ':'.$partsUrl['port'])
-                .(isset($partsBaseHref['path']) ? $partsBaseHref['path']     : $partsUrl['path'])
+                .(isset($partsBaseHref['host']) ? $partsBaseHref['host']     : (isset($partsUrl['host']) ? $partsUrl['host']     : ''))
+                .(isset($partsBaseHref['port']) ? ':'.$partsBaseHref['port'] : (isset($partsUrl['port']) ? ':'.$partsUrl['port'] : ''))
+                .(isset($partsBaseHref['path']) ? $partsBaseHref['path']     : (isset($partsUrl['path']) ? $partsUrl['path']     : ''))
             
             ;
         return $this->_sBaseHref;

@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.37',
-        'date' => '2018-10-03',
+        'version' => 'v0.38',
+        'date' => '2018-10-06',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -217,8 +217,16 @@ class crawler_base {
         return $aOptions;
     }
     
+    /**
+     * check if httpd v2 is available in PHP and curl lib
+     * @return boolean
+     */
     protected function _getCurlCanHttp2(){
-        return (curl_version()["features"] & CURL_VERSION_HTTP2) !== 0;
+        if (!defined('CURL_VERSION_HTTP2')){
+           return false;
+        }
+        $aVers=curl_version();
+        return ($aVers["features"] & CURL_VERSION_HTTP2) !== 0;        
     }
 
 

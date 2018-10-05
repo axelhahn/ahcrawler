@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2018-10-06: v0.38
+  * crawler: detection of http2 now is php 5.3 safe
+  * html analyzer: fix in base href detection
 
 2018-10-03: v0.37
   * backend: added check for ssl certificate
