@@ -50,9 +50,10 @@
                 ]
             },
             "searchcategories": {
-                "Complete website": "%",
                 "... Blog": "/blog/%"
-            }
+                "... Documentation": "/docs/%"
+            },
+            "searchlang": ["en", "de"]
         }
     }
 }

@@ -14,6 +14,13 @@
 
 ----------------------------------------------------------------------
 
+2018-10-14: v0.39
+  * search: added methods for a search form in the frontend: there is a 
+    ready-2-use method for a form and there is a fully customizable variant too
+  * search: added search for languages (documents must label their language
+    with <html lang="en">)
+  * search: added search with AND or OR condition
+
 2018-10-06: v0.38
   * crawler: detection of http2 now is php 5.3 safe
   * html analyzer: fix in base href detection

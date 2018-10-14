@@ -38,6 +38,11 @@ class ahsearch extends crawler_base {
             'content' => 1,
         ),
     );
+    
+    private $_aFormNames = array(
+        'language'=>'lang',
+        'category'=>'subdir',
+    );
 
     // ----------------------------------------------------------------------
     /**
@@ -50,16 +55,56 @@ class ahsearch extends crawler_base {
         return true;
     }
 
+    public function getQueryValue($sKey){
+        $aSource=(isset($_POST) && is_array($_POST) && count($_POST))
+                ? $_POST
+                : (isset($_GET) && is_array($_GET) && count($_GET))
+                    ? $_GET
+                    : false
+                ;
+        if(!$aSource){
+            return false;
+        }
+        if(!isset($aSource[$sKey]) || !$aSource[$sKey]){
+            return false;
+        }
+        
+        // TODO: clean value
+        return $aSource[$sKey];
+    }
+    
     /**
      * get categories to search in ... it returns the structure from config 
      * below profiles -> [id] -> searchcategories
      * @return array
      */
-    public function getSearchcategories() {
+    public function getSearchCategories($bAddNone=false) {
+        $aReturn=array();
         if (!is_array($this->aProfile) || !array_key_exists('searchcategories', $this->aProfile) || !count($this->aProfile['searchcategories'])) {
             return false;
         }
-        return $this->aProfile['searchcategories'];
+        if($bAddNone){
+            $aReturn[$this->lF('label.searchsubdir-none')]='';
+        }
+        return array_merge($aReturn, $this->aProfile['searchcategories']);
+    }
+    /**
+     * get categories to search in ... it returns the structure from config 
+     * below profiles -> [id] -> searchlang
+     * @return array
+     */
+    public function getSearchLang($bAddNone=false) {
+        $aReturn=array();
+        if (!is_array($this->aProfile) || !array_key_exists('searchlang', $this->aProfile) || !count($this->aProfile['searchlang'])) {
+            return false;
+        }
+        if($bAddNone){
+            $aReturn[$this->lF('label.searchlang-none')]='';
+        }
+        foreach ($this->aProfile['searchlang'] as $sMyLang){
+            $aReturn[$sMyLang]=$sMyLang;
+        }
+        return $aReturn;
     }
 
     // ----------------------------------------------------------------------
@@ -90,18 +135,30 @@ class ahsearch extends crawler_base {
         if (!is_array($aOptions)) {
             $aOptions = array();
         }
+        
+        // get GET / POST values from a sent form
+        foreach(array('subdir', 'lang', 'mode') as $sOptionKey){
+            $sVal=$this->getQueryValue($sOptionKey);
+            if ($sVal){
+                $aOptions[$sOptionKey]=$sVal;
+            }
+        }
 
         // echo '<pre>'.print_r($aOptions,1).'</pre>';
         if (!array_key_exists('url', $aOptions)){
-            $aOptions['url']='//'.$this->aProfile['searchindex']['stickydomain'];
+            // $aOptions['url']='//'.$this->aProfile['searchindex']['stickydomain'];
+            $aOptions['url']='//'.parse_url($this->aProfile['searchindex']['urls2crawl'][0], PHP_URL_HOST);
         }
+        
         if (array_key_exists('subdir', $aOptions)){
             $aOptions['url'].=str_replace('//','/','/'.$aOptions['subdir']);
         }
         
         if (!array_key_exists('mode', $aOptions)) {
-            $aOptions['mode'] = 'OR';
+            $aOptions['mode'] = 'AND';
         }
+        
+        // --- prepare search options
         if (!array_key_exists('url', $aOptions)) {
             $aOptions['url'] = '';
         } else {
@@ -119,17 +176,25 @@ class ahsearch extends crawler_base {
             );
         }
         // print_r($aOptions);echo "<hr>";
+        $aSelect=array(
+            'siteid' => $this->iSiteId,
+            'errorcount' => 0,
+            'url[~]' => $aOptions['url'],
+            $aOptions['mode'] => array(
+                'OR' => $aQuery,
+            )
+        );
+        
+        if (isset($aOptions['lang']) && $aOptions['lang']){
+            $aSelect['lang']=$aOptions['lang'];
+        }
+        
         $aResult = $this->oDB->select(
                 'pages', 
                 array('url', 'title', 'description', 'keywords', 'content', 'ts'), 
                 array(
-                    'AND' => array(
-                        'siteid' => $this->iSiteId,
-                        'errorcount' => 0,
-                        'url[~]' => $aOptions['url'],
-                        'OR' => $aQuery,
-                    ),
-                        "LIMIT" => 55
+                    'AND' => $aSelect,
+                    'LIMIT' => 55
                 )
         );
         // echo 'DEBUG: ' . $this->oDB->last() . '<br>';
@@ -291,6 +356,179 @@ class ahsearch extends crawler_base {
         return $iCounter;
     }
 
+    // ----------------------------------------------------------------------
+    // render functions to display search form
+    // ----------------------------------------------------------------------
+    
+        /**
+         * generate attributes for html tags with a given kay value hash
+         * @param array $aAttributes  attributes as key=>value items
+         * @return string
+         */
+        protected function _addAttributes($aAttributes){
+            $sReturn='';
+            foreach($aAttributes as $sAttr=>$sValue){
+                $sReturn.=' '.$sAttr.'="'.$sValue.'"';
+            }
+            return $sReturn;
+        }
+        protected function _getSelectId($sKeyword){
+            return 'select'.$sKeyword;
+        }
+
+        protected function _renderLabel($sKeyword, $aAttributes=array()){
+            if(!isset($aAttributes['for'])){
+                $aAttributes['for']=$this->_getSelectId($sKeyword);
+            }
+            return '<label'
+                . $this->_addAttributes($aAttributes)
+                . '>'. $this->lF('label.search'.$sKeyword) .'</label>'
+                ;
+        }
+        /**
+         * return html code for a select form field 
+         * 
+         * @param array  $aOptions     array with key = visible label; value= value in option
+         * @param string $sName        name attribute for select field
+        *  @param array  $aAttributes  optional: html attributes for select tag
+         * @param string $sSelected    value of item to select
+         * @return string
+         */
+        protected function _renderSelect($aOptions, $sName, $aAttributes=array(), $sSelected=false){
+            $sReturn='';
+            if ($aOptions){
+                if(!isset($aAttributes['id'])){
+                    $aAttributes['id']=$this->_getSelectId($sName);
+                }
+                $aAttributes['name']=$sName;
+                if(!$sSelected){
+                    $sSelected=$this->getQueryValue($sName);
+                }
+                foreach ($aOptions as $sLabel=>$sValue){
+                    $sReturn.='<option value="'.$sValue.'"'.($sSelected===$sValue?' selected="selected"':'').'>'.$sLabel.'</option>';
+                }
+                $sReturn='<select' . $this->_addAttributes($aAttributes) . '>'.$sReturn.'</select>';
+            }
+            return $sReturn;
+        }
+
+    /**
+     * get html code for category selection label
+     * @param array  $aAttributes  optional: html attributes for input tag
+     * @return string
+     */
+    public function renderInput($aAttributes=array()){
+        return '<input'
+            . $this->_addAttributes(array_merge(array(
+                'type'=>'text',
+                'name'=>'q',
+                'id'=>'searchterm',
+                'value'=>$this->getQueryValue('q'),
+                'placeholder'=>$this->lF('input.search.placeholder'),
+                'title'=>$this->lF('input.search.title'),
+                'pattern'=>'^..*',
+                'required'=>'required',
+            ),$aAttributes))
+            .'>';
+    }
+    /**
+     * get html code for category selection label
+     * @return string
+     */
+    public function renderLabelCategories($aAttributes=array()){
+        return $this->_renderLabel('subdir', $aAttributes);
+    }
+    /**
+     * get html code for lang selection label
+     * @return string
+     */
+    public function renderLabelLang($aAttributes=array()){
+        return $this->_renderLabel('lang', $aAttributes);
+    }
+    /**
+     * get html code for mode selection label
+     * @return string
+     */
+    public function renderLabelMode($aAttributes=array()){
+        return $this->_renderLabel('mode', $aAttributes);
+    }
+    /**
+     * get html code for searchterm label
+     * @return string
+     */
+    public function renderLabelSearch($aAttributes=array()){
+        if(!isset($aAttributes['for'])){
+            $aAttributes['for']='searchterm';
+        }
+        return $this->_renderLabel('term', $aAttributes);
+    }
+
+    
+    /**
+     * get html code for category selection 
+     * @return string
+     */
+    public function renderSelectCategories($aAttributes=array()){
+        return $this->_renderSelect($this->getSearchCategories(true), 'subdir', $aAttributes);
+    }
+    /**
+     * get html code for language selection 
+     * @return string
+     */
+    public function renderSelectLang($aAttributes=array()){
+        return $this->_renderSelect($this->getSearchLang(true), 'lang', $aAttributes);
+    }
+    /**
+     * get html code for mode selection 
+     * @return string
+     */
+    public function renderSelectMode($aAttributes=array()){
+        return $this->_renderSelect(array(
+            $this->lF('label.searchmode-and')=>'AND',
+            $this->lF('label.searchmode-or')=>'OR',
+        ), 'mode', $aAttributes);
+    }
+
+    /**
+     * get htmlcode for a simple or extended search form
+     * 
+     * echo $o->renderSearchForm();
+     * 
+     * // with additional options
+     * echo $o->renderSearchForm(array(
+     *     'categories'=>1,
+     *     'lang'=>1,
+     *     'mode'=>1,
+     * ));
+
+     * @param type $aOptions
+     * @return string
+     */
+    public function renderSearchForm($aOptions=array()){
+        $sOptions=(isset($aOptions['categories']) && $aOptions['categories'] 
+                ? $this->renderLabelCategories() . $this->renderSelectCategories().'<br>'
+                : '')
+            .(isset($aOptions['lang']) && $aOptions['lang'] 
+                ? $this->renderLabelLang() . $this->renderSelectLang().'<br>'
+                : '')
+            .(isset($aOptions['mode']) && $aOptions['mode'] 
+                ? $this->renderLabelMode() . $this->renderSelectMode().'<br>'
+                : '')
+            ;
+        $sReturn='<form method="GET" action="?">'
+                . $this->lF('label.searchhelp').'<br>'
+                . $this->renderLabelSearch()
+                . $this->renderInput()
+                . ($sOptions ? '<br><br><strong>'.$this->lF('label.searchoptions').'</strong><br>'.$sOptions.'<hr>' : '')
+                .'<button>'.$this->lF('btn.search.label').'</button>'
+                .'</form>'
+                ;
+        return $sReturn;
+    }
+    // ----------------------------------------------------------------------
+    // render function to display search result
+    // ----------------------------------------------------------------------
+    
     /**
      * do search and render search results
      * @param string  $q            search string
@@ -300,10 +538,13 @@ class ahsearch extends crawler_base {
      * @param string  $sOutputType  one of html| ...
      * @return string
      */
-    public function renderSearchresults($q, $aOptions = array(), $sOutputType = 'html') {
+    public function renderSearchresults($q=false, $aOptions = array(), $sOutputType = 'html') {
         $sOut = '';
         $aData = array();
         $iHits = 0;
+        if(!$q){
+            $q=$this->getQueryValue('q');
+        }
         $q = trim($q);
         if ($q) {
             $aData = $this->search($q, $aOptions);
@@ -324,111 +565,112 @@ class ahsearch extends crawler_base {
                 'results' => $iHits,
                 'host' => $client_ip,
                 'ua' => $_SERVER['HTTP_USER_AGENT'],
-                'referrer' => $_SERVER['HTTP_REFERER'],
+                'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '?',
                     )
             );
             //echo "\n" . $this->oDB->last_query() . '<br>';
-        }
 
-        switch ($sOutputType) {
-            case 'html':
-                if (!$iHits) {
-                    $sOut = $q ? '<p>' . $this->lF('searchout.nohit') . '</p>' : '';
-                } else {
-                    $sOut = '
-                        <style>
-                        .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
-                        .searchresult:hover{background:#fafafa;}
-                        .searchresult a{color:#44a; font-size: 120%;}
-                        .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
-                        .searchresult .url{color:#393;}
-                        .searchresult .detail{color:#888;}
-                        .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
-                        .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
-                        
-                        .searchresult .mark1{background:#fd3;}
-                        .searchresult .mark2{background:#3f3;}
-                        .searchresult .mark3{background:#f88;}
-                        .searchresult .mark4{background:#ccf;}
-                        
-                        </style>';
-                    if ($iHits > 50) {
-                        $sOut .= '<p>' . $this->lF('searchout.too-many-hits') . '<br><br></p>';
+            switch ($sOutputType) {
+                case 'html':
+                    $sOut = '<strong>'.$this->lF('searchout.results').'</strong><br><br>';
+                    if (!$iHits) {
+                        $sOut .= $q ? '<p>' . $this->lF('searchout.nohit') . '</p>' : '';
                     } else {
-                        $sOut .= '<p>' . sprintf($this->lF('searchout.hits'), $iHits) . '</p>';
-                    }
-                    $iMaxRanking = false;
-                    foreach ($aData as $iRanking => $aDataItems) {
-                        if (!$iMaxRanking) {
-                            $iMaxRanking = $iRanking;
+                        $sOut .= '
+                            <style>
+                            .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
+                            .searchresult:hover{background:#fafafa;}
+                            .searchresult a{color:#44a; font-size: 120%;}
+                            .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
+                            .searchresult .url{color:#393;}
+                            .searchresult .detail{color:#888;}
+                            .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
+                            .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
+
+                            .searchresult .mark1{background:#fd3;}
+                            .searchresult .mark2{background:#3f3;}
+                            .searchresult .mark3{background:#f88;}
+                            .searchresult .mark4{background:#ccf;}
+
+                            </style>';
+                        if ($iHits > 50) {
+                            $sOut .= '<p>' . $this->lF('searchout.too-many-hits') . '<br><br></p>';
+                        } else {
+                            $sOut .= '<p>' . sprintf($this->lF('searchout.hits'), $iHits) . '</p>';
                         }
-                        foreach ($aDataItems as $aItem) {
-                            $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
-                            $sAge = $sAge > 1 ? '(' . $sAge . ' Tage)' : '';
-
-                            $sDetail = '';
-                            if ($aItem['description']) {
-                                $sDetail.=$aItem['description'] . '<br>';
+                        $iMaxRanking = false;
+                        foreach ($aData as $iRanking => $aDataItems) {
+                            if (!$iMaxRanking) {
+                                $iMaxRanking = $iRanking;
                             }
-                            // $sDetail.= '<pre>'.print_r($aItem['results'],true) . '</pre>';
-                            //echo "<pre>" . print_r($aItem,1 ) . "</pre>";
-                            $aPreviews = array();
-                            $aSearchwords = explode(" ", $q);
-                            foreach ($aSearchwords as $sWord) {
+                            foreach ($aDataItems as $aItem) {
+                                $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
+                                $sAge = $sAge > 1 ? '(' . $sAge . ' Tage)' : '';
 
-                                $iLastPos = 0;
-                                $iSurround = 30;
-                                while (!stripos($aItem['content'], $sWord, $iLastPos) === false) {
-                                    $iLastPos = stripos($aItem['content'], $sWord, $iLastPos);
-                                    $aPreviews[$iLastPos] = substr($aItem['content'], $iLastPos - $iSurround, ($iSurround * 4 + strlen($sWord)));
-                                    $iLastPos++;
+                                $sDetail = '';
+                                if ($aItem['description']) {
+                                    $sDetail.=$aItem['description'] . '<br>';
                                 }
-                            }
-                            ksort($aPreviews);
-                            // echo "<pre>" . print_r($aPreviews,1 ) . "</pre>";
+                                // $sDetail.= '<pre>'.print_r($aItem['results'],true) . '</pre>';
+                                //echo "<pre>" . print_r($aItem,1 ) . "</pre>";
+                                $aPreviews = array();
+                                $aSearchwords = explode(" ", $q);
+                                foreach ($aSearchwords as $sWord) {
 
-                            if (count($aPreviews)) {
-                                $iPreview = 0;
-                                foreach ($aPreviews as $sPreview) {
-                                    $iPreview++;
-                                    if ($iPreview > 1) {
-                                        $iMore = count($aPreviews) - $iPreview;
-                                        // TODO: langTxt
-                                        $sDetail.='... ' . $iMore . ' weitere' . ($iMore === 1 ? 'r' : '') . ' Treffer im Text';
-                                        break;
+                                    $iLastPos = 0;
+                                    $iSurround = 30;
+                                    while (!stripos($aItem['content'], $sWord, $iLastPos) === false) {
+                                        $iLastPos = stripos($aItem['content'], $sWord, $iLastPos);
+                                        $aPreviews[$iLastPos] = substr($aItem['content'], $iLastPos - $iSurround, ($iSurround * 4 + strlen($sWord)));
+                                        $iLastPos++;
                                     }
-                                    $sDetail.='...' . $sPreview . '...<br>';
                                 }
-                            }
-                            $iWord = 0;
-                            foreach ($aSearchwords as $sWord) {
-                                $iWord++;
-                                $sClass = "mark${iWord}";
-                                $sDetail = preg_replace('@' . $sWord . '@i', '<span class="' . $sClass . '">\\0</span>', $sDetail);
-                            }
+                                ksort($aPreviews);
+                                // echo "<pre>" . print_r($aPreviews,1 ) . "</pre>";
 
-                            $sOut.='
-                            <div class="searchresult" CConclickCC="location.href=\'' . $aItem['url'] . '\';">
-                                <div class="bar">
-                                    <span style="float: right">' . round($iRanking / $iMaxRanking * 100) . '%</span>
-                                    <div class="bar2" style="width: ' . round($iRanking / $iMaxRanking * 100) . '%">&nbsp;</div>
-                                </div>
-                               <a href="' . $aItem['url'] . '">' . $aItem['title'] . '</a> <span class="date">' . $sAge . '</span><br>
+                                if (count($aPreviews)) {
+                                    $iPreview = 0;
+                                    foreach ($aPreviews as $sPreview) {
+                                        $iPreview++;
+                                        if ($iPreview > 1) {
+                                            $iMore = count($aPreviews) - $iPreview;
+                                            // TODO: langTxt
+                                            $sDetail.='... ' . $iMore . ' weitere' . ($iMore === 1 ? 'r' : '') . ' Treffer im Text';
+                                            break;
+                                        }
+                                        $sDetail.='...' . $sPreview . '...<br>';
+                                    }
+                                }
+                                $iWord = 0;
+                                foreach ($aSearchwords as $sWord) {
+                                    $iWord++;
+                                    $sClass = "mark${iWord}";
+                                    $sDetail = preg_replace('@' . $sWord . '@i', '<span class="' . $sClass . '">\\0</span>', $sDetail);
+                                }
 
-                                <div class="url">' . $aItem['url'] . '</div>
-                                <div class="detail">'
-                                    . $sDetail . '
+                                $sOut.='
+                                <div class="searchresult" CConclickCC="location.href=\'' . $aItem['url'] . '\';">
+                                    <div class="bar">
+                                        <span style="float: right">' . round($iRanking / $iMaxRanking * 100) . '%</span>
+                                        <div class="bar2" style="width: ' . round($iRanking / $iMaxRanking * 100) . '%">&nbsp;</div>
+                                    </div>
+                                   <a href="' . $aItem['url'] . '">' . $aItem['title'] . '</a> <span class="date">' . $sAge . '</span><br>
+
+                                    <div class="url">' . $aItem['url'] . '</div>
+                                    <div class="detail">'
+                                        . $sDetail . '
+                                    </div>
                                 </div>
-                            </div>
-                                 ';
+                                     ';
+                            }
                         }
                     }
-                }
 
-                break;
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
         }
         return $sOut 
                 . '<br>'

@@ -2360,7 +2360,7 @@ class backend extends crawler_base {
         // print_r($aResult);
         
         $sSelect='';
-        $aCat=$o->getSearchcategories();
+        $aCat=$o->getSearchCategories();
         if ($aCat){
             foreach ($aCat as $sLabel=>$sUrl){
                 $sSelect.='<option value="'.$sUrl.'" '.($sSubdir==$sUrl?'selected="selected"':'').' >'.$sLabel.'</option>';
