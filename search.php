@@ -25,6 +25,7 @@ $o->setSiteId(1);
 // ----- (2) set the frontend language
 $o->setLangFrontend('en');
 
+/*
 // ----- (3) show form to enter search term
 // most simple way:
 // echo $o->renderSearchForm();
@@ -35,8 +36,6 @@ echo $o->renderSearchForm(array(
     'lang'=>1,
     'mode'=>1,
 ));
-die();
-/*
 // ------ (4) output of results
 // echo $o->renderSearchresults();
 
