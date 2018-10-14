@@ -506,20 +506,20 @@ class ahsearch extends crawler_base {
      */
     public function renderSearchForm($aOptions=array()){
         $sOptions=(isset($aOptions['categories']) && $aOptions['categories'] 
-                ? $this->renderLabelCategories() . $this->renderSelectCategories().'<br>'
+                ? '<tr><td>'.$this->renderLabelCategories() .'</td><td>'. $this->renderSelectCategories().'</td></tr>'
                 : '')
             .(isset($aOptions['lang']) && $aOptions['lang'] 
-                ? $this->renderLabelLang() . $this->renderSelectLang().'<br>'
+                ? '<tr><td>'.$this->renderLabelLang() .'</td><td>'. $this->renderSelectLang().'</td></tr>'
                 : '')
             .(isset($aOptions['mode']) && $aOptions['mode'] 
-                ? $this->renderLabelMode() . $this->renderSelectMode().'<br>'
+                ? '<tr><td>'.$this->renderLabelMode() .'</td><td>'. $this->renderSelectMode().'</td></tr>'
                 : '')
             ;
         $sReturn='<form method="GET" action="?">'
-                . $this->lF('label.searchhelp').'<br>'
-                . $this->renderLabelSearch()
-                . $this->renderInput()
-                . ($sOptions ? '<br><br><strong>'.$this->lF('label.searchoptions').'</strong><br>'.$sOptions.'<hr>' : '')
+                . $this->lF('label.searchhelp').'<br><br>'
+                . $this->renderLabelSearch().': '
+                . $this->renderInput(array('size'=>'50'))
+                . ($sOptions ? '<br><br><strong>'.$this->lF('label.searchoptions').'</strong>:<br><table>'.$sOptions.'</table><hr>' : '')
                 .'<button>'.$this->lF('btn.search.label').'</button>'
                 .'</form>'
                 ;

@@ -1,4 +1,6 @@
-<?php
+<style>
+    body{font-family: verdana;}
+</style><?php
 /*
  *
  * Hi!
@@ -21,12 +23,11 @@ $o->setSiteId(1);
 // $o = new ahsearch(1);
 
 // ----- (2) set the frontend language
-$o->setLangFrontend('de');
+$o->setLangFrontend('en');
 
 // ----- (3) show form to enter search term
-/*
 // most simple way:
-echo $o->renderSearchForm();
+// echo $o->renderSearchForm();
 
 // with additional options
 echo $o->renderSearchForm(array(
@@ -34,7 +35,8 @@ echo $o->renderSearchForm(array(
     'lang'=>1,
     'mode'=>1,
 ));
-
+die();
+/*
 // ------ (4) output of results
 // echo $o->renderSearchresults();
 
