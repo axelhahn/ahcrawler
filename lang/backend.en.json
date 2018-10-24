@@ -28,8 +28,11 @@
     "nav.ressources.label": "Ressources",
     "nav.ressources.hint": "Ressources of the website",
     
+    "nav.sslcheck.label": "SSL Check",
+    "nav.sslcheck.hint": "Check of the SSL certificate (live request)",
+    
     "nav.httpheaderchecks.label": "Http Header check",
-    "nav.httpheaderchecks.hint": "Analysis of Http header",
+    "nav.httpheaderchecks.hint": "Analysis of Http header (based on the first url in the ressource database)",
         
     "nav.htmlchecks.label": "HTML checks",
     "nav.htmlchecks.hint": "Analysis of html code and recommendations",
@@ -127,6 +130,9 @@
     "11111": "TODO AB HIER WEITER UEBERSETZEN",
     "22222": "--------------------------------------------------------------",
     
+    "error.404": "404 Page not found",
+    "error.404.description": "The requested page does not exist.",
+
     "home.welcome": "Welcome!",
     "home.welcome-introtext": "Here is the backend of ahCrawler.<br><br>This tool consists of 2 parts:<br>- Searchindex + search engine<br>- ressource analyzer<br><br>To get it run read the docs, please.",
     "home.cfg": "general Config",
@@ -266,9 +272,6 @@
     "httpheader.varfound.non-standard": "Common non-standard response field",
 
     "httpheader.warnings": "Warnings for Http headers (%s)",
-    "httpheader.httponly": "No encryption,",
-    "httpheader.httponly.description": "no Https!",
-    "httpheader.httponly.hint": "Browser mark it insecure",
 
     "httpheader.unknown.description": "Unknown header variables were found in the http response.",
     
@@ -284,16 +287,22 @@
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
     "httpheader.starturl": "Starting url",
 
-    "httpheader.sslcheck": "SSL-Certificate",
-    "httpheader.sslcheck.description": "Information about the used SSL certificate.",
-    "httpheader.sslcheck.CN": "Common Name",
-    "httpheader.sslcheck.issuer": "Issuer",
-    "httpheader.sslcheck.CA": "CA",
-    "httpheader.sslcheck.DNS": "DNS names",
-    "httpheader.sslcheck.validfrom": "valid from",
-    "httpheader.sslcheck.validto": "valid from",
-    "httpheader.sslcheck.validleft": "still valid (in days)",
-    "httpheader.sslcheck.raw": "Raw data",
+    "sslcheck.label": "SSL-Certificate",
+    "sslcheck.description": "Information about the used SSL certificate.",
+    "sslcheck.nostarturl": "There is no starting url for crawling in the config.",
+    
+    "sslcheck.httponly": "No encryption,",
+    "sslcheck.httponly.description": "no Https!",
+    "sslcheck.httponly.hint": "Browser mark it insecure",
+
+    "sslcheck.CN": "Common Name",
+    "sslcheck.issuer": "Issuer",
+    "sslcheck.CA": "CA",
+    "sslcheck.DNS": "DNS names",
+    "sslcheck.validfrom": "valid from",
+    "sslcheck.validto": "valid from",
+    "sslcheck.validleft": "still valid (in days)",
+    "sslcheck.raw": "Raw data",
         
     "linkchecker.check-links": "Link check overview",
     "linkchecker.found-http-errors": "Http errors (%s)",

@@ -106,14 +106,14 @@ a.hoverinfos:hover span{display: block;}
 
 h1{ background:#cde; margin:0 0 1em; border-top-left-radius: 0.5em;}
 
-h2{ background:#f8f8f8; background:linear-gradient(90deg,#fff, #f4f4f4);  font-size: 3em; padding: 0.2em 1em; margin: 0 -1em; color: #8ac; position: fixed; display: block; width: 100%;
+h2{ background:#f8f8f8; background:linear-gradient(90deg,#fff, #f4f4f4);  font-size: 3em; padding: 0.2em 1em; margin: 0 -1em; color: #679; position: fixed; display: block; width: 100%;
 box-shadow: 0 1em 1em #fff; z-index:100;
 border-bottom: 1px dotted; text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;}
-p.pageHint{ background:#e0e8f0; background:linear-gradient(90deg, #e0e8f0,#fff); 
-            background:linear-gradient(90deg, #fff0d0, #fff);
-            background:linear-gradient(90deg, #ede, #fff);
-          color:#567; font-size: 120%; padding: 1.5em; margin-top: 0; margin-bottom: 9em; position: relative; top: 5em; }
+p.pageHint{ background:#eee;
+            background:linear-gradient(90deg, #eee, #fff);
+          font-size: 120%; padding: 1.0em; margin-top: 0; margin-bottom: 7em; position: relative; top: 5em; }
 h3{ color: #79b; font-size: 170%; border-top: 1px solid #fca; padding-top: 1em; margin: 2em 0 1.5em;}
+h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 
 
@@ -136,10 +136,9 @@ pre{border: 1px solid #ddd; font-size: 80%; padding: 0.3em; background: #f8f8f8;
 /* --- tiles --- */
 
 a.childitem{
-    background: #ffe8b0;
-    background: radial-gradient(#fff,#ffe8b0);
-    border: 1px solid #ffe8b0;
-    border-left: 6px solid #ffe0a0; 
+    background: #f0f0f0;
+    border: 0px solid #abc;
+    border-left: 6px solid #d0d8e0; 
     border-radius: 0.5em;
     color:#666;
     display: block;
@@ -150,10 +149,11 @@ a.childitem{
     text-decoration: none;
     width: 18%;
 }
-a.childitem:hover{background: #f8e0a8; border-left: 6px solid #789; border-left: 6px solid #fc3; }
-a.childitem:focus{background: #fae8b0; }
-a.childitem i{color: #a82; font-size: 300%;}
-a.childitem strong{color: #ca2; font-size: 150%; text-shadow: 1px 1px 1px #fff;}
+a.childitem:hover{background: #e8f0f8; }
+a.childitem:focus{background: #e0e8f0; }
+a.childitem i{color: #abc; font-size: 300%;}
+a.childitem:hover i{color: #9ab;}
+a.childitem strong{color: #789; font-size: 150%; text-shadow: 1px 1px 1px #fff;}
 
 
 /* --- tiles --- */
@@ -223,8 +223,7 @@ div#overlay{
 }
 .more:before{content: ' (...)'; color: #f00; background: #fee;}
 
-div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2);}
-div.warning{background: #fc6; padding: 1em;}
+div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
 
 /* --- ressources --- */
 .http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff;}

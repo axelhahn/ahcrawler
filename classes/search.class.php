@@ -106,7 +106,40 @@ class ahsearch extends crawler_base {
         }
         return $aReturn;
     }
-
+    
+    public function getSearchtermsOfUsers(){
+            $sQuery=''
+                    . 'SELECT query, count(query) as count, results '
+                    . 'FROM searches '
+                    . 'WHERE siteid = '.$this->_sTab.' '
+                    . 'AND ts > \''.date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))).'\' '
+                    . 'GROUP BY query '
+                    . 'ORDER BY count desc, query asc '
+                    . 'LIMIT 0,10';
+            $oResult=$this->oDB->query($sQuery);
+            
+            /*
+             * TODO: FIX ME
+            $oResult = $this->oDB->select(
+                    'searches', 
+                    array('ts', 'query', 'count(query) as count', 'results'),
+                    array(
+                        'AND' => array(
+                            'siteid' => $this->_sTab,
+                            '[>]ts' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))),
+                        ),
+                        "GROUP" => "query",
+                        "ORDER" => array("count"=>"DESC", "query"=>"asc"),
+                        "LIMIT" => 10
+                    )
+            );
+             */
+            
+            // echo "$sQuery ".($oResult ? "OK" : "fail")."<br>";
+            $aSearches[$iDays]=($oResult ? $oResult->fetchAll(PDO::FETCH_ASSOC) : array());
+    }
+            
+            
     // ----------------------------------------------------------------------
     // ACTIONS SEARCH
     // ----------------------------------------------------------------------

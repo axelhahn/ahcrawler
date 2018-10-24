@@ -25,8 +25,11 @@
     "nav.analysis.label": "Analyse",
     "nav.analysis.hint": "Analyse der Ressourcen der Webseite",
     
+    "nav.sslcheck.label": "SSL-Check",
+    "nav.sslcheck.hint": "Check des verwendeten SSL-Zertifikats (Live Abfrage)",
+    
     "nav.httpheaderchecks.label": "Http Header check",
-    "nav.httpheaderchecks.hint": "Analyse des Http Response Headers der Startseite",
+    "nav.httpheaderchecks.hint": "Analyse des Http Response Headers der Startseite (basierend auf der ersten URL in der Ressourcen Datenbank)",
         
     "nav.htmlchecks.label": "HTML-Checks",
     "nav.htmlchecks.hint": "Analyse des Html Code und Hinweise",
@@ -127,6 +130,9 @@
     "UNUSED-txt-last-index": "Letzte Indexierung",
     "txt-last-error": "Letzter Fehler",
     "UNUSEDtxt-last-scan": "Letzter Scan",
+    
+    "error.404": "404 Seite nicht gefunden",
+    "error.404.description": "Die angeforderte Seite gibt es nicht.",
 
     "home.welcome": "Willkommen!",
     "home.welcome-introtext": "Hier ist das Backend des ahCrawler.<br><br>Dieses Tool besteht aus 2 Teilen:<br>- Suchindex und Suchmaschine f&uuml;r die Webseite<br>- Analyse aller Ressourcen<br><br>Um dies hier zum Laufen zu bekommen, lesen Sie bitte in der Dokumentation.",
@@ -270,9 +276,6 @@
     "httpheader.varfound.non-standard": "Gebr&auml;uchlich, aber kein Http-Standard",
     
     "httpheader.warnings": "Warnhinweise zu den Http-Headern (%s)",
-    "httpheader.httponly": "Keine Verschl&uuml;sselung,",
-    "httpheader.httponly.description": "kein Https!",
-    "httpheader.httponly.hint": "Browser melden eine unsichere Seite",
 
     "httpheader.unknown.description": "Es wurden unbekannte Headervariablen im Http Response gefunden.",
     "httpheader.unknown.todo": "Bitte diese Variablen pr&uuml;fen:",
@@ -287,16 +290,22 @@
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
     "httpheader.starturl": "Start-URL",
     
-    "httpheader.sslcheck": "SSL-Zertifikat",
-    "httpheader.sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
-    "httpheader.sslcheck.CN": "Common Name",
-    "httpheader.sslcheck.issuer": "Aussteller",
-    "httpheader.sslcheck.CA": "CA",
-    "httpheader.sslcheck.DNS": "DNS-Namen",
-    "httpheader.sslcheck.validfrom": "g&uuml;ltig von",
-    "httpheader.sslcheck.validto": "g&uuml;ltig bis",
-    "httpheader.sslcheck.validleft": "noch g&uuml;ltig (in Tagen)",
-    "httpheader.sslcheck.raw": "Rohdaten",
+    "sslcheck.label": "SSL-Zertifikat",
+    "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
+    "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
+
+    "sslcheck.httponly": "Keine Verschl&uuml;sselung,",
+    "sslcheck.httponly.description": "kein Https!",
+    "sslcheck.httponly.hint": "Browser melden eine unsichere Seite",
+    
+    "sslcheck.CN": "Common Name",
+    "sslcheck.issuer": "Aussteller",
+    "sslcheck.CA": "CA",
+    "sslcheck.DNS": "DNS-Namen",
+    "sslcheck.validfrom": "g&uuml;ltig von",
+    "sslcheck.validto": "g&uuml;ltig bis",
+    "sslcheck.validleft": "noch g&uuml;ltig (in Tagen)",
+    "sslcheck.raw": "Rohdaten",
     
     "linkchecker.check-links": "Verteilung der Statuscodes",
     "linkchecker.found-http-errors": "Http-Fehler (%s)",
