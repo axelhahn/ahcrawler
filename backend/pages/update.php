@@ -1,79 +1,90 @@
 <?php
-if (!isset($adminindex)){
-    die("Abort." . __FILE__);
-}
-$sHtml = '';
-
-/*
-$sHtml .= "<h3>Work in progress</h3>file: " . __FILE__ . "<p>Update feature is disabled here so far. It would destroy a beta installation.</p>";
-if (!strpos($_SERVER["SERVER_NAME"], "axel-hahn.de")){
-    echo $sHtml;
-    return true;
-}
- * 
+/**
+ * page about
  */
+$oRenderer=new ressourcesrenderer();
+$aSteps=array(
+    'welcome',
+    'download',
+    'extract',
+);
+$sReturn = '';
 
 require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
 $sApproot=dirname(dirname(__DIR__));
-// $sApproot=dirname(dirname(__DIR__)).'/test-update';
 
 
-$sZipfile = getTempdir() . '/__pimpapachestat-latest.zip';
+$sZipfile = $sApproot.'/tmp/__latest.zip';
+
 $sTargetPath = $sApproot;
+// $sTargetPath = $sApproot.'/tmp';
 
-/*
-$sLatestUrl=(stripos($aEnv["project"]["version"], "beta")) 
-        ? $aEnv["links"]["update"]['downloadbeta']['url']
-        : $aEnv["links"]["update"]['download']['url']
-        ;
-*/
-
-$aUpdateInfos=getUpdateInfos();
-$sLatestUrl=$aUpdateInfos['download'];
+$sLatestUrl=$this->oUpdate->getDownloadUrl();
 
 $oInstaller=new ahwi(array(
     'product'=>'dummy',
     'source'=>$sLatestUrl,
-    'installdir'=>$sApproot,
+    'installdir'=>$sTargetPath,
     'tmpzip'=>$sZipfile,
     'checks'=>array(
         'phpversion'=>'5.3',
-        'phpextensions'=>array('curl')
+        'phpextensions'=>array('curl', 'zip')
     ),
 ));
 
-if (!array_key_exists('doinstall', $_GET)) {
-    // ------------------------------------------------------------
-    // step 1: welcome
-    // ------------------------------------------------------------
-    $aUpdateInfos=getUpdateInfos(true);
-    $sHtml .= '<h4 id="h3' . md5('update') . '">'. $aLangTxt["lblUpdate"] . '</h4>'
-            . '<div class="subh3">'
-            . '<div class="hintbox">'
-            . ($aUpdateInfos['flag_update']
-                ? $aLangTxt['lblUpdateNewerVerionAvailable'].'<br>'
-                : $aLangTxt['lblUpdateNoNewerVerionAvailable'].'<br>'
-                )
-            . '</div>'
-            . sprintf($aLangTxt["lblUpdateHints"], $sLatestUrl)
-            . sprintf($aLangTxt['lblUpdateInstalldir'], $oInstaller->getInstalldir())
-            . '</div>'
-            . '<a href="' . getNewQs(array('doinstall' => 'download')) . '"'
-            . ' class="btn btn-default"'
-            . '>' . $aLangTxt["lblUpdateContinue"] . '</a>'
-            ;
-    
-} else {
-    $sOutput='';
-    switch ($_GET['doinstall']) {
-        
-        // ------------------------------------------------------------
-        // step 2: download 
-        // ------------------------------------------------------------
-        case 'download':
-            $sHtml .= '<h4 id="h3' . md5('update') . '">'. $aLangTxt["lblUpdate"] . '</h4>'
-                    . '<div class="subh3">';
 
+
+$sStep=isset($_GET['doinstall']) ? $_GET['doinstall'] : $aSteps[0];
+
+$iStep=array_search($sStep, $aSteps);
+if($iStep===false){
+    $sStep=$aSteps[0];
+    $iStep=0;
+}
+$sNextUrl=$iStep < (count($aSteps)-1)
+        ? '?page=update&doinstall='.$aSteps[($iStep+1)]
+        : '?page=about'
+        ;
+$sBtnNext=$this->_getButton(array(
+    'href' => $sNextUrl,
+    'class' => 'button-secondary',
+    'label' => 'button.continue',
+    'popup' => false
+));
+
+
+$sOutput='';
+$sReturn .= '<h3 id="h3' . md5('update') . '">'. $this->lB('update.'.$sStep.'.label') . '</h3>'
+    . '<p>'. $this->lB('update.'.$sStep.'.description') . '</p><hr><br><br>'
+    ;
+switch ($sStep) {
+    case 'welcome':
+        $sReturn .= '<p>'
+            .($this->oUpdate->hasUpdate()
+                ?  
+                    $this->_getSimpleHtmlTable(
+                        array(
+                            array('installiert',  $this->oUpdate->getClientVersion()),
+                            array('aktuell',      $this->oUpdate->getLatestVersion()),
+                        )
+                    )
+                    . $oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion())
+                :  $oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no')
+             )
+            . '</p><br>'
+            . '<p>'
+            . $this->lB('update.steps')
+            . '</p>'
+            .'<ol>'
+                . '<li>'.sprintf($this->lB('update.steps.downloadurl'), $this->oUpdate->getDownloadUrl(), $sZipfile) . '</li>'
+                . '<li>'.sprintf($this->lB('update.steps.extractto'), $sTargetPath) . '</li>'
+            . '</ol>'
+            .'<br>'
+            . $sBtnNext
+            ;
+        break;
+    case 'download':
+        // $aUpdateInfos=getUpdateInfos(true);
             if (file_exists($sZipfile)) {
                 unlink($sZipfile);
             }
@@ -83,51 +94,39 @@ if (!array_key_exists('doinstall', $_GET)) {
             $sOutput.=str_replace("\n", "<br>", ob_get_contents());
             ob_end_clean();
             if($bDownload){
-                $sHtml.='<br><strong>'.$aLangTxt['lblUpdateDonwloadDone'].'</strong><br><br>'
-                        . sprintf($aLangTxt['lblUpdateInstalldir'], $oInstaller->getInstalldir())
-                        . '</div><a href="' . getNewQs(array('doinstall' => 'unzip')) . '"'
-                        . ' class="btn btn-default"'
-                        . '>' . $aLangTxt["lblUpdateContinue"] . '</a>';
+                $sReturn.='<br><strong>'.$this->lB('update.download.done').'</strong><br><br>'
+                        . sprintf($this->lB('update.download.extractto'), $oInstaller->getInstalldir())
+                        . '<br><br>'
+                        . $sBtnNext
+                        ;
             } else {
-                $sHtml.=$aLangTxt['lblUpdateDonwloadFailed'] . '</div>';
-            }
-            break;
-            
-        // ------------------------------------------------------------
-        // step 3: unzip downloaded file
-        // ------------------------------------------------------------
-        case 'unzip':
-            
-            $sHtml .= '<h4 id="h3' . md5('update') . '">'. $aLangTxt["lblUpdate"] . '</h4>'
-                    . '<div class="subh3">'
-                    . sprintf($aLangTxt['lblUpdateUnzipFile'], $sZipfile, $sTargetPath) 
-                    . '<br><br>';
-            
+                $sReturn.=$this->lB('update.download.failed');
+            }        
+            ;
+        break;
+    case 'extract':
+        // $aUpdateInfos=getUpdateInfos(true);
             ob_start();
             $bInstall=$oInstaller->install();
             $sOutput.=str_replace("\n", "<br>", ob_get_contents());
             ob_end_clean();
             
             if ($bInstall){
-                $sHtml.=$aLangTxt['lblUpdateUnzipOK'] . '</div>'
-                    . '<a href="../?"'
-                        . ' class="btn btn-default"'
-                        . '>' . $aLangTxt["lblUpdateContinue"] . '</a>';
+                $sReturn.=$this->lB('update.extract.ok')
+                    . '<br><br>'
+                    . $sBtnNext
+                    ;
             } else {
-                $sHtml.=$aLangTxt['lblUpdateUnzipFailed'] . '</div>';
+                $sReturn.=$this->lB('update.extract.failed');
             }
-            break;
-        /*
-        case 'postunzip':
-            $content = '<h3 id="h4' . md5($sServer) . '">' . $aLangTxt["lblUpdate"] . '</h4>'
-                    . '<div class="h3">';
-            $content.='</div>';
-            break;
-        */
-        default:
-            break;
-    }
-    $sHtml.=$sOutput ? '<br><br>'.$aLangTxt['lblUpdateOutput'].':<br><pre class="output">'.$sOutput.'</pre>' : '';
+            ;
+        break;
+
+
+    default:
+        break;
 }
 
-echo $sHtml;
+$sReturn.=$sOutput ? '<br><br><hr><br>'.$this->lB('update.output').':<br><pre class="output">'.$sOutput.'</pre>' : '';
+
+return $sReturn;

@@ -12,8 +12,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => 'v0.40',
-        'date' => '2018-10-24',
+        'version' => '0.41',
+        'date' => '2018-10-28',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -41,6 +41,12 @@ class crawler_base {
             'ressources' => array(
                 'simultanousRequests' => 3,
             ),
+        ),
+        // used in backend
+        'updater' => array(
+            'baseurl'=>'https://www.axel-hahn.de/versions/',
+            'tmpdir'=>false,
+            'ttl'=>86400,     // 1 day
         ),
     );
     protected $aProfileDefault = array(

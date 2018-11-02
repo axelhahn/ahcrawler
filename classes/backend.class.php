@@ -1,5 +1,6 @@
 <?php
 
+require_once 'ahwi-updatecheck.class.php';
 require_once 'analyzer.html.class.php';
 require_once 'crawler-base.class.php';
 require_once 'crawler.class.php';
@@ -35,7 +36,9 @@ class backend extends crawler_base {
             'checkurl'=>array(), 
             'ressourcedetail'=>array(), 
         ), 
-        'about'=>array()
+        'about'=>array(
+            'update'=>array(), 
+        )
     );
     private $_sPage = false;
     private $_sTab = false;
@@ -58,6 +61,7 @@ class backend extends crawler_base {
             'checkurl'=>'fa fa-globe', 
             'ressourcedetail'=>'fa fa-map-o', 
             'about'=>'fa fa-info-circle', 
+            'update'=>'fa fa-bolt', 
             'project'=>'fa fa-book', 
             
             'logoff'=>'fa fa-info-circle', 
@@ -119,6 +123,7 @@ class backend extends crawler_base {
         ),
         'button'=>array(
             'button.close' => 'fa fa-close',
+            'button.continue' => 'fa fa-chevron-right',
             'button.crawl' => 'fa fa-play',
             'button.delete' => 'fa fa-trash',
             'button.help' => 'fa fa-question-circle',
@@ -132,6 +137,8 @@ class backend extends crawler_base {
     );
     
     public $iLimitRessourcelist=1000;
+    
+    public $oUpdate = false;
 
     // ----------------------------------------------------------------------
     /**
@@ -145,6 +152,18 @@ class backend extends crawler_base {
         $this->setSiteId($iSiteId);
         $this->setLangBackend();
         $this->_getPage();
+        /*
+         * 
+         */
+        $this->oUpdate=new ahwiupdatecheck(array(
+                'product'=>$this->aAbout['product'],
+                'version'=>$this->aAbout['version'],
+                'baseurl'=>$this->aOptions['updater']['baseurl'],
+                'tmpdir'=>($this->aOptions['updater']['tmpdir'] ? $this->aOptions['updater']['tmpdir'] : __DIR__.'/../tmp/'),
+                'ttl'=>$this->aOptions['updater']['ttl'],
+        ));
+        // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
+        
         return true;
     }
 

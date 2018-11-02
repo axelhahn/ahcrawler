@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2018-11-02: v0.41
+  * backend: added update checks and web based updater
+  * update .htacces files with apache httpd 2.4 syntax
+
 2018-10-24: v0.40
   * backend: content comes from included php files instead of private functions
   * backend: ssl check was moved into its own navigation item

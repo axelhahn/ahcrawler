@@ -48,6 +48,9 @@
         
     "nav.about.label": "&Uuml;ber ...",
     "nav.about.hint": "Versionsinfos und Danksagungen",
+
+    "nav.update.label": "Updater",
+    "nav.update.hint": "Software-Aktualisierung",
     
     "nav.logoff.label": "Abmelden",
     "nav.logoff.hint": "Sie wurden abgemeldet.",
@@ -56,8 +59,12 @@
     "var.string": "String",
     "var.array": "Array",
     
+    "button.back": "Zur&uuml;ck",
+    "button.back.hint": "1 Schritt zur&uuml;ck",
     "button.close": "Schliessen",
     "button.close.hint": "Fenster wieder schliessen",
+    "button.continue": "Weiter",
+    "button.continue.hint": "Weiter...",
     "button.crawl": "komplett Re-Indexieren",
     "button.crawl.hint": "Crawler starten und komplette Site Re-Indexieren (Vorsicht: das kann dauern...)",
     "button.delete": "L&ouml;schen",
@@ -338,6 +345,27 @@
     "about.thanks.medoo": "<strong>Medoo</strong><br>Leichtgewichtiger PHP PDO-Datenbank Wrapper",
     "about.thanks.pure": "<strong>Yahoo Pure.CSS</strong><br>Set von kleinen, responsive CSS Modulen",
     "about.thanks.rollingcurl": "<strong>Rolling-curl</strong><br>Eine effiziente Multi-curl Library f&uuml;r PHP (non-blocking)",
+    
+    "update.welcome.label": "Willkommen bei der Software-Aktualisierung!",
+    "update.welcome.description": "Der nachfolgende Assistent begleitet Sie durch den den Aktualisierungs-Prozess.<br>Starten wir mit dem Versionsvergleich.",
+    "update.welcome.available-yes": "Es ist ein Update auf Version %s verf&uuml;gbar. Bitte Folgen Sie dem Assistenten, um die Software zu aktualisieren.",
+    "update.welcome.available-no": "Die Software ist auf dem aktuellen Stand. Dem Update-Assistenten zu folgen, ist nicht zwingend notwendig.",
+    "update.steps": "Die Aktualisierung erfolgt in wenigen Schritten. Es geht wie folgt weiter:",
+    "update.steps.downloadurl": "<strong>Download</strong> der URL<br>%s<br><br>als Zieldatei<br>%s<br><br>",
+    "update.steps.extractto": "<strong>Dekomprimieren</strong> nach<br>%s",
+    "update.download.label": "Download",
+    "update.download.description": "Herunterladen der aktuellen Version",
+    "update.download.done": "OK, die Software konnte erfolgreich heruntergeladen werden",
+    "update.download.extractto": "Bitte fortfahren, um es nach [%s] zu entpacken.",
+    "update.download.failed": "Fehler: die Software konnte nicht heruntergeladen werden.",
+    "update.extract.label": "Entpacken",
+    "update.extract.description": "Auspacken der heruntergeladenen Software",
+    "update.extract.ok": "OK, das Entpacken war erfolgreich",
+    "update.extract.failed": "Fehler: die Software konnte nicht entpackt werden.",
+
+    "update.available-yes": "Es ist ein Update auf Version %s verf&uuml;gbar.",
+    "update.available-no": "Die Software ist auf dem aktuellen Stand.",
+    "update.output": "Konsolen-Ausgabe",
         
     "overlay.viewIndexItem": "Daten einer einzelnen indexierten Webseite",
     "overlay.updateIndexItem": "Aktualisieren einer einzelnen URL",

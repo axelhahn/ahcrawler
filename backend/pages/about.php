@@ -4,7 +4,27 @@
  */
 $sReturn = '';
 
+/*
+require_once __DIR__.'/../../classes/ahwi-updatecheck.class.php';
+$oUpdate=new ahwiupdatecheck(array(
+        'product'=>$this->aAbout['product'],
+        'version'=>$this->aAbout['version'],
+        'baseurl'=>'https://c58.axel-hahn.de/versions/',
+        'tmpdir'=>__DIR__.'/../../tmp/',
+        'ttl'=>10,
+        // 'ttl'=>86400,     // 1 day
+));
+// echo "getUpdateInfos : </pre>" . print_r($oUpdate->getUpdateInfos(), 1).'</pre>';
+
+*/
+$oRenderer=new ressourcesrenderer();
 $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '</h3>'
+
+        // update info
+        .($this->oUpdate->hasUpdate()
+                ?  '<div class="warning">' . $oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.available-yes') , $this->oUpdate->getLatestVersion()) . '</div><br>'
+                :  '<p>' . $oRenderer->renderShortInfo('found'). $this->lB('update.available-no') . '</p>'
+         )
         . '<p>' . $this->lB('about.info') . '</p>'
         . $this->_getSimpleHtmlTable(
                 array(
