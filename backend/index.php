@@ -88,5 +88,6 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <script>
             initPage();
         </script>
-
+        <div style="clear: both;"></div>
+        <?php echo $oBackend->logRender(); ?>
     </body></html>

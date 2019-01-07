@@ -231,6 +231,14 @@ class crawler extends crawler_base{
     private function _addUrl2Crawl($sUrl, $bDebug=false) {
         echo $bDebug ? __FUNCTION__."($sUrl)\n" : "";
         
+        // TODO: one of the next features
+        /*
+        if(count($this->_aUrls2Crawl[$sUrl]) > [MAX] ){
+          return false;
+        }
+         */
+        
+                
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
         // ... and spaces
@@ -550,7 +558,7 @@ class crawler extends crawler_base{
 
             $aCurlOpt=$this->_getCurlOptions();
             $rollingCurl->setOptions($aCurlOpt)
-                ->setSimultaneousLimit($this->aProfile['searchindex']['simultanousRequests'])
+                ->setSimultaneousLimit((int)$this->aProfile['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
                     // echo "... content: " . substr($request->getResponseText(), 0 ,10) . " (...) \n";

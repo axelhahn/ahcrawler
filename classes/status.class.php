@@ -58,7 +58,10 @@ class status {
      * @return string
      */
     private function _getTouchfile(){
-        return sys_get_temp_dir().'/ahcrawler_'.md5(__DIR__).'.lock';
+        return is_writable(sys_get_temp_dir())
+            ? sys_get_temp_dir().'/ahcrawler_'.md5(__DIR__).'.lock'
+            : dirname(__DIR__).'/data/ahcrawler_.lock'
+        ;
     }
 
     /**

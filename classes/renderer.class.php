@@ -1,7 +1,8 @@
 <?php
 
-require_once ('ressources.class.php');
+require_once 'ressources.class.php';
 require_once 'httpheader.class.php';
+require_once 'htmlelements.class.php';
 
 /**
  * Description of ressources-renderer
@@ -99,12 +100,14 @@ class ressourcesrenderer extends crawler_base {
         'ico.security' => 'fa fa-lock',
         'ico.warn' => 'fa fa-exclamation-triangle',
     );
+    public $oHtml=false;
 
     // ----------------------------------------------------------------------
     // construct
     // ----------------------------------------------------------------------
 
     public function __construct($iSiteId = false) {
+        $this->oHtml=new htmlelements();
         $this->setLangBackend();
         if ($iSiteId) {
             $this->_initRessource($iSiteId);

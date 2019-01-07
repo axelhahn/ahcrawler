@@ -225,6 +225,11 @@ div#overlay{
 
 div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
 
+div.message{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); padding: 1em;}
+div.message-ok{background: #cfc; color:#080;}
+div.message-warning{background: #fec; color:#975;}
+div.message-error{background: #fcc; color:#955;}
+
 /* --- ressources --- */
 .http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff;}
 .http-code-{background:#ccd;}
@@ -297,3 +302,7 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .pure-table td .key2{color:#995599;font-style: italic;}
 .pure-table td .value{color:#0066cc;}
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
+
+
+/* --- form --- */
+form.pure-form label{min-width: 20em;}

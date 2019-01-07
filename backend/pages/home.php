@@ -2,6 +2,19 @@
 /**
  * HOME
  */
+if(!$this->oDB){
+    $oRenderer=new ressourcesrenderer($this->_sTab);
+    $sHtml=''
+    . '<h3>' . $this->lB('home.welcome') . '</h3>'
+    .$this->lB('home.welcome.introtext').'<br><br>'
+    .$oRenderer->oHtml->getTag('a',array(
+        'href' => '?page=setup',
+        'class' => 'pure-button button-secondary',
+        'title' => $this->lB('nav.setup.label.hint'),
+        'label' => $this->lB('nav.setup.label'),
+    ))
+    ;
+} else {
 $sHtml=$this->_renderChildItems($this->_aMenu)
     // . '<h3>' . $this->lB('home.welcome') . '</h3>'
     . (!$this->_getUser() && (
@@ -13,4 +26,5 @@ $sHtml=$this->_renderChildItems($this->_aMenu)
     )
     //. '<p>' . $this->lB('home.welcome-introtext') . '</p>'
 ;
+}
 return $sHtml;

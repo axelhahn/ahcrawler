@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../vendor/medoo/Medoo.php';
 require_once 'status.class.php';
+require_once 'logger.class.php';
 
 /**
  * 
@@ -12,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.41',
-        'date' => '2018-10-28',
+        'version' => '0.42',
+        'date' => '2019-01-06',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -182,6 +183,7 @@ class crawler_base {
     protected $sUserAgent = false;
 
     protected $sCcookieFilename = false;
+    protected $_oLog = false;
     
     // ----------------------------------------------------------------------
 
@@ -191,6 +193,7 @@ class crawler_base {
      */
     public function __construct($iSiteId = false) {
 
+        $this->_oLog=new logger();
         return $this->setSiteId($iSiteId);
     }
 
@@ -203,10 +206,26 @@ class crawler_base {
     }
 
     /**
+     * get fixed array of $aOptions['options']['database'] 
+     * @param array  $aDbConfig  $aOptions['options']['database'] 
+     * @return array 
+     */
+    protected function _getRealDbConfig($aDbConfig) {
+        // expand sqlite value __DIR__ to [approot]
+        if(isset($aDbConfig['database_file'])){
+            $aDbConfig['database_file'] = str_replace('__DIR__/', dirname(__DIR__) . '/', $aDbConfig['database_file']);
+        }
+        return $aDbConfig;
+    }
+
+    /**
      * load global options array
      * @return array
      */
     protected function _loadOptions() {
+        if(!file_exists($this->_getOptionsfile())){
+            return false;
+        }
         $aOptions = json_decode(file_get_contents($this->_getOptionsfile()), true);
         if (!$aOptions || !is_array($aOptions) || !count($aOptions)) {
             die("ERROR: json file is invalid. Aborting");
@@ -218,10 +237,27 @@ class crawler_base {
             die("ERROR: config requires a database definition.");
         }
         // make a relative path absolute
+        /*
         if (array_key_exists('database_file', $aOptions['options']['database'])) {
             $aOptions['options']['database']['database_file'] = str_replace('__DIR__/', dirname(__DIR__) . '/', $aOptions['options']['database']['database_file']);
         }
+         * 
+         */
         return $aOptions;
+    }
+    /**
+     * load global options array
+     * @return array
+     */
+    protected function _saveConfig($aNewData) {
+        $sCfgfile=$this->_getOptionsfile();
+        $sBakfile=$sCfgfile.'.bak';
+        if (copy($sCfgfile, $sBakfile)){
+            if (file_put_contents($sCfgfile, json_encode($aNewData, JSON_PRETTY_PRINT))){
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -330,14 +366,26 @@ class crawler_base {
      * @param type $aOptions
      */
     private function _initDB() {
-        $this->oDB = new Medoo\Medoo($this->aOptions['database']);
+        $this->logAdd(__METHOD__.'() start ... init with options <pre>'.print_r($this->aOptions['database'],1).'</pre>');
+        try{
+            // $this->oDB = new Medoo\Medoo($this->aOptions['database']);
+            $this->oDB = new Medoo\Medoo($this->_getRealDbConfig($this->aOptions['database']));
+        } catch (Exception $ex) {
+            $this->logAdd(__METHOD__.'() ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.', 'error');
+            $this->oDB = false;
+            return false;
+            // die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
+        }
         if (!$this->_checkDbResult()) {
             die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
         }
+        $this->logAdd(__METHOD__.'() itialized');
+        $this->logAdd(__METHOD__.'() databases is connected');
         // TODO: put creation of tables into setup/ update
         foreach($this->_aDbSettings['tables'] as $sTable=>$aSettings){
             $this->_createTable($sTable, $aSettings);
         }
+        $this->logAdd(__METHOD__.'() databases tables were checked');
 
     }
 
@@ -349,18 +397,19 @@ class crawler_base {
     protected function _checkDbResult($aResult = false) {
         $aErr = $this->oDB->error();
         if ($aErr[1]) {
-            echo "!!! Database error detected :-/\n";
-            if ($this->aOptions['debug'] || true) {
-                echo ''
-                . '... DB-QUERY : ' . $this->oDB->last() . "\n"
-                . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
-                . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
+            echo "!!! Database error detected :-/<br>\n";
+            if ($this->aOptions['debug']) {
+                $this->logAdd(''
+                    . '... DB-QUERY : ' . $this->oDB->last() . "\n"
+                    . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
+                    . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
+                )
                 ;
                 sleep(3);
             }
             return false;
         } elseif ($this->aOptions['debug']) {
-            echo '... OK: DB-QUERY : ' . substr($this->oDB->last(), 0, 200) . " [...]\n";
+            $this->logAdd('... OK: DB-QUERY : ' . substr($this->oDB->last(), 0, 200) . " [...]");
         }
         return true;
     }
@@ -466,17 +515,35 @@ class crawler_base {
         return true;
     }
 
+    public function logAdd($sMessage, $sLevel = "info"){
+        if($this->_oLog){
+            if(php_sapi_name()==='cli'){
+                echo $sMyMsg."\n";
+            }
+            return $this->_oLog->add($sMessage, $sLevel);
+        }
+        return false;
+    }
+    public function logRender(){
+        $aOptions = $this->_loadOptions();
+        if($this->_oLog && isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
+            return '<div style="position: absolute; left: 20em; top: 1000em;">'.$this->_oLog->render().'</div>';
+        }
+        return false;
+    }
     /**
      * set the id of the active project (for crawling or search)
      * @param integer $iSiteId
      */
     public function setSiteId($iSiteId = false) {
+        $this->logAdd(__METHOD__.'('.$iSiteId.') start');
         $aOptions = $this->_loadOptions();
+
         $this->iSiteId = false;
         $this->aProfile = array();
 
         // builtin default options ... these will be overrided with crawler.config.json
-        if (array_key_exists('options', $aOptions)) {
+        if (isset($aOptions['options']) && array_key_exists('options', $aOptions)) {
             $this->aOptions = array_merge($this->aOptions, $aOptions['options']);
         }
 
@@ -485,7 +552,6 @@ class crawler_base {
 
         // curl options:
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
-        
         
         $this->_initDB();
 

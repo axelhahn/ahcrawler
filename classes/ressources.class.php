@@ -794,7 +794,7 @@ class ressources extends crawler_base {
                         $rollingCurl->clearCompleted();
                         $rollingCurl->prunePendingRequestQueue();
                     })
-                    ->setSimultaneousLimit($this->aProfile['ressources']['simultanousRequests'])
+                    ->setSimultaneousLimit((int)$this->aProfile['ressources']['simultanousRequests'])
                     ->execute()
             ;
         }

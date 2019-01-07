@@ -122,6 +122,7 @@ class backend extends crawler_base {
             
         ),
         'button'=>array(
+            'button.back' => 'fa fa-chevron-left',
             'button.close' => 'fa fa-close',
             'button.continue' => 'fa fa-chevron-right',
             'button.crawl' => 'fa fa-play',
@@ -146,12 +147,16 @@ class backend extends crawler_base {
      * @param integer  $iSiteId  site-id of search index
      */
     public function __construct($iSiteId = false) {
+        $this->_oLog=new logger();
         if (!isset($_SESSION)) {
             session_start();
         }
         $this->setSiteId($iSiteId);
+        $this->logAdd(__METHOD__.' site id was set');
         $this->setLangBackend();
+        $this->logAdd(__METHOD__.' backend lang was set');
         $this->_getPage();
+        $this->logAdd(__METHOD__.' getPage was finished');
         /*
          * 
          */
@@ -163,6 +168,7 @@ class backend extends crawler_base {
                 'ttl'=>$this->aOptions['updater']['ttl'],
         ));
         // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
+        $this->logAdd(__METHOD__.' Done');
         
         return true;
     }
@@ -178,8 +184,7 @@ class backend extends crawler_base {
      */
     private function _checkAuth() {
         $aOptions = $this->_loadOptions();
-        if (
-                !array_key_exists('options', $aOptions) || !array_key_exists('auth', $aOptions['options']) || !array_key_exists('user', $aOptions['options']['auth']) || !array_key_exists('password', $aOptions['options']['auth']) || $this->_getUser()
+        if (!isset($aOptions['options']['auth']['user']) || $this->_getUser()
         ) {
             return true;
         }
@@ -419,6 +424,18 @@ class backend extends crawler_base {
         return $sReturn;
     }
 
+    /**
+     * get html code for a message box 
+     * @param type $sMessage  message text
+     * @param type $sLevel    level ok|warning|error
+     * @return string
+     */
+    protected function _getMessageBox($sMessage, $sLevel='warning'){
+        return '<div class="message message-'.$sLevel.'">'
+                .$sMessage
+                .'</div>'
+                ;
+    }
     /**
      * 
      * @return string

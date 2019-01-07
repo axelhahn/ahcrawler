@@ -470,8 +470,11 @@ class analyzerHtml {
      * it returns true if is allowed to follow the links in the document
      * @return string
      */
-    public function getHttpResponseHeader() {
-        if ($this->_sUrl && count($this->_aHttpResponseHeader) && $this->_aHttpResponseHeader['url'] == $this->_sUrl) {
+    public function getHttpResponseHeader($bAllowRedirect=false) {
+        if ($this->_sUrl 
+                && count($this->_aHttpResponseHeader) 
+                && ($bAllowRedirect ? true : $this->_aHttpResponseHeader['url'] == $this->_sUrl)
+        ) {
             return $this->_aHttpResponseHeader;
         }
         return false;

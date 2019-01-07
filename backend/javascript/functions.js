@@ -29,8 +29,8 @@ function initDrawH3list() {
         }
 
     });
-    console.log(sHtml);
-    console.log($(sMenuid));
+    // console.log(sHtml);
+    // console.log($(sMenuid));
     if (i < 2) {
         sHtml = '';
         // $(sMenuid).hide();
@@ -63,6 +63,27 @@ function initSoftscroll() {
             }
         });
     });
+}
+function changeView(sClass2Hide, sIdToShow){
+    
+    $("."+sClass2Hide).hide();
+    $("#"+sIdToShow).show();
+    /*
+    var oHide = document.querySelector("."+sClass2Hide); 
+    var oShow = document.querySelector("#"+sIdToShow); 
+    console.log('--- hide');
+    console.log(oHide);
+    console.log('--- show');
+    console.log(oShow);
+    if(oShow){
+        if (oHide && oHide.length) {
+            for (var i=0; i<oHide.length; i++){
+                oHide[i].style.display="none";
+            }
+        }
+        oShow.style.display="block";
+    }
+    */
 }
 
 function showModal(sUrl){
