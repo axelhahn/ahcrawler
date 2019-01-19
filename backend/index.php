@@ -68,7 +68,10 @@ $oCdn=new axelhahn\cdnorlocal(array(
                 <?php
                     echo $oBackend->oUpdate->hasUpdate()
                         // ?  '<div class="warning pure-menu"><a href="?page=update">' . sprintf($oBackend->lB('update.available-yes') , $oBackend->oUpdate->getLatestVersion()) .'</a></div><br>'
-                        ?  '<div class="warning pure-menu">' . $oRenderer->renderShortInfo('warn') . sprintf($oBackend->lB('update.available-yes') , $oBackend->oUpdate->getLatestVersion()) .'</div><br>'
+                        ?  '<div class="warning pure-menu">' 
+                            . $oRenderer->renderShortInfo('warn') . sprintf($oBackend->lB('update.available-yes') , $oBackend->oUpdate->getLatestVersion()) 
+                            . '<br><a href="?page=update">'.$oBackend->lB('nav.update.label').'</a>'
+                            .'</div><br>'
                         :  ''
                     ;
                 ?>

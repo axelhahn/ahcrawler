@@ -3,10 +3,7 @@ body{
 	color: #346;
 }
 .sidebar{
-	background:#f8f8f8; 
-	background:linear-gradient(90deg,#e0e8f0,#f8f8f8); 
-        color: #cde;
-	position: fixed;
+    	position: fixed;
 	top: 0px;
 	bottom: 0px;
 	width: 17em;
@@ -106,11 +103,24 @@ a.hoverinfos:hover span{display: block;}
 
 h1{ background:#cde; margin:0 0 1em; border-top-left-radius: 0.5em;}
 
-h2{ background:#f8f8f8; background:linear-gradient(90deg,#fff, #f4f4f4);  font-size: 3em; padding: 0.2em 1em; margin: 0 -1em; color: #679; position: fixed; display: block; width: 100%;
+h2{
+    background:#f8f8f8; 
+    background:linear-gradient(90deg,#fff, #f4f4f4);  
+    font-size: 3em; 
+    padding: 0.2em 0em; 
+    margin: 0 ; 
+    color: #679; 
+    position: fixed; 
+    display: block; 
+    width: 100%;
 box-shadow: 0 1em 1em #fff; z-index:100;
 border-bottom: 1px dotted; text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;}
 p.pageHint{ background:#eee;
-            background:linear-gradient(90deg, #eee, #fff);
+            background:linear-gradient(90deg, #e0e8f4, #fff);
+            background:linear-gradient(90deg, #f0d0f4, #fff);
+            background:#eee;
+            border-bottom-left-radius: 0.5em;
+            color:#036;
           font-size: 120%; padding: 1.0em; margin-top: 0; margin-bottom: 7em; position: relative; top: 5em; }
 h3{ color: #79b; font-size: 170%; border-top: 1px solid #fca; padding-top: 1em; margin: 2em 0 1.5em;}
 h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
@@ -136,7 +146,8 @@ pre{border: 1px solid #ddd; font-size: 80%; padding: 0.3em; background: #f8f8f8;
 /* --- tiles --- */
 
 a.childitem{
-    background: #f0f0f0;
+    background: #e8f0f8;
+    background: #f0f4f8;
     border: 0px solid #abc;
     border-left: 6px solid #d0d8e0; 
     border-radius: 0.5em;
@@ -147,12 +158,13 @@ a.childitem{
     margin: 0 1em 1em 0;
     padding: 1em;
     text-decoration: none;
+    transition: ease-in-out all 0.5s;
     width: 18%;
 }
-a.childitem:hover{background: #e8f0f8; }
+a.childitem:hover{background: #e0e8f4; border-color: #789;}
 a.childitem:focus{background: #e0e8f0; }
 a.childitem i{color: #abc; font-size: 300%;}
-a.childitem:hover i{color: #9ab;}
+a.childitem:hover i{color: #789;}
 a.childitem strong{color: #789; font-size: 150%; text-shadow: 1px 1px 1px #fff;}
 
 
@@ -196,7 +208,7 @@ ul.tiles a.tile:hover{
 
 /* --- color for pie chart --- */
 
-.piechart{border: 2px solid #fff; border-radius: 0.5em; box-shadow: 0.2em 0.2em 1em #ccc; width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(7deg, #cde,#fff,#f8e8d0);}
+.piechart{border: 2px solid #fff; border-radius: 0.5em; box-shadow: 0.2em 0.2em 1em #ccc; width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cde,#fff,#f8e8d0);}
 .chartcolor-errors{color:#d88;}
 .chartcolor-warnings{color:#eb6;}
 .chartcolor-ok{color:#7a5;}
@@ -225,13 +237,13 @@ div#overlay{
 
 div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
 
-div.message{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); padding: 1em;}
+div.message{border-radius: 0.5em; border: 1px solid rgba(0,0,0,0.05); padding: 1em;}
 div.message-ok{background: #cfc; color:#080;}
 div.message-warning{background: #fec; color:#975;}
 div.message-error{background: #fcc; color:#955;}
 
 /* --- ressources --- */
-.http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff;}
+.http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff; min-width: 3em; display: inline-block;}
 .http-code-{background:#ccd;}
 .http-code--1 {background: #d0d0d8;}
 .http-code-2xx {background:#8b4;}

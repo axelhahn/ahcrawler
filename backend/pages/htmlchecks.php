@@ -10,10 +10,10 @@ $iMinKeywordsLength=10;
 $iMaxPagesize=150000; // pages large n byte
 $iMaxLoadtime=500;   // load time in ms 
 
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
 if (!$iSearchindexCount) {
-    return $sReturn.'<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
+    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
 }
 $oCrawler=new crawler($this->_sTab);
 

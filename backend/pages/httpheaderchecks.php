@@ -3,10 +3,10 @@
  * page analysis :: Http header check
  */
 $sReturn = '';
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
 if (!$iSearchindexCount) {
-    return $sReturn.'<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
+    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
 }
 $aFirstPage = $this->oDB->select(
     'pages', 

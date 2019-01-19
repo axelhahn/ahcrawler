@@ -3,17 +3,17 @@
  * page analysis :: link checker
  */
 $sReturn = '';
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 
 $iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
 if (!$iSearchindexCount) {
-    return $sReturn.'<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
+    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
 }
 $iRessourcesCount=$this->oDB->count('ressources',array('siteid'=>$this->_sTab));
 
 if (!$iRessourcesCount) {
-    return $sReturn.'<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
+    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
 }
 
 $aPageFields=array('id', 'url', 'description', 'description');

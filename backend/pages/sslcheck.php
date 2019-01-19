@@ -7,7 +7,7 @@
 $sReturn='';
 
 
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
 $sFirstUrl=isset($this->aProfile['searchindex']['urls2crawl'][0]) ? $this->aProfile['searchindex']['urls2crawl'][0] : false;
 $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
@@ -17,8 +17,8 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         ;
     // --- http only?
     if(!$sFirstUrl){
-        return $sReturn.'<br><div class="warning">'.$this->lB('sslcheck.nostarturl').'</div>';
-        
+        $sReturn.='<br>'.$this->_getMessageBox($this->lB('sslcheck.nostarturl'), 'warning');
+        return $sReturn;
     } else if(strstr($sFirstUrl, 'http://')){
         // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
         $sReturn.= '<ul class="tiles errors">'

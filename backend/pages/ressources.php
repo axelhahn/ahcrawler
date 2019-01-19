@@ -6,7 +6,7 @@ $sReturn = '';
 $aCounter = array();
 $aFilter=array('http_code', 'ressourcetype','type', 'content_type');
 $aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aUrl=array();
 
@@ -225,7 +225,7 @@ if ($iResCount) {
     }
 
 } else {
-    $sReturn.='<br><div class="warning">'.$this->lB('ressources.empty').'</div>';
+    $sReturn.='<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
 }
 
 $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable();} );</script>';

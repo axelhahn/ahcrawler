@@ -3,7 +3,8 @@
  * page analysis
  */
 $sReturn='';
-$sReturn.=$this->_getNavi2($this->_getProfiles()).'<br>';
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
+$sReturn.='<br>';
 $sQuery = $this->_getRequestParam('query');
 
 $sReturn.= '<p>' . $this->lB('ressources.searchurl-hint') . '</p>'

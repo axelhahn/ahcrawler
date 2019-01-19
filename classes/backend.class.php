@@ -21,9 +21,11 @@ class backend extends crawler_base {
 
     private $_aMenu = array(
         'home'=>array(), 
-        'setup'=>array(),
-        'search'=>array(
+        'settings'=>array(
+            'setup'=>array(),
             'profiles'=>array(),
+        ),
+        'search'=>array(
             'status'=>array(), 
             'searches'=>array(),
         ),
@@ -46,9 +48,10 @@ class backend extends crawler_base {
     private $_aIcons= array(
         'menu'=>array(
             'home'=>'fa fa-home', 
-            'setup'=>'fa fa-cog', 
+            'setup'=>'fa fa-window-maximize', 
+            'settings'=>'fa fa-cogs', 
             'search'=>'fa fa-search', 
-            'profiles'=>'fa fa-cogs', 
+            'profiles'=>'fa fa-globe', 
             'crawler'=>'fa fa-flag', 
             'status'=>'fa fa-flag', 
             'searches'=>'fa fa-search', 
@@ -122,17 +125,21 @@ class backend extends crawler_base {
             
         ),
         'button'=>array(
+            'button.add' => 'fa fa-plus',
             'button.back' => 'fa fa-chevron-left',
             'button.close' => 'fa fa-close',
             'button.continue' => 'fa fa-chevron-right',
             'button.crawl' => 'fa fa-play',
+            'button.create' => 'fa fa-star-o',
             'button.delete' => 'fa fa-trash',
             'button.help' => 'fa fa-question-circle',
             'button.login' => 'fa fa-check',
             'button.logoff' => 'fa fa-power-off',
             'button.reindex' => 'fa fa-refresh',
+            'button.save' => 'fa fa-send',
             'button.search' => 'fa fa-search',
             'button.truncateindex' => 'fa fa-trash',
+            'button.up' => 'fa fa-arrow-up',
             'button.view' => 'fa fa-eye',
         ),
     );
@@ -304,6 +311,7 @@ class backend extends crawler_base {
         $sPage2=preg_replace('/[^a-z]/', '', $sPage);
         if(!$sPage || $sPage!==$sPage2){
             $sPage='error404';
+            header("HTTP/1.0 404 Not Found");
         }
         $this->_sPage=$sPage;
         return $this->_sPage;
@@ -315,7 +323,7 @@ class backend extends crawler_base {
      */
     private function _getTab($aTabs=false) {
         $this->_sTab = (array_key_exists('tab', $_GET) && $_GET['tab']) ? $_GET['tab'] : '';
-        if ($this->_sTab) {
+        if ($this->_sTab && $this->_sTab!=='add') {
             setcookie("tab", $this->_sTab, time() + 3600);
         }
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
@@ -402,10 +410,18 @@ class backend extends crawler_base {
      * @param array $aTabs  nav items
      * @return string
      */
-    private function _getNavi2($aTabs) {
+    private function _getNavi2($aTabs=array(), $bAddButton=false, $sUpUrl=false) {
         $sReturn = '';
         if (!$this->_sTab) {
             $this->_getTab($aTabs);
+        }
+        if($bAddButton){
+            $aTabs['add']=$this->_getIcon('button.add');
+        }
+        if($sUpUrl){
+            $sReturn.='<li class="pure-menu-item">'
+                    . '<a href="' . $sUpUrl . '" class="pure-menu-link"'
+                    . '>' . $this->_getIcon('button.up') . '</a></li>';            
         }
         foreach ($aTabs as $sId => $sLabel) {
             $sUrl = '?page=' . $this->_sPage . '&amp;tab=' . $sId;
@@ -476,6 +492,7 @@ class backend extends crawler_base {
      */
     public function getHead() {
         $sReturn='';
+        $this->logAdd(__METHOD__ . '() start; page = "' . $this->_sPage . '"');
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
         if (!$this->_checkAuth()) {
@@ -500,6 +517,7 @@ class backend extends crawler_base {
         }
         
                 
+        $this->logAdd(__METHOD__ . ' H2 = "'.$sH2.'"');
         return ''
                 . ($this->_checkAuth() && $this->_getUser()
                     ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'
@@ -512,12 +530,12 @@ class backend extends crawler_base {
                         . '</span>'
                     : ''
                 )
-                . '<h2>'
+                . (isset($sH2) && $sH2 ? '<h2>' : '')
                 . (isset($this->_aIcons['menu'][$this->_sPage]) 
-                    ? '<i class="'.$this->_aIcons['menu'][$this->_sPage].'"></i> ' . $sH2 . '</h2>'
-                        . '<p class="pageHint">' . $sHint . '</p>'
+                    ? '<i class="'.$this->_aIcons['menu'][$this->_sPage].'"></i> '
                     : ''
-                )
+                    )
+                . (isset($sH2) && $sH2 ? $sH2 . '</h2><p class="pageHint">' . $sHint . '</p>' : '')
                 
                 . ($sStatus ? '<div id="divStatus">'. $sStatus .'</div>' : '')
         ;

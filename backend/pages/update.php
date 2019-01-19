@@ -55,7 +55,7 @@ $sBtnNext=$this->_getButton(array(
 
 $sOutput='';
 $sReturn .= '<h3 id="h3' . md5('update') . '">'. $this->lB('update.'.$sStep.'.label') . '</h3>'
-    . '<p>'. $this->lB('update.'.$sStep.'.description') . '</p><hr><br><br>'
+    . '<p>'. $this->lB('update.'.$sStep.'.description') . '</p><hr>'
     ;
 switch ($sStep) {
     case 'welcome':
@@ -68,10 +68,12 @@ switch ($sStep) {
                             array('aktuell',      $this->oUpdate->getLatestVersion()),
                         )
                     )
-                    . $oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion())
-                :  $oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no')
+                    . '<br>' . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
+                :  
+                    $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
+        
              )
-            . '</p><br>'
+            . '</p>'
             . '<p>'
             . $this->lB('update.steps')
             . '</p>'

@@ -3,7 +3,8 @@
  * page analysis
  */
 $sReturn='';
-$sReturn.=$this->_getNavi2($this->_getProfiles()).'<br>';
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
+$sReturn.='<br>';
 $iRessourceId = (int)$this->_getRequestParam('id');
 
 $oRenderer=new ressourcesrenderer($this->_sTab);

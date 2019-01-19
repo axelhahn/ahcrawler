@@ -1,20 +1,26 @@
 {
     "nav.label": "Men&uuml;",
     
+    "nav.error404.label": "Fehler :-/",
+    "nav.error404.hint": "Datei nicht gefunden",
+
     "nav.login.label": "Login erforderlich",
     "nav.login.access-denied": "Fehler: Der Zugriff wurde verweigert.",
     
     "nav.home.label": "Start",
     "nav.home.hint": "Startseite des Backends",
 
+    "nav.settings.label": "Einstellungen",
+    "nav.settings.hint": "Programmeinstellungen und Profile",
+
     "nav.setup.label": "Einstellungen",
-    "nav.setup.hint": "Programmeinstellungen bearbeiten",
+    "nav.setup.hint": "Programmeinstellungen",
     
     "nav.search.label": "Suchindex",
     "nav.search.hint": "Inhalt des Suchindex und Suchabfragen der Webseitenbesucher",
     
     "nav.profiles.label": "Profile",
-    "nav.profiles.hint": "Liste der konfigurierten Suchprofile",
+    "nav.profiles.hint": "Zu untersuchende Webseiten",
     
     "nav.status.label": "Status des Suchindex",
     "nav.status.hint": "&Uuml;berblick &uuml;ber die Daten im Suchindex",
@@ -67,6 +73,7 @@
     "button.continue.hint": "Weiter...",
     "button.crawl": "komplett Re-Indexieren",
     "button.crawl.hint": "Crawler starten und komplette Site Re-Indexieren (Vorsicht: das kann dauern...)",
+    "button.create": "Anlegen",
     "button.delete": "L&ouml;schen",
     "button.delete.hint": "Dieses Element endg&uuml;ltig l&ouml;schen",
     "button.help": "Hilfe",
@@ -77,6 +84,8 @@
     "button.logoff.hint": "",
     "button.reindex": "Re-Indexieren",
     "button.reindex.hint": "Die Webseite frisch lesen und den Suchindex aktualisieren",
+    "button.save": "Speichern",
+    "button.save.hint": "Speichern der Eingaben",
     "button.search": "Suche",
     "button.search.hint": "Suchergebnisse anzeigen (Live-Suche im aktuellen Index)",
     "button.truncateindex": "Suchindex leeren",
@@ -138,16 +147,12 @@
     "txt-last-error": "Letzter Fehler",
     "UNUSEDtxt-last-scan": "Letzter Scan",
     
-    "error.404": "404 Seite nicht gefunden",
-    "error.404.description": "Die angeforderte Seite gibt es nicht.",
+    "error.404": "Fehler 404",
+    "error.404.description": "Die angeforderte Seite gibt es nicht.<br>Gehen Sie mit dem Browser zur&uuml;ck oder w&auml;hlen Sie links in der Navigation.",
 
     "home.welcome": "Willkommen!",
     "home.welcome-introtext": "Hier ist das Backend des ahCrawler.<br><br>Dieses Tool besteht aus 2 Teilen:<br>- Suchindex und Suchmaschine f&uuml;r die Webseite<br>- Analyse aller Ressourcen<br><br>Um dies hier zum Laufen zu bekommen, lesen Sie bitte in der Dokumentation.",
-    "home.cfg": "allgemeine Konfiguration",
     "home.cfg.unprotected": "WARNUNG:<br>Der Zugang zum Backend ist derzeit ungesch&uuml;tzt!<br>Setzen Sie in der Konfiguration unterhalb &quot;auth&quot; die Werte &quot;user&quot; und &quot;password&quot;.",
-    "home.cfg.cfgfile": "Konfigurationsdatei",
-    "home.cfg.db-type": "Datenbanktyp",
-    "home.cfg.lang": "Sprache",
 
     "setup.error-no-ssl": "Sicherheitswarnung: Diese Webseite verwendet kein SSL!<br>Der Webbrowser versendet die eingegebenen Daten inkl. Passwort unverschl&uuml;sselt / im Klartext.",
     "setup.program.save.ok": "OK, die Programmeinstellungen wurden gespeichert.",
@@ -189,24 +194,34 @@
     "setup.section.other.lang": "Sprache im Backend",
     "setup.section.other.lang.de": "deutsch",
     "setup.section.other.lang.en": "englisch",
-    "setup.section.other.debug": "Debugging Anzeige einblenden (f&uuml;r Entwickler)",
+    "setup.section.other.debug": "Debugging Anzeige einblenden<br>(f&uuml;r Entwickler)",
     
-    "setup.projects": "Projekteinstellungen",
-    "setup.projects.hint": "Hier kann man für mehrere Domains je ein Projekt anlegen",
     
-    "setup.project.save.ok": "OK, die Projekteinstellungen f&uuml;r %s wurden gespeichtert.",
-    "setup.project.save.error": "FEHLER: die Projekteinstellungen von %s konnten nicht gespeichert werden.",
+    "profile.section.metadata": "Allgemeine Angaben",
+    "profile.section.searchindex": "Suchindex",
+    "profile.section.frontend": "Suchfrontend",
+    "profile.section.ressources": "Ressourcen Scan und Analyse",
     
-    "profile.vars.searchprofile": "Konfiguration des Suchprofils",
     "profile.label": "Kurztitel",
     "profile.description": "Beschreibung des Projekts",
-    "profile.stickydomain": "Crawler bleibt auf der Domain",
-    "profile.urls2crawl": "Liste der Start-URLs des Crawlers",
-    "profile.iDepth": "max. Verzeichnistiefe",
-    "profile.include__": "",
-    "profile.includepath": "Liste von Regex; Pfade einer URL müssen matchen",
-    "profile.exclude": "Liste von Regex; ",
-    "profile.searchcategories": "TODO: Regex für Suchprofile im Frontend",
+    "profile.userpwd": "optional: Benutzer und Passwort",
+    
+    "profile.searchindex.stickydomain": "Crawler bleibt auf der Domain",
+    "profile.searchindex.urls2crawl": "Liste der Start-URLs des Crawlers<br>(je eine URL pro Zeile)",
+    "profile.searchindex.iDepth": "max. Verzeichnistiefe",
+    "profile.searchindex.include": "Includes als Liste von Regex; auf die <em>gesamte URL</em> angewendet.",
+    "profile.searchindex.includepath": "Includes als Liste von Regex; auf <em>Pfade</em> einer URL angewendet",
+    "profile.searchindex.exclude": "Excludes als Liste von Regex, die auf die URL angewendet werden",
+    "profile.searchindex.simultanousRequests": "Sucheindex Scan - gleichzeitige Requests<br>(&uuml;bersteuert Default von %s)",
+    "profile.frontend.searchcategories": "Suchbereiche auf der Webseite<br>(in JSON Syntax)",
+    "profile.frontend.searchlang": "Sprache der zu suchenden Dokumente<br>(je 1 Zeile pro Sprache)",
+    "profile.ressources.simultanousRequests": "Ressourcen Scan - gleichzeitige Requests<br>(&uuml;bersteuert Default von %s)",
+    "profile.save.ok": "OK, die Profildaten f&uuml;r [%s] wurden gespeichtert.",
+    "profile.save.error": "FEHLER: die Profildaten von [%s] konnten nicht gespeichert werden.",
+    "profile.warning.wrongprofile": "FEHLER: Das Profil [%s] existiert nicht.",
+    "profile.warning.nolabel": "FEHLER: Das Profil [%s] hat kein Label.",
+    "profile.delete.ok": "OK, die Profildaten von Profil [%s] wurden gel&ouml;scht.",
+    "profile.save.error": "FEHLER: die Profildaten von Profil [%s] konnten nicht gel&ouml;scht werden.",
     
     "rawdata": "Rohdaten",
     

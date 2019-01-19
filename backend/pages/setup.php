@@ -171,7 +171,7 @@ if(isset($_POST['action'])){
             break;
             ;;
         default: 
-            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.$_POST['action'].'] :-/ skipping ... just in case <br><br> ', 'warning');
+            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.$_POST['action'].'] :-/ skipping ... just in case', 'warning');
     }
     
     $sReturn.=$sBtnContinue;
@@ -235,7 +235,7 @@ if (isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
 }
 
 $sReturn.=(!isset($_SERVER['HTTPS'])
-            ? $this->_getMessageBox($this->lB('setup.error-no-ssl'), 'warning')
+            ? $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('setup.error-no-ssl'), 'warning')
             : ''
         ).'
         <br>
@@ -486,8 +486,11 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ), false)
                 . '</div>'
        
+            // ------------------------------------------------------------
+            // submit
+            // ------------------------------------------------------------
             . '<br><hr><br>'
-            .$oRenderer->oHtml->getTag('button', array('label'=>'Save', 'class'=>'pure-button pure-button-primary'))
+            .$oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
 
             /*
             . '<h3>'

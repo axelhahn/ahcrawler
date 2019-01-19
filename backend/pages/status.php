@@ -3,7 +3,7 @@
  * page searchindex :: status
  */
 $sReturn = '';
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=search');
 
 $aHeaderIndex = array('id', 'ts', 'url', 'title', 'errorcount', 'lasterror');
 
@@ -11,7 +11,7 @@ $oCrawler=new crawler($this->_sTab);
 
 $iUrls = $oCrawler->getCount();        
 if(!$iUrls){
-    $sReturn.='<br><div class="warning">'.$this->lB('status.emptyindex').'</div>';
+    $sReturn.='<br>'.$this->_getMessageBox($this->lB('status.emptyindex'), 'warning');
     return $sReturn;
 }
 

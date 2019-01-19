@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.42',
-        'date' => '2019-01-07',
+        'version' => '0.43',
+        'date' => '2019-01-19',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -51,10 +51,10 @@ class crawler_base {
         ),
     );
     protected $aProfileDefault = array(
-        'label' => 'no [label]',
-        'description' => 'no [description]',
+        'label' => '',
+        'description' => '',
         'searchindex' => array(
-            'stickydomain' => 'no [searchindex]->[stickydomain]',
+            'stickydomain' => '',
             'urls2crawl' => array(),
             'iDepth' => 7,
             'include' => array(),
@@ -62,8 +62,10 @@ class crawler_base {
             'exclude' => array(),
             'simultanousRequests' => false,
         ),
-        'searchcategories' => array(),
-        'searchlang' => array(),
+        'frontend' => array(
+            'searchcategories' => array(),
+            'searchlang' => array(),
+        ),
         'ressources' => array(
             'simultanousRequests' => false,
         ),
@@ -487,16 +489,17 @@ class crawler_base {
      */
     public function flushData($aItems) {
         $aTables = array();
-        $bAll = array_key_exists('all', $aItems) && $aItems['all'];
-        if ($bAll || (array_key_exists('searchindex', $aItems) && $aItems['searchindex'])) {
+        $bAll = isset($aItems['all']);
+        $bFull = isset($aItems['full']);
+        if ($bFull || $bAll || (array_key_exists('searchindex', $aItems) && $aItems['searchindex'])) {
             $aTables[] = 'pages';
             $aTables[] = 'words';
         }
-        if ($bAll || (array_key_exists('ressources', $aItems) && $aItems['ressources'])) {
+        if ($bFull || $bAll || (array_key_exists('ressources', $aItems) && $aItems['ressources'])) {
             $aTables[] = 'ressources';
             $aTables[] = 'ressources_rel';
         }
-        if (array_key_exists('searches', $aItems) && $aItems['searches']) {
+        if ($bFull || array_key_exists('searches', $aItems) && $aItems['searches']) {
             $aTables[] = 'search';
         }
         if (count($aTables)) {
@@ -555,10 +558,7 @@ class crawler_base {
         
         $this->_initDB();
 
-        if ($iSiteId) {
-            if (!array_key_exists('profiles', $aOptions) || !array_key_exists($iSiteId, $aOptions['profiles'])) {
-                die("ERROR: a config with siteId $iSiteId does not exist.");
-            }
+        if ($iSiteId && isset($aOptions['profiles'][$iSiteId])) {
             $this->iSiteId = $iSiteId;
             $aProfile = $aOptions['profiles'][$iSiteId];
 
@@ -588,6 +588,8 @@ class crawler_base {
             touch($this->sCcookieFilename);
             
             // print_r($this->aProfile); sleep(5);
+        } else {
+            $this->aProfile = $this->aProfileDefault;
         }
     }
 

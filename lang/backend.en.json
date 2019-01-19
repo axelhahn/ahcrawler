@@ -1,12 +1,18 @@
 {
     "nav.label": "Menu",
 
+    "nav.error404.label": "Error :-/",
+    "nav.error404.hint": "404 - Page not found.",
+    
     "nav.login.label": "Login required",
     "nav.login.access-denied": "Error: Access denied.",
 
     "nav.home.label": "Start",
     "nav.home.hint": "Homepage of the backend",
     
+    "nav.settings.label": "Settings",
+    "nav.settings.hint": "Program settings and profiles",
+
     "nav.setup.label": "Setup",
     "nav.setup.hint": "Edit program settings",
     
@@ -14,7 +20,7 @@
     "nav.search.hint": "Content of searchindex and searches of visitors of the website",
     
     "nav.profiles.label": "Profiles",
-    "nav.profiles.hint": "List of configured search profiles",
+    "nav.profiles.hint": "Configure websites",
     
     "nav.status.label": "Status",
     "nav.status.hint": "Overview about data in the search index",
@@ -67,6 +73,7 @@
     "button.continue.hint": "Continue...",
     "button.crawl": "Crawl",
     "button.crawl.hint": "Run the crawler and re-index the site (Attention: it takes a while...)",
+    "button.create": "Create",
     "button.delete": "Delete",
     "button.delete.hint": "",
     "button.help": "Help",
@@ -76,6 +83,8 @@
     "button.logoff.hint": "",
     "button.reindex": "Re-Index",
     "button.reindex.hint": "Read the website now and update the search index",
+    "button.save": "Save",
+    "button.save.hint": "Save the entered data.",
     "button.search": "Search",
     "button.search.hint": "Show search results (live search)",
     "button.truncateindex": "Truncate Index",
@@ -142,6 +151,7 @@
 
     "home.welcome": "Welcome to the ahCrawler!",
     "home.welcome.introtext": "Lets go to the setup to initialize the database.",
+    "home.cfg.unprotected": "WARNING:<br>The backend seems to be unprotected!<br>Go to the program settings and a &quot;user&quot; and &quot;password&quot;.",
     
     "setup.error-no-ssl": "Security Warning: This site does not use SSL!<br>Your webbrowser will transmit form data including passwords as unencrypted, clear text.",
     "setup.program.save.ok": "OK, the program settings were saved.",
@@ -183,24 +193,37 @@
     "setup.section.other.lang": "Language in the backend",
     "setup.section.other.lang.de": "German",
     "setup.section.other.lang.en": "English",
-    "setup.section.other.debug": "Show debugging information (for developers)",
+    "setup.section.other.debug": "Show debugging information<br>(for developers)",
     
-    "setup.projects": "Project settings",
-    "setup.projects.hint": "Here you can setup several domains per project.",
     
     "setup.project.save.ok": "OK, the project settings of %s were saved.",
     "setup.project.save.error": "ERROR: the project setings of %s could not be saved.",
     
-    "profile.vars.searchprofile": "Config of the search profile",
+    "profile.section.metadata": "General data",
+    "profile.section.searchindex": "Search index",
+    "profile.section.frontend": "Search frontend",
+    "profile.section.ressources": "Ressources scan and analysis",
+    
     "profile.label": "Short title",
     "profile.description": "Description of the project",
-    "profile.stickydomain": "Sticky domain for the crawler",
-    "profile.urls2crawl": "List of start urls of the crawler",
-    "profile.iDepth": "max. depth of directories",
-    "profile.include__": "",
-    "profile.includepath": "List of regex that need to match to the path",
-    "profile.exclude": "Exclude regex for the path",
-    "profile.searchcategories": "pre-defined sarch profilesfor the frontend",
+    "profile.userpwd": "optional: user and password",
+    "profile.searchindex.stickydomain": "Sticky domain for the crawler",
+    "profile.searchindex.urls2crawl": "List of start urls of the crawler<br>(one url per line)",
+    "profile.searchindex.iDepth": "max. depth of directories for the scan",
+    "profile.searchindex.include": "List of regex that must match the <em>full url</em>",
+    "profile.searchindex.includepath": "List of regex that need to match to the <em>path</em> of a url",
+    "profile.searchindex.exclude": "Exclude regex for the path",
+    "profile.searchindex.simultanousRequests": "search index scan - simultanous Requests<br>(overrides the default of %s)",
+    "profile.frontend.searchcategories": "Search areas of the website<br>(in JSON syntax)",
+    "profile.frontend.searchlang": "Items for language filter<br>(one per line)",
+
+    "profile.ressources.simultanousRequests": "Ressources scan - simultanous Requests<br>(overrides the default of %s)",
+    "profile.save.ok": "OK, the profile [%s] was saved.",
+    "profile.save.error": "ERROR: the profile [%s] was not saved.",
+    "profile.warning.wrongprofile": "ERROR: the profile [%s] does not exist.",
+    "profile.warning.nolabel": "ERROR: the profile [%s] has no label.",
+    "profile.delete.ok": "OK, the profile [%s] and its data were deleted.",
+    "profile.save.error": "Error: the profile [%s] was not deleted.",
     
     "rawdata": "Raw data",
     
@@ -388,7 +411,7 @@
 
     "update.welcome.label": "Welcome to the Software updater!",
     "update.welcome.description": "The following assistent guides you through the update process.<br>Let's start with the version comparison.",
-    "update.welcome.available-yes": "There is an update to version %s available. Follow the assistent to update the software, please.",
+    "update.welcome.available-yes": "There is an update to version %s available. Follow the assistent to update the software.",
     "update.welcome.available-no": "The software is up to date. It is ot required to follow the update assistent.",
     "update.steps": "The update is done in a few steps. It continous with ...",
     "update.steps.downloadurl": "<strong>Download</strong> of url <br>%s<br><br>to target file<br>%s<br><br>",

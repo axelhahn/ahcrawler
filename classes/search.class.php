@@ -80,13 +80,13 @@ class ahsearch extends crawler_base {
      */
     public function getSearchCategories($bAddNone=false) {
         $aReturn=array();
-        if (!is_array($this->aProfile) || !array_key_exists('searchcategories', $this->aProfile) || !count($this->aProfile['searchcategories'])) {
+        if (!isset($this->aProfile['frontend']['searchcategories']) || !count($this->aProfile['frontend']['searchcategories'])) {
             return false;
         }
         if($bAddNone){
             $aReturn[$this->lF('label.searchsubdir-none')]='';
         }
-        return array_merge($aReturn, $this->aProfile['searchcategories']);
+        return array_merge($aReturn, $this->aProfile['frontend']['searchcategories']);
     }
     /**
      * get categories to search in ... it returns the structure from config 
@@ -95,13 +95,13 @@ class ahsearch extends crawler_base {
      */
     public function getSearchLang($bAddNone=false) {
         $aReturn=array();
-        if (!is_array($this->aProfile) || !array_key_exists('searchlang', $this->aProfile) || !count($this->aProfile['searchlang'])) {
+        if (!isset($this->aProfile['frontend']['searchlang']) || !count($this->aProfile['frontend']['searchlang'])) {
             return false;
         }
         if($bAddNone){
             $aReturn[$this->lF('label.searchlang-none')]='';
         }
-        foreach ($this->aProfile['searchlang'] as $sMyLang){
+        foreach ($this->aProfile['frontend']['searchlang'] as $sMyLang){
             $aReturn[$sMyLang]=$sMyLang;
         }
         return $aReturn;

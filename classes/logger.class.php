@@ -51,6 +51,7 @@ class logger {
     public function render() {
         $sOut = '';
         $iMem=memory_get_usage();
+        $this->add('<hr>');
         $this->add('Memory on start: ' . number_format($this->_iMemStart, 0, '.', ',') . " bytes");
         $this->add('Memory on end: '   . number_format($iMem, 0, '.', ',') . " bytes");
         $this->add('Memory peak: '  . number_format(memory_get_peak_usage(), 0, '.', ',') . " bytes");

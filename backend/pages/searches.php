@@ -4,7 +4,7 @@
  */
 $sReturn = '';
 $aFields = array('ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer');
-$sReturn.=$this->_getNavi2($this->_getProfiles());
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=search');
 $aLastSearches = $this->oDB->select(
         'searches', 
         $aFields, 
@@ -99,7 +99,7 @@ if (count($aLastSearches)) {
     $sReturn.='<h3>' . $this->lB('profile.searches.last') . '</h3>' 
             . $this->_getHtmlTable($aTable, "searches.");
 } else {
-    $sReturn.='<br><div class="warning">'.$this->lB('profile.searches.empty').'</div>';
+    $sReturn.='<br>'.$this->_getMessageBox($this->lB('profile.searches.empty'), 'warning');
 }
 
 
@@ -128,6 +128,7 @@ foreach($aDays as $iDays){
                     ))
                 . '</div>'
                 . $this->_getHtmlTable($aTable, "searches.")
+                . '<div style="clear: both;"></div>' 
                 ;
     }         
 }
