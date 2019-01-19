@@ -49,11 +49,14 @@
                     "/blog/[0-9][0-9][0-9][0-9]/$"
                 ]
             },
-            "searchcategories": {
-                "... Blog": "/blog/%"
-                "... Documentation": "/docs/%"
-            },
-            "searchlang": ["en", "de"]
+            "frontend":{
+                "searchcategories": {
+                    "... everywhere": "/%"
+                    "... Blog": "/blog/%"
+                    "... Documentation": "/docs/%"
+                },
+                "searchlang": ["en", "de"]
+            }
         }
     }
 }
