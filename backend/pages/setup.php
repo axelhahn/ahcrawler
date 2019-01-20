@@ -490,7 +490,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // submit
             // ------------------------------------------------------------
             . '<br><hr><br>'
-            .$oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+            .($this->_configExists()
+                ? $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+                : $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
+            )
 
             /*
             . '<h3>'

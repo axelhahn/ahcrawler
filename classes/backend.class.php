@@ -333,7 +333,7 @@ class backend extends crawler_base {
 
         if (!$this->_sTab && is_array($aTabs)) {
             $aTmp = array_keys($aTabs);
-            $this->_sTab = $aTmp[0];
+            $this->_sTab = count($aTmp) ? $aTmp[0] : false;
         }
 
         return $this->_sTab;
@@ -555,7 +555,7 @@ class backend extends crawler_base {
     private function _getProfiles() {
         $aOptions = $this->_loadOptions();
         $aReturn = array();
-        if (array_key_exists('profiles', $aOptions) && count($aOptions['profiles'])) {
+        if (isset($aOptions['profiles']) && count($aOptions['profiles'])) {
             foreach ($aOptions['profiles'] as $sId => $aData) {
                 $aReturn[$sId] = $aData['label'];
             }

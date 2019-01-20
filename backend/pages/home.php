@@ -6,7 +6,7 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 $sHtml='';
 
 
-if(!$this->oDB){
+if(!$this->_configExists() || !$this->oDB){
     
     // ------------------------------------------------------------
     // INITIAL SETUP PART ONE

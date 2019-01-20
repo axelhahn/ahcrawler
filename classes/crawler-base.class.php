@@ -13,7 +13,7 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.44',
+        'version' => '0.45',
         'date' => '2019-01-19',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
@@ -221,11 +221,20 @@ class crawler_base {
     }
 
     /**
+     * check if the config file exists (used to detect if a setup is required
+     * @return boolean
+     */
+    protected function _configExists(){
+        return file_exists($this->_getOptionsfile());
+    }
+
+
+    /**
      * load global options array
      * @return array
      */
     protected function _loadOptions() {
-        if(!file_exists($this->_getOptionsfile())){
+        if(!$this->_configExists()){
             return false;
         }
         $aOptions = json_decode(file_get_contents($this->_getOptionsfile()), true);
@@ -248,10 +257,11 @@ class crawler_base {
     protected function _saveConfig($aNewData) {
         $sCfgfile=$this->_getOptionsfile();
         $sBakfile=$sCfgfile.'.bak';
-        if (copy($sCfgfile, $sBakfile)){
-            if (file_put_contents($sCfgfile, json_encode($aNewData, JSON_PRETTY_PRINT))){
-                return true;
-            }
+        if(file_exists($sCfgfile)){
+            copy($sCfgfile, $sBakfile);
+        }
+        if (file_put_contents($sCfgfile, json_encode($aNewData, JSON_PRETTY_PRINT))){
+            return true;
         }
         return false;
     }
