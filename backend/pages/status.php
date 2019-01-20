@@ -11,7 +11,7 @@ $oCrawler=new crawler($this->_sTab);
 
 $iUrls = $oCrawler->getCount();        
 if(!$iUrls){
-    $sReturn.='<br>'.$this->_getMessageBox($this->lB('status.emptyindex'), 'warning');
+    $sReturn.='<br>'.$this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     return $sReturn;
 }
 

@@ -13,7 +13,7 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.43',
+        'version' => '0.44',
         'date' => '2019-01-19',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
@@ -23,7 +23,7 @@ class crawler_base {
     );
 
     /**
-     * general options of the installation
+     * general options of the application
      * @var array
      */
     protected $aOptions = array(
@@ -238,18 +238,12 @@ class crawler_base {
         if (!array_key_exists('database', $aOptions['options'])) {
             die("ERROR: config requires a database definition.");
         }
-        // make a relative path absolute
-        /*
-        if (array_key_exists('database_file', $aOptions['options']['database'])) {
-            $aOptions['options']['database']['database_file'] = str_replace('__DIR__/', dirname(__DIR__) . '/', $aOptions['options']['database']['database_file']);
-        }
-         * 
-         */
         return $aOptions;
     }
     /**
-     * load global options array
-     * @return array
+     * save options array
+     * @see backend/pages/setup.php + profiles.php
+     * @return boolean
      */
     protected function _saveConfig($aNewData) {
         $sCfgfile=$this->_getOptionsfile();
@@ -591,10 +585,11 @@ class crawler_base {
         } else {
             $this->aProfile = $this->aProfileDefault;
         }
+        return true;
     }
 
     /**
-     * get all existing search profiles
+     * get a flat array with ids of all existing profiles
      * @return array
      */
     public function getProfileIds() {

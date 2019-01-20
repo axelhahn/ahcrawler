@@ -6,14 +6,14 @@ $sReturn = '';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 
-$iSearchindexCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
-if (!$iSearchindexCount) {
-    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
+$iRessourcesCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
+if (!$iRessourcesCount) {
+    return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
 $iRessourcesCount=$this->oDB->count('ressources',array('siteid'=>$this->_sTab));
 
 if (!$iRessourcesCount) {
-    return $sReturn.'<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
+    return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
 
 $aPageFields=array('id', 'url', 'description', 'description');

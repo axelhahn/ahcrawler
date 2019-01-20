@@ -69,6 +69,67 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                  */
                 ;
 
+        // ------------------------------------------------------------
+        // scan http ressources
+        // ------------------------------------------------------------
+        
+        /*
+        
+        C O M I N G   S O O N  
+          
+        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$iProfileId));
+        $iRessourcesCount=1325;
+        if($iRessourcesCount){
+            $iNonHttps=$this->oDB->count('ressources',array(
+                'siteid'=>$this->_sTab,
+                'url[~]'=>'http:%',
+                'ressourcetype'=>'',
+            ));
+            // $iNonHttps=345;
+            // $sReturn.= $this->oDB->last().'<br>';
+            
+            $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttps) . '</h3>'
+                .'<p>'.$this->lB('sslcheck.nonhttps.hint').'</p>'
+                // .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)
+                .'<ul class="tiles warnings">'
+                    . ($iNonHttps
+                        ? '<li><a class="tile error">'.$this->lB('sslcheck.nonhttpscount').':<br><strong>'.$iNonHttps.'</strong><br>'.(floor($iNonHttps/$iRessourcesCount*1000)/10).'%</a></li>'
+                        : '<li><a href="#" class="tile ok">'.$this->lB('sslcheck.nonhttpscount').':<br><strong>'.$iNonHttps.'</strong></a></li>'
+                    )
+                .'</ul>'
+                ;
+            
+            $sReturn.=$this->_getHtmlchecksTable('select title, length(title) as length, url
+                    from pages 
+                    where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
+                    order by length(title)',
+                    'tableCrawlerErrors'
+                )
+                 ;
+            $sReturn.="$iNonHttps of $iRessourcesCount<br>";
+            
+            
+        } else {
+            $sReturn.='<br>'
+            .$this->_getMessageBox(
+                sprintf($this->lB('status.emptyindex'), $this->_sTab),
+                'warning'
+            )
+            ;
+        }
+         */
+
+        
+        /*
+        $aChartItems[]=array(
+            'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
+            'value'=>$aBoxes[$sSection]['total'],
+            'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
+            // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
+        );
+         * 
+         */
+
 }
 
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';

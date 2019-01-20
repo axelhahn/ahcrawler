@@ -132,6 +132,7 @@ class backend extends crawler_base {
             'button.crawl' => 'fa fa-play',
             'button.create' => 'fa fa-star-o',
             'button.delete' => 'fa fa-trash',
+            'button.edit' => 'fa fa-pencil',
             'button.help' => 'fa fa-question-circle',
             'button.login' => 'fa fa-check',
             'button.logoff' => 'fa fa-power-off',
@@ -447,9 +448,11 @@ class backend extends crawler_base {
      * @return string
      */
     protected function _getMessageBox($sMessage, $sLevel='warning'){
+        
         return '<div class="message message-'.$sLevel.'">'
-                .$sMessage
-                .'</div>'
+                // . $oRenderer->renderShortInfo($sLevel)
+                . $sMessage
+                . '</div>'
                 ;
     }
     /**
@@ -620,16 +623,22 @@ class backend extends crawler_base {
     /**
      * get html code for a simple table without table head
      * @param array  $aResult          result of a select query
+     * @param array  $bFirstIsHeader   flag: first record is header line; default is false
      * @return string
      */
-    private function _getSimpleHtmlTable($aResult) {
+    private function _getSimpleHtmlTable($aResult, $bFirstIsHeader=false) {
         $sReturn = '';
+        $bIsFirst=true;
         foreach ($aResult as $aRow) {
             $sReturn.='<tr>';
             foreach ($aRow as $sField) {
-                $sReturn.='<td>' . $sField . '</td>';
+                $sReturn.= $bFirstIsHeader && $bIsFirst
+                        ? '<th>' . $sField . '</th>'
+                        : '<td>' . $sField . '</td>'
+                        ;
             }
             $sReturn.='</tr>';
+            $bIsFirst=false;
         }
         if ($sReturn) {
             $sReturn = '<table class="pure-table pure-table-horizontal"><thead></thead>'

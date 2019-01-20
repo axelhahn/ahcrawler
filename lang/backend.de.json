@@ -65,6 +65,8 @@
     "var.string": "String",
     "var.array": "Array",
     
+    "button.add": "Hinzuf&uuml;gen",
+    "button.add.hint": "",
     "button.back": "Zur&uuml;ck",
     "button.back.hint": "1 Schritt zur&uuml;ck",
     "button.close": "Schliessen",
@@ -75,6 +77,8 @@
     "button.crawl.hint": "Crawler starten und komplette Site Re-Indexieren (Vorsicht: das kann dauern...)",
     "button.create": "Anlegen",
     "button.delete": "L&ouml;schen",
+    "button.edit": "Bearbeiten",
+    "button.delete.hint": "",
     "button.delete.hint": "Dieses Element endg&uuml;ltig l&ouml;schen",
     "button.help": "Hilfe",
     "button.help.hint": "Hilfe aufrufen (englisch)",
@@ -153,6 +157,9 @@
     "home.welcome": "Willkommen!",
     "home.welcome-introtext": "Hier ist das Backend des ahCrawler.<br><br>Dieses Tool besteht aus 2 Teilen:<br>- Suchindex und Suchmaschine f&uuml;r die Webseite<br>- Analyse aller Ressourcen<br><br>Um dies hier zum Laufen zu bekommen, lesen Sie bitte in der Dokumentation.",
     "home.cfg.unprotected": "WARNUNG:<br>Der Zugang zum Backend ist derzeit ungesch&uuml;tzt!<br>Setzen Sie in der Konfiguration unterhalb &quot;auth&quot; die Werte &quot;user&quot; und &quot;password&quot;.",
+    "home.noprojectyet": "Es gibt noch kein Project. Bitte lege ein Profil f&uuml;r eine Website an.",
+    "home.status": "Status",
+    "home.status.hint": "Zusammenfassung der eingerichteten Projekte und Status der erhobenen Daten.",
 
     "setup.error-no-ssl": "Sicherheitswarnung: Diese Webseite verwendet kein SSL!<br>Der Webbrowser versendet die eingegebenen Daten inkl. Passwort unverschl&uuml;sselt / im Klartext.",
     "setup.program.save.ok": "OK, die Programmeinstellungen wurden gespeichert.",
@@ -226,7 +233,7 @@
     "rawdata": "Rohdaten",
     
     "status.overview": "Zusammenfassung",
-    "status.emptyindex": "Der Suchindex ist noch leer. Der Job zum Indexieren wurde noch nicht gestartet.",
+    "status.emptyindex": "Der Suchindex ist noch leer. Der Job zum Indexieren wurde noch nicht gestartet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
     "status.last_updated.label": "letztes Update",
     "status.indexed_urls.label": "im Suchinex erfasste URLs",
     "status.indexed_urls24h.label": "davon in den letzten 24h",
@@ -271,7 +278,7 @@
     "ressources.link-to-url": "Url &ouml;ffnen",
     "ressources.list": "Liste der Ressourcen",
     "ressources.list.intro": "Mit der Schaltfl&auml;che [Ansehen] werden ein- und ausgehende Verkn&uuml;pfungen angezeigt.",
-    "ressources.empty": "Es wurden keine Ressourcen gefunden. Der Job zum Crawlen der Ressourcen wurde noch nicht gestartet.",
+    "ressources.empty": "Es wurden keine Ressourcen gefunden. Der Job zum Crawlen der Ressourcen wurde noch nicht gestartet.<br><pre>php [appdir]/bin/cli.php -a index -d ressources -p %s</pre>",
     "ressources.hint-manyitems": "Es wurden viele Eintr&auml;ge gefunden. Aus Performance Gr&uuml;nden wird die Tabelle der Ressourcen (noch) nicht angezeigt.<br>Sie k&ouml;nnen oben den Filter weiter einschr&auml;nken oder die Tabelle doch anzeigen lassen.",
     "ressources.report.intro": "",
     "ressources.searchressourceid": "ID",
@@ -348,7 +355,7 @@
     "httpheader.warnings": "Warnhinweise zu den Http-Headern (%s)",
 
     "httpheader.unknown.description": "Es wurden unbekannte Headervariablen im Http Response gefunden.",
-    "httpheader.unknown.todo": "Bitte diese Variablen pr&uuml;fen:",
+    "httpheader.unknown.todo": "Unbekannte Header Variablen sind im Browser unsichtbar. Biette diese aber pr&uuml;fen, ob sie notwendig sind und versuchen, diese zu eliminieren.",
 
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
@@ -363,6 +370,9 @@
     "sslcheck.label": "SSL-Zertifikat",
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
     "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
+    "sslcheck.nonhttps": "Unverschl&uuml;sselte Ressourcen (%s)",
+    "sslcheck.nonhttps.hint": "Wenn die Webseite mit https betrieben wird, dann zeigen Browser bei Einbettung unverschl&uuml;sselter Inhalte eine Warnung.",
+    "sslcheck.nonhttpscount": "Ohne https",
 
     "sslcheck.httponly": "Keine Verschl&uuml;sselung,",
     "sslcheck.httponly.description": "kein Https!",

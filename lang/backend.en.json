@@ -26,7 +26,7 @@
     "nav.status.hint": "Overview about data in the search index",
     
     "nav.searches.label": "Search terms",
-    "nav.searches.hint": "List of users search requests",
+    "nav.searches.hint": "View users search requests on your website",
 
     "nav.analysis.label": "Analysis",
     "nav.analysis.hint": "Analyze the ressources of a website",
@@ -65,6 +65,8 @@
     "var.string": "String",
     "var.array": "Array",
     
+    "button.add": "Add",
+    "button.add.hint": "",
     "button.back": "Back",
     "button.back.hint": "Go back",
     "button.close": "Close",
@@ -75,6 +77,8 @@
     "button.crawl.hint": "Run the crawler and re-index the site (Attention: it takes a while...)",
     "button.create": "Create",
     "button.delete": "Delete",
+    "button.delete.hint": "",
+    "button.edit": "Edit",
     "button.delete.hint": "",
     "button.help": "Help",
     "button.login": "Login",
@@ -152,6 +156,9 @@
     "home.welcome": "Welcome to the ahCrawler!",
     "home.welcome.introtext": "Lets go to the setup to initialize the database.",
     "home.cfg.unprotected": "WARNING:<br>The backend seems to be unprotected!<br>Go to the program settings and a &quot;user&quot; and &quot;password&quot;.",
+    "home.noprojectyet": "There is no project yet. Let's create a profile for a website.",
+    "home.status": "Status",
+    "home.status.hint": "Summary of the profiles and status of data.",
     
     "setup.error-no-ssl": "Security Warning: This site does not use SSL!<br>Your webbrowser will transmit form data including passwords as unencrypted, clear text.",
     "setup.program.save.ok": "OK, the program settings were saved.",
@@ -228,7 +235,7 @@
     "rawdata": "Raw data",
     
     "status.overview": "Overview",
-    "status.emptyindex": "The search index is empty. The job to index a website was not startet yet.",
+    "status.emptyindex": "The search index is empty. The job to index a website was not startet yet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
     "status.last_updated.label": "Last update",
     "status.indexed_urls.label": "indexed URLs",
     "status.indexed_urls24h.label": "indexed in the last 24h",
@@ -245,7 +252,7 @@
     "status.error_urls": "urls with error",
         
     "profile.searches.last": "Last searches (max. 20)",
-    "profile.searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website.",
+    "profile.searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
     "profile.searches.top10lastdays": "Top 10 - last %s days",
     
     "search.#": "Nr.",
@@ -275,7 +282,7 @@
     "ressources.link-to-url": "open url",
     "ressources.list": "List of Ressources",
     "ressources.list.intro": "With the button [View] you get an overview of incoming and outgoing links of the selected source.",
-    "ressources.empty": "No Ressources were found. The job to index the ressources was not started yet.",
+    "ressources.empty": "No Ressources were found. The job to index the ressources was not started yet.<br><pre>php [appdir]/bin/cli.php -a index -d ressources -p %s</pre>",
     "ressources.hint-manyitems": "I found many entries. To increase the performance I hide the table of found ressources.<br>You can set more filter limits above or enable displaying the table anyway.",
     "ressources.report.intro": "",
     "ressources.searchressourceid": "ID",
@@ -347,6 +354,7 @@
     "httpheader.warnings": "Warnings for Http headers (%s)",
 
     "httpheader.unknown.description": "Unknown header variables were found in the http response.",
+    "httpheader.unknown.todo": "The unknown header variables are nothing that is visible in the browser. But check if these are necesessary to send and try to eliminate them.",
     
     "httpheader.warnings.description": "You should not show too many details of your system in the http header. Even if sniffer tools can analyze several details.",
     "httpheader.warnings.ok-label": "nothing was found",
@@ -376,6 +384,10 @@
     "sslcheck.validto": "valid from",
     "sslcheck.validleft": "still valid (in days)",
     "sslcheck.raw": "Raw data",
+    
+    "sslcheck.nonhttps": "Check non https ressources",
+    "sslcheck.nonhttps.hint": "If you have a website running with https then browsers can show a warning if you embed unencrypted ressources.",
+    "sslcheck.nonhttpscount": "No https",
         
     "linkchecker.check-links": "Link check overview",
     "linkchecker.found-http-errors": "Http errors (%s)",
@@ -412,7 +424,7 @@
     "update.welcome.label": "Welcome to the Software updater!",
     "update.welcome.description": "The following assistent guides you through the update process.<br>Let's start with the version comparison.",
     "update.welcome.available-yes": "There is an update to version %s available. Follow the assistent to update the software.",
-    "update.welcome.available-no": "The software is up to date. It is ot required to follow the update assistent.",
+    "update.welcome.available-no": "The software is up to date. It is not required to follow the update assistent.",
     "update.steps": "The update is done in a few steps. It continous with ...",
     "update.steps.downloadurl": "<strong>Download</strong> of url <br>%s<br><br>to target file<br>%s<br><br>",
     "update.steps.extractto": "<strong>Uncompress</strong> to<br>%s",

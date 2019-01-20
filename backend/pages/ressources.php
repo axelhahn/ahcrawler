@@ -225,7 +225,7 @@ if ($iResCount) {
     }
 
 } else {
-    $sReturn.='<br><div class="message message-warning">'.$this->lB('ressources.empty').'</div>';
+    $sReturn.='<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
 
 $sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable();} );</script>';

@@ -880,7 +880,45 @@ class ressourcesrenderer extends crawler_base {
                 . '</tbody></table><br>'
                 ;
     }
+    
+    /**
+     * render an icon and a prefix
+     * @param type $sType
+     * @return type
+     */
     public function renderShortInfo($sType){
         return $this->_getIcon('ico.'.$sType, false, 'ico-'.$sType);
+    }
+    
+    
+    /**
+     * get html code to draw a tile
+     * 
+     * @param string $sType       type; one of '' |'ok'|'error'
+     * @param strng  $sIntro      top text
+     * @param string $sCount      counter value
+     * @param string $sFoot       footer text
+     * @param string $sTargetUrl  linked url
+     * @return string
+     */
+    public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
+        return '<li>'
+            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#').'" class="tile '.$sType.' scroll-link">'
+                . $sIntro.'<br>'
+                . '<strong>'.$sCount.'</strong><br>'
+                . $sFoot
+            . '</a></li>';
+    }
+    
+    /**
+     * get html code to wrap all tiles 
+     * @see $this->renderTile() to generate the necessary items.
+     * 
+     * @param string $sTiles      html code with tiles
+     * @param string $sType       default type of all tilea; one of '' |'ok'|'error'|'warn'
+     * @return string
+     */
+    public function renderTileBar($sTiles, $sType=''){
+        return '<ul class="tiles '.$sType.'">'.$sTiles.'</ul>';
     }
 }
