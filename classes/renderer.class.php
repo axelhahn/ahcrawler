@@ -332,7 +332,7 @@ class ressourcesrenderer extends crawler_base {
             return (int) $iOut . ' ' . $this->lB('hr-time-h');
         }
         $iOut = $iOut / 24;
-        if ($iOut < 100) {
+        if ($iOut < 366) {
             return (int) $iOut . ' ' . $this->lB('hr-time-d');
         }
         $iOut = $iOut / 365;

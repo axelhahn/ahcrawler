@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.45',
-        'date' => '2019-01-19',
+        'version' => '0.46',
+        'date' => '2019-01-26',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -42,6 +42,13 @@ class crawler_base {
             'ressources' => array(
                 'simultanousRequests' => 3,
             ),
+        ),
+        'analysis' => array(
+            'MinTitleLength' => 20,
+            'MinDescriptionLength' => 40,
+            'MinKeywordsLength' => 10,
+            'MaxPagesize' => 150000, 
+            'MaxLoadtime' => 500,
         ),
         // used in backend
         'updater' => array(
@@ -580,12 +587,14 @@ class crawler_base {
             if (!array_key_exists('includepath', $this->aProfile['searchindex']) || !count($this->aProfile['searchindex']['includepath'])) {
                 $this->aProfile['searchindex']['includepath'][] = '.*';
             }
+            /*
             if (!array_key_exists('simultanousRequests', $this->aProfile['searchindex']) || $this->aProfile['searchindex']['simultanousRequests']==false ) {
                 $this->aProfile['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
             }
             if (!array_key_exists('simultanousRequests', $this->aProfile['ressources']) || $this->aProfile['ressources']['simultanousRequests']==false ) {
                 $this->aProfile['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
             }
+             */
             
             // @since v0.22 
             $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';

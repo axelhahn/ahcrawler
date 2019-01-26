@@ -143,6 +143,15 @@ if(isset($_POST['action'])){
                     : false
                 ;
             }
+            
+            if(isset($aOptions['options']['menu']) 
+                    && $aOptions['options']['menu']
+                    && json_decode($aOptions['options']['menu'])
+            ){
+                $aOptions['options']['menu'] = json_decode($aOptions['options']['menu']);
+            } else {
+                $aOptions['options']['menu'] = array();
+            }
 
             // --------------------------------------------------
             // check database access
@@ -199,7 +208,7 @@ $aLangOptions=array();
 $sDefaultLang=isset($aOptions['options']['lang']) ? $aOptions['options']['lang'] : 'en';
 foreach(array('en', 'de') as $sLangOption){   
     $aLangOptions[$sLangOption]=array(
-        'label'=>$this->lB('setup.section.other.lang.'.$sLangOption),
+        'label'=>$this->lB('setup.section.backend.lang.'.$sLangOption),
         'value'=>$sLangOption,
     );
 }
@@ -207,11 +216,11 @@ $aLangOptions[$sDefaultLang]['selected']='selected';
 
 $aDebugOptions=array(
     false=>array(
-        'label'=>$this->lB('setup.section.other.debug.off'),
+        'label'=>$this->lB('setup.section.backend.debug.off'),
         'value'=>'',
     ),
     true=>array(
-        'label'=>$this->lB('setup.section.other.debug.on'),
+        'label'=>$this->lB('setup.section.backend.debug.on'),
         'value'=>true,
     )
 );
@@ -221,11 +230,12 @@ $aDebugOptions=array(
 $sIdPrefixDb='options-database-';
 $sIdPrefixAuth='options-auth-';
 $sIdPrefixCrawler='options-crawler-';
-$sIdPrefixother='options-';
+$sIdPrefixOther='options-';
+$sIdPrefixAnalyis='options-analysis-';
 
 
 $aCbDebug=array(
-    'id'=>$sIdPrefixother.'debug', 
+    'id'=>$sIdPrefixOther.'debug', 
     'type'=>'checkbox',
     'name'=>'options[debug]',
     'value'=>'true',
@@ -412,8 +422,6 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ), false)
                 . '</div>'
             . '</div>'
-       
-            . '<br>'
         
         
             // ------------------------------------------------------------
@@ -421,19 +429,30 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             . '<h3>'
                 . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
-                . ' '.$this->lB('setup.section.other')
+                . ' '.$this->lB('setup.section.backend')
             .'</h3>'
-            . $this->lB('setup.section.other.hint').'<br><br>'
+            . $this->lB('setup.section.backend.hint').'<br><br>'
 
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixother.'lang', 'label'=>$this->lB('setup.section.other.lang')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'lang', 'label'=>$this->lB('setup.section.backend.lang')))
                 . $oRenderer->oHtml->getFormSelect(array(
-                    'id'=>$sIdPrefixother.'lang', 
+                    'id'=>$sIdPrefixOther.'lang', 
                     'name'=>'options[lang]',
                     // 'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
                     ), $aLangOptions)
             . '</div>'
 
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>'menu', 
+                    'name'=>'options[menu]',
+                    'cols'=>50,
+                    'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
+                    ), true)
+                . '</div>'
             /*
             . '<div class="pure-control-group">'
                 // . '<label> </label>'
@@ -445,16 +464,16 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         'value'=>'true',
                         'checked'=>isset($aOptions['options']['debug']) && $aOptions['options']['debug'] ? 'checked' : '',
                         ))
-                        .' '.$this->lB('setup.section.other.debug')
+                        .' '.$this->lB('setup.section.backend.debug')
                 . '</label>'
                 . '</div>'
              * 
              */
             . '<div class="pure-control-group">'
                 // . '<label> </label>'
-                . '<label class="pure-checkbox" for="'.$sIdPrefixother.'debug">'
+                . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
                 . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
-                        .' '.$this->lB('setup.section.other.debug')
+                        .' '.$this->lB('setup.section.backend.debug')
                 . '</label>'
                 . '</div>'
 
@@ -485,7 +504,71 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] : 3,
                     ), false)
                 . '</div>'
+
+            // ------------------------------------------------------------
+            // setup options - analysis constants
+            // ------------------------------------------------------------
+            . '<h3>'
+                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                . ' '.$this->lB('setup.section.analysis')
+            .'</h3>'
+            . $this->lB('setup.section.analysis.hint').'<br><br>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinTitleLength', 
+                    'name'=>'options[analysis][MinTitleLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] : 20,
+                    ), false)
+                . '</div>'
+        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinDescriptionLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinDescriptionLength', 
+                    'name'=>'options[analysis][MinDescriptionLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] ? $aOptions['options']['analysis']['MinDescriptionLength'] : 40,
+                    ), false)
+                . '</div>'
        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinKeywordsLength', 'label'=>$this->lB('setup.section.analysis.MinKeywordsLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
+                    'name'=>'options[analysis][MinKeywordsLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] ? $aOptions['options']['analysis']['MinKeywordsLength'] : 10,
+                    ), false)
+                . '</div>'
+       
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxPagesize', 'label'=>$this->lB('setup.section.analysis.MaxPagesize')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MaxPagesize', 
+                    'name'=>'options[analysis][MaxPagesize]',
+                    'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] ? $aOptions['options']['analysis']['MaxPagesize'] : 150000,
+                    ), false)
+                . '</div>'
+       
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxLoadtime', 'label'=>$this->lB('setup.section.analysis.MaxLoadtime')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MaxLoadtime', 
+                    'name'=>'options[analysis][MaxLoadtime]',
+                    'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] ? $aOptions['options']['analysis']['MaxLoadtime'] : 500,
+                    ), false)
+                . '</div>'
+       
+            . '<br>'
+        
+/*
+    'MinTitleLength' => 20,
+    'MinDescriptionLength' => 40,
+    'MinKeywordsLength' => 10,
+    'MaxPagesize' => 150000, 
+    'MaxLoadtime' => 500,
+ */            
+        
             // ------------------------------------------------------------
             // submit
             // ------------------------------------------------------------

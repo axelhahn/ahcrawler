@@ -4,11 +4,12 @@
  */
 $sReturn = '';
 
-$iMinTitleLength=20;
-$iMinDescriptionLength=40;
-$iMinKeywordsLength=10;
-$iMaxPagesize=150000; // pages large n byte
-$iMaxLoadtime=500;   // load time in ms 
+$aOptions = $this->_loadOptions();
+$iMinTitleLength=$aOptions['options']['analysis']['MinTitleLength'];
+$iMinDescriptionLength=$aOptions['options']['analysis']['MinDescriptionLength'];
+$iMinKeywordsLength=$aOptions['options']['analysis']['MinKeywordsLength'];
+$iMaxPagesize=$aOptions['options']['analysis']['MaxPagesize'];
+$iMaxLoadtime=$aOptions['options']['analysis']['MaxLoadtime']; 
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $iRessourcesCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));
@@ -90,7 +91,7 @@ $iRessourcesCount=$iRessourcesCount-$iCountCrawlererrors;
 // table with too short titles
 if ($iCountShortTitles) {
     $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
-        .'<p>'.$this->lB('htmlchecks.tableShortTitles.description').'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortTitles)    
         .$this->_getHtmlchecksTable('select title, length(title) as length, url
             from pages 
@@ -103,7 +104,7 @@ if ($iCountShortTitles) {
 // table with too short descriptions
 if ($iCountShortDescr) {
     $sReturn.= '<h3 id="tblshortdescription">' . sprintf($this->lB('htmlchecks.tableShortDescription'), $iCountShortDescr) . '</h3>'
-        .'<p>'.$this->lB('htmlchecks.tableShortDescription.description').'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortDescr)    
         .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
             from pages 
@@ -131,7 +132,7 @@ if ($iCountShortDescr) {
 // table with too short keyword
 if ($iCountShortKeywords) {
     $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
-        .'<p>'.$this->lB('htmlchecks.tableShortKeywords.description').'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortKeywords)    
         .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
             from pages 
@@ -142,7 +143,7 @@ if ($iCountShortKeywords) {
 }
 if ($iCountLongload) {
     $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
-        .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.description').'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
         .$this->_getHtmlchecksTable('select title, time, size, url
             from pages 
@@ -153,7 +154,7 @@ if ($iCountLongload) {
 }
 if ($iCountLargePages) {
     $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
-        .'<p>'.$this->lB('htmlchecks.tableLargePages.description').'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
         .$this->_getHtmlchecksTable('select title, size, time, url
             from pages 
