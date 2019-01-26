@@ -1,9 +1,0 @@
-{
-    "flag_update": false,
-    "message": "OK: this is the latest version.",
-    "error": false,
-    "clientversion": "0.44",
-    "latest_version": "0.44",
-    "release": "stable",
-    "download": "https:\/\/github.com\/axelhahn\/ahcrawler\/archive\/master.zip"
-}
