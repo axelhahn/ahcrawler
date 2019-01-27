@@ -43,7 +43,7 @@ class ressources extends crawler_base {
      * @return string
      */
     private function _getUrlType($sHref) {
-        $sFirstUrl = (array_key_exists('urls2crawl', $this->aProfile['searchindex']) && count($this->aProfile['searchindex']['urls2crawl'])) ? $this->aProfile['searchindex']['urls2crawl'][0] : false;
+        $sFirstUrl = (array_key_exists('urls2crawl', $this->aProfileEffective['searchindex']) && count($this->aProfileEffective['searchindex']['urls2crawl'])) ? $this->aProfileEffective['searchindex']['urls2crawl'][0] : false;
         if ($sFirstUrl) {
             $oHtml = new analyzerHtml('', $sFirstUrl);
             return $oHtml->getUrlType($sHref);
@@ -794,7 +794,7 @@ class ressources extends crawler_base {
                         $rollingCurl->clearCompleted();
                         $rollingCurl->prunePendingRequestQueue();
                     })
-                    ->setSimultaneousLimit((int)$this->aProfile['ressources']['simultanousRequests'])
+                    ->setSimultaneousLimit((int)$this->aProfileEffective['ressources']['simultanousRequests'])
                     ->execute()
             ;
         }

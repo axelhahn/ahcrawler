@@ -128,21 +128,15 @@ if(isset($_POST['action'])){
                 $aOptions['options']['debug']=false;
             }
             // ----- fix integer options
-            if(isset($aOptions['options']['database']['port'])){
-                $aOptions['options']['database']['port']=(int)$aOptions['options']['database']['port'] ? (int)$aOptions['options']['database']['port'] : false;
-            }
-            if(isset($aOptions['options']['crawler']['searchindex']['simultanousRequests'])){
-                $aOptions['options']['crawler']['searchindex']['simultanousRequests']=(int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] 
-                    ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] 
-                    : false
-                ;
-            }
-            if(isset($aOptions['options']['crawler']['ressources']['simultanousRequests'])){
-                $aOptions['options']['crawler']['ressources']['simultanousRequests']=(int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] 
-                    ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] 
-                    : false
-                ;
-            }
+            
+            $this->_configMakeInt($aOptions, 'options.database.port');
+            $this->_configMakeInt($aOptions, 'options.crawler.searchindex.simultanousRequests');
+            $this->_configMakeInt($aOptions, 'options.crawler.ressources.simultanousRequests');
+            $this->_configMakeInt($aOptions, 'options.analysis.MinTitleLength');
+            $this->_configMakeInt($aOptions, 'options.analysis.MinDescriptionLength');
+            $this->_configMakeInt($aOptions, 'options.analysis.MinKeywordsLength');
+            $this->_configMakeInt($aOptions, 'options.analysis.MaxPagesize');
+            $this->_configMakeInt($aOptions, 'options.analysis.MaxLoadtime');
             
             if(isset($aOptions['options']['menu']) 
                     && $aOptions['options']['menu']

@@ -9,7 +9,7 @@ $aTbl = array();
 $sBtnBack='<br>'.$oRenderer->oHtml->getTag('button',array(
     'href' => '#',
     'class' => 'pure-button button-secondary',
-    'onclick' => 'history.back();',
+    'onclick' => 'history.back(); return false;',
     'title' => $this->lB('button.back.hint'),
     'label' => $this->lB('button.back'),
 ));
@@ -27,7 +27,34 @@ if(isset($_POST['action'])){
     
     switch($_POST['action']){
         case 'deleteprofile':
+                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.confirm'), $aNewProfile['label']), 'warning')
+                        .'<br><form class="" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
+                        . $oRenderer->oHtml->getTag('input', array(
+                            'type'=>'hidden',
+                            'name'=>'profile',
+                            'value'=>$iProfileId,
+                            ), false)
+                        . $oRenderer->oHtml->getTag('input', array(
+                            'type'=>'hidden',
+                            'name'=>'label',
+                            'value'=>$aNewProfile['label'],
+                            ), false)
+                        .$sBtnBack
+                        .' '
+                        .$oRenderer->oHtml->getTag('button',array(
+                            'href' => '#',
+                            'class'=>'pure-button button-error',
+                            'name'=>'action',
+                            'label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 
+                            'value' => 'deleteprofileconfirmed',
+                            
+                        ))
+                        .'</form>'
+                        ;
+                return $sReturn;
+            break;;
             
+        case 'deleteprofileconfirmed':
             if(!isset($aOptions['profiles'][$iProfileId])){
                 $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.warning.wrongprofile'), $iProfileId), 'error')
                         .$sBtnBack;
@@ -77,10 +104,6 @@ if(isset($_POST['action'])){
                 'searchindex'=>array('urls2crawl','include', 'includepath', 'exclude'),
                 'frontend'=>array('searchlang'),
             );
-            $aIntegers=array(
-                'searchindex'=>array('iDepth', 'simultanousRequests'),
-                'ressources'=>array('simultanousRequests'),
-            );
             
             foreach($aArrays as $sIndex1=>$aSubArrays){
                 foreach($aSubArrays as $sIndex2){
@@ -91,14 +114,12 @@ if(isset($_POST['action'])){
                     }
                 }
             }
-            foreach($aIntegers as $sIndex1=>$aSubArrays){
-                foreach($aSubArrays as $sIndex2){
-                    if(isset($aNewProfile[$sIndex1][$sIndex2]) && $aNewProfile[$sIndex1][$sIndex2]){
-                        $aNewProfile[$sIndex1][$sIndex2]=(int)$aNewProfile[$sIndex1][$sIndex2];
-                    }
-                }
-            }
-            
+            // fix integer values
+            $this->_configMakeInt($aNewProfile, 'searchindex.iDepth');
+            $this->_configMakeInt($aNewProfile, 'searchindex.simultanousRequests');
+            $this->_configMakeInt($aNewProfile, 'ressources.simultanousRequests');
+
+            // check json data in textarea
             if(isset($aNewProfile['frontend']['searchcategories']) 
                     && $aNewProfile['frontend']['searchcategories']
                     && json_decode($aNewProfile['frontend']['searchcategories'])
@@ -164,8 +185,8 @@ $this->setSiteId($this->_sTab);
 
 
 $sValueSearchCategories='';
-if(isset($this->aProfile['searchcategories']) && count($this->aProfile['searchcategories'])){
-    foreach($this->aProfile['searchcategories'] as $sKey=>$value){
+if(isset($this->aProfileSaved['searchcategories']) && count($this->aProfileSaved['searchcategories'])){
+    foreach($this->aProfileSaved['searchcategories'] as $sKey=>$value){
         $sValueSearchCategories.=$sKey.': "'.$value.'"' . "\n";
     }
 }
@@ -199,7 +220,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'label', 
                     'name'=>'label',
-                    'value'=>isset($this->aProfile['label']) ? $this->aProfile['label'] : '',
+                    'value'=>isset($this->aProfileSaved['label']) ? $this->aProfileSaved['label'] : '',
                     ), false)
                 . '</div>'
         
@@ -210,7 +231,7 @@ $sReturn.='
                     'name'=>'description',
                     'cols'=>50,
                     'rows'=>3,
-                    'label'=>isset($this->aProfile['description']) ? $this->aProfile['description'] : '',
+                    'label'=>isset($this->aProfileSaved['description']) ? $this->aProfileSaved['description'] : '',
                     ), true)
                 . '</div>'
 
@@ -228,8 +249,8 @@ $sReturn.='
                     'id'=>'searchindex-urls2crawl', 
                     'name'=>'searchindex[urls2crawl]',
                     'cols'=>50,
-                    'rows'=>isset($this->aProfile['searchindex']['urls2crawl']) && count($this->aProfile['searchindex']['urls2crawl']) ? count($this->aProfile['searchindex']['urls2crawl'])+1 : 3 ,
-                    'label'=>isset($this->aProfile['searchindex']['urls2crawl']) && count($this->aProfile['searchindex']['urls2crawl']) ? implode("\n", $this->aProfile['searchindex']['urls2crawl']) : '',
+                    'rows'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? count($this->aProfileSaved['searchindex']['urls2crawl'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -237,7 +258,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-stickydomain', 
                     'name'=>'searchindex[stickydomain]',
-                    'value'=>isset($this->aProfile['searchindex']['stickydomain']) ? $this->aProfile['searchindex']['stickydomain'] : '',
+                    'value'=>isset($this->aProfileSaved['searchindex']['stickydomain']) ? $this->aProfileSaved['searchindex']['stickydomain'] : '',
                     ), false)
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -246,8 +267,8 @@ $sReturn.='
                     'id'=>'searchindex-include', 
                     'name'=>'searchindex[include]',
                     'cols'=>50,
-                    'rows'=>isset($this->aProfile['searchindex']['include']) && count($this->aProfile['searchindex']['include']) ? count($this->aProfile['searchindex']['include'])+1 : 3 ,
-                    'label'=>isset($this->aProfile['searchindex']['include']) && count($this->aProfile['searchindex']['include']) ? implode("\n", $this->aProfile['searchindex']['include']) : '',
+                    'rows'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? count($this->aProfileSaved['searchindex']['include'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? implode("\n", $this->aProfileSaved['searchindex']['include']) : '',
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -256,8 +277,8 @@ $sReturn.='
                     'id'=>'searchindex-includepath', 
                     'name'=>'searchindex[includepath]',
                     'cols'=>50,
-                    'rows'=>isset($this->aProfile['searchindex']['includepath']) && count($this->aProfile['searchindex']['includepath']) ? count($this->aProfile['searchindex']['includepath'])+1 : 3 ,
-                    'label'=>isset($this->aProfile['searchindex']['includepath']) && count($this->aProfile['searchindex']['includepath']) ? implode("\n", $this->aProfile['searchindex']['includepath']) : '',
+                    'rows'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? count($this->aProfileSaved['searchindex']['includepath'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? implode("\n", $this->aProfileSaved['searchindex']['includepath']) : '',
                     ), true)
                 . '</div>'
         
@@ -267,8 +288,8 @@ $sReturn.='
                     'id'=>'searchindex-exclude', 
                     'name'=>'searchindex[exclude]',
                     'cols'=>50,
-                    'rows'=>isset($this->aProfile['searchindex']['exclude']) && count($this->aProfile['searchindex']['exclude']) ? count($this->aProfile['searchindex']['exclude'])+1 : 3 ,
-                    'label'=>isset($this->aProfile['searchindex']['exclude']) && count($this->aProfile['searchindex']['exclude']) ? implode("\n", $this->aProfile['searchindex']['exclude']) : '',
+                    'rows'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? count($this->aProfileSaved['searchindex']['exclude'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? implode("\n", $this->aProfileSaved['searchindex']['exclude']) : '',
                     ), true)
                 . '</div>'
         
@@ -277,7 +298,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iDepth', 
                     'name'=>'searchindex[iDepth]',
-                    'value'=>isset($this->aProfile['searchindex']['iDepth']) ? $this->aProfile['searchindex']['iDepth'] : '',
+                    'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
                     ), false)
                 . '</div>'
 
@@ -290,7 +311,7 @@ $sReturn.='
                     'id'=>'searchindex-simultanousRequests', 
                     'name'=>'searchindex[simultanousRequests]',
                     'placeholder'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? $aOptions['options']['crawler']['searchindex']['simultanousRequests'] : '',
-                    'value'=>isset($this->aProfile['searchindex']['simultanousRequests']) ? $this->aProfile['searchindex']['simultanousRequests'] : '',
+                    'value'=>isset($this->aProfileSaved['searchindex']['simultanousRequests']) ? $this->aProfileSaved['searchindex']['simultanousRequests'] : '',
                     ), false)
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -298,7 +319,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'userpwd', 
                     'name'=>'userpwd',
-                    'value'=>isset($this->aProfile['userpwd']) ? $this->aProfile['userpwd'] : '',
+                    'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
                     ), false)
                 . '</div>'
             // ------------------------------------------------------------
@@ -316,9 +337,9 @@ $sReturn.='
                     'id'=>'frontend-searchcategories', 
                     'name'=>'frontend[searchcategories]',
                     'cols'=>70,
-                    'rows'=>isset($this->aProfile['frontend']['searchcategories']) && is_array($this->aProfile['frontend']['searchcategories']) && count($this->aProfile['frontend']['searchcategories']) ? count($this->aProfile['frontend']['searchcategories'])+3 : 3 ,
+                    'rows'=>isset($this->aProfileSaved['frontend']['searchcategories']) && is_array($this->aProfileSaved['frontend']['searchcategories']) && count($this->aProfileSaved['frontend']['searchcategories']) ? count($this->aProfileSaved['frontend']['searchcategories'])+3 : 3 ,
                     // 'label'=>$sValueSearchCategories,
-                    'label'=> json_encode($this->aProfile['frontend']['searchcategories'], JSON_PRETTY_PRINT),
+                    'label'=> json_encode($this->aProfileSaved['frontend']['searchcategories'], JSON_PRETTY_PRINT),
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -327,8 +348,8 @@ $sReturn.='
                     'id'=>'frontend-searchlang', 
                     'name'=>'frontend[searchlang]',
                     'cols'=>50,
-                    'rows'=>isset($this->aProfile['frontend']['searchlang']) && count($this->aProfile['frontend']['searchlang']) ? count($this->aProfile['frontend']['searchlang'])+1 : 3 ,
-                    'label'=>isset($this->aProfile['frontend']['searchlang']) && count($this->aProfile['frontend']['searchlang']) ? implode("\n", $this->aProfile['frontend']['searchlang']) : '',
+                    'rows'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? count($this->aProfileSaved['frontend']['searchlang'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? implode("\n", $this->aProfileSaved['frontend']['searchlang']) : '',
                     ), true)
                 . '</div>'
 
@@ -350,7 +371,7 @@ $sReturn.='
                     'id'=>'ressources-simultanousRequests', 
                     'name'=>'ressources[simultanousRequests]',
                     'placeholder'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? $aOptions['options']['crawler']['ressources']['simultanousRequests'] : '',
-                    'value'=>isset($this->aProfile['ressources']['simultanousRequests']) ? $this->aProfile['ressources']['simultanousRequests'] : '',
+                    'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
                     ), false)
                 . '</div>'
         

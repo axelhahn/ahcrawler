@@ -76,8 +76,8 @@ if(!$this->_configExists() || !$this->oDB){
             $iSearches=$this->getRecordCount('searches', array('siteid'=>$iProfileId));
             
             $aTable[]=array(
-                '<strong>'.$this->aProfile['label'].'</strong><br>'
-                    . $this->aProfile['description'].'<br><br>'
+                '<strong>'.$this->aProfileSaved['label'].'</strong><br>'
+                    . $this->aProfileSaved['description'].'<br><br>'
                     . $this->_getButton(array(
                                 'href'=>'?page=profiles&tab='.$iProfileId,
                                 'popup'=>false,

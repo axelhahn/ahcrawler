@@ -237,6 +237,7 @@
     "profile.save.error": "ERROR: the profile [%s] was not saved.",
     "profile.warning.wrongprofile": "ERROR: the profile [%s] does not exist.",
     "profile.warning.nolabel": "ERROR: the profile [%s] has no label.",
+    "profile.delete.confirm": "Are you sure to delete profile [%s]?",
     "profile.delete.ok": "OK, the profile [%s] and its data were deleted.",
     "profile.save.error": "Error: the profile [%s] was not deleted.",
     

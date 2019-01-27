@@ -80,13 +80,13 @@ class ahsearch extends crawler_base {
      */
     public function getSearchCategories($bAddNone=false) {
         $aReturn=array();
-        if (!isset($this->aProfile['frontend']['searchcategories']) || !count($this->aProfile['frontend']['searchcategories'])) {
+        if (!isset($this->aProfileSaved['frontend']['searchcategories']) || !count($this->aProfileSaved['frontend']['searchcategories'])) {
             return false;
         }
         if($bAddNone){
             $aReturn[$this->lF('label.searchsubdir-none')]='';
         }
-        return array_merge($aReturn, $this->aProfile['frontend']['searchcategories']);
+        return array_merge($aReturn, $this->aProfileSaved['frontend']['searchcategories']);
     }
     /**
      * get categories to search in ... it returns the structure from config 
@@ -95,13 +95,13 @@ class ahsearch extends crawler_base {
      */
     public function getSearchLang($bAddNone=false) {
         $aReturn=array();
-        if (!isset($this->aProfile['frontend']['searchlang']) || !count($this->aProfile['frontend']['searchlang'])) {
+        if (!isset($this->aProfileSaved['frontend']['searchlang']) || !count($this->aProfileSaved['frontend']['searchlang'])) {
             return false;
         }
         if($bAddNone){
             $aReturn[$this->lF('label.searchlang-none')]='';
         }
-        foreach ($this->aProfile['frontend']['searchlang'] as $sMyLang){
+        foreach ($this->aProfileSaved['frontend']['searchlang'] as $sMyLang){
             $aReturn[$sMyLang]=$sMyLang;
         }
         return $aReturn;
@@ -180,7 +180,7 @@ class ahsearch extends crawler_base {
         // echo '<pre>'.print_r($aOptions,1).'</pre>';
         if (!array_key_exists('url', $aOptions)){
             // $aOptions['url']='//'.$this->aProfile['searchindex']['stickydomain'];
-            $aOptions['url']='//'.parse_url($this->aProfile['searchindex']['urls2crawl'][0], PHP_URL_HOST);
+            $aOptions['url']='//'.parse_url($this->aProfileSaved['searchindex']['urls2crawl'][0], PHP_URL_HOST);
         }
         
         if (array_key_exists('subdir', $aOptions)){

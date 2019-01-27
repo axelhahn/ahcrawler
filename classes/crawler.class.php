@@ -185,11 +185,8 @@ class crawler extends crawler_base{
                         $sEntry .= '.*';
                     }
                     
-                    if (!array_key_exists('exclude', $this->aProfile['searchindex'])){
-                        $this->aProfile['searchindex']['exclude']=array();
-                    } 
-                    if (!array_search($sEntry, $this->aProfile['searchindex']['exclude'])) {
-                        $this->aProfile['searchindex']['exclude'][] = $sEntry;
+                    if (!array_search($sEntry, $this->aProfileEffective['searchindex']['exclude'])) {
+                        $this->aProfileEffective['searchindex']['exclude'][] = $sEntry;
                     }
                 }
             }
@@ -210,8 +207,8 @@ class crawler extends crawler_base{
      */
     private function _checkRegexArray($sOptionKey, $sString) {
         $bFound = false;
-        if (array_key_exists($sOptionKey, $this->aProfile['searchindex']) && count($this->aProfile['searchindex'][$sOptionKey])) {
-            foreach ($this->aProfile['searchindex'][$sOptionKey] as $sRegex) {
+        if (array_key_exists($sOptionKey, $this->aProfileEffective['searchindex']) && count($this->aProfileEffective['searchindex'][$sOptionKey])) {
+            foreach ($this->aProfileEffective['searchindex'][$sOptionKey] as $sRegex) {
                 // TODO: mask regex - i.e. $sRegex is "/*search_ger\.html$.*"
                 if (preg_match('#' . $sRegex . '#', $sString)) {
                     // echo "OK\n";
@@ -249,8 +246,9 @@ class crawler extends crawler_base{
             return false;
         }
 
-        if (array_key_exists('stickydomain', $this->aProfile['searchindex']) && $this->aProfile['searchindex']['stickydomain'] && $this->aProfile['searchindex']['stickydomain'] != parse_url($sUrl, PHP_URL_HOST)) {
-            echo $bDebug ? "... SKIP url is outside sticky domain " . $this->aProfile['searchindex']['stickydomain']."\n" : "";
+        // TODO remove stickydomain
+        if (array_key_exists('stickydomain', $this->aProfileSaved['searchindex']) && $this->aProfileSaved['searchindex']['stickydomain'] && $this->aProfileSaved['searchindex']['stickydomain'] != parse_url($sUrl, PHP_URL_HOST)) {
+            echo $bDebug ? "... SKIP url is outside sticky domain " . $this->aProfileSaved['searchindex']['stickydomain']."\n" : "";
             return false;
         }
 
@@ -284,8 +282,8 @@ class crawler extends crawler_base{
 
         
         $curr_depth = substr_count(str_replace("//", "/", parse_url($sUrl, PHP_URL_PATH)), "/");
-        if ($this->aProfile['searchindex']['iDepth'] && $curr_depth > $this->aProfile['searchindex']['iDepth']) {
-            echo $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfile['searchindex']['iDepth']."\n" : "";
+        if ($this->aProfileEffective['searchindex']['iDepth'] && $curr_depth > $this->aProfileEffective['searchindex']['iDepth']) {
+            echo $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfileEffective['searchindex']['iDepth']."\n" : "";
             return false;
         }
 
@@ -469,10 +467,10 @@ class crawler extends crawler_base{
         } else {
             // ... starturls in config
             echo "RESCAN complete index.\n";
-            if(!count($this->aProfile['searchindex']['urls2crawl'])){
+            if(!count($this->aProfileEffective['searchindex']['urls2crawl'])){
                 echo 'WARNING: no urls in profiles->'.$this->iSiteId.'->urls2crawl->searchindex<br>'."\n";
             } else  {
-                foreach ($this->aProfile['searchindex']['urls2crawl'] as $sUrl) {
+                foreach ($this->aProfileEffective['searchindex']['urls2crawl'] as $sUrl) {
                     $aStartUrls[]=$sUrl;
                 }
             }
@@ -558,7 +556,7 @@ class crawler extends crawler_base{
 
             $aCurlOpt=$this->_getCurlOptions();
             $rollingCurl->setOptions($aCurlOpt)
-                ->setSimultaneousLimit((int)$this->aProfile['searchindex']['simultanousRequests'])
+                ->setSimultaneousLimit((int)$this->aProfileEffective['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
                     // echo "... content: " . substr($request->getResponseText(), 0 ,10) . " (...) \n";

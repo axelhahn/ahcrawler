@@ -235,6 +235,7 @@
     "profile.save.error": "FEHLER: die Profildaten von [%s] konnten nicht gespeichert werden.",
     "profile.warning.wrongprofile": "FEHLER: Das Profil [%s] existiert nicht.",
     "profile.warning.nolabel": "FEHLER: Das Profil [%s] hat kein Label.",
+    "profile.delete.confirm": "Sind Sie sicher, dass das Profil [%s] gel&ouml;scht werden soll?",
     "profile.delete.ok": "OK, die Profildaten von Profil [%s] wurden gel&ouml;scht.",
     "profile.save.error": "FEHLER: die Profildaten von Profil [%s] konnten nicht gel&ouml;scht werden.",
     

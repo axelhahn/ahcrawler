@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.46',
-        'date' => '2019-01-26',
+        'version' => '0.47',
+        'date' => '2019-01-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -162,10 +162,15 @@ class crawler_base {
     protected $iSiteId = false;
 
     /**
-     * options with all crawl projects
+     * saved config data of a webite profile
      * @var array
      */
-    protected $aProfile = array();
+    protected $aProfileSaved = array();
+    /**
+     * effetive config data of a webite profile: saved data merged with the defaults
+     * @var array
+     */
+    protected $aProfileEffective = array();
 
     /**
      * database object for indexer and search
@@ -272,6 +277,41 @@ class crawler_base {
         }
         return false;
     }
+    /**
+     * helper make a config item integer or set it false
+     * @see backend/pages/setup.php + profiles.php
+     * 
+     * @param array  $aItem  config item (global config or specific config item)
+     * @param string $sKey   optional key sequence with "." as delimiter
+     * @return boolean
+     */
+    protected function _configMakeInt(&$aItem, $sKey=false) {
+        if(!isset($aItem)){
+            return false;
+        }
+        if($sKey){
+            $sFirstKey= preg_replace('/\..*/', '', $sKey);
+            if(!isset($aItem[$sFirstKey])){
+                return false;
+            }
+            $sLeftkeys=str_replace($sFirstKey, '', preg_replace('/^[a-z]*\./i', '', $sKey));
+            if($sLeftkeys){
+                return $this->_configMakeInt($aItem[$sFirstKey], $sLeftkeys);
+            }
+            return $this->_configMakeInt($aItem[$sFirstKey]);
+        }
+        $aItem=(int)$aItem ? (int)$aItem : false;
+        return true;
+    }
+    /**
+     * save options array
+     * @see backend/pages/setup.php + profiles.php
+     * @return boolean
+    protected function _saveConfigVerify($aNewData) {
+        
+        return false;
+    }
+     */
     
     /**
      * check if httpd v2 is available in PHP and curl lib
@@ -292,7 +332,7 @@ class crawler_base {
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->sUserAgent,
-            CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfile) ? $this->aProfile['userpwd']:false,
+            CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfileEffective) ? $this->aProfileEffective['userpwd']:false,
             CURLOPT_VERBOSE => false,
             CURLOPT_ENCODING => '',  // to fetch encoding
 
@@ -525,10 +565,16 @@ class crawler_base {
                 }
             }
         }
-        echo "flushing was successful.\n";
+        // echo "flushing was successful.\n";
         return true;
     }
 
+    /**
+     * add a log message for debug output
+     * @param string  $sMessage  message text
+     * @param strin   $sLevel    one of ok|info|warning|error
+     * @return boolean
+     */
     public function logAdd($sMessage, $sLevel = "info"){
         if($this->_oLog){
             if(php_sapi_name()==='cli'){
@@ -538,6 +584,11 @@ class crawler_base {
         }
         return false;
     }
+    
+    /**
+     * render debug log output (visible if debugging is enabled only)
+     * @return boolean
+     */
     public function logRender(){
         $aOptions = $this->_loadOptions();
         if($this->_oLog && isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
@@ -545,8 +596,11 @@ class crawler_base {
         }
         return false;
     }
+
     /**
-     * set the id of the active project (for crawling or search)
+     * set the id of the active project
+     * This method loads the profile too
+     * 
      * @param integer $iSiteId
      */
     public function setSiteId($iSiteId = false) {
@@ -554,7 +608,7 @@ class crawler_base {
         $aOptions = $this->_loadOptions();
 
         $this->iSiteId = false;
-        $this->aProfile = array();
+        $this->aProfileSaved = array();
 
         // builtin default options ... these will be overrided with crawler.config.json
         if (isset($aOptions['options']) && array_key_exists('options', $aOptions)) {
@@ -571,39 +625,16 @@ class crawler_base {
 
         if ($iSiteId && isset($aOptions['profiles'][$iSiteId])) {
             $this->iSiteId = $iSiteId;
-            $aProfile = $aOptions['profiles'][$iSiteId];
+            $this->aProfileSaved = $aOptions['profiles'][$iSiteId];
 
-            // merge defaults with user settings for this profile 
-            $aNewProfile=$this->aProfileDefault;
-            foreach(array_keys($this->aProfileDefault) as $sKey0){
-                if (!is_array($aNewProfile[$sKey0])){
-                    $aNewProfile[$sKey0] = array_key_exists($sKey0, $aProfile) ? $aProfile[$sKey0] : $this->aProfileDefault[$sKey0];
-                } else {
-                    $aNewProfile[$sKey0]=array_key_exists($sKey0, $aProfile) ? array_merge($this->aProfileDefault[$sKey0], $aProfile[$sKey0]) : $this->aProfileDefault[$sKey0];
-                }
-            }
-            $this->aProfile = $aNewProfile;
-
-            if (!array_key_exists('includepath', $this->aProfile['searchindex']) || !count($this->aProfile['searchindex']['includepath'])) {
-                $this->aProfile['searchindex']['includepath'][] = '.*';
-            }
-            /*
-            if (!array_key_exists('simultanousRequests', $this->aProfile['searchindex']) || $this->aProfile['searchindex']['simultanousRequests']==false ) {
-                $this->aProfile['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
-            }
-            if (!array_key_exists('simultanousRequests', $this->aProfile['ressources']) || $this->aProfile['ressources']['simultanousRequests']==false ) {
-                $this->aProfile['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
-            }
-             */
-            
             // @since v0.22 
             $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
             touch($this->sCcookieFilename);
             
-            // print_r($this->aProfile); sleep(5);
         } else {
-            $this->aProfile = $this->aProfileDefault;
+            $this->aProfileSaved = array();
         }
+        $this->getEffectiveProfile($iSiteId);
         return true;
     }
 
@@ -620,7 +651,53 @@ class crawler_base {
         }
         return false;
     }
+    /**
+     * get profile for given SiteId tht is merged by defauls and loaded 
+     * profile settings
+     * loaded in setSiteId() after initializing $this->aProfileSaved
+     * 
+     */
+    public function getEffectiveProfile() {
+        $this->logAdd(__METHOD__.'() start');
+        // $aOptions = $this->_loadOptions();
+        // $iSiteId = $iSiteId ? $iSiteId : $this->iSiteId;
+        $iSiteId = $this->iSiteId;
+        $aProfile = $this->aProfileSaved;
 
+        $aReturn=$this->aProfileDefault;
+        if ($iSiteId && isset($aProfile)) {
+            $this->iSiteId = $iSiteId;
+
+            // merge defaults with user settings for this profile 
+            foreach(array_keys($this->aProfileDefault) as $sKey0){
+                if (!is_array($aReturn[$sKey0])){
+                    $aReturn[$sKey0] = array_key_exists($sKey0, $aProfile) ? $aProfile[$sKey0] : $this->aProfileDefault[$sKey0];
+                } else {
+                    $aReturn[$sKey0]=array_key_exists($sKey0, $aProfile) ? array_merge($this->aProfileDefault[$sKey0], $aProfile[$sKey0]) : $this->aProfileDefault[$sKey0];
+                }
+            }
+
+            if (!isset($aReturn['searchindex']['includepath']) || !is_array($aReturn['searchindex']['includepath']) || !count($aReturn['searchindex']['includepath'])) {
+                $aReturn['searchindex']['includepath'][] = '.*';
+            }
+            if (!isset($aReturn['searchindex']['exclude']) || !is_array($aReturn['searchindex']['exclude'])){
+                $aReturn['searchindex']['exclude']=array();
+            } 
+            if (!isset($aReturn['searchindex']['simultanousRequests']) || $aReturn['searchindex']['simultanousRequests']==false ) {
+                $aReturn['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
+            }
+            if (!isset($aReturn['ressources']['simultanousRequests']) || $aReturn['ressources']['simultanousRequests']==false ) {
+                $aReturn['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
+            }
+            
+        } 
+        $this->logAdd(__METHOD__.'() profile defaults<pre>'.print_r($this->aProfileDefault,1).'</pre>');
+        $this->logAdd(__METHOD__.'() saved profile data<pre>'.print_r($aProfile,1).'</pre>');
+        $this->logAdd(__METHOD__.'() merged effective profile<pre>'.print_r($aReturn,1).'</pre>');
+        $this->aProfileEffective=$aReturn;
+        return $aReturn;
+    }
+    
     // ----------------------------------------------------------------------
     // content
     // ----------------------------------------------------------------------

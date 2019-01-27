@@ -9,7 +9,7 @@ $sReturn='';
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
-$sFirstUrl=isset($this->aProfile['searchindex']['urls2crawl'][0]) ? $this->aProfile['searchindex']['urls2crawl'][0] : false;
+$sFirstUrl=isset($this->aProfileSaved['searchindex']['urls2crawl'][0]) ? $this->aProfileSaved['searchindex']['urls2crawl'][0] : false;
 $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
     . '<p>'
         . $this->lB('sslcheck.description').'<br>'
