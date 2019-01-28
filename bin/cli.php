@@ -18,14 +18,14 @@ error_reporting(E_ALL);
 
 $aParamDefs=array(
     'label' => 'AhCRAWLER :: C L I',
-    'description' => 'start crawling and ressource scan',
+    'description' => 'CLI tool to start crawling and ressource scan',
     'params'=>array(
         'action'=>array(
             'short' => 'a',
             'value'=> CLIVALUE_REQUIRED,
-            'pattern'=>'/^(index|update|flush|list)$/',
+            'pattern'=>'/^(list|index|update|empty|flush)$/',
             'shortinfo' => 'name of action',
-            'description' => 'The action value is one of index | update | flush | list',
+            'description' => 'The action value is one of list | index | update | empty | flush',
         ),
         'data'=>array(
             'short' => 'd',
@@ -39,7 +39,7 @@ $aParamDefs=array(
             'value'=> CLIVALUE_REQUIRED,
             'pattern'=>'/^[0-9]*$/',
             'shortinfo' => 'profile id of the config',
-            'description' => 'The id is an integer value ... it is one of the subkeys below profile key.',
+            'description' => 'The id is an integer value ... see list action.',
         ),
         'help'=>array(
             'short' => 'h',
@@ -71,6 +71,10 @@ function getProfile(){
 // main
 // ----------------------------------------------------------------------
 
+// echo $oCli->getlabel();
+$oCrawler=new crawler();
+
+
 ini_set('memory_limit', '512M');
 
 $oCli=new axelhahn\cli($aParamDefs);
@@ -81,21 +85,55 @@ $oCli->color('head');
 echo 
 '_______________________________________________________________________________
 
-             __   __                  ___  __      __         
-   /\  |__| /  ` |__)  /\  |  | |    |__  |__)    /  ` |    | 
-  /~~\ |  | \__, |  \ /~~\ |/\| |___ |___ |  \    \__, |___ | 
+            __   _____                __          _______   ____
+      ___ _/ /  / ___/______ __    __/ /__ ____  / ___/ /  /  _/
+     / _ `/ _ \/ /__/ __/ _ `/ |/|/ / / -_) __/ / /__/ /___/ /  
+     \_,_/_//_/\___/_/  \_,_/|__,__/_/\__/_/    \___/____/___/  v'.$oCrawler->aAbout['version'].'
+
+     DOCS: '.$oCrawler->aAbout['urlDocs'].'
+     '.$oCrawler->aAbout['license'].'; release date: '.$oCrawler->aAbout['date'].'; (c) '.$oCrawler->aAbout['author'].'
 
 _______________________________________________________________________________
 
 ';
 $oCli->color('reset');
 
-// echo $oCli->getlabel();
-$oCrawler=new crawler();
-
 // print_r($oCli->getopt());
 if ($oCli->getvalue("help") ||!count($oCli->getopt())){
     echo $oCli->showhelp();
+    $sBase='php ./'.basename(__FILE__);
+    echo '
+ACTIONS:
+    list:   list all existing profiles
+
+    index:  start crawler to reindex searchindex or ressources 
+            (requires -d [value] and -p [profile])
+
+    update: start crawler to update missed searchindex or ressources 
+            (requires -d [value] and -p [profile])
+
+    empty:  remove existing data of a profile
+            (requires -d [value] and -p [profile])
+
+    flush:  drop data for ALL profiles
+            (requires -d [value])
+
+EXAMPLES:
+    '.$sBase.' -a list
+        list all profiles
+
+    '.$sBase.' -a flush -d all
+        drop all data of all profiles (it keeps the search results)
+
+    '.$sBase.' -a empty -d all -p 1
+        erase data for profile [1] (it keeps the search results)
+
+    '.$sBase.' -a index -d all -p 1
+        create search index and ressources for profile [1]
+
+    '.$sBase.' -a update -d all -p 1
+        update missed items in search index and ressources for profile [1]
+';
     exit(0);
 }
 
@@ -107,7 +145,13 @@ $oCli->color('ok', 'OK, action is ['.$oCli->getvalue("action").']'."\n\n");
 $sAction=$oCli->getvalue("action");
 
 if ($sAction==="list"){
-    echo "valid profile ids: " 
+    echo "--- Existing profiles:\n\n";
+    foreach ($oCrawler->getProfileIds() as $MySiteId){
+        $oCrawler->setSiteId($MySiteId);
+        $aProfile=$oCrawler->getEffectiveProfile($MySiteId);
+        echo "$MySiteId: ".$aProfile['label']."\n".$aProfile['description']."\n\n";
+    }
+    echo "\n--> valid profile ids are: " 
         . implode(", ", $oCrawler->getProfileIds())
         . "\n\n"
         ;
@@ -194,11 +238,14 @@ foreach ($aProfileIds as $sSiteId){
                     break;
             }
             break;
+        case 'empty':
+            $oCrawler->flushData(array($sWhat=>1), $sSiteId);
+            break;
             
         default:
             echo "ooops ... action [$sAction] was not implemented yet\n";
     }
 }
 $oCli->color('reset');
-echo "\ndone.";
+echo "\nDONE.";
 // ----------------------------------------------------------------------

@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.47',
-        'date' => '2019-01-27',
+        'version' => '0.48',
+        'date' => '2019-01-28',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -536,9 +536,18 @@ class crawler_base {
      * delete database tables for crawled data. as a reminder: this deletes
      * all data for *all* defined profiles.
      * 
-     * @param type $aItems
+     * @param type    $aItems  array with these keys as flags:
+     *                           searchindex => true|false
+     *                           ressources => true|false
+     *                           searches => true|false
+     *                           all => true|false - means:searchindex + ressources
+     *                           full => true|false - means:searchindex + ressources + searches
+     * @param integer $iSiteId  optional: id of a profile; 
+     *                           default: false (drop tables for all profiles)
+     *                           integer: empty values in a table with this id
+     * @return boolean
      */
-    public function flushData($aItems) {
+    public function flushData($aItems, $iSiteId=false) {
         $aTables = array();
         $bAll = isset($aItems['all']);
         $bFull = isset($aItems['full']);
@@ -556,7 +565,11 @@ class crawler_base {
         if (count($aTables)) {
             $aDb = $this->_getPdoDbSpecialties();
             foreach ($aTables as $sTable) {
-                $sql = "DROP TABLE IF EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . ";";
+                
+                $sql = (int)$iSiteId 
+                        ? "DELETE FROM " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . " WHERE siteid=".(int)$iSiteId .";"
+                        : "DROP TABLE IF EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . ";"
+                        ;
                 echo "DEBUG: $sql\n";
                 if (!$this->oDB->query($sql)) {
                     echo $sql . "<br>";

@@ -65,7 +65,7 @@ if(isset($_POST['action'])){
             // delete data
             // --------------------------------------------------
             
-            $this->flushData(array('full'));
+            $this->flushData(array('full'), $iProfileId);
             
             // --------------------------------------------------
             // SAVE
@@ -339,7 +339,10 @@ $sReturn.='
                     'cols'=>70,
                     'rows'=>isset($this->aProfileSaved['frontend']['searchcategories']) && is_array($this->aProfileSaved['frontend']['searchcategories']) && count($this->aProfileSaved['frontend']['searchcategories']) ? count($this->aProfileSaved['frontend']['searchcategories'])+3 : 3 ,
                     // 'label'=>$sValueSearchCategories,
-                    'label'=> json_encode($this->aProfileSaved['frontend']['searchcategories'], JSON_PRETTY_PRINT),
+                    'label'=> (isset($this->aProfileSaved['frontend']['searchcategories']) 
+                            ? json_encode($this->aProfileSaved['frontend']['searchcategories'], JSON_PRETTY_PRINT) 
+                            : ''
+                        ),
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
