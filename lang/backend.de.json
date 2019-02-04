@@ -35,7 +35,7 @@
     "nav.sslcheck.hint": "Check des verwendeten SSL-Zertifikats (Live Abfrage)",
     
     "nav.httpheaderchecks.label": "Http Header check",
-    "nav.httpheaderchecks.hint": "Analyse des Http Response Headers der Startseite (basierend auf der ersten URL in der Ressourcen Datenbank)",
+    "nav.httpheaderchecks.hint": "Analyse des Http Response Headers",
         
     "nav.htmlchecks.label": "HTML-Checks",
     "nav.htmlchecks.hint": "Analyse des Html Code und Hinweise",
@@ -242,11 +242,17 @@
     "rawdata": "Rohdaten",
     
     "status.overview": "Zusammenfassung",
+    "status.search": "Suche",
+    "status.search.hint": "Hier kannst du den Suchindex durchsuchen und das Ergebnisverhalten testen, wie es eingebaut auf der Webseite w&auml;re. Die Suchbegriffe hier werden nicht gespeichert.",
+    "status.detail": "Detailseite",
     "status.emptyindex": "Der Suchindex ist noch leer. Der Job zum Indexieren wurde noch nicht gestartet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
     "status.last_updated.label": "letztes Update",
-    "status.indexed_urls.label": "im Suchinex erfasste URLs",
+    "status.indexed_urls.label": "im Suchindex",
+    "status.indexed_urls.footer": "URLs",
     "status.indexed_urls24h.label": "davon in den letzten 24h",
-    "status.error_urls.label": "fehlerhafte URLs",
+    "status.indexed_urls24h.footer": "URLs",
+    "status.error_urls.label": "fehlerhaft",
+    "status.error_urls.footer": "URLs",
     "status.oldest_updated.label": "&auml;lteste Daten im Index",
     
     "status.newest_urls_in_index": "Neueste URLs im Index",
@@ -263,6 +269,10 @@
     "search.summary": "Zusammenfassung",
     "search.ranking": "Ranking",
     
+    "searches.overview": "Zusammenfassung",
+    "searches.total": "Such-Aufrufe",
+    "searches.since": "&auml;lteste Suche",
+    "searches.last": "letzte Suche",
     "searches.ts": "Zeit",
     "searches.siteid": "Profil#",
     "searches.searchset": "Such-Set",
@@ -355,7 +365,8 @@
 
 
     "httpheader.data": "Http-Header",
-    "httpheader.data.description": "Das ist der von der Startseite übermittelte Http Response Header",
+    "httpheader.data.description": "Das Http Response Header von<br><em>%s</em>",
+    "httpheader.nopage-with-id": "Es wurde keine URL mit der ID %s der in der Datenbank gefunden.",
     "httpheader.varfound.httpv1": "",
     "httpheader.varfound.security": "Security Header",
     "httpheader.varfound.unknown": "unbekannte Header-Variable",
@@ -374,7 +385,6 @@
 
     "httpheader.securityheaders": "Check der vorhandenen Security-Header (%s/ %s)",
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
-    "httpheader.starturl": "Start-URL",
     
     "sslcheck.label": "SSL-Zertifikat",
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",

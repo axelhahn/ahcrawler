@@ -2,9 +2,43 @@
 /**
  * page searchindex :: searches 
  */
+$oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 $aFields = array('ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer');
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=search');
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=search')
+        .'<h3>' . $this->lB('searches.overview') . '</h3>'
+        ;
+$iSearches=$this->oDB->count(
+        'searches', 
+        array(
+            'AND' => array(
+                'siteid' => $this->_sTab,
+            ),
+        )
+);
+$sTiles = $oRenderer->renderTile('', $this->lB('searches.total'), $iSearches, '', '');
+if(!$iSearches){
+    $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
+        .'<br>'.$this->_getMessageBox($this->lB('profile.searches.empty'), 'warning');
+    return $sReturn;
+}
+
+
+$sOldest = $this->oDB->min('searches', array('ts'), array(
+    'AND' => array(
+        'siteid' => $this->_sTab,
+    ),));
+$sYoungest = $this->oDB->max('searches', array('ts'), array(
+    'AND' => array(
+        'siteid' => $this->_sTab,
+    ),));
+
+$sTiles .= $oRenderer->renderTile('', $this->lB('searches.since'), $oRenderer->hrAge(date('U', strtotime($sOldest))), $sOldest, '');
+$sTiles .= $oRenderer->renderTile('', $this->lB('searches.last'), $oRenderer->hrAge(date('U', strtotime($sYoungest))), $sYoungest, '');
+
+$sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
+        ;
+
 $aLastSearches = $this->oDB->select(
         'searches', 
         $aFields, 
@@ -89,7 +123,9 @@ if (count($aLastSearches)) {
         // $aRow['searchset']=$sSubdir;
 
         $aRow['actions'] = $this->_getButton(array(
-            'href' => 'overlay.php?action=search&query=' . $aRow['query'] . '&siteid=' . $this->_sTab . '&subdir=' . $sSubdir,
+            // 'href' => 'overlay.php?action=search&query=' . $aRow['query'] . '&siteid=' . $this->_sTab . '&subdir=' . $sSubdir,
+            'href' => '?page=status&action=search&query=' . $aRow['query'] . '&subdir=' . $sSubdir.'&tab=' . $this->_sTab ,
+            'popup' => false,
             'class' => 'button-secondary',
             'label' => 'button.search'
         ));
@@ -98,9 +134,7 @@ if (count($aLastSearches)) {
     }
     $sReturn.='<h3>' . $this->lB('profile.searches.last') . '</h3>' 
             . $this->_getHtmlTable($aTable, "searches.");
-} else {
-    $sReturn.='<br>'.$this->_getMessageBox($this->lB('profile.searches.empty'), 'warning');
-}
+} 
 
 
 

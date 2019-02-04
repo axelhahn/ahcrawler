@@ -62,6 +62,7 @@ if ($iRessourcesCount){
     // echo '<pre>$aBoxes = '.print_r($aBoxes,1).'</pre>';
     $sBar='';
     $sResResult='';
+    $aChartItems=array();
 
     $iExternal=$this->oDB->count('ressources',array('siteid'=>$this->_sTab,'isExternalRedirect'=>'1'));
 

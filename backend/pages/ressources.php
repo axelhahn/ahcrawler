@@ -15,10 +15,12 @@ $oRessources=new ressources();
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
 $aWhere=array('siteid' => $this->_sTab, 'isExternalRedirect'=>0);
-if (array_key_exists('filteritem', $_GET) && array_key_exists('filtervalue', $_GET)){
-    for ($i=0; $i<count($_GET['filteritem']); $i++){
-        $aWhere[$_GET['filteritem'][$i]]=($_GET['filtervalue'][$i]==='') ? null : $_GET['filtervalue'][$i];
-        $aUrl[]=array('filteritem'=>$_GET['filteritem'][$i], 'filtervalue'=>$_GET['filtervalue'][$i]);
+$aFilterItems=$this->_getRequestParam('filteritem');
+if ($aFilterItems){
+    $aFilterValues=$this->_getRequestParam('filtervalue');
+    for ($i=0; $i<count($aFilterItems); $i++){
+        $aWhere[$aFilterItems[$i]]=($aFilterValues[$i]==='') ? null : $aFilterValues[$i];
+        $aUrl[]=array('filteritem'=>$aFilterItems[$i], 'filtervalue'=>$aFilterValues[$i]);
     }
 }
 // -- get list of all data
@@ -36,14 +38,14 @@ foreach ($aFilter as $sKey){
 // line with set filters
 //
 $sSelfUrl='?'.$_SERVER["QUERY_STRING"];
-$sBaseUrl='?page='.$_GET['page'].'&tab='.$this->_sTab;
+$sBaseUrl='?page='.$this->_getRequestParam('page').'&tab='.$this->_sTab;
 $sFilter='';
 $sReport = '';
 
 // --- button bar with filter items (for remove by click)
-if (array_key_exists('filteritem', $_GET) && array_key_exists('filtervalue', $_GET)){
+if (is_array($aFilterItems) && is_array($aFilterValues)){
 
-    for ($i=0; $i<count($_GET['filteritem']); $i++){
+    for ($i=0; $i<count($aFilterItems); $i++){
         $aRemoveUrl=$aUrl;
         unset($aRemoveUrl[$i]);
         $sUrl=$sBaseUrl;
@@ -54,7 +56,7 @@ if (array_key_exists('filteritem', $_GET) && array_key_exists('filtervalue', $_G
         // $sUrl=str_replace($sRemove, '', $sSelfUrl);
         $sFilter.='<a href="'.$sUrl.'"'
                 . ' class="pure-button"'
-                . '><span class="varname">'.$this->_getIcon($_GET['filteritem'][$i]).$_GET['filteritem'][$i].'</span> = <span class="value">'.$oRenderer->renderValue($_GET['filteritem'][$i], $_GET['filtervalue'][$i]).'</span> '
+                . '><span class="varname">'.$this->_getIcon($aFilterItems[$i]).$aFilterItems[$i].'</span> = <span class="value">'.$oRenderer->renderValue($aFilterItems[$i], $aFilterValues[$i]).'</span> '
                 . '<i class="fa fa-close"></i>'
                 . '</a> ';
     }
@@ -70,12 +72,12 @@ if (array_key_exists('filteritem', $_GET) && array_key_exists('filtervalue', $_G
 }
 
 // --- what to create: table or report list
-$bShowReport=(array_key_exists('showreport', $_GET) && $_GET['showreport']);
+$bShowReport=$this->_getRequestParam('showreport');
 $iReportCounter=0;
-$bIgnoreLimit=(array_key_exists('ignorelimit', $_GET) && $_GET['ignorelimit']);
+$bIgnoreLimit=$this->_getRequestParam('ignorelimit');
 
 
-$bShowRessourcetable=(array_key_exists('showtable', $_GET) && $_GET['showtable'] || !$bShowReport);
+$bShowRessourcetable=($this->_getRequestParam('showtable') || !$bShowReport);
 if ($iResCount>$this->iLimitRessourcelist && !$bIgnoreLimit){
     $bShowReport=false;
     $bShowRessourcetable=false;

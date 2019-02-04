@@ -147,9 +147,10 @@ pre{border: 1px solid #ddd; font-size: 80%; padding: 0.3em; background: #f8f8f8;
 
 a.childitem{
     background: #e8f0f8;
-    background: #f0f4f8;
+    
     border: 0px solid #abc;
-    border-left: 6px solid #d0d8e0; 
+    border-left: 6px solid #789; 
+    background: #e0e8f4;
     border-radius: 0.5em;
     color:#666;
     display: block;
@@ -161,10 +162,10 @@ a.childitem{
     transition: ease-in-out all 0.5s;
     width: 18%;
 }
-a.childitem:hover{background: #e0e8f4; border-color: #789;}
+a.childitem:hover{background: #e0e8f4; background: #f0f4f8; border-color: #d0d8e0;}
 a.childitem:focus{background: #e0e8f0; }
-a.childitem i{color: #abc; font-size: 300%;}
-a.childitem:hover i{color: #789;}
+a.childitem i{color: #789; font-size: 300%;}
+a.childitem:hover i{color: #abc;}
 a.childitem strong{color: #789; font-size: 150%; text-shadow: 1px 1px 1px #fff;}
 
 
@@ -202,9 +203,9 @@ ul.tiles a.tile:hover{
 .bar{width: 100%; border:none;}
 .bar div{border-right: 1px solid rgba(0,0,0,0.1); text-align:center; padding: 1em 0;}
 
-.bar .bar-errors,   ul.errors a.tile,   span.error{background:#f8b0b0; background: radial-gradient(#f8e0e0,#f8b0b0); color:#855;}
-.bar .bar-warnings, ul.warnings a.tile, span.warning{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
-.bar .bar-ok,       ul.tiles li a.ok, ul.ok a.tile, span.ok{background:#9c5; background: radial-gradient(#fff,#9c5); color:#694; }
+.bar .bar-errors,   ul.tiles li a.error,   ul.errors   a.tile,  span.error{background:#f8b0b0; background: radial-gradient(#f8e0e0,#f8b0b0); color:#855;}
+.bar .bar-warnings, ul.tiles li a.warning, ul.warnings a.tile,  span.warning{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
+.bar .bar-ok,       ul.tiles li a.ok,      ul.ok       a.tile,  span.ok{background:#9c5; background: radial-gradient(#fff,#9c5); color:#694; }
 .bar .bar-todo,     ul.todo a.tile, span.todo{background:#d0d0d8; background: radial-gradient(#f0f0f8,#d0d0d8); color:#778;}
 
 

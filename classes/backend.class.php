@@ -50,7 +50,7 @@ class backend extends crawler_base {
             'home'=>'fa fa-home', 
             'setup'=>'fa fa-window-maximize', 
             'settings'=>'fa fa-cogs', 
-            'search'=>'fa fa-search', 
+            'search'=>'fa fa-database', 
             'profiles'=>'fa fa-globe', 
             'crawler'=>'fa fa-flag', 
             'status'=>'fa fa-flag', 
@@ -285,18 +285,7 @@ class backend extends crawler_base {
         if ($_GET) {
             $aQueryParams = array_merge($_GET, $aQueryParams);
         }
-        // return '?'.  str_replace(array('%5B','%5D'), array('[',']'), http_build_query($aQueryParams));
         return '?'.  preg_replace('/%5B[0-9]+%5D/simU', '[]', http_build_query($aQueryParams));
-
-        $s='';
-        foreach ($aQueryParams as $var => $value) {
-            if ($value){
-                $s.="&amp;" . $var . "=" . urlencode($value);
-            }
-        }
-        $s = "?" . $s;
-        return $s;
-        
     }
 
     /**
@@ -304,7 +293,7 @@ class backend extends crawler_base {
      * @return string
      */
     private function _getPage() {
-        $sPage = (array_key_exists('page', $_GET) && $_GET['page']) ? $_GET['page'] : '';
+        $sPage = $this->_getRequestParam('page','/^[a-z]*$/');
         if (!$sPage) {
             $aKeys=array_keys($this->_aMenu);
             $sPage = $aKeys[0];
@@ -323,7 +312,7 @@ class backend extends crawler_base {
      * @return type
      */
     private function _getTab($aTabs=false) {
-        $this->_sTab = (array_key_exists('tab', $_GET) && $_GET['tab']) ? $_GET['tab'] : '';
+        $this->_sTab = $this->_getRequestParam('tab', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
             setcookie("tab", $this->_sTab, time() + 3600);
         }
@@ -713,7 +702,9 @@ class backend extends crawler_base {
             }
             $aRow['url']=str_replace('/', '/&shy;', $aRow['url']);
             $aRow['actions'] = $this->_getButton(array(
-                'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
+                // 'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
+                'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$sId,
+                'popup' => false,
                 'class' => 'button-secondary',
                 'label' => 'button.view'
             ));
@@ -889,8 +880,45 @@ class backend extends crawler_base {
     // OVERLAY CONTENT
     // ----------------------------------------------------------------------
 
-    private function _getRequestParam($sParam) {
-        return (array_key_exists($sParam, $_GET) && $_GET[$sParam]) ? $_GET[$sParam] : false;
+    /**
+     * return value of a $_POST or $_GET variable if it exists
+     * 
+     * @param string  $sVarname      name of post or get variable (POST has priority)
+     * @param regex   $sRegexMatch   set a regex that must match
+     * @param string  $sType         force type: false|int
+     * @return type
+     */
+    private function _getRequestParam($sVarname, $sRegexMatch=false, $sType=false) {
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) start");
+        
+        // check if it exist
+        if(!isset($_POST[$sVarname]) && !isset($_GET[$sVarname])){
+            $this->logAdd(__METHOD__."($sVarname) $sVarname does not exist");
+            return false;
+        }
+        
+        // set it to POST or GET variable
+        $return = isset($_POST[$sVarname]) && $_POST[$sVarname]
+                ? $_POST[$sVarname] 
+                : (isset($_GET[$sVarname]) && $_GET[$sVarname])
+                    ? $_GET[$sVarname] 
+                    : false
+            ;
+        
+        // verify regex
+        if ($sRegexMatch && !preg_match($sRegexMatch,$return)){
+            $this->logAdd(__METHOD__."($sVarname) $sVarname does not match regex $sRegexMatch");
+            return false;
+        }
+        
+        // force given type
+        switch ($sType){
+            case 'int': 
+                $return=(int)$return;
+                break;
+        }
+        $this->logAdd(__METHOD__."($sVarname) $sVarname = $return");
+        return $return;
     }
 
     /**
@@ -903,7 +931,7 @@ class backend extends crawler_base {
             // return $this->lB('nav.login.access-denied');
             return $this->_getLoginForm();
         }
-        $sAction = $this->_getRequestParam('action');
+        $sAction = $this->_getRequestParam('action','/^[a-z]*$/');
         $sMethod = "_getOverlayContent" . $sAction;
         if (method_exists($this, $sMethod)) {
             return call_user_func(__CLASS__ . '::' . $sMethod, $this);
@@ -917,7 +945,7 @@ class backend extends crawler_base {
      */
     private function _getOverlayContentviewindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.viewIndexItem') . '</h1>';
-        $sId = $this->_getRequestParam('id');
+        $sId = $this->_getRequestParam('id', false, 'int');
         if (!$sId) {
             return $sReturn;
         }
@@ -967,8 +995,8 @@ class backend extends crawler_base {
      */
     private function _getOverlayContentdeleteindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.deleteIndexItem') . '</h1>';
-        $sSiteId = $this->_getRequestParam('siteid');
-        $sId = $this->_getRequestParam('id');
+        $sSiteId = $this->_getRequestParam('siteid', false, 'int');
+        $sId = $this->_getRequestParam('id', false, 'int');
 
         $sReturn.='siteid=' . $sSiteId . ' id=' . $sId . '<br>';
         $o = new crawler($sSiteId);
@@ -988,7 +1016,7 @@ class backend extends crawler_base {
      */
     private function _getOverlayContentupdateindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.updateIndexItem') . '</h1>';
-        $sSiteId = $this->_getRequestParam('siteid');
+        $sSiteId = $this->_getRequestParam('siteid', false, 'int');
         $sUrl = $this->_getRequestParam('url');
         $sReturn.='siteid=' . $sSiteId . ' url=' . $sUrl . '<br>';
         ob_start();
@@ -1008,7 +1036,7 @@ class backend extends crawler_base {
 
     private function _getOverlayContentcrawl() {
         $sReturn = '<h1>' . $this->lB('overlay.crawl') . '</h1>';
-        $sSiteId = $this->_getRequestParam('siteid');
+        $sSiteId = $this->_getRequestParam('siteid', false, 'int');
         $sReturn.='siteid=' . $sSiteId . '<br>';
         ob_start();
         // echo "..."; ob_flush();flush();
@@ -1027,7 +1055,7 @@ class backend extends crawler_base {
     }
 
     private function _getOverlayContentsearch() {
-        $sSiteId = (int)$this->_getRequestParam('siteid');
+        $sSiteId = (int)$this->_getRequestParam('siteid', false, 'int');
         $sQuery = $this->_getRequestParam('query');
         $sSubdir = $this->_getRequestParam('subdir');
         $o = new ahsearch($sSiteId);
@@ -1142,7 +1170,7 @@ class backend extends crawler_base {
                  * 
                  */
                     $sUrl=str_replace('/', '/&shy;', ($bLinkRessource
-                            ?'<a href="?action=ressourcedetail&id='.$aRow[$bLinkRessource].'&siteid='.$_GET['siteid'].'">'.$aRow['url'].'</a>'
+                            ?'<a href="?action=ressourcedetail&id='.$aRow[$bLinkRessource].'&siteid='.$this->_getRequestParam('siteid', false, 'int').'">'.$aRow['url'].'</a>'
                             :$aRow['url']
                     ));
                     
@@ -1167,8 +1195,8 @@ class backend extends crawler_base {
 
         
     private function _getOverlayContentressourcedetail() {
-        $sSiteId = $this->_getRequestParam('siteid');
-        $sId = $this->_getRequestParam('id');
+        $sSiteId = $this->_getRequestParam('siteid', false, 'int');
+        $sId = $this->_getRequestParam('id', false, 'int');
         $aRessource = $this->oDB->select(
                 'ressources', 
                 '*', 

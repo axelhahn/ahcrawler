@@ -38,7 +38,7 @@
     "nav.sslcheck.hint": "Check of the SSL certificate (live request)",
     
     "nav.httpheaderchecks.label": "Http Header check",
-    "nav.httpheaderchecks.hint": "Analysis of Http header (based on the first url in the ressource database)",
+    "nav.httpheaderchecks.hint": "Analysis of Http header",
         
     "nav.htmlchecks.label": "HTML checks",
     "nav.htmlchecks.hint": "Analysis of html code and recommendations",
@@ -244,11 +244,17 @@
     "rawdata": "Raw data",
     
     "status.overview": "Overview",
+    "status.search": "Search",
+    "status.search.hint": "Here you can search in the index database to find out the behaviour of a search placed on your website. The search terms here won't be stored in the database.",
+    "status.detail": "Details",
     "status.emptyindex": "The search index is empty. The job to index a website was not startet yet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
     "status.last_updated.label": "Last update",
-    "status.indexed_urls.label": "indexed URLs",
-    "status.indexed_urls24h.label": "indexed in the last 24h",
-    "status.error_urls.label": "urls with errors",
+    "status.indexed_urls.label": "indexed",
+    "status.indexed_urls.footer": "urls",
+    "status.indexed_urls24h.label": "in the last 24h",
+    "status.indexed_urls24h.footer": "urls",
+    "status.error_urls.label": "errors",
+    "status.error_urls.footer": "urls",
     "status.oldest_updated.label": "oldest data in index",
     
     "status.tile-check-short-title": "Too short title<br>(shorter %s chars)",
@@ -268,6 +274,10 @@
     "search.summary": "Summary",
     "search.ranking": "Ranking",
     
+    "searches.overview": "Overview",
+    "searches.total": "Searches",
+    "searches.since": "oldest search",
+    "searches.last": "last search",
     "searches.ts": "Time",
     "searches.siteid": "Profile#",
     "searches.searchset": "Search set",
@@ -353,7 +363,8 @@
     "httpheader.no-value": "kein Wert",
 
     "httpheader.data": "Http header",
-    "httpheader.data.description": "This is the response header of the starting page",
+    "httpheader.data.description": "This is the response header of<br><em>%s</em>",
+    "httpheader.nopage-with-id": "There is no url with id %s in the database.",
 
     "httpheader.varfound.httpv1": "",
     "httpheader.varfound.security": "Security header",
@@ -375,7 +386,6 @@
 
     "httpheader.securityheaders": "Check of existing security headers (%s/ %s)",
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
-    "httpheader.starturl": "Starting url",
 
     "sslcheck.label": "SSL-Certificate",
     "sslcheck.description": "Information about the used SSL certificate.",

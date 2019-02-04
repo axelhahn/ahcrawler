@@ -2,6 +2,7 @@
 /**
  * page analysis :: Html-check
  */
+$oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 
 $aOptions = $this->_loadOptions();
@@ -28,7 +29,6 @@ $oCrawler=new crawler($this->_sTab);
 $sReturn.=''
         . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
         . '<p>'.$this->lB('htmlchecks.overview.introtext').'</p>'
-        . '<p>'.$this->lB('status.indexed_urls.label').': <strong>'.$iRessourcesCount.'</strong></p>'
         ;
 
 $iCountCrawlererrors=$oCrawler->getCount(array(
@@ -43,35 +43,35 @@ $iCountShortKeywords=$this->_getHtmlchecksCount('keywords', $iMinKeywordsLength)
 $iCountLargePages=$this->_getHtmlchecksLarger('size', $iMaxPagesize);
 $iCountLongload=$this->_getHtmlchecksLarger('time', $iMaxLoadtime);
 
-$sReturn.='<ul class="tiles warnings">'
+$sTiles = ''
+    . $oRenderer->renderTile('',            $this->lB('status.indexed_urls.label'), $iRessourcesCount, '', '')
     . ($iCountCrawlererrors
-        ? '<li><a href="#tblcrawlererrors" class="tile error">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong><br>'.(floor($iCountCrawlererrors/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.$this->lB('htmlchecks.tile-crawlererrors').':<br><strong>'.$iCountCrawlererrors.'</strong></a></li>'
+        ? $oRenderer->renderTile('error',   $this->lB('htmlchecks.tile-crawlererrors'), $iCountCrawlererrors, (floor($iCountCrawlererrors/$iRessourcesCount*1000)/10).'%', '#tblcrawlererrors')
+        : $oRenderer->renderTile('ok',      $this->lB('htmlchecks.tile-crawlererrors'), $iCountCrawlererrors, '', '')
     )
     . ($iCountShortTitles
-        ? '<li><a href="#tblshorttitle" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong><br>'.(floor($iCountShortTitles/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength).':<br><strong>'.$iCountShortTitles.'</strong></a></li>'
+        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles, (floor($iCountShortTitles/$iRessourcesCount*1000)/10).'%', '#tblshorttitle')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles, '', '')
     )
     . ($iCountShortDescr
-        ? '<li><a href="#tblshortdescription" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong><br>'.(floor($iCountShortDescr/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength).':<br><strong>'.$iCountShortDescr.'</strong></a></li>'
+        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr, (floor($iCountShortDescr/$iRessourcesCount*1000)/10).'%', '#tblshortdescription')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr, '', '')
     )
     . ($iCountShortKeywords
-        ? '<li><a href="#tblshortkeywords" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong><br>'.(floor($iCountShortKeywords/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength).':<br><strong>'.$iCountShortKeywords.'</strong></a></li>'
+        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords, (floor($iCountShortKeywords/$iRessourcesCount*1000)/10).'%', '#tblshortkeywords')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords, '', '')
     )
     . ($iCountLongload
-        ? '<li><a href="#tblloadtimepages" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong><br>'.(floor($iCountLongload/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime).':<br><strong>'.$iCountLongload.'</strong></a></li>'
+        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iRessourcesCount*1000)/10).'%', '#tblloadtimepages')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, '', '')
     )
     . ($iCountLargePages
-        ? '<li><a href="#tbllargepages" class="tile scroll-link">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong><br>'.(floor($iCountLargePages/$iRessourcesCount*1000)/10).'%</a></li>'
-        : '<li><a href="#" class="tile ok">'.sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize).':<br><strong>'.$iCountLargePages.'</strong></a></li>'
+        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '#tbllargepages')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, '', '')
     )
-    . '</ul>'
-    . '<div style="clear: both;"></div>'
     ;
 
+$sReturn.=$oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>';
 
 // table with too short titles
 if ($iCountCrawlererrors) {

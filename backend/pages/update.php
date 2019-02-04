@@ -34,7 +34,7 @@ $oInstaller=new ahwi(array(
 
 
 
-$sStep=isset($_GET['doinstall']) ? $_GET['doinstall'] : $aSteps[0];
+$sStep=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
 
 $iStep=array_search($sStep, $aSteps);
 if($iStep===false){
