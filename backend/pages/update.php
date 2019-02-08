@@ -59,6 +59,8 @@ $sReturn .= '<h3 id="h3' . md5('update') . '">'. $this->lB('update.'.$sStep.'.la
     ;
 switch ($sStep) {
     case 'welcome':
+        // force update check to refresh the locally cached version infos
+        $this->oUpdate->getUpdateInfos(true);
         $sReturn .= '<p>'
             .($this->oUpdate->hasUpdate()
                 ?  
@@ -118,6 +120,8 @@ switch ($sStep) {
                     . '<br><br>'
                     . $sBtnNext
                     ;
+                // force update check to refresh the locally cached version infos
+                $this->oUpdate->getUpdateInfos(true);
             } else {
                 $sReturn.=$this->lB('update.extract.failed');
             }

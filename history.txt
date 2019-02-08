@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-02-08: v0.50
+  * FIX: update version file after installation (needs one more update that you see it)
+
 2019-02-04: v0.49
   * backend: remove overlays
   * backend: sanitizing params (started)
