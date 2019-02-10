@@ -861,23 +861,14 @@ class ressourcesrenderer extends crawler_base {
         $iExternal=$this->oRes->getCount(array('siteid'=>$this->oRes->iSiteId,'isExternalRedirect'=>'1'));
         
         $dateLast=$this->oRes->getLastRecord();
+        $sTiles = ''
+            . $this->renderTile('',            $this->lB('ressources.age-scan'), $this->hrAge(date("U", strtotime($dateLast))), $dateLast, '')
+            . $this->renderTile('',            $this->lB('ressources.itemstotal'), $iRessourcesCount, '', '')
+            . $this->renderTile('',            $this->lB('linkchecker.found-http-external'), $iExternal, '', '')
+            ;
+        
         return ''
-                . '<table class="pure-table pure-table-horizontal">'
-                . '<tbody>'
-                . '<tr>'
-                    . '<td>' . $this->lB('ressources.itemstotal') . '</td>'
-                    . '<td>' . $iRessourcesCount .'</td>'
-                . '</tr>'
-                . '<tr>'
-                    . '<td>' . $this->lB('linkchecker.found-http-external') . '</td>'
-                    . '<td>' . $iExternal .'</td>'
-                . '</tr>'
-                . '<tr>'
-                    . '<td>' . $this->lB('ressources.age-scan') . '</td>'
-                    . '<td>' . $this->hrAge(date("U", strtotime($dateLast))) .'</td>'
-                . '</tr>'
-                . '</tr>'
-                . '</tbody></table><br>'
+                . $this->renderTileBar($sTiles)
                 ;
     }
     
@@ -904,7 +895,9 @@ class ressourcesrenderer extends crawler_base {
     public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
         return '<li>'
             . '<a href="'.($sTargetUrl ? $sTargetUrl : '#').'" class="tile '.$sType.' scroll-link">'
-                . $sIntro.'<br>'
+                . $sIntro
+                . (strstr($sIntro, '<br>') ? '' : '<br>')
+                . '<br>'
                 . '<strong>'.$sCount.'</strong><br>'
                 . $sFoot
             . '</a></li>';

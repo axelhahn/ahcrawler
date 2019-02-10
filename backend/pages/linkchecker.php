@@ -33,7 +33,7 @@ if ($iRessourcesCount){
         )
     );
     $aTmpItm=array('status'=>array(), 'total'=>0);
-    $aBoxes=array('todo'=>$aTmpItm, 'errors'=>$aTmpItm,'warnings'=>$aTmpItm, 'ok'=>$aTmpItm);
+    $aBoxes=array('todo'=>$aTmpItm, 'error'=>$aTmpItm,'warning'=>$aTmpItm, 'ok'=>$aTmpItm);
 
     // echo '<pre>$aCountByStatuscode = '.print_r($aCountByStatuscode,1).'</pre>';
     foreach ($aCountByStatuscode as $aStatusItem){
@@ -43,12 +43,12 @@ if ($iRessourcesCount){
         $oHttp->setHttpcode($iHttp_code);
 
         if ($oHttp->isError()){
-           $aBoxes['errors']['status'][$iHttp_code] = $iCount;
-           $aBoxes['errors']['total']+=$iCount;
+           $aBoxes['error']['status'][$iHttp_code] = $iCount;
+           $aBoxes['error']['total']+=$iCount;
         }
         if ($oHttp->isRedirect()){
-           $aBoxes['warnings']['status'][$iHttp_code] = $iCount;
-           $aBoxes['warnings']['total']+=$iCount;
+           $aBoxes['warning']['status'][$iHttp_code] = $iCount;
+           $aBoxes['warning']['total']+=$iCount;
         }
         if ($oHttp->isOperationOK()){
            $aBoxes['ok']['status'][$iHttp_code] = $iCount;
@@ -60,63 +60,72 @@ if ($iRessourcesCount){
         }
     }
     // echo '<pre>$aBoxes = '.print_r($aBoxes,1).'</pre>';
-    $sBar='';
     $sResResult='';
     $aChartItems=array();
 
     $iExternal=$this->oDB->count('ressources',array('siteid'=>$this->_sTab,'isExternalRedirect'=>'1'));
 
+    
+    
     if($iExternal){
         $aChartItems[]=array(
             'label'=>$this->lB('linkchecker.found-http-external').': '.$iExternal,
             'value'=>$iExternal,
-            'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warnings\')',
+            'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
             //'legend'=>$this->lB('linkchecker.found-http-external-hint'),
         );
     }
 
+    $sTilesOnTop='';
+    
     foreach (array_keys($aBoxes) as $sSection){
-        if(!$aBoxes[$sSection]['total']){
-            continue;
-        }
-        $aChartItems[]=array(
-            'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
-            'value'=>$aBoxes[$sSection]['total'],
-            'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
-            // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
-        );
         $sLegende='';
-
-        if (array_key_exists($sSection, $aBoxes)){
-            $aChartItemsOfSection=array();
-            $sBoxes='';
-            $iCodeCount=0;
+        $aChartItemsOfSection=array();
+        $sBoxes='';
+        $iCodeCount=0;
+        
+        // --- add a tile on top
+        $sTileClass=(!$aBoxes[$sSection]['total'] || $sSection==='ok' ? 'ok' : $sSection );
+        $sTilesOnTop.=$oRenderer->renderTile(
+                $sTileClass, 
+                $this->lB('linkchecker.found-http-'.$sSection), 
+                $aBoxes[$sSection]['total'],
+                '',
+                ($aBoxes[$sSection]['total'] ? '#h3-'.$sSection : '')
+        );
+        
+        if($aBoxes[$sSection]['total']){
+            
+            // --- pie chart 
+            $aChartItems[]=array(
+                'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
+                'value'=>$aBoxes[$sSection]['total'],
+                'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
+                // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
+            );
+        
             if (count($aBoxes[$sSection])){
                 $sResResult.=''
-                        . '<h3>'.sprintf($this->lB('linkchecker.found-http-'.$sSection), $aBoxes[$sSection]['total']).'</h3>'
+                        . '<h3 id="h3-'.$sSection.'">'.$this->lB('linkchecker.found-http-'.$sSection) . ' (' .$aBoxes[$sSection]['total'].')</h3>'
                         . '<p>'.$this->lB('linkchecker.found-http-'.$sSection.'-hint').'</p>'
-                        . '<ul class="tiles '.$sSection.'">';
+                        . '<ul class="tiles '.$sSection.'">'
+                        ;
 
 
-                if($sSection==='warnings' && $iExternal){
+                if($sSection==='warning' && $iExternal){
                     $aChartItemsOfSection[]=array(
                         'label'=>$this->lB('linkchecker.found-http-external'),
                         'value'=>$iExternal,
                         'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCodeCount % 5 + 1).'\')',
                         'legend'=>$iExternal.' x '.$this->lB('linkchecker.found-http-external'),
                     );
-                    $sBoxes.='<li>'
-                            . '<a href="#" class="tile" title="'.$this->lB('linkchecker.found-http-external-hint').'"'
-                            . ' onclick="return false;"'
-                            . '>'
-                            . $this->lB('linkchecker.found-http-external').' '
-                            . '<br><br>'
-                            . '<strong>'
-                                .$iExternal
-                            .'</strong><br>'
-                            .(floor($iExternal/$iRessourcesCount*1000)/10).'%'
-                            . '</a>'
-                        . '</li>';
+                    $sBoxes.=$oRenderer->renderTile(
+                            '',
+                            $this->lB('linkchecker.found-http-external'),
+                            $iExternal,
+                            (floor($iExternal/$iRessourcesCount*1000)/10).'%'
+                        )
+                        ;
                     $iCodeCount++;
                     $sLegende.='<li>'
                             . '<strong>'.$this->lB('linkchecker.found-http-external').'</strong><br>'
@@ -140,21 +149,14 @@ if ($iRessourcesCount){
                     $shttpStatusDescr=$this->lB('httpcode.'.$iHttp_code.'.descr', 'httpcode.???.descr');
                     $shttpStatusTodo=$this->lB('httpcode.'.$iHttp_code.'.todo', 'httpcode.???.todo');
 
-                    $sBar.='<div class="bar-'.$sSection.'" style="width: '.($iCount/$iRessourcesCount*100 - 3).'%; float: left;" '
-                            . 'title="'.$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code.'">'.$iCount.'</div>';
-
-                    $sBoxes.='<li>'
-                            .'<a href="?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable" class="tile" '
-                            . 'title="'.$iHttp_code.': '.$shttpStatusDescr.($shttpStatusTodo ? "&#13;&#13;".$this->lB('httpcode.todo') .":&#13;". $shttpStatusTodo : '').'">'
-                            . $this->lB('db-ressources.http_code').' '
-                            . $oRenderer->renderValue('http_code', $iHttp_code).'<br><br>'
-                            . '<strong>'
-                                .$iCount
-                            .'</strong><br>'
-                            .(floor($iCount/$iRessourcesCount*1000)/10).'%'
-                            //. $shttpStatusLabel.'<br>'
-                            . '</a>'
-                        . '</li>';
+                    $sBoxes.= $oRenderer->renderTile(
+                            $sSection,
+                            $this->lB('db-ressources.http_code').' '. $oRenderer->renderValue('http_code', $iHttp_code).'<br>',
+                            $iCount,
+                            (floor($iCount/$iRessourcesCount*1000)/10).'%',
+                            '?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable'
+                        )
+                        ;
 
                     $sLegende.='<li>'
                             . $this->lB('db-ressources.http_code').' '
@@ -180,15 +182,16 @@ if ($iRessourcesCount){
                 . '<div style="clear: both;"></div>'
                 ;
         }
+
     }
     $sReturn.='<h3>'.$this->lB("linkchecker.check-links").'</h3>'
             . $oRenderer->renderRessourceStatus() 
+            . $oRenderer->renderTileBar($sTilesOnTop).'<div style="clear: both;"></div>'
                 . $this->_getChart(array(
                     'type'=>'pie',
                     'data'=>$aChartItems
                 ))
 
-            // . '<div class="bar">'.$sBar.'&nbsp;</div><br><br><br><br><br>'
             . $sResResult
             ;
 

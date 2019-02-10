@@ -203,8 +203,8 @@ ul.tiles a.tile:hover{
 .bar{width: 100%; border:none;}
 .bar div{border-right: 1px solid rgba(0,0,0,0.1); text-align:center; padding: 1em 0;}
 
-.bar .bar-errors,   ul.tiles li a.error,   ul.errors   a.tile,  span.error{background:#f8b0b0; background: radial-gradient(#f8e0e0,#f8b0b0); color:#855;}
-.bar .bar-warnings, ul.tiles li a.warning, ul.warnings a.tile,  span.warning{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
+.bar .bar-errors,   ul.tiles li a.error,   ul.error   a.tile,  span.error{background:#f8b0b0; background: radial-gradient(#f8e0e0,#f8b0b0); color:#855;}
+.bar .bar-warnings, ul.tiles li a.warning, ul.warning a.tile,  span.warning{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
 .bar .bar-ok,       ul.tiles li a.ok,      ul.ok       a.tile,  span.ok{background:#9c5; background: radial-gradient(#fff,#9c5); color:#694; }
 .bar .bar-todo,     ul.todo a.tile, span.todo{background:#d0d0d8; background: radial-gradient(#f0f0f8,#d0d0d8); color:#778;}
 
@@ -212,8 +212,8 @@ ul.tiles a.tile:hover{
 /* --- color for pie chart --- */
 
 .piechart{border: 2px solid #fff; border-radius: 0.5em; box-shadow: 0.2em 0.2em 1em #ccc; width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cde,#fff,#f8e8d0);}
-.chartcolor-errors{color:#d88;}
-.chartcolor-warnings{color:#eb6;}
+.chartcolor-error{color:#d88;}
+.chartcolor-warning{color:#eb6;}
 .chartcolor-ok{color:#7a5;}
 .chartcolor-todo{color:#aaa;}
 

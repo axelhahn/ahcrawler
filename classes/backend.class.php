@@ -574,6 +574,7 @@ class backend extends crawler_base {
      * get html code for a result table
      * @param array  $aResult          result of a select query
      * @param string $sLangTxtPrefix   langtext prefix
+     * @param string $sTableId         value of id attribute for the table
      * @return string
      */
     private function _getHtmlTable($aResult, $sLangTxtPrefix = '', $sTableId=false) {
@@ -688,11 +689,13 @@ class backend extends crawler_base {
     }
 
     /**
-     * get html code for a simple table without table head
+     * get html code for a search index table
      * @param array  $aResult          result of a select query
+     * @param string $sLangTxtPrefix   langtext prefix
+     * @param string $sTableId         value of id attribute for the table
      * @return string
      */
-    private function _getSearchindexTable($aResult, $sLangTxtPrefix = '') {
+    private function _getSearchindexTable($aResult, $sLangTxtPrefix = '', $sTableId=false) {
         $aTable = array();
         foreach ($aResult as $aRow) {
             $sId = $aRow['id'];
@@ -710,7 +713,7 @@ class backend extends crawler_base {
             ));
             $aTable[] = $aRow;
         }
-        return $this->_getHtmlTable($aTable, $sLangTxtPrefix);
+        return $this->_getHtmlTable($aTable, $sLangTxtPrefix, $sTableId);
     }
 
     // ----------------------------------------------------------------------
@@ -837,7 +840,7 @@ class backend extends crawler_base {
                     array(
                         'label'=>$this->lB('htmlchecks.label-warnings'),
                         'value'=>$iValue,
-                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warnings\')',
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
                         // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
                     ),
                     array(

@@ -4,6 +4,7 @@
  */
 
 // --- https certificate
+$oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn='';
 
 
@@ -20,16 +21,11 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $sReturn.='<br>'.$this->_getMessageBox($this->lB('sslcheck.nostarturl'), 'warning');
         return $sReturn;
     } else if(strstr($sFirstUrl, 'http://')){
-        // array_unshift($aWarnheader, $this->lB('httpheader.warnings.httponly'));
-        $sReturn.= '<ul class="tiles errors">'
-                . '<li>'
-                    .'<a href="#" onclick="return false;" class="tile">'.$this->lB('sslcheck.httponly')
-                    .'<br><strong>'.$this->lB('sslcheck.httponly.description').'</strong><br>'
-                    . $this->lB('sslcheck.httponly.hint')
-                    .'</a>'
-                . '</li>'
-                . '</ul><div style="clear: both;"></div>'
-                ;
+        $sReturn.= $oRenderer->renderTileBar(
+                $oRenderer->renderTile('error', $this->lB('sslcheck.httponly'), $this->lB('sslcheck.httponly.description'), $this->lB('sslcheck.httponly.hint')) 
+            )
+            . '<div style="clear: both;"></div>'
+        ;
     } else {
 
         $oSsl=new sslinfo();
@@ -73,42 +69,88 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         // scan http ressources
         // ------------------------------------------------------------
         
-        /*
+        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
         
-        C O M I N G   S O O N  
-          
-        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$iProfileId));
-        $iRessourcesCount=1325;
         if($iRessourcesCount){
-            $iNonHttps=$this->oDB->count('ressources',array(
-                'siteid'=>$this->_sTab,
-                'url[~]'=>'http:%',
-                'ressourcetype'=>'',
+            $sTableId='tbl-nonhttpsitems';
+            $oRessources=new ressources();
+            $aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
+            $aWhere=array('siteid' => $this->_sTab, 'url[~]'=>'http:%');
+
+            $sBtnReport=$this->_getButton(array(
+                'href'=>$this->_getQs(array(
+                    'showreport'=>1,
+                    'showtable'=>0,
+                    'tab'=>$this->_sTab,
+                )).'#',
+                'class'=>'button-secondary',
+                'label'=>'ressources.showreport',
+                'popup' => false
             ));
-            // $iNonHttps=345;
+            $sBtnTable=$this->_getButton(array(
+                'href'=>$this->_getQs(array(
+                    'showreport'=>0,
+                    'showtable'=>1,
+                    'tab'=>$this->_sTab,
+                )).'#',
+                'class'=>'button-secondary',
+                'label'=>'ressources.showtable',
+                'popup' => false
+            ));
+
+            
+            $iNonHttps=$this->oDB->count('ressources',$aWhere);
             // $sReturn.= $this->oDB->last().'<br>';
             
             $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttps) . '</h3>'
                 .'<p>'.$this->lB('sslcheck.nonhttps.hint').'</p>'
                 // .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)
-                .'<ul class="tiles warnings">'
-                    . ($iNonHttps
-                        ? '<li><a class="tile error">'.$this->lB('sslcheck.nonhttpscount').':<br><strong>'.$iNonHttps.'</strong><br>'.(floor($iNonHttps/$iRessourcesCount*1000)/10).'%</a></li>'
-                        : '<li><a href="#" class="tile ok">'.$this->lB('sslcheck.nonhttpscount').':<br><strong>'.$iNonHttps.'</strong></a></li>'
-                    )
-                .'</ul>'
+                . $oRenderer->renderTileBar(
+                    $oRenderer->renderTile('',            $this->lB('ressources.itemstotal'), $iRessourcesCount, '', '')
+                    .$oRenderer->renderTile(
+                            $iNonHttps ? 'warning' : 'ok', 
+                            $this->lB('sslcheck.nonhttpscount'),
+                            $iNonHttps,
+                            $iNonHttps ? (floor($iNonHttps/$iRessourcesCount*1000)/10).'%' : ''
+                ))
+                . '<div style="clear: both;"></div>'
+                .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)    
                 ;
             
-            $sReturn.=$this->_getHtmlchecksTable('select title, length(title) as length, url
-                    from pages 
-                    where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
-                    order by length(title)',
-                    'tableCrawlerErrors'
-                )
-                 ;
-            $sReturn.="$iNonHttps of $iRessourcesCount<br>";
-            
-            
+            if($iNonHttps){
+                $aTable = array();
+                $iReportCounter=0;
+
+                $aRessourcelist = $oRessources->getRessources($aFields, $aWhere, array("url"=>"ASC"));
+                
+                // --- what to create: table or report list
+                $bShowReport=$this->_getRequestParam('showreport');
+                $sReturn.=($bShowReport ? $sBtnTable : $sBtnReport).'<br><br>';
+                
+                foreach ($aRessourcelist as $aRow) {
+
+                    if($bShowReport){
+                        $iReportCounter++;
+                        $sReturn.=''
+                                .'<div class="counter">'. $iReportCounter.'</div>'
+                                . '<div style="clear: left;"></div>'
+                                .$oRenderer->renderReportForRessource($aRow);
+                    } else {
+                        $aRow['url'] = '<a href="?page=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab.'">'.str_replace('/', '/&shy;', $aRow['url']).'</a>';
+                        $aRow['ressourcetype'] = $oRenderer->renderArrayValue('ressourcetype', $aRow);
+                        $aRow['type'] = $oRenderer->renderArrayValue('type', $aRow);
+                        $aRow['http_code'] = $oRenderer->renderArrayValue('http_code', $aRow);
+                        unset($aRow['id']);
+                        $aTable[] = $aRow;
+                    }
+                    
+                }
+                $sReturn.=(count($aTable) 
+                        ? $this->_getHtmlTable($aTable, "db-ressources.", $sTableId)
+                            .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable();} );</script>'
+                        : ''
+                    );
+            }
         } else {
             $sReturn.='<br>'
             .$this->_getMessageBox(
@@ -117,20 +159,5 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             )
             ;
         }
-         */
-
-        
-        /*
-        $aChartItems[]=array(
-            'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aBoxes[$sSection]['total'],
-            'value'=>$aBoxes[$sSection]['total'],
-            'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
-            // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
-        );
-         * 
-         */
-
 }
-
-// $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
 return $sReturn;

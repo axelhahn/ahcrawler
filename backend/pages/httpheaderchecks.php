@@ -71,6 +71,7 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
 // --- warnings
 $iWarnings=0;
 $sWarnings='';
+$sTiles='';
 
     $sLegendeUnknown='';
     $sLegendeWarn='';
@@ -85,12 +86,15 @@ $sWarnings='';
         $sWarnings.= '<p>'
             . $this->lB('httpheader.unknown.description')
             . '</p>'
-                . '<ul class="tiles warnings">';
+                ;
         foreach($aUnknownheader as $sKey=>$aHeaderitem){
-            $sWarnings .= '<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>';
+            $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.varfound.unknown'), $aHeaderitem['var'], $aHeaderitem['value'])
+                    // .'<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>'
+                    ;
             $sLegendeUnknown .='<li>'. '<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
         }
-        $sWarnings.= '</ul>'
+        $sWarnings.= ''
+            . $oRenderer->renderTileBar($sTiles)
             . '<div style="clear: both;"></div>'
             . $this->lB('httpheader.unknown.todo')
             . '<ul>'.$sLegendeUnknown.'</ul><br>'
@@ -103,9 +107,11 @@ $sWarnings='';
         $sWarnings.= '<p>'
             . $this->lB('httpheader.warnings.description')
             . '</p>'
-                . '<ul class="tiles warnings">';
+                ;
         foreach($aWarnheader as $sKey=>$aHeaderitem){
-            $sWarnings .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.'.$sKey.'.description').'">' . $aHeaderitem['var'].'<br><strong>'.$aHeaderitem['value'].'</strong></a></li>';
+            $sWarnings .= $oRenderer->renderTileBar(
+                    $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
+                    );
             $sLegendeWarn .='<li>'
                     . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
                     ;

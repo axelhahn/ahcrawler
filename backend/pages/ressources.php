@@ -182,7 +182,7 @@ $sBtnTable=$this->_getButton(array(
     'popup' => false
 ));
 $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
-        . $oRenderer->renderRessourceStatus()
+        . $oRenderer->renderRessourceStatus(). '<div style="clear: both;"></div>'
         . '<p>'.$this->lB('ressources.overview.intro').'</p>'
         . $sFilter
         ;
