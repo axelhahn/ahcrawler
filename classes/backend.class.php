@@ -308,11 +308,16 @@ class backend extends crawler_base {
     }
 
     /**
-     * find the current tab or take the first id
-     * @return type
+     * find the current tab from url param tab=... 
+     * or take the first id of given array (of profiles)
+     * It returns 0..N (id of profile) or a string (of allowed GET param)
+     * 
+     * @param array  $aTabs
+     * @return string|integer
      */
     private function _getTab($aTabs=false) {
-        $this->_sTab = $this->_getRequestParam('tab', false, 'int');
+        $sAdd = $this->_getRequestParam('tab', '/add/');
+        $this->_sTab = $sAdd ? $sAdd : $this->_getRequestParam('tab', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
             setcookie("tab", $this->_sTab, time() + 3600);
         }
@@ -907,6 +912,7 @@ class backend extends crawler_base {
                     ? $_GET[$sVarname] 
                     : false
             ;
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [$return]");
         
         // verify regex
         if ($sRegexMatch && !preg_match($sRegexMatch,$return)){
@@ -920,7 +926,7 @@ class backend extends crawler_base {
                 $return=(int)$return;
                 break;
         }
-        $this->logAdd(__METHOD__."($sVarname) $sVarname = $return");
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) returns $sVarname = $return");
         return $return;
     }
 

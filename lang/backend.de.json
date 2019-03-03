@@ -224,6 +224,7 @@
     "profile.searchindex.stickydomain": "Crawler bleibt auf der Domain",
     "profile.searchindex.urls2crawl": "Liste der Start-URLs des Crawlers<br>(je eine URL pro Zeile)",
     "profile.searchindex.iDepth": "max. Verzeichnistiefe",
+    "profile.searchindex.iMaxUrls": "F&uuml;r erste Tests: max. Anzahl zu sannender URLs.<br>(0 = keine Begrenzung)",
     "profile.searchindex.include": "Includes als Liste von Regex; auf die <em>gesamte URL</em> angewendet.",
     "profile.searchindex.includepath": "Includes als Liste von Regex; auf <em>Pfade</em> einer URL angewendet",
     "profile.searchindex.exclude": "Excludes als Liste von Regex, die auf die URL angewendet werden",

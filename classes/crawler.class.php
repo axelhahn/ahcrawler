@@ -71,6 +71,7 @@ class crawler extends crawler_base{
         // video
         'avi',
         'mp4',
+        'webm',
         // archives
         'gz',
         'tar',
@@ -228,14 +229,6 @@ class crawler extends crawler_base{
     private function _addUrl2Crawl($sUrl, $bDebug=false) {
         echo $bDebug ? __FUNCTION__."($sUrl)\n" : "";
         
-        // TODO: one of the next features
-        /*
-        if(count($this->_aUrls2Crawl[$sUrl]) > [MAX] ){
-          return false;
-        }
-         */
-        
-                
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
         // ... and spaces
@@ -288,7 +281,16 @@ class crawler extends crawler_base{
         }
 
         if (!array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            echo "... adding $sUrl\n";
+
+            $iCount=count($this->_aUrls2Crawl)+1;
+            $iMax=isset($this->aProfileEffective['searchindex']['iMaxUrls']) ? (int)$this->aProfileEffective['searchindex']['iMaxUrls'] : 0;
+            if($iMax 
+                && count($this->_aUrls2Crawl) >= $this->aProfileEffective['searchindex']['iMaxUrls']
+            ){
+                echo "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n";
+                return false;
+            }
+            echo "... adding [$iCount".($iMax ? ' of ' .$iMax : '')."] $sUrl\n";
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;

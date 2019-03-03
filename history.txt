@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-03-03: v0.52
+  * backend: fix add profile tab
+  * crawler: add max count of crawlable urls for testing
+
 2019-02-10: v0.51
   * backend: add tiles in linkchecker and ressources (instead of a table)
   * backend: translate english lang texts fot human readable time

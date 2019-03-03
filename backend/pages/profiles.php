@@ -116,6 +116,7 @@ if(isset($_POST['action'])){
             }
             // fix integer values
             $this->_configMakeInt($aNewProfile, 'searchindex.iDepth');
+            $this->_configMakeInt($aNewProfile, 'searchindex.iMaxUrls');
             $this->_configMakeInt($aNewProfile, 'searchindex.simultanousRequests');
             $this->_configMakeInt($aNewProfile, 'ressources.simultanousRequests');
 
@@ -299,6 +300,14 @@ $sReturn.='
                     'id'=>'searchindex-iDepth', 
                     'name'=>'searchindex[iDepth]',
                     'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
+                    ), false)
+                . '</div>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex[iMaxUrls]', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>'searchindex-iMaxUrls', 
+                    'name'=>'searchindex[iMaxUrls]',
+                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : '0',
                     ), false)
                 . '</div>'
 
