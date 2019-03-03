@@ -678,7 +678,13 @@ class crawler extends crawler_base{
             return false;
         }
         
-        $sContent = utf8_decode($aPage['body']);
+        // if it is NOT utf8 then utf8_decode()
+        $sContent = (function_exists('mb_detect_encoding') && !mb_detect_encoding($sContent, 'UTF-8, ISO-8859-1') === 'UTF-8')
+            ? utf8_decode($aPage['body'])
+            : $aPage['body']
+        ;
+        
+        
         $sRobots=$this->_getMetaHead($sContent, 'robots');
         
         if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
@@ -779,16 +785,15 @@ class crawler extends crawler_base{
             } else {
                 echo 'UPDATE CONTENT';
             }
-            
             // echo ' ('.$aCurrent[0]['errorcount'] . ' errors) ';
             $aResult = $this->oDB->update('pages', array(
                 'url' => $aData['url'],
                 'siteid' => $this->iSiteId,
-                'title' => utf8_encode($aData['title']),
-                'description' => utf8_encode($aData['description']),
-                'keywords' => utf8_encode($aData['keywords']),
-                'content' => utf8_encode($aData['content']),
-                'lang' => utf8_encode($aData['lang']),
+                'title' => $aData['title'],
+                'description' => $aData['description'],
+                'keywords' => $aData['keywords'],
+                'content' => html_entity_decode($aData['content']),
+                'lang' => $aData['lang'],
                 'size' => $aData['size'],
                 'time' => $aData['time'],
                 'header' => json_encode($aData['header']),
@@ -808,6 +813,7 @@ class crawler extends crawler_base{
             echo ' ' . $aData['url'] . "\n";
         } else {
             echo 'INSERT data for ' . $aData['url'] . "\n";
+            echo "  title: " . $aData['title'] . "\n";
             $aResult = $this->oDB->insert(
                     'pages', 
                     array(
@@ -817,10 +823,10 @@ class crawler extends crawler_base{
                         'title' => $aData['title'],
                         'description' => $aData['description'],
                         'keywords' => $aData['keywords'],
-                        'lang' => utf8_encode($aData['lang']),
+                        'lang' => $aData['lang'],
                         'size' => $aData['size'],
                         'time' => $aData['time'],
-                        'content' => $aData['content'],
+                        'content' => html_entity_decode($aData['content']),
                         'header' => json_encode($aData['header']), // TODO: handle umlauts in response
                         'response' => $aData['response'],
                         'ts' => date("Y-m-d H:i:s"),

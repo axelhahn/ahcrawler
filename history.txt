@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-03-03: v0.53
+  * searchindex: fix charset: utf8 detection before using utf8_decode()
+  
 2019-03-03: v0.52
   * backend: fix add profile tab
   * crawler: add max count of crawlable urls for testing
