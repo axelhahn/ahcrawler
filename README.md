@@ -24,7 +24,7 @@ You can preview it ... but let me do some more work :-)
 see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 
 
-## FEATRURES ##
+## FEATURES ##
 
 - multiple website support within a single installation
 - multi language support (backend and frontend)
