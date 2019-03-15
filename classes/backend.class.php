@@ -912,7 +912,7 @@ class backend extends crawler_base {
                     ? $_GET[$sVarname] 
                     : false
             ;
-        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [$return]");
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [".print_r($return, 1)."]");
         
         // verify regex
         if ($sRegexMatch && !preg_match($sRegexMatch,$return)){
@@ -926,7 +926,7 @@ class backend extends crawler_base {
                 $return=(int)$return;
                 break;
         }
-        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) returns $sVarname = $return");
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) returns $sVarname = [".print_r($return, 1)."]");
         return $return;
     }
 

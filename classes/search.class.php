@@ -456,7 +456,7 @@ class ahsearch extends crawler_base {
                 'type'=>'text',
                 'name'=>'q',
                 'id'=>'searchterm',
-                'value'=>$this->getQueryValue('q'),
+                'value'=>htmlentities($this->getQueryValue('q')),
                 'placeholder'=>$this->lF('input.search.placeholder'),
                 'title'=>$this->lF('input.search.title'),
                 'pattern'=>'^..*',

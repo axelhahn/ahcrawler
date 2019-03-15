@@ -24,12 +24,13 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <?php echo $oCdn->getHtmlInclude('pure/1.0.0/buttons-min.css'); ?>
         <?php echo $oCdn->getHtmlInclude('pure/1.0.0/grids-responsive-min.css'); ?>
         <?php echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); ?>
-        <?php echo $oCdn->getHtmlInclude('datatables/1.10.15/css/jquery.dataTables.min.css'); ?>
+        
+        <?php echo $oCdn->getHtmlInclude('jquery/3.3.1/jquery.min.js'); ?>
+        
+        <?php echo $oCdn->getHtmlInclude('datatables/1.10.19/css/jquery.dataTables.min.css'); ?>
+        <?php echo $oCdn->getHtmlInclude('datatables/1.10.19/js/jquery.dataTables.min.js'); ?>
 
-        <?php echo $oCdn->getHtmlInclude('jquery/3.2.1/jquery.min.js'); ?>
-        <?php echo $oCdn->getHtmlInclude('datatables/1.10.15/js/jquery.dataTables.min.js'); ?>
-
-        <?php echo $oCdn->getHtmlInclude('Chart.js/2.7.2/Chart.min.js'); ?>
+        <?php echo $oCdn->getHtmlInclude('Chart.js/2.7.3/Chart.min.js'); ?>
         
         <script src="javascript/functions.js"></script>      
         <link rel="stylesheet" href="main.css">

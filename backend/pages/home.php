@@ -4,6 +4,8 @@
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sHtml='';
+$sTable='';
+$sTiles='';
 
 
 if(!$this->_configExists() || !$this->oDB){
@@ -28,8 +30,6 @@ if(!$this->_configExists() || !$this->oDB){
     $aOptions = $this->_loadOptions();
     $aProfiles=$this->getProfileIds();
     $aTable=array();
-    $sTable='';
-    $sTiles='';
     if(!$aProfiles || !count($aProfiles)){
         // ------------------------------------------------------------
         // INITIAL SETUP PART TWO
@@ -129,10 +129,11 @@ if(!$this->_configExists() || !$this->oDB){
                     ,
             );
         }
-        $sHtml.=$this->_renderChildItems($this->_aMenu)
-            . '<p>' . $this->lB('home.status.hint') . '</p>'
-            ;
-        $sTable=$this->_getSimpleHtmlTable($aTable, true);
+        $sTable='<p>' . $this->lB('home.status.hint') . '</p>'
+                . $this->_getSimpleHtmlTable($aTable, true)
+                . '<br><br>'
+                . $this->_renderChildItems($this->_aMenu)
+                ;
     }
 
     $sHtml.=''

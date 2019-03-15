@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.53',
-        'date' => '2019-03-03',
+        'version' => '0.54',
+        'date' => '2019-03-15',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -430,7 +430,8 @@ class crawler_base {
             return false;
             // die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
         }
-        if (!$this->_checkDbResult()) {
+        // if (!$this->_checkDbResult()) {
+        if (!$this->oDB) {
             die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
         }
         $this->logAdd(__METHOD__.'() itialized');

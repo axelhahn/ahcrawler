@@ -679,7 +679,7 @@ class crawler extends crawler_base{
         }
         
         // if it is NOT utf8 then utf8_decode()
-        $sContent = (function_exists('mb_detect_encoding') && !mb_detect_encoding($sContent, 'UTF-8, ISO-8859-1') === 'UTF-8')
+        $sContent = (function_exists('mb_detect_encoding') && !mb_detect_encoding($aPage['body'], 'UTF-8, ISO-8859-1') === 'UTF-8')
             ? utf8_decode($aPage['body'])
             : $aPage['body']
         ;

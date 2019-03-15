@@ -146,6 +146,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 $sSelect=' <select name="subdir" class="form-control">'.$sSelect.'</select> ';
             }
 
+            // TODO: use search.class.php
             $sForm = '<h3>'.$this->lB('status.search').'</h3>'
                     . '<p>'.$this->lB('status.search.hint').'</p>'
                     . '<form action="" method="get" class="pure-form">'
@@ -154,7 +155,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                     . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
                     // . '<input type="hidden" name="subdir" value="' . $sSubdir . '">'
                     . '<label>' . $this->lB('searches.query') . '</label> '
-                    . '<input type="text" name="query" value="' . $sQuery . '" required="required">'
+                    . '<input type="text" name="query" value="' . htmlentities($sQuery) . '" required="required">'
                     . ' '
                     . $sSelect
                     . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $o->lF('btn.search.label') . '</button> '

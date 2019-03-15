@@ -14,6 +14,13 @@
 
 ----------------------------------------------------------------------
 
+2019-03-15: v0.54
+  * backend+frontend: convert html in search values (XSS bug)
+  * backend: upgrade Medoo to 1.6.1
+  * backend: upgrade datatables to 1.10.19
+  * backend: upgrade jQuery to 3.3.1
+  * backend: upgrade Chart.js to 2.7.3
+
 2019-03-03: v0.53
   * searchindex: fix charset: utf8 detection before using utf8_decode()
   

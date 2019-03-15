@@ -76,6 +76,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             $oRessources=new ressources();
             $aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
             $aWhere=array('siteid' => $this->_sTab, 'url[~]'=>'http:%');
+            $aWhereNoLink=array_merge($aWhere, array('ressourcetype[!]' => 'link'));
 
             $sBtnReport=$this->_getButton(array(
                 'href'=>$this->_getQs(array(
@@ -100,6 +101,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
 
             
             $iNonHttps=$this->oDB->count('ressources',$aWhere);
+            $iNonHttpsNoLink=$this->oDB->count('ressources',$aWhereNoLink);
             // $sReturn.= $this->oDB->last().'<br>';
             
             $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttps) . '</h3>'
@@ -108,11 +110,19 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                 . $oRenderer->renderTileBar(
                     $oRenderer->renderTile('',            $this->lB('ressources.itemstotal'), $iRessourcesCount, '', '')
                     .$oRenderer->renderTile(
-                            $iNonHttps ? 'warning' : 'ok', 
+                            // $iNonHttps ? 'warning' : 'ok', 
+                            '', 
                             $this->lB('sslcheck.nonhttpscount'),
                             $iNonHttps,
                             $iNonHttps ? (floor($iNonHttps/$iRessourcesCount*1000)/10).'%' : ''
-                ))
+                    )
+                    .$oRenderer->renderTile(
+                            $iNonHttpsNoLink ? 'warning' : 'ok', 
+                            $this->lB('sslcheck.nonhttpscountNolink'),
+                            $iNonHttpsNoLink,
+                            $iNonHttpsNoLink ? (floor($iNonHttpsNoLink/$iRessourcesCount*1000)/10).'%' : ''
+                    )
+                )
                 . '<div style="clear: both;"></div>'
                 .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)    
                 ;
