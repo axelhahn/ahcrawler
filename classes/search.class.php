@@ -200,7 +200,7 @@ class ahsearch extends crawler_base {
         }
         $aSearchwords = explode(" ", $q);
         foreach ($aSearchwords as $sWord) {
-            $aQuery[] = array(
+            $aQuery['OR # query for ['.$sWord.']'] = array(
                 'title[~]' => $sWord,
                 'description[~]' => $sWord,
                 'keywords[~]' => $sWord,
@@ -213,9 +213,7 @@ class ahsearch extends crawler_base {
             'siteid' => $this->iSiteId,
             'errorcount' => 0,
             'url[~]' => $aOptions['url'],
-            $aOptions['mode'] => array(
-                'OR' => $aQuery,
-            )
+            $aOptions['mode'] => $aQuery,
         );
         
         if (isset($aOptions['lang']) && $aOptions['lang']){

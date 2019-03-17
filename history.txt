@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-03-17: v0.56
+  * search: fix query while performing a search (was changed in Medoo)
+
 2019-03-17: v0.55
   * database: add abstracted definition for indexes
   * database: remove own table quotes
