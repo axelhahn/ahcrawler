@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-03-17: v0.55
+  * database: add abstracted definition for indexes
+  * database: remove own table quotes
+
 2019-03-15: v0.54
   * backend+frontend: convert html in search values (XSS bug)
   * backend: upgrade Medoo to 1.6.1

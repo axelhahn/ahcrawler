@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.54',
-        'date' => '2019-03-15',
+        'version' => '0.55',
+        'date' => '2019-03-17',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -79,78 +79,135 @@ class crawler_base {
         ),
     );
 
+    /**
+     * database tables and indexes
+     * 
+     * structure
+     * 'tables'
+     *   -> [table name]
+     *      -> 'columns'
+     *          -> array of ([column name], def])
+     *      -> 'indexes'
+     *          -> array of ([index name], [list of columns], [index type])
+     *              0 - {string}  name of index (without prefix for table
+     *              1 - {array}   list of columns
+     *              2 - {string}  type; one of none or [UNIQUE | FULLTEXT | SPATIAL]
+     *
+     * @var array 
+     */
     protected $_aDbSettings=array(
         'tables'=>array(
-            "pages"=>array(
-                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-                'url' => 'VARCHAR(1024)  NOT NULL',
-                'siteid' => 'INTEGER  NOT NULL',
-                'title' => 'VARCHAR(256)  NULL',
-                'description' => 'VARCHAR(1024)  NULL',
-                'keywords' => 'VARCHAR(1024)  NULL',
-                'lang' => 'VARCHAR(8) NULL',
-                'size' => 'INTEGER NULL',
-                'time' => 'INTEGER NULL',
-                'content' => 'MEDIUMTEXT',
-                'header' => 'VARCHAR(2048) NULL',
-                'response' => 'MEDIUMTEXT',
-                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-                'tserror' => 'DATETIME NULL',
-                'errorcount' => 'INTEGER NULL',
-                'lasterror' => 'VARCHAR(1024)  NULL',
+            'pages'=>array(
+                'columns'=>array(
+                    'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                    'url' => 'VARCHAR(1024)  NOT NULL',
+                    'siteid' => 'INTEGER  NOT NULL',
+                    'title' => 'VARCHAR(256)  NULL',
+                    'description' => 'VARCHAR(1024)  NULL',
+                    'keywords' => 'VARCHAR(1024)  NULL',
+                    'lang' => 'VARCHAR(8) NULL',
+                    'size' => 'INTEGER NULL',
+                    'time' => 'INTEGER NULL',
+                    'content' => 'MEDIUMTEXT',
+                    'header' => 'VARCHAR(2048) NULL',
+                    'response' => 'MEDIUMTEXT',
+                    'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                    'tserror' => 'DATETIME NULL',
+                    'errorcount' => 'INTEGER NULL',
+                    'lasterror' => 'VARCHAR(1024)  NULL',
+                ),
+                'indexes'=>array(
+                    // PRIMARY KEY (`id`),
+                    // INDEX `pages_siteid_IDX` (`siteid`) USING BTREE,
+                    // FULLTEXT INDEX `pages_url_IDX` (`url`, `title`, `description`, `keywords`, `lang`, `content`)
+                    // array('PRIMARY KEY', '', array('id')),
+                    array('siteid', array('siteid')),
+                    array('url',    array('url')),
+                    array('search', array('url', 'title', 'description', 'keywords', 'lang', 'content'), 'FULLTEXT'),
+                ),
             ),
-            "words"=>array(
-                'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
-                'word' => 'VARCHAR(32) NOT NULL',
-                'count' => 'INTEGER',
-                'siteid' => 'INTEGER NOT NULL',
+                
+            'words'=>array(
+                'columns'=>array(
+                    'id' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'word' => 'VARCHAR(32) NOT NULL',
+                    'count' => 'INTEGER',
+                    'siteid' => 'INTEGER NOT NULL',
+                ),
+                'indexes'=>array(
+                    array('siteid', array('siteid')),
+                    array('search', array('word')),
+                ),
             ),
-            "searches"=> array(
-                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-                'siteid' => 'INTEGER NOT NULL',
-                'searchset' => 'VARCHAR(128)  NULL',
-                'query' => 'VARCHAR(256)  NULL',
-                'results' => 'INTEGER  NULL',
-                'host' => 'VARCHAR(64)  NULL', // ipv4 and ipv6
-                'ua' => 'VARCHAR(256)  NULL',
-                'referrer' => 'VARCHAR(1024)  NULL'
+            'searches'=> array(
+                'columns'=>array(
+                    'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                    'siteid' => 'INTEGER NOT NULL',
+                    'searchset' => 'VARCHAR(128)  NULL',
+                    'query' => 'VARCHAR(256)  NULL',
+                    'results' => 'INTEGER  NULL',
+                    'host' => 'VARCHAR(64)  NULL', // ipv4 and ipv6
+                    'ua' => 'VARCHAR(256)  NULL',
+                    'referrer' => 'VARCHAR(1024)  NULL'
+                ),
+                'indexes'=>array(
+                    array('siteid', array('siteid')),
+                    array('stats', array('ts')),
+                    array('query', array('query')),
+                ),
             ),
-            "ressources" => array(
-                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-                'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
-                'siteid' => 'INTEGER NOT NULL',
-                'url' => 'VARCHAR(1024) NOT NULL',
-                'ressourcetype' => 'VARCHAR(16) NOT NULL',
-                'type' => 'VARCHAR(16) NOT NULL',
-                'header' => 'VARCHAR(2048) NULL',
-                // header vars
-                'content_type' => 'VARCHAR(32) NULL',
-                'isSource' => 'BOOLEAN NULL',
-                'isLink' => 'BOOLEAN NULL',
-                'isEndpoint' => 'BOOLEAN NULL',
-                'isExternalRedirect' => 'BOOLEAN NULL',
-                'http_code' => 'INTEGER NULL',
-                'status' => 'VARCHAR(16) NOT NULL',
-                'total_time' => 'INTEGER NULL',
-                'size_download' => 'INTEGER NULL',
-                'rescan' => 'BOOL DEFAULT TRUE',
-                'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-                'tsok' => 'DATETIME NULL',
-                'tserror' => 'DATETIME NULL',
-                'errorcount' => 'INTEGER NULL',
-                'lasterror' => 'VARCHAR(1024)  NULL',
+            'ressources' => array(
+                'columns'=>array(
+                    // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                    'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'siteid' => 'INTEGER NOT NULL',
+                    'url' => 'VARCHAR(1024) NOT NULL',
+                    'ressourcetype' => 'VARCHAR(16) NOT NULL',
+                    'type' => 'VARCHAR(16) NOT NULL',
+                    'header' => 'VARCHAR(2048) NULL',
+                    // header vars
+                    'content_type' => 'VARCHAR(32) NULL',
+                    'isSource' => 'BOOLEAN NULL',
+                    'isLink' => 'BOOLEAN NULL',
+                    'isEndpoint' => 'BOOLEAN NULL',
+                    'isExternalRedirect' => 'BOOLEAN NULL',
+                    'http_code' => 'INTEGER NULL',
+                    'status' => 'VARCHAR(16) NOT NULL',
+                    'total_time' => 'INTEGER NULL',
+                    'size_download' => 'INTEGER NULL',
+                    'rescan' => 'BOOL DEFAULT TRUE',
+                    'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                    'tsok' => 'DATETIME NULL',
+                    'tserror' => 'DATETIME NULL',
+                    'errorcount' => 'INTEGER NULL',
+                    'lasterror' => 'VARCHAR(1024)  NULL',
+                ),
+                'indexes'=>array(
+                    array('siteid', array('siteid')),
+                    array('url', array('url'), ''),
+                    array('ressourcetype', array('ressourcetype')),
+                    array('content_type', array('content_type')),
+                    array('http_code', array('http_code')),
+                ),
             ),
-            "ressources_rel"=> array(
-                // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-                'id_rel_ressources' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
-                'siteid' => 'INTEGER NOT NULL',
-                // 'id_ressource' => 'VARCHAR(32) NOT NULL',
-                // 'id_ressource_to' => 'VARCHAR(32) NOT NULL',
-                'id_ressource' => 'INTEGER NOT NULL',
-                'id_ressource_to' => 'INTEGER NOT NULL',
-                // 'references' => 'INTEGER NOT NULL',
+            'ressources_rel'=> array(
+                'columns'=>array(
+                    // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                    'id_rel_ressources' => 'INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'siteid' => 'INTEGER NOT NULL',
+                    // 'id_ressource' => 'VARCHAR(32) NOT NULL',
+                    // 'id_ressource_to' => 'VARCHAR(32) NOT NULL',
+                    'id_ressource' => 'INTEGER NOT NULL',
+                    'id_ressource_to' => 'INTEGER NOT NULL',
+                    // 'references' => 'INTEGER NOT NULL',
+                ),
+                'indexes'=>array(
+                    array('siteid', array('siteid')),
+                    array('id_ressource', array('id_ressource')),
+                    array('id_ressource_to', array('id_ressource_to')),
+                ),
             ),
         ),
     );
@@ -363,16 +420,26 @@ class crawler_base {
         switch ($this->aOptions['database']['database_type']) {
             case 'mysql':
                 $aReturn = array(
-                    'tablePre' => '`',
-                    'tableSuf' => '`',
+                    'AUTOINCREMENT' => 'AUTO_INCREMENT',
+                    'DATETIME' => 'TIMESTAMP',
+                    'INTEGER' => 'INT',
+                    // 'TEXT' => 'LONGTEXT',
+                    
                     'createAppend' => 'CHARACTER SET utf8 COLLATE utf8_general_ci',
+                    
+                    'canIndex' => true,
+                    'canIndexUNIQUE' => true,
+                    'canIndexFULLTEXT' => false,
+                    'canIndexSPACIAL' => false,
                 );
                 break;
             case 'sqlite':
                 $aReturn = array(
-                    'tablePre' => '[',
-                    'tableSuf' => ']',
                     'createAppend' => '',
+                    
+                    'canIndex' => true,
+                    'canIndexUNIQUE' => true,
+                    'canIndexFULLTEXT' => false,
                 );
                 break;
 
@@ -386,33 +453,65 @@ class crawler_base {
 
     /**
      * init/ setup: create database tables
-     * @param string $sTable
-     * @param array $aFields
      */
-    private function _createTable($sTable, $aFields) {
+    private function _createTable() {
         $sql = '';
 
+        // get replacements and db type specific stuff
         $aDb = $this->_getPdoDbSpecialties();
-        foreach ($aFields as $field => $type) {
-            switch ($this->aOptions['database']['database_type']) {
-                case 'mysql':
-                    $type = str_replace('AUTOINCREMENT', 'AUTO_INCREMENT', $type);
-                    $type = str_replace('INTEGER', 'INT', $type);
-                    // $type = str_replace('TEXT', 'LONGTEXT', $type);
-                    $type = str_replace('DATETIME', 'TIMESTAMP', $type);
-                    break;
+        
+        foreach($this->_aDbSettings['tables'] as $sTable=>$aSettings){
+            $sqlTable = '';
+            $sqlIndex = '';
+        
+            // ----- columns
+            foreach ($aSettings['columns'] as $field => $type) {
+                $sColumnType= str_replace(array_keys($aDb), array_values($aDb), $type);
+                $sqlTable .= ($sqlTable ? ",\n" : '')
+                        ."    <$field> ${sColumnType}";
             }
-            $sql .= $sql ? ",\n" : '';
-            $sql .= "    " . $aDb['tablePre'] . "${field}" . $aDb['tableSuf'] . " $type";
-        }
-        $sql = "CREATE TABLE IF NOT EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . "(\n" . $sql . "\n)\n" . $aDb['createAppend'];
+            $sql = "CREATE TABLE IF NOT EXISTS <${sTable}> (\n" . $sqlTable . "\n)\n" . $aDb['createAppend'];
+            if (!$this->oDB->query($sql)) {
+                echo 'DATABASE - CREATION OF TABLES FAILED :-/<pre>'
+                        . 'sql: '.$this->oDB->last()."\n"
+                        . 'pre generated code for medoo:<br>'.htmlentities($sql) . "\n"
+                    . '</pre><br>'
+                    .print_r($this->oDB->error(), 1)
+                    ;
+                die();
+            }
+            // /columns
+            
+            // ----- indexes
+            if (isset($aSettings['indexes']) ){
+                $sqlTable.="\n";
+                foreach ($aSettings['indexes'] as $aIndexItems) {
+                    
+                    // 0 - {string}  name of index (without prefix for table)
+                    // 1 - {array}   list of columns
+                    // 2 - {string}  index type; one of none or [UNIQUE | FULLTEXT | SPATIAL]
+                    $sIndexId='IDX_'.$sTable.'_'.$aIndexItems[0];
+                    $sIndexType=(isset($aIndexItems[2]) && $aIndexItems[2] && $aDb['canIndex'.$aIndexItems[2]] ? $aIndexItems[2] . ' ' : '');
+                    $sqlIndex=''
+                            . 'CREATE '.$sIndexType.'INDEX IF NOT EXISTS '.'<'.$sIndexId.'> '
+                            . 'ON <'.$sTable.'> '
+                            . '( <'.implode('>, <', $aIndexItems[1]).'> )'
+                            ;
+                    if (!$this->oDB->query($sqlIndex)) {
+                        echo 'DATABASE - CREATION OF INDEX FAILED :-/<pre>'
+                                . 'sql: '.$this->oDB->last()."\n\n"
+                                . 'pre generated code for medoo:<br>'.htmlentities($sqlIndex) . "\n"
+                            . '</pre><br>'
+                            .print_r($this->oDB->error(), 1)
+                            ;
+                        die();
+                    }
+                }
+            }
+            // /indexes
 
-        //echo "DEBUG: <pre>$sql</pre>";
-        if (!$this->oDB->query($sql)) {
-            echo $sql . "<br>";
-            var_dump($this->oDB->error(), 1);
-            die();
         }
+        return true;
     }
 
     /**
@@ -437,9 +536,7 @@ class crawler_base {
         $this->logAdd(__METHOD__.'() itialized');
         $this->logAdd(__METHOD__.'() databases is connected');
         // TODO: put creation of tables into setup/ update
-        foreach($this->_aDbSettings['tables'] as $sTable=>$aSettings){
-            $this->_createTable($sTable, $aSettings);
-        }
+        $this->_createTable();
         $this->logAdd(__METHOD__.'() databases tables were checked');
 
     }
@@ -565,16 +662,16 @@ class crawler_base {
             $aTables[] = 'search';
         }
         if (count($aTables)) {
-            $aDb = $this->_getPdoDbSpecialties();
             foreach ($aTables as $sTable) {
                 
                 $sql = (int)$iSiteId 
-                        ? "DELETE FROM " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . " WHERE siteid=".(int)$iSiteId .";"
-                        : "DROP TABLE IF EXISTS " . $aDb['tablePre'] . "$sTable" . $aDb['tableSuf'] . ";"
+                        ? "DELETE FROM <".$sTable."> WHERE siteid=".(int)$iSiteId .";"
+                        : "DROP TABLE IF EXISTS <".$sTable.">;"
                         ;
+                // for CLI output
                 echo "DEBUG: $sql\n";
                 if (!$this->oDB->query($sql)) {
-                    echo $sql . "<br>";
+                    echo "Failed!!\n";
                     var_dump($this->oDB->error(), 1);
                     die();
                 }
