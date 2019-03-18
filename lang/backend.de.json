@@ -82,6 +82,8 @@
     "button.delete.hint": "Dieses Element endg&uuml;ltig l&ouml;schen",
     "button.help": "Hilfe",
     "button.help.hint": "Hilfe aufrufen (englisch)",
+    "button.home": "Start",
+    "button.home.hint": "zur Startseite",
     "button.login": "Anmelden",
     "button.login.hint": "",
     "button.logoff": "Abmelden",
@@ -327,7 +329,7 @@
 
     
     "htmlchecks.overview": "Zusammenfassung der HTML-Checks",
-    "htmlchecks.overview.introtext": "Meta-Tags werden von vielen Suchmaschinen ausgewertet. Es ist kein Muss, hilft aber, die Seite besser zu verschlagworten.<br>Bei der Verwendung des ahCrawlers als Suchmaschine für die Webseite haben Treffer in den Metadatan höhere Priorität, als der Inhaltstext.",
+    "htmlchecks.overview.introtext": "Meta-Tags werden von vielen Suchmaschinen ausgewertet. Es ist kein Muss, hilft aber, die Seite besser zu verschlagworten.<br>Bei der Verwendung des ahCrawlers als Suchmaschine für die Webseite haben Treffer in den Metadaten höhere Priorität, als der Inhaltstext.",
     "htmlchecks.tile-crawlererrors": "Fehler beim Crawlen",
 
     "htmlchecks.tile-check-short-title": "Zu kurze Titel<br>(kleiner %s Zeichen)",
@@ -394,7 +396,8 @@
     "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
     "sslcheck.nonhttps": "Unverschl&uuml;sselte Ressourcen (%s)",
     "sslcheck.nonhttps.hint": "Wenn die Webseite mit https betrieben wird, dann zeigen Browser bei Einbettung unverschl&uuml;sselter Inhalte eine Warnung.",
-    "sslcheck.nonhttpscount": "Ohne https",
+    "sslcheck.nonhttpscount": "Ohne Https<br>gesamt",
+    "sslcheck.nonhttpscountNolink": "Ohne Https<br>abz&uuml;glich Links",
 
     "sslcheck.httponly": "Keine Verschl&uuml;sselung,",
     "sslcheck.httponly.description": "kein Https!",
@@ -445,6 +448,10 @@
     "update.welcome.description": "Der nachfolgende Assistent begleitet Sie durch den den Aktualisierungs-Prozess.<br>Starten wir mit dem Versionsvergleich.",
     "update.welcome.available-yes": "Es ist ein Update auf Version %s verf&uuml;gbar. Bitte Folgen Sie dem Assistenten, um die Software zu aktualisieren.",
     "update.welcome.available-no": "Die Software ist auf dem aktuellen Stand. Dem Update-Assistenten zu folgen, ist nicht zwingend notwendig.",
+    "update.welcome.version-on-client": "Deine Version",
+    "update.welcome.version-latest": "Aktuelle Version",
+    "update.info.label": "Informationen zum Ablauf",
+    "update.info.description": "Eine kurze Beschreibung, wie das Update abl&auml;ft.",
     "update.steps": "Die Aktualisierung erfolgt in wenigen Schritten. Es geht wie folgt weiter:",
     "update.steps.downloadurl": "<strong>Download</strong> der URL<br>%s<br><br>als Zieldatei<br>%s<br><br>",
     "update.steps.extractto": "<strong>Dekomprimieren</strong> nach<br>%s",

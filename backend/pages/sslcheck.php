@@ -46,14 +46,9 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
         $aTbl[]=array($this->lB('sslcheck.validleft'), $iDaysleft);
 
-        $sReturn.= '<ul class="tiles '.$sStatus.' '.$sStatus.'s">'
-                . '<li>'
-                    .'<a href="#" onclick="return false;" class="tile">'
-                    . $aSslInfos['CN']
-                    .'<br><strong>'.$aSslInfos['issuer'].'</strong><br>'
-                    . $aSslInfos['validto'].' ('.$iDaysleft.' d)'
-                    .'</a>'
-                . '</li>'
+        $sReturn.= $oRenderer->renderTileBar(
+                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'], $aSslInfos['validto'].' ('.$iDaysleft.' d)')
+                )
                 . '</ul><div style="clear: both;"></div>'
                 . $this->_getSimpleHtmlTable($aTbl)
                 /*
@@ -72,6 +67,10 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
         
         if($iRessourcesCount){
+            
+            $bShowAll=$this->_getRequestParam('showall');
+            $bShowReport=$this->_getRequestParam('showreport');
+            
             $sTableId='tbl-nonhttpsitems';
             $oRessources=new ressources();
             $aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
@@ -103,6 +102,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             $iNonHttps=$this->oDB->count('ressources',$aWhere);
             $iNonHttpsNoLink=$this->oDB->count('ressources',$aWhereNoLink);
             // $sReturn.= $this->oDB->last().'<br>';
+            $iChartWarnings = $bShowAll ? $iNonHttps : $iNonHttpsNoLink;
             
             $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttps) . '</h3>'
                 .'<p>'.$this->lB('sslcheck.nonhttps.hint').'</p>'
@@ -114,27 +114,29 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                             '', 
                             $this->lB('sslcheck.nonhttpscount'),
                             $iNonHttps,
-                            $iNonHttps ? (floor($iNonHttps/$iRessourcesCount*1000)/10).'%' : ''
+                            $iNonHttps ? (floor($iNonHttps/$iRessourcesCount*1000)/10).'%' : '',
+                            $bShowAll ? '' : $this->_getQs(array('showall'=>1))
                     )
                     .$oRenderer->renderTile(
                             $iNonHttpsNoLink ? 'warning' : 'ok', 
                             $this->lB('sslcheck.nonhttpscountNolink'),
                             $iNonHttpsNoLink,
-                            $iNonHttpsNoLink ? (floor($iNonHttpsNoLink/$iRessourcesCount*1000)/10).'%' : ''
+                            $iNonHttpsNoLink ? (floor($iNonHttpsNoLink/$iRessourcesCount*1000)/10).'%' : '',
+                            $bShowAll ? $this->_getQs(array('showall'=>0)) : ''
                     )
                 )
                 . '<div style="clear: both;"></div>'
-                .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)    
+                .$this->_getHtmlchecksChart($iRessourcesCount, $iChartWarnings)    
                 ;
+
             
-            if($iNonHttps){
+            if($iNonHttpsNoLink || ($iNonHttps && $bShowAll)){
                 $aTable = array();
                 $iReportCounter=0;
 
-                $aRessourcelist = $oRessources->getRessources($aFields, $aWhere, array("url"=>"ASC"));
+                $aRessourcelist = $oRessources->getRessources($aFields, ($bShowAll ? $aWhere : $aWhereNoLink), array("url"=>"ASC"));
                 
                 // --- what to create: table or report list
-                $bShowReport=$this->_getRequestParam('showreport');
                 $sReturn.=($bShowReport ? $sBtnTable : $sBtnReport).'<br><br>';
                 
                 foreach ($aRessourcelist as $aRow) {

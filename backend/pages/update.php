@@ -5,6 +5,7 @@
 $oRenderer=new ressourcesrenderer();
 $aSteps=array(
     'welcome',
+    'info',
     'download',
     'extract',
 );
@@ -43,7 +44,7 @@ if($iStep===false){
 }
 $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
-        : '?page=about'
+        : '?page=update'
         ;
 $sBtnNext=$this->_getButton(array(
     'href' => $sNextUrl,
@@ -54,7 +55,7 @@ $sBtnNext=$this->_getButton(array(
 
 
 $sOutput='';
-$sReturn .= '<h3 id="h3' . md5('update') . '">'. $this->lB('update.'.$sStep.'.label') . '</h3>'
+$sReturn .= '<h3>'. $this->lB('update.'.$sStep.'.label') . '</h3>'
     . '<p>'. $this->lB('update.'.$sStep.'.description') . '</p><hr>'
     ;
 switch ($sStep) {
@@ -62,20 +63,31 @@ switch ($sStep) {
         // force update check to refresh the locally cached version infos
         $this->oUpdate->getUpdateInfos(true);
         $sReturn .= '<p>'
-            .($this->oUpdate->hasUpdate()
+            .($this->oUpdate->hasUpdate() || 0
                 ?  
                     $this->_getSimpleHtmlTable(
                         array(
-                            array('installiert',  $this->oUpdate->getClientVersion()),
-                            array('aktuell',      $this->oUpdate->getLatestVersion()),
+                            array($this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()),
+                            array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
                         )
                     )
                     . '<br>' . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
                 :  
                     $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
+                    .'<br>'.$this->_getButton(array(
+                        'href' => '?',
+                        'class' => 'button-secondary',
+                        'label' => 'button.home',
+                        'popup' => false
+                    ))
+                    . ' '.$sBtnNext
         
              )
             . '</p>'
+            ;
+        break;
+    case 'info':
+        $sReturn .= ''
             . '<p>'
             . $this->lB('update.steps')
             . '</p>'

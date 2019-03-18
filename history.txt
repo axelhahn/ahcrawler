@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2019-03-18: v0.57
+  * backend: upgrade icons of Fontawesome to version 5.x
+  * backend: fix tiles without target url (do not jump on top)
+  * backend: ssl check - show links only or all not https ressources
+  * backend: update - added a step and set new updater finishing page
+
 2019-03-17: v0.56
   * search: fix query while performing a search (was changed in Medoo)
 

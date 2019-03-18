@@ -28,7 +28,6 @@ $oCrawler=new crawler($this->_sTab);
 
 $sReturn.=''
         . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
-        . '<p>'.$this->lB('htmlchecks.overview.introtext').'</p>'
         ;
 
 $iCountCrawlererrors=$oCrawler->getCount(array(
@@ -71,7 +70,9 @@ $sTiles = ''
     )
     ;
 
-$sReturn.=$oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>';
+$sReturn.=$oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>'
+        . '<p>'.$this->lB('htmlchecks.overview.introtext').'</p>'
+        ;
 
 // table with too short titles
 if ($iCountCrawlererrors) {

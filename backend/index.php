@@ -23,7 +23,8 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <?php echo $oCdn->getHtmlInclude('pure/1.0.0/pure-min.css'); ?>
         <?php echo $oCdn->getHtmlInclude('pure/1.0.0/buttons-min.css'); ?>
         <?php echo $oCdn->getHtmlInclude('pure/1.0.0/grids-responsive-min.css'); ?>
-        <?php echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); ?>
+        <?php /* echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); */?>
+        <?php echo $oCdn->getHtmlInclude('font-awesome/5.7.2/css/all.css'); ?>
         
         <?php echo $oCdn->getHtmlInclude('jquery/3.3.1/jquery.min.js'); ?>
         

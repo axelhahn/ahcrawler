@@ -180,7 +180,7 @@ ul.tiles a.tile{
     background: radial-gradient(#def,#abc);
     border: 1px solid #ddd;
     border: 1px outset rgba(0,0,0,0.2); 
-    border-radius: 0.5em;
+    border-radius: 0.3em;
     box-shadow: 0.3em 0.3em 1em #ccc;
     color:#777;
     display: block;

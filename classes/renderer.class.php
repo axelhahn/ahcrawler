@@ -29,6 +29,7 @@ class ressourcesrenderer extends crawler_base {
      * @var type 
      */
     private $_aIcons = array(
+        /*
         'url' => 'fa fa-link',
         'title' => 'fa fa-chevron-right',
         'description' => 'fa fa-chevron-right',
@@ -52,32 +53,37 @@ class ressourcesrenderer extends crawler_base {
         'size_download' => 'fa fa-download',
         '_size_download' => 'fa fa-download',
         '_meta_total_time' => 'fa fa-clock-o',
+         * 
+         */
         
         // ressourcetype
-        'audio' => 'fa fa-file-sound-o',
-        'css' => 'fa fa-eyedropper',
-        'image' => 'fa fa-file-image-o',
-        'link' => 'fa fa-link',
-        'page' => 'fa fa-sticky-note-o',
-        'script' => 'fa fa-file-code-o',
+        'audio'=>'far fa-file-sound',
+        'css'=>'fas fa-eye-dropper',
+        'image'=>'far fa-file-image',
+        'link'=>'fas fa-link',
+        'page'=>'far fa-sticky-note',
+        // 'redirect'=>'fas fa-angle-double-right',
+        'script'=>'far fa-file-code',
+
         // type
-        'internal' => 'fa fa-thumb-tack',
-        'external' => 'fa fa-globe',
+        'external'=>'fas fa-globe-americas',
+        'internal'=>'fas fa-thumbtack',
         // content_type/ MIME
         //
-        'link-to-url' => 'fa fa-external-link',
+        'link-to-url' => 'fas fa-external-link-alt',
 
         // http_code
-        'http-code-' => 'fa fa-hourglass-o',
-        'http-code-0' => 'fa fa-plug',
-        'http-code-2xx' => 'fa fa-thumbs-up',
-        'http-code-3xx' => 'fa fa-mail-forward',
-        'http-code-4xx' => 'fa fa-bolt',
-        'http-code-5xx' => 'fa fa-spinner',
-        'http-code-9xx' => 'fa fa-bolt',
+        'http-code-' => 'far fa-hourglass',
+        'http-code-0' => 'fas fa-plug',
+        'http-code-2xx' => 'far fa-thumbs-up',
+        'http-code-3xx' => 'fas fa-angle-double-right',
+        'http-code-4xx' => 'far fa-bolt',
+        'http-code-5xx' => 'fas fa-spinner',
+        'http-code-9xx' => 'far fa-bolt',
 
+        /*
         'ressources.showtable' => 'fa fa-table',
-        'ressources.showreport' => 'fa fa-file-o',
+        'ressources.showreport' => 'far fa-file',
         'ressources.ignorelimit' => 'fa fa-unlock',
 
         'button.close' => 'fa fa-close',
@@ -90,15 +96,17 @@ class ressourcesrenderer extends crawler_base {
         'button.search' => 'fa fa-search',
         'button.truncateindex' => 'fa fa-trash',
         'button.view' => 'fa fa-eye',
+         * 
+         */
         
-        'ico.found' => 'fa fa-check',
-        'ico.miss' => 'fa fa-ban',
+        'ico.found' => 'fas fa-check',
+        'ico.miss' => 'fas fa-ban',
         
-        'ico.unknown' => 'fa fa-question-circle',
-        'ico.httpv1' => 'fa fa-check',
-        'ico.non-standard' => 'fa fa-check-circle',
-        'ico.security' => 'fa fa-lock',
-        'ico.warn' => 'fa fa-exclamation-triangle',
+        'ico.unknown' => 'fas fa-question-circle',
+        'ico.httpv1' => 'fas fa-check',
+        'ico.non-standard' => 'far fa-check-circle',
+        'ico.security' => 'fas fa-lock',
+        'ico.warn' => 'fas fa-exclamation-triangle',
     );
     public $oHtml=false;
 
@@ -894,7 +902,7 @@ class ressourcesrenderer extends crawler_base {
      */
     public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
         return '<li>'
-            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#').'" class="tile '.$sType.' scroll-link">'
+            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#" onclick="return false;').'" class="tile '.$sType.' scroll-link">'
                 . $sIntro
                 . (strstr($sIntro, '<br>') ? '' : '<br>')
                 . '<br>'
