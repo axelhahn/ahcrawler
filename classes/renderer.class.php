@@ -77,7 +77,7 @@ class ressourcesrenderer extends crawler_base {
         'http-code-0' => 'fas fa-plug',
         'http-code-2xx' => 'far fa-thumbs-up',
         'http-code-3xx' => 'fas fa-angle-double-right',
-        'http-code-4xx' => 'far fa-bolt',
+        'http-code-4xx' => 'fas fa-bolt',
         'http-code-5xx' => 'fas fa-spinner',
         'http-code-9xx' => 'far fa-bolt',
 

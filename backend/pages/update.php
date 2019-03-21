@@ -72,6 +72,7 @@ switch ($sStep) {
                         )
                     )
                     . '<br>' . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
+                    . '<br>'
                 :  
                     $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
                     .'<br>'.$this->_getButton(array(
@@ -80,9 +81,10 @@ switch ($sStep) {
                         'label' => 'button.home',
                         'popup' => false
                     ))
-                    . ' '.$sBtnNext
+                    . ' '
         
              )
+            . $sBtnNext
             . '</p>'
             ;
         break;
@@ -133,7 +135,7 @@ switch ($sStep) {
                     . $sBtnNext
                     ;
                 // force update check to refresh the locally cached version infos
-                $this->oUpdate->getUpdateInfos(true);
+                // $this->oUpdate->getUpdateInfos(true);
             } else {
                 $sReturn.=$this->lB('update.extract.failed');
             }

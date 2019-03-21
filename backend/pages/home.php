@@ -131,8 +131,8 @@ if(!$this->_configExists() || !$this->oDB){
         }
         $sTable='<p>' . $this->lB('home.status.hint') . '</p>'
                 . $this->_getSimpleHtmlTable($aTable, true)
-                . '<br><br>'
-                . $this->_renderChildItems($this->_aMenu)
+                // . '<br><br>'
+                // . $this->_renderChildItems($this->_aMenu)
                 ;
     }
 

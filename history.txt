@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-03-21: v0.58
+  * backend: home: remove tiles
+  * backend: fix icon for htpp error
+  * backend: update wizzard has 1 more page and ends on update-home
+
 2019-03-18: v0.57
   * backend: upgrade icons of Fontawesome to version 5.x
   * backend: fix tiles without target url (do not jump on top)
