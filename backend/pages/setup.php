@@ -255,7 +255,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             
             . '<h3>'
-                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('setup.section.auth')
             .'</h3>'
             . $this->lB('setup.section.auth.hint').'<br><br>'
@@ -334,7 +334,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
         
             . '<h3>'
-                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
                 . ' '.$this->lB('setup.section.database')
             .'</h3>'
             . $this->lB('setup.section.database.hint').'<br><br>'
@@ -422,7 +422,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - other
             // ------------------------------------------------------------
             . '<h3>'
-                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
                 . ' '.$this->lB('setup.section.backend')
             .'</h3>'
             . $this->lB('setup.section.backend.hint').'<br><br>'
@@ -476,7 +476,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             
             . '<h3>'
-                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-spinner')) 
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-spinner')) 
                 . ' '.$this->lB('setup.section.crawler')
             .'</h3>'
             . $this->lB('setup.section.crawler.hint').'<br><br>'
@@ -503,7 +503,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - analysis constants
             // ------------------------------------------------------------
             . '<h3>'
-                . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
             . $this->lB('setup.section.analysis.hint').'<br><br>'

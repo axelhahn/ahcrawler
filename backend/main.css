@@ -69,7 +69,7 @@ body{
 .pure-menu-horizontal .pure-menu-link{color:#89a; border-top: 3px solid #fff; padding: 0.75em;}
 .pure-menu-horizontal .pure-menu-link:hover{background:rgba(0,0,0,0.02); border-color: #eee; border-color: #345; border-color:#789; }
 .pure-menu-horizontal .pure-menu-link:focus{border-color: #fc3;}
-.pure-menu-horizontal .pure-menu-link-active{background:#f8f8f8; background: #cde; color:#345; border-color: #fc1; border-color: #345;}
+.pure-menu-horizontal .pure-menu-link-active{background:#f8f8f8; background: #cde; background: #345; color:#345; color:#fff; border-color: #89a; Xborder-color: #345;}
 
 
 
@@ -119,9 +119,10 @@ p.pageHint{ background:#eee;
             background:linear-gradient(90deg, #e0e8f4, #fff);
             background:linear-gradient(90deg, #f0d0f4, #fff);
             background:#eee;
+            border-left: 10px solid rgba(0,0,0,0.05);
             border-bottom-left-radius: 0.5em;
-            color:#036;
-          font-size: 120%; padding: 1.0em; margin-top: 0; margin-bottom: 7em; position: relative; top: 5em; }
+            color:#346;
+          font-size: 130%; padding: 1.0em; margin-top: 0; margin-bottom: 7em; position: relative; top: 4.5em; }
 h3{ color: #79b; font-size: 170%; border-top: 1px solid #fca; padding-top: 1em; margin: 2em 0 1.5em;}
 h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
@@ -177,7 +178,7 @@ ul.tiles{
 }
 ul.tiles a.tile{
     background: #abc;
-    background: radial-gradient(#def,#abc);
+    background: radial-gradient(#def,#bcd);
     border: 1px solid #ddd;
     border: 1px outset rgba(0,0,0,0.2); 
     border-radius: 0.3em;
@@ -246,7 +247,7 @@ div.message-warning{background: #fec; color:#975;}
 div.message-error{background: #fcc; color:#955;}
 
 /* --- ressources --- */
-.http-code{padding: 0.05em 0.5em; color:#fff; box-shadow: 0 0 0.2em #fff; min-width: 3em; display: inline-block;}
+.http-code{padding: 0.05em 0.5em; background:#ddd; color:#fff; box-shadow: 0 0 0.2em #fff; min-width: 3em; display: inline-block;}
 .http-code-{background:#ccd;}
 .http-code--1 {background: #d0d0d8;}
 .http-code-2xx {background:#8b4;}

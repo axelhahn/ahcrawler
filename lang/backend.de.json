@@ -52,6 +52,12 @@
     "nav.ressourcedetail.label": "Ressource-Details",
     "nav.ressourcedetail.hint": "Status, Ressourcen-Details und Abh&auml;ngigkeiten einsehen.",
         
+    "nav.tools.label": "Werkzeuge und Infos",
+    "nav.tools.hint": "Werkzeuge",
+
+    "nav.httpstatuscode.label": "Http Statuscodes",
+    "nav.httpstatuscode.hint": "Liste der Http Statuscodes und deren Bedeutung",
+
     "nav.about.label": "&Uuml;ber ...",
     "nav.about.hint": "Versionsinfos und Danksagungen",
 
@@ -332,8 +338,11 @@
     "htmlchecks.overview.introtext": "Meta-Tags werden von vielen Suchmaschinen ausgewertet. Es ist kein Muss, hilft aber, die Seite besser zu verschlagworten.<br>Bei der Verwendung des ahCrawlers als Suchmaschine für die Webseite haben Treffer in den Metadaten höhere Priorität, als der Inhaltstext.",
     "htmlchecks.tile-crawlererrors": "Fehler beim Crawlen",
 
+    "htmlchecks.tile-check-no-title": "Kein Titel",
     "htmlchecks.tile-check-short-title": "Zu kurze Titel<br>(kleiner %s Zeichen)",
+    "htmlchecks.tile-check-no-description": "Keine Beschreibung",
     "htmlchecks.tile-check-short-description": "Zu kurze Beschreibung<br>(kleiner %s Zeichen)",
+    "htmlchecks.tile-check-no-keywords": "Kein Keyword",
     "htmlchecks.tile-check-short-keywords": "Zu kurze Keywords<br>(kleiner %s Zeichen)",
     "htmlchecks.tile-check-loadtime-of-pages": "Lange Ladezeiten<br>(mehr als %s ms)",
     "htmlchecks.tile-check-large-pages": "Grosser Content<br>(mehr als %s Byte)",
@@ -352,6 +361,7 @@
     "htmlchecks.tableLargePages": "Grosse Seiten (%s)",
     "htmlchecks.tableLargePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Nachfolgend werden Seiten mit etwas mehr als <em>%s</em> Byte an HTML Code aufgelistet. Sofern es komplexeres HTML ist, kann ein Browser Probleme beim Rendern bekommen.",
 
+    "htmlchecks.label-errors": "Fehler",
     "htmlchecks.label-warnings": "Warnungen",
     "htmlchecks.label-ok": "OK",
 
@@ -429,6 +439,13 @@
     "linkchecker.loop-detected": "Abbruch: Loop auf %s gefunden.",
     "linkchecker.legend": "Legende zu den Http-Statuscodes",
     
+    "httpstatuscode.headline": "Tabelle der Http Statuscodes",
+    "httpstatuscode.infos": "Nachfolgende Tabelle listet die Http Statuscodes auf sowie in h&auml;ufigen Konstellationen die Handlungsanweisungen f&uuml;r Webmaster, um jene zu beheben.",
+    "httpstatus-status": "Status",
+    "httpstatus-icon": "Anzeige",
+    "httpstatus-label": "Kurzinfo",
+    "httpstatus-description": "Beschreibung",
+    "httpstatus-todo": "Behebung",
     
     "about.info": "Weitere Ressourcen: Dokumentation, Webseite, Updates ...",
     "about.url.project": "Projekt-Webseite",

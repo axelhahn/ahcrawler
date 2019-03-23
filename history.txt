@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-03-23: v0.59
+  * backend: add tools and list of http statuscodes
+  * backend: html checks - added error tile for no title/ keywords/ description
+
 2019-03-21: v0.58
   * backend: home: remove tiles
   * backend: fix icon for htpp error

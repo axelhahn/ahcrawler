@@ -38,6 +38,9 @@ class backend extends crawler_base {
             'checkurl'=>array(), 
             'ressourcedetail'=>array(), 
         ), 
+        'tools'=>array(
+            'httpstatuscode'=>array(), 
+        ),
         'about'=>array(
             'update'=>array(), 
         )
@@ -64,6 +67,8 @@ class backend extends crawler_base {
             'httpheaderchecks'=>'far fa-flag', 
             'checkurl'=>'fas fa-globe-americas', 
             'ressourcedetail'=>'fas fa-map-marked', 
+            'tools'=>'fas fa-tools', 
+            'httpstatuscode'=>'fab fa-font-awesome', 
             'about'=>'fas fa-info-circle', 
             'update'=>'fas fa-cloud-download-alt', 
             'project'=>'fas fa-book', 
@@ -74,6 +79,8 @@ class backend extends crawler_base {
             'url'=>'fas fa-link', 
             'title'=>'fas fa-chevron-right', 
             'description'=>'fas fa-chevron-right', 
+            'label'=>'fas fa-chevron-right', 
+            'icon'=>'far fa-image', 
             'errorcount'=>'fas fa-bolt', 
             'keywords'=>'fas fa-key', 
             'lasterror'=>'fas fa-bolt', 
@@ -85,6 +92,8 @@ class backend extends crawler_base {
             'host'=>'fas fa-laptop', 
             'ua'=>'fas fa-paw', 
             'referrer'=>'fas fa-link', 
+            'status'=>'far fa-flag', 
+            'todo'=>'fas fa-magic', 
             'ts'=>'fas fa-calendar', 
             'ressourcetype'=>'fas fa-cubes', 
             'type'=>'fas fa-cloud', 
@@ -841,23 +850,33 @@ class backend extends crawler_base {
          * @param integer  $iMinLength  minimal length
          * @return string
          */
-        private function _getHtmlchecksChart($iTotal, $iValue){
-            return $this->_getChart(array(
-                'type'=>'pie',
-                'data'=>array(
-                    array(
+        private function _getHtmlchecksChart($iTotal, $iWarnings, $iErrors=0){
+            $aData=array();
+            if($iErrors){
+                $aData[]=array(
+                        'label'=>$this->lB('htmlchecks.label-errors'),
+                        'value'=>$iErrors,
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-error\')',
+                        // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    );
+            }
+            if($iWarnings){
+                $aData[]=array(
                         'label'=>$this->lB('htmlchecks.label-warnings'),
-                        'value'=>$iValue,
+                        'value'=>$iWarnings,
                         'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
                         // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
-                    ),
-                    array(
+                    );
+            }
+            $aData[]=array(
                         'label'=>$this->lB('htmlchecks.label-ok'),
-                        'value'=>($iTotal-$iValue),
+                        'value'=>($iTotal-$iWarnings-$iErrors),
                         'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-ok\')',
                         // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
-                    ),
-                )
+                    );
+            return $this->_getChart(array(
+                'type'=>'pie',
+                'data'=>$aData,
             ));
         }
         /**

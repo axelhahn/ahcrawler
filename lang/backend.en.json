@@ -52,6 +52,12 @@
     "nav.ressourcedetail.label": "Ressource-Details",
     "nav.ressourcedetail.hint": "Status, ressource details and dependencies.",
 
+    "nav.tools.label": "Tools and information",
+    "nav.tools.hint": "Tools",
+
+    "nav.httpstatuscode.label": "Http status codes",
+    "nav.httpstatuscode.hint": "List of Http status codes and their description",
+
     "nav.about.label": "About ...",
     "nav.about.hint": "Version infos and Thanks",
 
@@ -83,6 +89,8 @@
     "button.help": "Help",
     "button.help": "Home",
     "button.help.hint": "Go back to home page",
+    "button.home": "Home",
+    "button.home.hint": "Back to home page",
     "button.login": "Login",
     "button.login.hint": "",
     "button.logoff": "Logoff",
@@ -328,9 +336,12 @@
     "htmlchecks.overview.introtext": "Meta tags are evaluated by many search engines. It is not a must, but it helps to index the site better.<br>When using the ahCrawler as a search engine for the website, hits in the metadata have higher priority than the content text.",
     
     "htmlchecks.tile-crawlererrors": "Crawl errors",
+    "htmlchecks.tile-check-no-title": "No title",
     "htmlchecks.tile-check-short-title": "Too short titles<br>(less than %s chars)",
-    "htmlchecks.tile-check-short-description": "Too short descriptions<br>(less that %s chars)",
-    "htmlchecks.tile-check-short-keywords": "Too short keywords<br>(less %s chars)",
+    "htmlchecks.tile-check-no-description": "No description",
+    "htmlchecks.tile-check-short-description": "Too short descriptions<br>(less than %s chars)",
+    "htmlchecks.tile-check-no-keywords": "No keyword",
+    "htmlchecks.tile-check-short-keywords": "Too short keywords<br>(less than %s chars)",
     "htmlchecks.tile-check-loadtime-of-pages": "Long loading pages<br>(longer %s ms)",
     "htmlchecks.tile-check-large-pages": "Large pages<br>(bigger %s byte)",
     
@@ -348,6 +359,7 @@
     "htmlchecks.tableLargePages": "Large pages (%s)",
     "htmlchecks.tableLargePages.description": "This is just a hint - not an error.<br>This part lists larger html code with more than <em>%s</em> byte in the response. If it it is a bit more complext html code the browser could have problems while rendereing it.",
 
+    "htmlchecks.label-errors": "Errors",
     "htmlchecks.label-warnings": "Warnings",
     "htmlchecks.label-ok": "OK",
     
@@ -431,6 +443,13 @@
     "linkchecker.loop-detected": "Abort: A loop to the url %s was found.",
     "linkchecker.legend": "Legend of the status codes",
 
+    "httpstatuscode.headline": "Table with Http status codes",
+    "httpstatuscode.infos": "The following table lists Http status codes and often the required actions for webmasters to repair it.",
+    "httpstatus-status": "Status",
+    "httpstatus-icon": "Display",
+    "httpstatus-label": "Info",
+    "httpstatus-description": "Description",
+    "httpstatus-todo": "How to fix it",
 
     "about.info": "More Ressources: documentation, website, updates ...",
     "about.url.project": "Project website",
@@ -686,8 +705,8 @@
     "httpcode.511.descr":"-",
     "httpcode.511.todo":"",
     
-    "httpcode...????.label": "Proprietary",
-    "httpcode.????.descr": "A web operator has only invented the code; this status code is not standardized in the relevant RFC and can mean any error.",
-    "httpcode.????.todo": "Please check."
+    "httpcode.???.label": "Proprietary",
+    "httpcode.???.descr": "A web operator has only invented the code; this status code is not standardized in the relevant RFC and can mean any error.",
+    "httpcode.???.todo": "Please check."
     
 }
