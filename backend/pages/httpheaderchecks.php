@@ -64,8 +64,9 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
         . sprintf($this->lB('httpheader.data.description'), $aPagedata[0]['url']).'<br><br>'
         . '</p>'
-        // . '<pre>'.print_r($oHttpheader->getHeaderstring(), 1).'</pre>'
-        . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+        . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders())
+        . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
+        . '<pre>'.print_r($aInfos['_responseheader'], 1).'</pre>'
         ;
 
 // --- warnings
@@ -91,7 +92,7 @@ $sTiles='';
             $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.varfound.unknown'), $aHeaderitem['var'], $aHeaderitem['value'])
                     // .'<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>'
                     ;
-            $sLegendeUnknown .='<li>'. '<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
+            $sLegendeUnknown .='<li>'. '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
         }
         $sWarnings.= ''
             . $oRenderer->renderTileBar($sTiles)
@@ -113,7 +114,7 @@ $sTiles='';
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
                     );
             $sLegendeWarn .='<li>'
-                    . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+                    . $this->lB('httpheader.'.$aHeaderitem['var'].'.description').'<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
                     ;
         }
         /*

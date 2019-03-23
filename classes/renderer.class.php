@@ -372,7 +372,7 @@ class ressourcesrenderer extends crawler_base {
          */
         if (array_key_exists($iIdRessource, $aUrllist)){
             return $sReturn . ' <span class="error">'
-                . sprintf($this->lB("warnings.loop-detected"), $aRessourceItem['url'])
+                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
                 . '</span>'
                 ;
         }
@@ -410,7 +410,7 @@ class ressourcesrenderer extends crawler_base {
 
         if (array_key_exists($iIdRessource, $aUrllist)){
             return $sReturn . ' <span class="error">'
-                . sprintf($this->lB("warnings.loop-detected"), $aRessourceItem['url'])
+                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
                 . '</span>'
                 ;
         }

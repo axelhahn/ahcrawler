@@ -904,6 +904,7 @@ class crawler extends crawler_base{
         if (!$this->iSiteId) {
             return false;
         }
+        $characterMap='À..ÿ'; // chars #192 .. #255
         echo "BUILD INDEX ... finding words ";
         $aWords=array();
         $aResult = $this->oDB->select(
@@ -920,14 +921,18 @@ class crawler extends crawler_base{
         echo "... and count ";
         foreach($aResult as $aRow){
             // print_r($aRow);
-            foreach(str_word_count(html_entity_decode(
+            foreach(str_word_count(
                     $aRow['description']
                     .' ' . $aRow['title']
                     .' ' . $aRow['keywords']
                     .' ' . $aRow['content']
-                ),2) as $sWord ){
-                $sWord=str_replace("'", '', $sWord);
-                $sKey=strtolower($sWord);
+                ,2,$characterMap) as $sWord ){
+                $sWord= str_replace("'", '', $sWord);
+                
+                // strtolower destroyes umlauts
+                // $sKey=strtolower($sWord);
+                // $sKey=function_exists('mb_strtolower') ? mb_strtolower($sWord) : $sWord;
+                $sKey=$sWord;
                 if(strlen($sKey)>2){
                     if(!array_key_exists($sKey, $aWords)){
                         $aWords[$sKey]=1;
@@ -967,7 +972,7 @@ class crawler extends crawler_base{
         }
          * 
          */
-        // echo "\n" . $this->oDB->last_query() . "\n";
+        // echo "\n" . $this->oDB->last() . "\n"; die("ABOORT in ". __FILE__ .' '.__METHOD__);
         echo "\n";
         return $aResult;
 

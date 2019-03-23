@@ -213,7 +213,7 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
                 $aTmp=explode(":", $sLine, 2);
                 $sVarname=count($aTmp)>1 ? $aTmp[0]:'_status';
                 $value=count($aTmp)>1 ? $aTmp[1]:$sLine;
-                $this->_aHeader[$sVarname]=trim($value);
+                $this->_aHeader[]=array($sVarname, trim($value));
             }
             // $this->_aHeader=$aTmp;
         }
@@ -263,8 +263,11 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
     public function checkHeaders(){
         $aReturn=array();
         $aKnownHeader=array_merge($this->_aHeaderVars['httpv1'], $this->_aHeaderVars['security']);
-        
-        foreach($this->_aHeader as $varname=>$val){
+
+        $iLine=0;
+        foreach($this->_aHeader as $aLine){
+            $iLine++;
+            list($varname, $val) = $aLine;
             $sFound=false;
             $sBad=false;
             foreach(array('non-standard', 'httpv1', 'security') as $sSection){
@@ -289,9 +292,11 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
                 }
             }
             
-            $aReturn[strtolower($varname)]=array(
+            // $aReturn[strtolower($varname)]=array(
+            $aReturn[]=array(
                 'var'=>$varname,
                 'value'=>$val,
+                'line'=>$iLine,
                 'found'=>$sFound ? $sFound : 'unknown',
                 'bad'=>$sBad ? $sBad : false,
             );
@@ -300,18 +305,18 @@ feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyrosco
     }
     public function checkUnknowHeaders(){
         $aReturn=array();
-        foreach($this->checkHeaders() as $sVar => $aData){
+        foreach($this->checkHeaders() as $aData){
             if($aData['found']==='unknown'){
-                $aReturn[$sVar]=$aData;
+                $aReturn[]=$aData;
             }
         }
         return $aReturn;
     }
     public function checkUnwantedHeaders(){
         $aReturn=array();
-        foreach($this->checkHeaders() as $sVar => $aData){
+        foreach($this->checkHeaders() as $aData){
             if($aData['bad']){
-                $aReturn[$sVar]=array('var'=>$sVar, 'value'=>$aData['value']);;
+                $aReturn[]=array('var'=>$aData['var'], 'value'=>$aData['value'], 'line'=>$aData['line']);;
             }
         }
         return $aReturn;

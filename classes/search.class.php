@@ -148,9 +148,10 @@ class ahsearch extends crawler_base {
      * do search through pages
      * @param string  $q          search string
      * @param type $aOptions
-     *   url  string  limit url i.e. //[domain]/[path] - without "%"
-     *   subdir => subset of search without domain with starting slash (/[path])
-     *   mode string  one of AND |OR (default: OR)
+     *   url    {string}  limit url i.e. //[domain]/[path] - without "%"
+     *   subdir {string}  => subset of search without domain with starting slash (/[path])
+     *   mode   {string}  one of AND |OR (default: OR)
+     *   lang   {string}  force language of the document; default: all
      * @param string  $aOptions     options
      * @return array
      */

@@ -66,8 +66,8 @@ body{
 
 /* --- menu top (profiles) --- */
 .pure-menu-horizontal{margin-left: 0;border-bottom: 1px solid #eee;}
-.pure-menu-horizontal .pure-menu-link{color:#89a; border-top: 3px solid #fff; padding: 0.75em;}
-.pure-menu-horizontal .pure-menu-link:hover{background:rgba(0,0,0,0.02); border-color: #eee; border-color: #345; border-color:#789; }
+.pure-menu-horizontal .pure-menu-link{color:#345; border-top: 3px solid #fff; padding: 0.75em;}
+.pure-menu-horizontal .pure-menu-link:hover{background:#cde; border-color: #345; }
 .pure-menu-horizontal .pure-menu-link:focus{border-color: #fc3;}
 .pure-menu-horizontal .pure-menu-link-active{background:#f8f8f8; background: #cde; background: #345; color:#345; color:#fff; border-color: #89a; Xborder-color: #345;}
 
@@ -129,7 +129,7 @@ h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 
 
 
 hr{border: 0; border-bottom: 3px dotted #eee;}
-pre{border: 1px solid #ddd; font-size: 80%; padding: 0.3em; background: #f8f8f8; background: #d0d8e0; color:#567;}
+pre{font-size: 80%; padding: 0.5em; background: #cde; color:#345;}
 
 
 

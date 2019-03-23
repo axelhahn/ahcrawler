@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2019-03-23: v0.60
+  * backend: http headers - handle double entries with the same variable name
+  * backend: added plain http headers
+  * backend: added English texts for update wizzard
+  * crawler: fix umlauts in word table
+
 2019-03-23: v0.59
   * backend: add tools and list of http statuscodes
   * backend: html checks - added error tile for no title/ keywords/ description

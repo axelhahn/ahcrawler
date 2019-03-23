@@ -316,12 +316,13 @@
     "ressources.searchurl": "URL",
     "ressources.searchurl-hint": "Geben Sie eine vollst&auml;ndige URL oder einen Teil davon (Domain, Pfad, Dateiname, Erweiterung) an.",
     "ressources.showreport": "Report",
-    "ressources.showreport.hint": "als Report zeigen (braucht viel länger, als Tabellenansicht))",
+    "ressources.showreport.hint": "als Report zeigen (braucht viel länger, als Tabellenansicht)",
     "ressources.showtable": "Tabelle",
     "ressources.showtable.hint": "als Tabelle zeigen",
     "ressources.ignorelimit": "Limit ignorieren",
     "ressources.ignorelimit.hint": "Limit ignorieren und lange Ladezeit in Kauf nehmen",
     "ressources.referenced-in": "verwendet in",
+    "ressources.size-is-zero": "[Nicht im Suchindex]",
     
     "ressources.references-h3-in": "Verwendet in (%s)",
     "ressources.references-in": "Verwendet in",
@@ -379,6 +380,7 @@
     "httpheader.no-value": "kein Wert",
 
 
+    "httpheader.plain": "Http-Header (Rohdaten)",
     "httpheader.data": "Http-Header",
     "httpheader.data.description": "Das Http Response Header von<br><em>%s</em>",
     "httpheader.nopage-with-id": "Es wurde keine URL mit der ID %s der in der Datenbank gefunden.",
@@ -436,7 +438,7 @@
     "linkchecker.found-http-external-todo": "Dies ist nur ein Hinweis. Zielseiten sollten m&ouml;glichst direkt auf die Zielseite gesetzt werden. ",
     
     "linkchecker.ok-none-was-found": "Sehr gut: kein Eintrag gefunden!",
-    "linkchecker.loop-detected": "Abbruch: Loop auf %s gefunden.",
+    "linkchecker.loop-detected": "Abbruch: Loop zu dieser URL gefunden:<br>%s",
     "linkchecker.legend": "Legende zu den Http-Statuscodes",
     
     "httpstatuscode.headline": "Tabelle der Http Statuscodes",
@@ -479,7 +481,7 @@
     "update.download.failed": "Fehler: die Software konnte nicht heruntergeladen werden.",
     "update.extract.label": "Entpacken",
     "update.extract.description": "Auspacken der heruntergeladenen Software",
-    "update.extract.ok": "OK, das Entpacken war erfolgreich",
+    "update.extract.ok": "OK, das Entpacken war erfolgreich.",
     "update.extract.failed": "Fehler: die Software konnte nicht entpackt werden.",
 
     "update.available-yes": "Es ist ein Update auf Version %s verf&uuml;gbar.",
