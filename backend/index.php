@@ -4,12 +4,52 @@ require_once(dirname(__DIR__) . "/classes/cdnorlocal.class.php");
 
 $oBackend = new backend();
 $oRenderer = new ressourcesrenderer();
+
+global $oCdn;
 $oCdn=new axelhahn\cdnorlocal(array(
     'vendorrelpath'=>'../vendor/cache',
     // 'vendordir'=>__DIR__.'/../vendor/cache',
     // 'vendorurl'=>'../vendor/cache',
     'debug'=>0,
     ));
+$oCdn->setLibs(array(
+    "pure/1.0.0",
+    "datatables/1.10.19",
+    "font-awesome/5.7.2",
+    "jquery/3.3.1",
+    "Chart.js/2.7.3"
+));
+
+
+/**
+ * get new querystring - create the new querystring by existing query string
+ * of current request and given new parameters
+ * @param array $aQueryParams
+ * @return string
+ */
+function getNewQs($aQueryParams = array()) {
+    $s = false;
+    $aDelParams = array("doinstall");
+
+    if ($_GET) {
+        $aDefaults = $_GET;
+        foreach ($aDelParams as $sParam) {
+            if (array_key_exists($sParam, $aDefaults)) {
+                unset($aDefaults[$sParam]);
+            }
+        }
+        $aQueryParams = array_merge($aDefaults, $aQueryParams);
+    }
+
+    foreach ($aQueryParams as $var => $value) {
+        if ($value)
+            $s .= "&amp;" . $var . "=" . urlencode($value);
+    }
+    $s = "?" . $s;
+    return $s;
+}
+
+
 
 ?><!doctype html>
 <html lang="en">
@@ -20,19 +60,27 @@ $oCdn=new axelhahn\cdnorlocal(array(
         <meta name="robots" content="noindex,nofollow">
         <meta name="description" content="">
 
-        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/pure-min.css'); ?>
-        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/buttons-min.css'); ?>
-        <?php echo $oCdn->getHtmlInclude('pure/1.0.0/grids-responsive-min.css'); ?>
-        <?php /* echo $oCdn->getHtmlInclude('font-awesome/4.7.0/css/font-awesome.min.css'); */?>
-        <?php echo $oCdn->getHtmlInclude('font-awesome/5.7.2/css/all.css'); ?>
+        <?php
+        echo ''
         
-        <?php echo $oCdn->getHtmlInclude('jquery/3.3.1/jquery.min.js'); ?>
-        
-        <?php echo $oCdn->getHtmlInclude('datatables/1.10.19/css/jquery.dataTables.min.css'); ?>
-        <?php echo $oCdn->getHtmlInclude('datatables/1.10.19/js/jquery.dataTables.min.js'); ?>
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/pure-min.css") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/buttons-min.css") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/grids-responsive-min.css") . "\n"
 
-        <?php echo $oCdn->getHtmlInclude('Chart.js/2.7.3/Chart.min.js'); ?>
+            // fontawesome
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('font-awesome')."/css/all.css") . "\n"
         
+            // jQuery
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('jquery')."/jquery.min.js") . "\n"
+            // datatables
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('datatables')."/css/jquery.dataTables.min.css") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('datatables')."/js/jquery.dataTables.min.js") . "\n"
+
+            // Chart.js
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/Chart.min.js") . "\n"
+
+            ;
+        ?>
         <script src="javascript/functions.js"></script>      
         <link rel="stylesheet" href="main.css">
         <!--

@@ -22,6 +22,9 @@
     "nav.profiles.label": "Profiles",
     "nav.profiles.hint": "Configure websites",
     
+    "nav.vendor.label": "Vendor libs",
+    "nav.vendor.hint": "Use vendor libs for this backend locally or load them from a CDN",
+    
     "nav.status.label": "Status",
     "nav.status.hint": "Overview about data in the search index",
     
@@ -84,8 +87,10 @@
     "button.create": "Create",
     "button.delete": "Delete",
     "button.delete.hint": "",
+    "button.download": "Download",
+    "button.download.hint": "",
     "button.edit": "Edit",
-    "button.delete.hint": "",
+    "button.edit.hint": "",
     "button.help": "Help",
     "button.help": "Home",
     "button.help.hint": "Go back to home page",
@@ -502,6 +507,15 @@
     "overlay.crawl": "Crawl",
     "overlay.search": "Live search",
     
+    "vendor.hint": "Used vendor libraries and the place where they are loaded from. Using remote or local libs has no functional impact.<br>Download the libaries to increase the speed of this web app and/ or to run it without additional internet access.",
+    "vendor.lib": "Library",
+    "vendor.version": "Version",
+    "vendor.remote": "Remote",
+    "vendor.local": "Local",
+    "vendor.unused": "not used anymore",
+    "vendor.Localinstallations": "<strong>%s</strong> libs are in use and <strong>%s</strong> of them are local. Download all libs for best performance.",
+    "vendor.AllLocal": "All <strong>%s</strong> used libs are local.",
+
     "httpcode.todo":"What to do",
     "httpcode.-1.label":"todo",
     "httpcode.-1.descr":"The urls were detected and added but not analyzed yet. This is an internal code only.",

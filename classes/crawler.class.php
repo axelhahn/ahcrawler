@@ -922,12 +922,14 @@ class crawler extends crawler_base{
         foreach($aResult as $aRow){
             // print_r($aRow);
             foreach(str_word_count(
-                    $aRow['description']
-                    .' ' . $aRow['title']
-                    .' ' . $aRow['keywords']
-                    .' ' . $aRow['content']
+                    str_replace("'", '',
+                        $aRow['description']
+                        .' ' . $aRow['title']
+                        .' ' . $aRow['keywords']
+                        .' ' . $aRow['content']
+                    )
                 ,2,$characterMap) as $sWord ){
-                $sWord= str_replace("'", '', $sWord);
+                // $sWord= str_replace("'", '', $sWord);
                 
                 // strtolower destroyes umlauts
                 // $sKey=strtolower($sWord);

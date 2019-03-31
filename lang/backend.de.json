@@ -21,6 +21,9 @@
     
     "nav.profiles.label": "Profile",
     "nav.profiles.hint": "Zu untersuchende Webseiten",
+
+    "nav.vendor.label": "Vendor-Bibliotheken",
+    "nav.vendor.hint": "Verwende Bibliotheken in diesem Backend von lokal oder lade sie von einem CDN",
     
     "nav.status.label": "Status des Suchindex",
     "nav.status.hint": "&Uuml;berblick &uuml;ber die Daten im Suchindex",
@@ -86,6 +89,8 @@
     "button.edit": "Bearbeiten",
     "button.delete.hint": "",
     "button.delete.hint": "Dieses Element endg&uuml;ltig l&ouml;schen",
+    "button.download": "Download",
+    "button.download.hint": "",
     "button.help": "Hilfe",
     "button.help.hint": "Hilfe aufrufen (englisch)",
     "button.home": "Start",
@@ -494,6 +499,15 @@
     
     "overlay.crawl": "Crawler",
     "overlay.search": "Live-Suche",
+    
+    "vendor.hint": "Verwendete Bibliotheken und von wo sie geladen werden. Ob sie von einem CDN oder lokal geladen werden, hat funktional keinen Einfluss. Liegen sie lokal, erh&ouml;ht des die Ladegeschwindigkeit und man kann die Webapplikation ohne externe Internet-Anbindung betreiben.",
+    "vendor.lib": "Bibliothek",
+    "vendor.version": "Version",
+    "vendor.remote": "Remote",
+    "vendor.local": "Lokal",
+    "vendor.unused": "nicht mehr verwendet",
+    "vendor.Localinstallations": "<strong>%s</strong> verwendete Bibliotheken gesamt - davon liegen <strong>%s</strong> lokal. Lade alle herunter, um die beste Performance zu haben.",
+    "vendor.AllLocal": "Alle <strong>%s</strong> verwendeten Bibliotheken sind lokal.",
     
     "httpcode.todo":"Was zu tun ist",
     "httpcode.-1.label":"noch offen",

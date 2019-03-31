@@ -1,12 +1,12 @@
 <?php
 /**
  * 
- * Get infos to an ssl certificate
+ * CHECKER FOR SSL CERTIFICATES THAT ARE INSTALLED ON A SERVER
  * 
  * @example
  * <code>
- * require_once('sslinfo.class.php');
- * $oSsl = new sslinfo();
+ * require_once('ssl-checker.class.php');
+ * $oSsl = new sslchecker();
  * 
  * $sUrl='https://example.com';
  * 
@@ -26,19 +26,33 @@
 
  * </code>
  * 
+ * 
  * @version 0.1
- * @author Axel Hahn <axel.hahn@axel-hahn.de>
+ * @author Axel Hahn <axel.hahn@iml.unibe.ch>
  * @license GNU GPL 3.0
+ * 
  */
-class sslinfo {
+class sslchecker {
     # ----------------------------------------------------------------------
     # CONFIG
     # ----------------------------------------------------------------------
 
-    protected $_sUrl=false;
-    protected $_aCertInfos = false;
+    /**
+     * TTL for cert infos - when to re read from server; value is in sec
+     * @var integer
+     */
+    protected $_iCacheTTL = 60 * 60;
     
+    /**
+     * warn level before a certificate expires; value is in days
+     * @var integer
+     */
     protected $_iWarnBeforeExpiration = 30;
+    
+    protected $_sUrl  = false;
+    protected $_sHost = false;
+    protected $_iPort = false;
+
 
     # ----------------------------------------------------------------------
     # CONSTRUCT
@@ -46,6 +60,55 @@ class sslinfo {
 
     function __construct() {
         return true;
+    }
+
+    # ----------------------------------------------------------------------
+    # PROTECTED :: CERT CACHE
+    # ----------------------------------------------------------------------
+
+    /**
+     * get a filename for a certificate specific cache file
+     * 
+     * @param string  $sHost  hostname
+     * @param integer $iPort  port
+     * @return string
+     */
+    protected function _certGetCachefile() {
+        $sKey = $this->_sHost . '__port_' . $this->_iPort;
+        return 'cache/' . preg_replace('/[^a-z0-9]/', '_', $sKey) . '__' . md5($sKey) . '.json';
+    }
+
+    /**
+     * get cached cert infos (if they are still below TTL);
+     * result is false if cache is invalid or does not exist yet.
+     * 
+     * @param string  $sHost  hostname
+     * @param integer $iPort  port
+     * @return boolean
+     */
+    protected function _certGetCache() {
+        $sCachefile = $this->_certGetCachefile();
+        if (file_exists($sCachefile)) {
+            if (filemtime($sCachefile) > (date('U') - $this->_iCacheTTL)) {
+                return json_decode(file_get_contents($sCachefile), 1);
+            } else {
+                unlink($sCachefile);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * store cert infos in the cache; result is success of write action
+     * 
+     * @param string  $sHost     hostname
+     * @param integer $iPort     port
+     * @param array   $certinfo  openssl cert data
+     * @return boolean
+     */
+    protected function _certSavecache($certinfo) {
+        $sCachefile = $this->_certGetCachefile();
+        return file_put_contents($sCachefile, json_encode($certinfo, JSON_PRETTY_PRINT));
     }
 
     # ----------------------------------------------------------------------
@@ -62,16 +125,18 @@ class sslinfo {
         if($url){
             $this->setUrl($url);
         }
-        if ($this->_aCertInfos){
-            return $this->_aCertInfos;
-        }
         
         $iTimeout = 1;
         if (!$this->_sHost || !$this->_iPort) {
             // die(__METHOD__. "ERROR: I need host AND port\n");
             return array('_error' => 'ERROR: I need host AND port');
         }
-
+        // try to read cache first
+        $aCertinfo = $this->_certGetCache();
+        if ($aCertinfo) {
+            return $aCertinfo;
+        }
+        
         // fetch data directly from the server
         $aStreamOptions = stream_context_create(array(
             'ssl' => array(
@@ -94,8 +159,9 @@ class sslinfo {
         if (!$cert) {
             return array('_error' => "Error: socket was connected to ssl://$this->_sHost:$this->_iPort - but I cannot read certificate infos with stream_context_get_params ");
         }
-        $this->_aCertInfos = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
-        return $this->_aCertInfos;
+        $aCertinfo = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+        $this->_certSavecache($aCertinfo);
+        return $aCertinfo;
     }
 
     /**
@@ -133,15 +199,12 @@ class sslinfo {
         }
 
         // ----- Check: is valid already
-        /*
         $iStart = round(($certinfo['validFrom_time_t'] - date('U')) / 60 / 60 / 24);
         if ($iStart < date('U')) {
-            $aReturn['ok'][] = "";
+            $aReturn['ok'][] = "OK, Start-Datum des Zertifikats ist erreicht.";
         } else {
-            $aReturn['errors'][] = "";
+            $aReturn['errors'][] = "Start-Datum des Zertifikats ist in der Zukunft.";
         }
-         * 
-         */
 
         // ----- Check: is still valid ... or expiring soon?
         $iDaysleft = round(($certinfo['validTo_time_t'] - date('U')) / 60 / 60 / 24);
@@ -254,16 +317,21 @@ class sslinfo {
     # EXPERIMENTAL SECTION
     # PUBLIC :: get items ... requires to setUrl() first
     # ----------------------------------------------------------------------
+    
+        protected function _getcertItem($s){
+            $certinfo = $this->getCertinfos();
+            return isset($certinfo[$s]) ? $certinfo[$s] : false;
+        }
 
     /**
-     * get status as string error|warning|ok
+     * experimental
      * 
-     * @return boolean
+     * @return type
      */
-    public function getStatus() {
-        $aChecks=$this->checkCertdata();
-        return isset($aChecks['status']) ? $aChecks['status']: false;
+    public function getName() {
+        return $this->_getcertItem('name');
     }
+    
     /**
      * experimental
      * 

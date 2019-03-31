@@ -95,6 +95,7 @@ $iRessourcesCount=$iRessourcesCount-$iCountCrawlererrors;
 // table with too short titles
 // ----------------------------------------------------------------------
 if ($iCountShortTitles) {
+    $iCountNoTitle=$this->_getHtmlchecksCount('title', 1);
     $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
         . '<div style="float: right; margin: 0 0 1em 1em;">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortTitles-$iCountNoTitle, $iCountNoTitle)

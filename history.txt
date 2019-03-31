@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2019-03-31: v0.61
+  * update sslinfo.class + cdorlocal.class
+  * added cdorlocal-admin class
+  * added vendor page
+  * html checks: FIX warnings for $iCountNoTitle
+
 2019-03-23: v0.60
   * backend: http headers - handle double entries with the same variable name
   * backend: added plain http headers

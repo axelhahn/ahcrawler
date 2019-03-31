@@ -12,9 +12,14 @@ namespace axelhahn;
  * $oCdn->new axelhahn\cdnorlocal();
  * echo $oCdn->getHtmlInclude("jquery/3.2.1/jquery.min.js");
  * 
- * @version 1.0
+ * 
+ * TODO:
+ * support jsdelivr, i.e.
+ * https://cdn.jsdelivr.net/npm/vis@4.21.0/dist/vis.min.js
+ * 
+ * @version 1.0.4
  * @author Axel Hahn
- * @link http://www.axel-hahn.de
+ * @link https://www.axel-hahn.de
  * @license GPL
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @package cdnorlocal
@@ -47,6 +52,8 @@ class cdnorlocal {
     var $sCdnUrl='https://cdnjs.cloudflare.com/ajax/libs';
     
 
+    var $_aLibs=array();
+    
     // ----------------------------------------------------------------------
     // 
     // INIT
@@ -95,13 +102,13 @@ class cdnorlocal {
     
     // ----------------------------------------------------------------------
     // 
-    // getter and setter
+    // getter and setter for single libs
     // 
     // ----------------------------------------------------------------------
 
     
     /**
-     * return the local filename (maybe it does not exist
+     * return the local filename (maybe it does not exist)
      * 
      * @param string $sRelUrl  relative url of css/ js file (i.e. "jquery/3.2.1/jquery.min.js")
      * @return string
@@ -135,9 +142,9 @@ class cdnorlocal {
         return $this->_bDebug=$sNewValue;
     }
     /**
-     * set a vendor dir to scan libraries
+     * set a vendor dir to scan libraries as relative path to the class
      * 
-     * @param string  $sNewValue  new local dir
+     * @param string  $sNewValue  new local dir; relative to the class file
      * @return string
      */
     public function setVendorWithRelpath($sRelpath){
@@ -147,9 +154,9 @@ class cdnorlocal {
         return true;
     }
     /**
-     * set a vendor dir to scan libraries
+     * set a vendor dir to scan libraries as full path
      * 
-     * @param string  $sNewValue   new local dir
+     * @param string  $sNewValue   new local dir; absolute path
      * @param boolean $bMustExist  optional flag: ensure that the directory exists
      * @return string
      */
@@ -173,6 +180,122 @@ class cdnorlocal {
         return $this->sVendorUrl=$sNewValue;
     }
     
+    // ----------------------------------------------------------------------
+    // 
+    // getter and setter for libs
+    // 
+    // ----------------------------------------------------------------------
+
+    /**
+     * add a library into lib stack
+     * @param string $sReldir  relative dir and version (i.e. "jquery/3.2.1")
+     * @param string $sFile    optional file (behind relpath)
+     * @return boolean
+     */
+    public function addLib($sReldir, $sFile=false){
+        $this->_wd(__METHOD__ . "($sReldir,$sFile)");
+        if (!array_key_exists($sReldir, $this->_aLibs)){
+            $this->_wd(__METHOD__ . " add $sReldir");
+            $aTmp=preg_split('#\/#', $sReldir);
+            $this->_aLibs[$sReldir]=array(
+                'lib' => $aTmp[0],
+                'version' => $aTmp[1],
+                'relpath' => $sReldir,
+                'islocal' => !!$this->getLocalfile($sReldir),
+                'files'=>array(),
+                );
+        } else {
+            $this->_wd(__METHOD__ . " SORRY $sReldir was added already");
+        }
+        if($sFile){
+            $this->_aLibs[$sReldir]['files'][$sFile]=array(
+                'islocal' => !!$this->getLocalfile($sReldir.'/'.$sFile)
+            );
+        }
+        ksort($this->_aLibs);
+        $this->_wd(__METHOD__ . " ... ".print_r($this->_aLibs, 1));
+        return true;
+    }
+    /**
+     * return all libs from lib stack; with enabled flag entries in local 
+     * vendor cache will be added to show the versions that can be deleted
+     * (detectable by subkey "isunused" => true)
+     * 
+     * @param boolean  $bDetectUnused  flag: detect unused local libs
+     * @return array
+     */
+    public function getLibs($bDetectUnused=false){
+        $this->_wd(__METHOD__ . "()");
+        $aReturn=$this->_aLibs;
+        if($bDetectUnused){
+            foreach(glob($this->sVendorDir.'/*') as $sDir){
+                $sMyLib=basename($sDir);
+                foreach(glob($this->sVendorDir.'/'.$sMyLib.'/*') as $sVersiondir){
+                    $sMyVersion=basename($sVersiondir);
+                    if(!isset($aReturn[$sMyLib.'/'.$sMyVersion]) || $aReturn[$sMyLib.'/'.$sMyVersion]){
+                        $aReturn[$sMyLib.'/'.$sMyVersion]=array(
+                            'lib'=>$sMyLib,
+                            'version'=>$sMyVersion,
+                            'relpath' => $sMyLib.'/'.$sMyVersion,
+                            'islocal'=>1,
+                            'isunused'=>!isset($this->_aLibs[$sMyLib.'/'.$sMyVersion]),
+                        );
+                    }
+                }
+            }
+            ksort($aReturn);
+        }
+        return $aReturn;
+    }
+    
+    /**
+     * find item with a value and return other value
+     * @param string $sScanItem    item to search (one of lib|version|relpath)
+     * @param $sReldir$sScanValue  needed value
+     * @param $sReldir$sReturnKey  return key (one of lib|version|relpath)
+     * @return varia
+     */
+    public function _getLibItem($sScanItem, $sScanValue, $sReturnKey){
+        $this->_wd(__METHOD__ . "($sScanItem, $sScanValue, $sReturnKey)");
+        foreach($this->_aLibs as $sRelpath=>$aLibdata){
+            if ($aLibdata[$sScanItem]===$sScanValue){
+                return $aLibdata[$sReturnKey];
+            }
+        }
+        return false;
+    }
+    /**
+     * get the (first) version of a lib in the lib stack
+     * @param string  $sLib  name of the library (i.e. "jquery"; relpath without version)
+     * @return string
+     */
+    public function getLibVersion($sLib){
+        return $this->_getLibItem('lib', $sLib, 'version');
+    }
+    /**
+     * get the (first) version of a lib in the lib stack
+     * @param string  $sLib  name of the library (i.e. "jquery"; relpath without version)
+     * @return string
+     */
+    public function getLibRelpath($sLib){
+        return $this->_getLibItem('lib', $sLib, 'relpath');
+    }
+    /**
+     * set an array of lib items to the lib 
+     * @param array  $aLibs  array of relpath (i.e. "jquery/3.2.1")
+     * @return boolean
+     */
+    public function setLibs($aLibs){
+        $this->_wd(__METHOD__ . "([array])");
+        if(!is_array($aLibs)){
+            return false;
+        }
+        $this->_aLibs=array();
+        foreach($aLibs as $sReldir){
+            $this->addLib($sReldir);
+        }
+        return true;
+    }
     
     // ----------------------------------------------------------------------
     // 

@@ -24,6 +24,7 @@ class backend extends crawler_base {
         'settings'=>array(
             'setup'=>array(),
             'profiles'=>array(),
+            'vendor'=>array(), 
         ),
         'search'=>array(
             'status'=>array(), 
@@ -51,10 +52,11 @@ class backend extends crawler_base {
     private $_aIcons= array(
         'menu'=>array(
             'home'=>'fas fa-home', 
-            'setup'=>'fas fa-sliders-h', 
             'settings'=>'fas fa-cogs', 
-            'search'=>'fas fa-database', 
+            'setup'=>'fas fa-sliders-h', 
             'profiles'=>'fas fa-globe-americas', 
+            'vendor'=>'fas fa-box-open', 
+            'search'=>'fas fa-database', 
             'crawler'=>'fas fa-flag', 
             'status'=>'fas fa-flag', 
             'searches'=>'fas fa-search', 
@@ -143,6 +145,7 @@ class backend extends crawler_base {
             'button.continue' => 'fas fa-chevron-right',
             'button.create' => 'far fa-star',
             'button.delete' => 'fas fa-trash',
+            'button.download'=>'fas fa-cloud-download-alt', 
             'button.edit' => 'fas fa-pencil-alt',
             'button.help' => 'fas fa-question-circle',
             'button.home' => 'fas fa-home',
@@ -670,15 +673,21 @@ class backend extends crawler_base {
         if (!array_key_exists('label', $aOptions)) {
             $aOptions['label'] = 'button.view';
         }
+        /*
         if (!array_key_exists('popup', $aOptions)) {
             $aOptions['popup'] = true;
         }
+         */
         $sReturn = '<a '
                 . 'class="pure-button ' . $aOptions['class'] . '" '
                 . 'href="' . $aOptions['href'] . '" '
                 . 'target="' . $aOptions['target'] . '" '
                 . 'title="' . $this->lB($aOptions['label'] . '.hint') . '" '
-                . ($aOptions['popup'] ? 'onclick="showModal(this.href); return false;"' : '')
+                . (isset($aOptions['onclick']) 
+                    ? 'onclick="' . $aOptions['onclick'] . '" '
+                    : ''
+                  )
+                // . ($aOptions['popup'] ? 'onclick="showModal(this.href); return false;"' : '')
                 . '>' . $this->_getIcon($aOptions['label']).$this->lB($aOptions['label']) . '</a>';
         return $sReturn;
     }

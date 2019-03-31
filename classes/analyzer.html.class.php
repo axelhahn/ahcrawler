@@ -520,6 +520,30 @@ class analyzerHtml {
         }
         return true;
     }
+    /**
+     * TODO get words of a given string
+     * @return string
+     */
+    public function getWords($sString) {
+        $characterMap='À..ÿ'; // chars #192 .. #255
+        $aWords=array();
+        foreach(str_word_count(
+                str_replace("'", '',$sString)
+                ,2,$characterMap) as $sWord ){
+
+            $sKey=$sWord;
+            if(strlen($sKey)>2){
+                if(!array_key_exists($sKey, $aWords)){
+                    $aWords[$sKey]=1;
+                } else {
+                    $aWords[$sKey]++;
+                }
+            }
+        }
+        arsort($aWords);
+        
+        return $aWords;
+    }
 
     /**
      * get description from html head area
