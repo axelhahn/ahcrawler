@@ -3,7 +3,12 @@
  * page searchindex :: profiles
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
-$aOptions = $this->_loadOptions();
+
+$aOptions = $this->_loadConfigfile();
+// TODO ?
+// $aOptions['profiles'][currentid] = $this->getEffectiveProfile();
+// echo '<pre>options: '.print_r($aOptions['profiles'], 1).'</pre><br>';
+
 $sReturn = '';
 $aTbl = array();
 $sBtnBack='<br>'.$oRenderer->oHtml->getTag('button',array(
@@ -98,10 +103,9 @@ if(isset($_POST['action'])){
                         : 1
                     ;
             }
-            
-            // fix array values
+            // fix array values - textareas with line by line values
             $aArrays=array(
-                'searchindex'=>array('urls2crawl','include', 'includepath', 'exclude'),
+                'searchindex'=>array('urls2crawl','include', 'includepath', 'exclude', 'regexToRemove'),
                 'frontend'=>array('searchlang'),
             );
             
@@ -135,7 +139,6 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
            
             $aOptions['profiles'][$iProfileId]=$aNewProfile;
-            // $sReturn.='<pre>new options: '.print_r($aOptions['profiles'], 1).'</pre>'; die($sReturn);
             if ($this->_saveConfig($aOptions)){
                 $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.save.ok'), $aNewProfile['label']), 'ok');
                 
@@ -303,6 +306,18 @@ $sReturn.='
                     ), false)
                 . '</div>'
             . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>'label', 'label'=>$this->lB('profile.userpwd')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>'userpwd', 
+                    'name'=>'userpwd',
+                    'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
+                    ), false)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
+            . '</div>'
+            . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex[iMaxUrls]', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iMaxUrls', 
@@ -324,12 +339,15 @@ $sReturn.='
                     ), false)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'label', 'label'=>$this->lB('profile.userpwd')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>'userpwd', 
-                    'name'=>'userpwd',
-                    'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
-                    ), false)
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-regexToRemove', 'label'=>$this->lB('profile.searchindex.regexToRemove')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>'searchindex-regexToRemove', 
+                    'name'=>'searchindex[regexToRemove]',
+                    'cols'=>50,
+                    'placeholder'=>implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
+                    'rows'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? count($this->aProfileSaved['searchindex']['regexToRemove'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? implode("\n", $this->aProfileSaved['searchindex']['regexToRemove']) : '',
+                    ), true)
                 . '</div>'
             // ------------------------------------------------------------
             // search frontend
@@ -374,6 +392,9 @@ $sReturn.='
                 . ' '.$this->lB('profile.section.ressources')
             .'</h3>'
         
+            . '<div class="pure-control-group">'
+                . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
+            . '</div>'
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array(
                     'for'=>'ressources[simultanousRequests]', 

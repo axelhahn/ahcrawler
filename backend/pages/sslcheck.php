@@ -32,6 +32,10 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $aSslInfos=$oSsl->getSimpleInfosFromUrl($sFirstUrl);
         $sStatus=$oSsl->getStatus();
         $aTbl=array();
+        $aTbl[]=array(
+            $this->lB('sslcheck.thlabel'), 
+            $this->lB('sslcheck.thvalue'), 
+        );
         foreach(array(
             'CN', 
             'issuer',
@@ -50,7 +54,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                 $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'], $aSslInfos['validto'].' ('.$iDaysleft.' d)')
                 )
                 . '</ul><div style="clear: both;"></div>'
-                . $this->_getSimpleHtmlTable($aTbl)
+                . $this->_getSimpleHtmlTable($aTbl, 1)
                 /*
                 . '<br>'
                 . '<p>'.$this->lB('httpheader.sslcheck.raw').':</p>'

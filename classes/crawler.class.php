@@ -479,6 +479,13 @@ class crawler extends crawler_base{
         }
         
         // ------------------------------------------------------------
+        // remove cookies
+        // ------------------------------------------------------------
+        if (file_exists($this->sCcookieFilename)){
+            unlink($this->sCcookieFilename);
+        }
+
+        // ------------------------------------------------------------
         // crawling
         // ------------------------------------------------------------
         $this->updateMultipleUrls($aStartUrls, $this->_bFollowLinks);
@@ -700,7 +707,23 @@ class crawler extends crawler_base{
         preg_match("@\<html.*\ lang=[\"\'](.*)[\"\']@i", $sContent, $aTmp);
         $sLang=isset($aTmp[1]) ? $aTmp[1] : '';
         
-
+        // print_r($this->aProfileEffective['searchindex']['regexToRemove']); die();
+        if(isset($this->aProfileEffective['searchindex']['regexToRemove']) 
+                && is_array($this->aProfileEffective['searchindex']['regexToRemove'])
+                && count($this->aProfileEffective['searchindex']['regexToRemove'])
+        ){
+            foreach ($this->aProfileEffective['searchindex']['regexToRemove'] as $sRegex){
+                if($sRegex){
+                    try{
+                        $sContent = preg_replace("@".$sRegex."@si", " ", $sContent);
+                    } 
+                    catch(Exception $e) {
+                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] could be wrong. ', error);
+                    }
+                }
+            }
+        }
+        /*
         $sContent = preg_replace("/<link rel[^<>]*>/i", " ", $sContent);
         $sContent = preg_replace("@<!--sphider_noindex-->.*?<!--\/sphider_noindex-->@si", " ", $sContent);
         $sContent = preg_replace("@<!--.*?-->@si", " ", $sContent);
@@ -709,6 +732,8 @@ class crawler extends crawler_base{
         $sContent = preg_replace("@<nav.*?>.*?</nav>@si", " ", $sContent);
 
         $sContent = preg_replace("@<style[^>]*>.*?<\/style>@si", " ", $sContent);
+         * 
+         */
 
         // create spaces between tags, so that removing tags doesnt concatenate strings
         $sContent = preg_replace("/>/", "\\0 ", $sContent);

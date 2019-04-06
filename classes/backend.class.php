@@ -206,7 +206,7 @@ class backend extends crawler_base {
      * @return boolean
      */
     private function _checkAuth() {
-        $aOptions = $this->_loadOptions();
+        $aOptions = $this->_loadConfigfile();
         if (!isset($aOptions['options']['auth']['user']) || $this->_getUser()
         ) {
             return true;
@@ -562,7 +562,7 @@ class backend extends crawler_base {
      * @return array
      */
     private function _getProfiles() {
-        $aOptions = $this->_loadOptions();
+        $aOptions = $this->_loadConfigfile();
         $aReturn = array();
         if (isset($aOptions['profiles']) && count($aOptions['profiles'])) {
             foreach ($aOptions['profiles'] as $sId => $aData) {
@@ -570,20 +570,6 @@ class backend extends crawler_base {
             }
         }
         return $aReturn;
-    }
-
-    /**
-     * get array with profile data of an existing config
-     * @see _getProfiles()
-     * @param string   $sId  id of search profile
-     * @return array
-     */
-    private function _getProfileConfig__UNUSED($sId) {
-        $aOptions = $this->_loadOptions();
-        if (array_key_exists('profiles', $aOptions) && array_key_exists($sId, $aOptions['profiles'])) {
-            return $aOptions['profiles'][$sId];
-        }
-        return false;
     }
 
     // ----------------------------------------------------------------------

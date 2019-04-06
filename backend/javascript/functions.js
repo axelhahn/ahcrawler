@@ -3,6 +3,10 @@
  * initial functions for a page
  ====================================================================== */
 
+function _getId(o, sPrefix=''){
+    return o.id ? o.id : sPrefix + o.innerHTML.replace(/\W/g, '');
+}
+
 /**
  * scan h3 headers and draw on the top
  * @returns {undefined}
@@ -13,19 +17,25 @@ function initDrawH3list() {
     var sMenuid = 'ul ul .pure-menu-item .pure-menu-link-active';
     var sH3id = false;
     var sMyId = 'ulh3list';
+    var sActiveClass = 'pure-menu-link-active';
 
     // menu animation
     // $('#sbright').hide() && window.setTimeout("$('#sbright').slideDown(400)", 50);
 
     var i = 0;
     $("h3").each(function () {
-        sH3id = this.id ? this.id : "h3" + this.innerHTML.replace(/\W/g, '');
-        if (!this.id)
+        sH3id = _getId(this, 'h3');
+        
+        // if the headline has no id attribute yet then add one
+        if (!this.id){
             this.id = sH3id;
+        }
         if (this.id !== "h3menu") {
             i++;
             // sHtml += '<li class="pure-menu-item"><a href="#' + sH3id + '" class="scroll-link"><i class="fa fa-angle-right"></i> ' + this.innerHTML.replace(/(<([^>]+)>)/ig, "") + '</a></li>';
-            sHtml += '<li class="pure-menu-item"><a href="#' + sH3id + '" class="scroll-link pure-menu-link">' + this.innerHTML.replace(/(<([^>]+)>)/ig, "") + '</a></li>';
+            sHtml += '<li class="pure-menu-item"><a href="#' 
+                    + sH3id + '" class="scroll-link pure-menu-link'+(i===1 ? ' '+sActiveClass: '')+'">' 
+                    + this.innerHTML.replace(/(<([^>]+)>)/ig, "") + '</a></li>';
         }
 
     });
@@ -35,11 +45,24 @@ function initDrawH3list() {
         sHtml = '';
         // $(sMenuid).hide();
     } else {
+    
+        $(window).on('scroll', function() {
+            $('h3').each(function() {
+                if($(window).scrollTop() >= $(this).offset().top-400) {
+                    // var id = $(this).attr('id');
+                    sH3id = _getId(this, 'h3');
+                    // console.log($('#'+sMyId+' a[href=#'+ sH3id +']'));
+                    $('#'+sMyId+' a').removeClass(sActiveClass);
+                    $('#'+sMyId+' a[href$='+ sH3id +']').addClass(sActiveClass);
+                }
+            });
+        });    
         // $(sMenuid).append('<ul class="pure-menu-list" style="display: none;">' + sHtml + '</ul>');
         $('<ul class="pure-menu-list" id="'+sMyId+'" style="display: none;">' + sHtml + '</ul>').insertAfter($(sMenuid));
         $('#'+sMyId).slideDown(200);
-    }
+    
 
+    }
 }
 
 /**

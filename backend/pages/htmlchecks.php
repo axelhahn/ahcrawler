@@ -5,12 +5,12 @@
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 
-$aOptions = $this->_loadOptions();
-$iMinTitleLength=$aOptions['options']['analysis']['MinTitleLength'];
-$iMinDescriptionLength=$aOptions['options']['analysis']['MinDescriptionLength'];
-$iMinKeywordsLength=$aOptions['options']['analysis']['MinKeywordsLength'];
-$iMaxPagesize=$aOptions['options']['analysis']['MaxPagesize'];
-$iMaxLoadtime=$aOptions['options']['analysis']['MaxLoadtime']; 
+$aOptions = $this->getEffectiveOptions();
+$iMinTitleLength=$aOptions['analysis']['MinTitleLength'];
+$iMinDescriptionLength=$aOptions['analysis']['MinDescriptionLength'];
+$iMinKeywordsLength=$aOptions['analysis']['MinKeywordsLength'];
+$iMaxPagesize=$aOptions['analysis']['MaxPagesize'];
+$iMaxLoadtime=$aOptions['analysis']['MaxLoadtime']; 
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $iRessourcesCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));

@@ -13,7 +13,7 @@ $sReturn.= '<h3>' . $this->lB('httpstatuscode.headline') . '</h3>'
         . '<p>'.$this->lB('httpstatuscode.infos').'</p>';
 
 $sLastStatus='';
-for ($i=100; $i<1000; $i++){
+for ($i=0; $i<1000; $i++){
     $oHttp=new httpstatus();
     $oHttp->setHttpcode($i);
     

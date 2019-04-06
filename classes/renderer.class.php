@@ -183,11 +183,14 @@ class ressourcesrenderer extends crawler_base {
      * @return string
      */
     public function renderHttpheaderAsTable($aHeaderWithChecks){
+        if(!$aHeaderWithChecks ||!is_array($aHeaderWithChecks) || !count($aHeaderWithChecks)){
+            return '';
+        }
         $sReturn='';
         foreach($aHeaderWithChecks as $aEntry){
             $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'">'
                     . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
-                    . '<td style="max-width: 20em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
+                    . '<td style="max-width: 30em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
                     . '<td>'
                         . $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found']) 
                         . ($aEntry['bad'] ? $this->_getIcon('ico.warn', false, 'ico-warn') : '')
@@ -196,12 +199,15 @@ class ressourcesrenderer extends crawler_base {
                     . '</tr>'
                     ;
         }
-        if ($sReturn) {
-            return '<table class="pure-table pure-table-horizontal">'
-                    . $sReturn
-                    . '</table>';
-        }
-        return$sReturn;
+        return '<table class="pure-table pure-table-horizontal">'
+                . '<tr>'
+                    . '<th>'.$this->lB('httpheader.thvariable').'</th>'
+                    . '<th>'.$this->lB('httpheader.thvalue').'</th>'
+                    . '<th></th>'
+                    . '<th>'.$this->lB('httpheader.thcomment').'</th>'
+                . '</tr>'
+                . $sReturn
+            . '</table>';
     }
     /**
      * render a ressource value and add css class

@@ -217,6 +217,7 @@
     "setup.section.crawler.hint": "These settings are the default for all projects but can be overrided.",
     "setup.section.crawler.searchindex.simultanousRequests": "search index - simultanous requests<br>Http GET",
     "setup.section.crawler.ressources.simultanousRequests": "ressources scan - simultanous requests<br>Http HEAD",
+    "setup.section.searchindex.regexToRemove": "Content to remove from searchindex<br>(1 line per regex; not casesensitive)",
     "setup.section.analysis": "Constants for the analysis",
     "setup.section.analysis.hint": "Default parameters for the website analysis.",
     "setup.section.analysis.MinTitleLength": "Minimum count of chars in the document title",
@@ -237,6 +238,7 @@
     "profile.label": "Short title",
     "profile.description": "Description of the project",
     "profile.userpwd": "optional: user and password",
+    "profile.overrideDefaults": "The next variables override the defaults for all profiles (see program settings).",
     "profile.searchindex.stickydomain": "Sticky domain for the crawler",
     "profile.searchindex.urls2crawl": "List of start urls of the crawler<br>(one url per line)",
     "profile.searchindex.iDepth": "max. depth of directories for the scan",
@@ -245,6 +247,7 @@
     "profile.searchindex.includepath": "List of regex that need to match to the <em>path</em> of a url",
     "profile.searchindex.exclude": "Exclude regex for the path",
     "profile.searchindex.simultanousRequests": "search index scan - simultanous Requests<br>(overrides the default of %s)",
+    "profile.searchindex.regexToRemove": "Content to remove from searchindex<br>(1 line per regex; not casesensitive)",
     "profile.frontend.searchcategories": "Search areas of the website<br>(in JSON syntax)",
     "profile.frontend.searchlang": "Items for language filter<br>(one per line)",
 
@@ -389,6 +392,9 @@
     "httpheader.server.description": "This Server header seems to advertise the software being run on the server. You can remove the version number or delete this value.",    
     "httpheader.no-value": "kein Wert",
 
+    "httpheader.thvariable": "Variable",
+    "httpheader.thvalue": "Value",
+    "httpheader.thcomment": "Comment",
     "httpheader.plain": "Http-Header (plain)",
     "httpheader.data": "Http header",
     "httpheader.data.description": "This is the response header of<br><em>%s</em>",
@@ -423,6 +429,8 @@
     "sslcheck.httponly.description": "no Https!",
     "sslcheck.httponly.hint": "Browser mark it insecure",
 
+    "sslcheck.thlabel": "Item",
+    "sslcheck.thvalue": "Value",
     "sslcheck.CN": "Common Name",
     "sslcheck.issuer": "Issuer",
     "sslcheck.CA": "CA",

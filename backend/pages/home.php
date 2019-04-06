@@ -27,7 +27,6 @@ if(!$this->_configExists() || !$this->oDB){
     ;
 } else {
 
-    $aOptions = $this->_loadOptions();
     $aProfiles=$this->getProfileIds();
     $aTable=array();
     if(!$aProfiles || !count($aProfiles)){

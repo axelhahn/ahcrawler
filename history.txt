@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2019-04-07: v0.62
+  * fixed: curl accepts cookies
+  * backend: options to remove content for search index are editable in settings and profiles
+  * backend: smaller menu items
+  * backend: highlight menu item during scrolling
+
 2019-03-31: v0.61
   * update sslinfo.class + cdorlocal.class
   * added cdorlocal-admin class

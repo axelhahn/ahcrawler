@@ -6,9 +6,11 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 
 
 /**
- * @var array  full config with app settings and all profiles
+ * @var array  full config with app settings without profiles
  */
-$aOptions = $this->_loadOptions();
+// $aOptions = $this->_loadConfigfile();
+// $aOptions = array('options'=>$this->aOptions);
+$aOptions = array('options'=>$this->getEffectiveOptions());
 $sReturn='';
 
 $sBtnBack='<br>'.$this->lB('setup.program.save.error.back').'<br><hr><br>'
@@ -116,7 +118,7 @@ if(isset($_POST['action'])){
             // if there is no user then remove section auth
             if(!$_POST['options']['auth']['user']){
                 unset($_POST['options']['auth']);
-                $this->_setUser('');
+                $this->_setUser(''); // logoff
             }
             
             
@@ -137,7 +139,6 @@ if(isset($_POST['action'])){
             $this->_configMakeInt($aOptions, 'options.analysis.MinKeywordsLength');
             $this->_configMakeInt($aOptions, 'options.analysis.MaxPagesize');
             $this->_configMakeInt($aOptions, 'options.analysis.MaxLoadtime');
-            
             if(isset($aOptions['options']['menu']) 
                     && $aOptions['options']['menu']
                     && json_decode($aOptions['options']['menu'])
@@ -145,6 +146,21 @@ if(isset($_POST['action'])){
                 $aOptions['options']['menu'] = json_decode($aOptions['options']['menu']);
             } else {
                 $aOptions['options']['menu'] = array();
+            }
+
+            // ----- fix array values
+            $aArrays=array(
+                'searchindex'=>array('regexToRemove'),
+            );
+            foreach($aArrays as $sIndex1=>$aSubArrays){
+                foreach($aSubArrays as $sIndex2){
+                    if(isset($aOptions['options'][$sIndex1][$sIndex2]) && $aOptions['options'][$sIndex1][$sIndex2]){
+                        // echo "set [$sIndex1][$sIndex2]<br>";
+                        $aOptions['options'][$sIndex1][$sIndex2]=explode("\n", str_replace("\r", '', $aOptions['options'][$sIndex1][$sIndex2]));
+                    } else {
+                        $aOptions['options'][$sIndex1][$sIndex2]=array();
+                    }
+                }
             }
 
             // --------------------------------------------------
@@ -165,7 +181,7 @@ if(isset($_POST['action'])){
             // SAVE
             // --------------------------------------------------
            
-            // $sReturn.='<pre>new options: '.print_r($aOptions['options'], 1).'</pre>';
+            // $sReturn.='<pre>new options: '. htmlentities(print_r($aOptions['options'], 1)).'</pre>'; die($sReturn);
             if ($this->_saveConfig($aOptions)){
                 $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.ok'), 'ok');
             } else {
@@ -225,6 +241,7 @@ $sIdPrefixDb='options-database-';
 $sIdPrefixAuth='options-auth-';
 $sIdPrefixCrawler='options-crawler-';
 $sIdPrefixOther='options-';
+$sIdPrefixSearchindex='options-searchindex-';
 $sIdPrefixAnalyis='options-analysis-';
 
 
@@ -419,7 +436,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
         
         
             // ------------------------------------------------------------
-            // setup options - other
+            // setup options - backend
             // ------------------------------------------------------------
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
@@ -439,7 +456,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
                 . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'menu', 
+                    'id'=>$sIdPrefixOther.'menu', 
                     'name'=>'options[menu]',
                     'cols'=>50,
                     'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
@@ -498,6 +515,17 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] : 3,
                     ), false)
                 . '</div>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixSearchindex.'regexToRemove', 'label'=>$this->lB('setup.section.searchindex.regexToRemove')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>$sIdPrefixSearchindex.'regexToRemove', 
+                    'name'=>'options[searchindex][regexToRemove]',
+                    'cols'=>50,
+                    'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
+                    ), true)
+                . '</div>'
 
             // ------------------------------------------------------------
             // setup options - analysis constants
@@ -507,7 +535,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
             . $this->lB('setup.section.analysis.hint').'<br><br>'
-
+        
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
                 . $oRenderer->oHtml->getTag('input', array(

@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.61',
-        'date' => '2019-03-31',
+        'version' => '0.62',
+        'date' => '2019-04-07',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -26,7 +26,12 @@ class crawler_base {
      * general options of the application
      * @var array
      */
-    protected $aOptions = array(
+    protected $aOptions = array();
+    /**
+     * default options of the application
+     * @var array
+     */
+    protected $aDefaultOptions = array(
         'database' => array(
             'database_type' => 'sqlite',
             'database_file' => '__DIR__/data/ahcrawl.db',
@@ -41,6 +46,18 @@ class crawler_base {
             ),
             'ressources' => array(
                 'simultanousRequests' => 3,
+            ),
+        ),
+        'searchindex' => array(
+            'regexToRemove' => array(
+                // '<!--googleoff\:\ index-->.*?<!--googleon\:\ index-->',
+                // '<!--sphider_noindex-->.*?<!--/sphider_noindex-->',
+                '<!--.*?-->',
+                '<link rel[^<>]*>',
+                '<footer.*>.*?</footer>',
+                '<nav.*>.*?</nav>',
+                '<script[^>]*>.*?</script>',
+                '<style[^>]*>.*?</style>',
             ),
         ),
         'analysis' => array(
@@ -69,6 +86,7 @@ class crawler_base {
             'includepath' => array(),
             'exclude' => array(),
             'simultanousRequests' => false,
+            'regexToRemove' => array(),
         ),
         'frontend' => array(
             'searchcategories' => array(),
@@ -273,7 +291,7 @@ class crawler_base {
     // OPTIONS + DATA
     // ----------------------------------------------------------------------
 
-    protected function _getOptionsfile() {
+    protected function _getConfigFile() {
         return dirname(__DIR__) . '/config/crawler.config.json';
     }
 
@@ -295,29 +313,36 @@ class crawler_base {
      * @return boolean
      */
     protected function _configExists(){
-        return file_exists($this->_getOptionsfile());
+        return file_exists($this->_getConfigFile());
     }
 
 
     /**
-     * load global options array
+     * load config file with settings and all profiles
      * @return array
      */
-    protected function _loadOptions() {
+    protected function _loadConfigfile($bForce=false) {
+        $this->logAdd(__METHOD__.'() start');
         if(!$this->_configExists()){
             return false;
         }
-        $aOptions = json_decode(file_get_contents($this->_getOptionsfile()), true);
-        if (!$aOptions || !is_array($aOptions) || !count($aOptions)) {
-            die("ERROR: json file is invalid. Aborting");
+        static $aUserConfig;
+        if(isset($aUserConfig) && !$bForce){
+            $this->logAdd(__METHOD__.'() use static variable');
+            return $aUserConfig;
         }
-        if (!array_key_exists('options', $aOptions)) {
+        $this->logAdd(__METHOD__.'() read from file');
+        $aUserConfig = json_decode(file_get_contents($this->_getConfigFile()), true);
+        if (!$aUserConfig || !is_array($aUserConfig) || !count($aUserConfig)) {
+            die("ERROR: json file is invalid. Aborting");
+        }        
+        if (!array_key_exists('options', $aUserConfig)) {
             die("ERROR: config requires a section [options].");
         }
-        if (!array_key_exists('database', $aOptions['options'])) {
+        if (!array_key_exists('database', $aUserConfig['options'])) {
             die("ERROR: config requires a database definition.");
         }
-        return $aOptions;
+        return $aUserConfig;
     }
     /**
      * save options array
@@ -325,7 +350,19 @@ class crawler_base {
      * @return boolean
      */
     protected function _saveConfig($aNewData) {
-        $sCfgfile=$this->_getOptionsfile();
+        $aUserconfig=$this->_loadConfigfile();
+        $aNewData=array(
+            'options'=>(isset($aNewData['options']) && is_array($aNewData['options']) && count($aNewData['options']) 
+                        ? $aNewData['options'] 
+                        : $this->getEffectiveOptions()
+            ),
+            'profiles'=>(isset($aNewData['profiles']) && is_array($aNewData['profiles']) && count($aNewData['profiles']) 
+                        ? $aNewData['profiles'] 
+                        : $aUserconfig['profiles']
+            ),
+        );
+        // echo '<pre>'.print_r($aNewData, 1).'</pre>'; die("ABORT in ". __METHOD__);
+        $sCfgfile=$this->_getConfigFile();
         $sBakfile=$sCfgfile.'.bak';
         if(file_exists($sCfgfile)){
             copy($sCfgfile, $sBakfile);
@@ -334,6 +371,36 @@ class crawler_base {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * helper function: find a value in a structured hash by giving
+     * the structure with a string using the divider "."
+     * the subkeys can contain letters a-z, A-Z and numbers
+     * 
+     * $foundVar=&$this->_getArrayValueByKeysAsString($aItem, $sKey);
+     * 
+     * @param array   $aItem  array to scan
+     * @param string  $sKey   
+     * @return type
+     */
+    public function &getArrayValueByKeysAsString(&$aItem, $sKey=false) {
+        $sDivider='\.';
+        if(!isset($aItem)){
+            return NULL;
+        }
+        if($sKey){
+            $sFirstKey= preg_replace('/'.$sDivider.'.*/', '', $sKey);
+            if(!isset($aItem[$sFirstKey])){
+                return NULL;
+            }
+            $sLeftkeys=str_replace($sFirstKey, '', preg_replace('/^[a-z0-9]*\./i', '', $sKey));
+            if($sLeftkeys){
+                return $this->getArrayValueByKeysAsString($aItem[$sFirstKey], $sLeftkeys);
+            }
+            return $this->getArrayValueByKeysAsString($aItem[$sFirstKey]);
+        }
+        return $aItem;
     }
     /**
      * helper make a config item integer or set it false
@@ -344,21 +411,11 @@ class crawler_base {
      * @return boolean
      */
     protected function _configMakeInt(&$aItem, $sKey=false) {
-        if(!isset($aItem)){
+        $foundVar=&$this->getArrayValueByKeysAsString($aItem, $sKey);
+        if($foundVar===NULL){
             return false;
         }
-        if($sKey){
-            $sFirstKey= preg_replace('/\..*/', '', $sKey);
-            if(!isset($aItem[$sFirstKey])){
-                return false;
-            }
-            $sLeftkeys=str_replace($sFirstKey, '', preg_replace('/^[a-z]*\./i', '', $sKey));
-            if($sLeftkeys){
-                return $this->_configMakeInt($aItem[$sFirstKey], $sLeftkeys);
-            }
-            return $this->_configMakeInt($aItem[$sFirstKey]);
-        }
-        $aItem=(int)$aItem ? (int)$aItem : false;
+        $foundVar=(int)$foundVar ? (int)$foundVar/1 : ($foundVar==="0" ? 0 : false);
         return true;
     }
     /**
@@ -399,9 +456,8 @@ class crawler_base {
             CURLOPT_SSL_VERIFYPEER => false,
             // CURLOPT_SSL_VERIFYSTATUS => false,
             // v0.22 cookies
-            CURLOPT_COOKIEJAR, $this->sCcookieFilename,
-            CURLOPT_COOKIEFILE, $this->sCcookieFilename,
-            
+            CURLOPT_COOKIEJAR => $this->sCcookieFilename,
+            CURLOPT_COOKIEFILE => $this->sCcookieFilename,
             CURLOPT_TIMEOUT => 10,
         );
         if($this->_getCurlCanHttp2()){
@@ -702,7 +758,7 @@ class crawler_base {
      * @return boolean
      */
     public function logRender(){
-        $aOptions = $this->_loadOptions();
+        $aOptions = $this->_loadConfigfile();
         if($this->_oLog && isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
             return '<div style="position: absolute; left: 20em; top: 1000em;">'.$this->_oLog->render().'</div>';
         }
@@ -717,15 +773,13 @@ class crawler_base {
      */
     public function setSiteId($iSiteId = false) {
         $this->logAdd(__METHOD__.'('.$iSiteId.') start');
-        $aOptions = $this->_loadOptions();
 
         $this->iSiteId = false;
         $this->aProfileSaved = array();
+        
+        $aOptions = $this->_loadConfigfile();
 
-        // builtin default options ... these will be overrided with crawler.config.json
-        if (isset($aOptions['options']) && array_key_exists('options', $aOptions)) {
-            $this->aOptions = array_merge($this->aOptions, $aOptions['options']);
-        }
+        $this->getEffectiveOptions($aOptions);
 
         // $this->sLang = (array_key_exists('lang', $this->aOptions)) ? $this->sLang = $this->aOptions['lang'] : $this->sLang;
         $this->sLang = $this->aOptions['lang'];
@@ -741,7 +795,6 @@ class crawler_base {
 
             // @since v0.22 
             $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
-            touch($this->sCcookieFilename);
             
         } else {
             $this->aProfileSaved = array();
@@ -755,13 +808,55 @@ class crawler_base {
      * @return array
      */
     public function getProfileIds() {
-        $aOptions = $this->_loadOptions();
+        $aOptions = $this->_loadConfigfile();
         if (
                 is_array($aOptions) && array_key_exists('profiles', $aOptions)
         ) {
             return array_keys($aOptions['profiles']);
         }
         return false;
+    }
+    
+    /**
+     * get pogram settings based on internal defaults and merge it loaded config
+     * used in setSiteId() after initializing $this->aProfileSaved
+     * 
+     * @param array  $aOptions  array of loaded options file; if false or mising it will be loaded
+     * @return type
+     */
+    public function getEffectiveOptions($aOptions=false) {
+        $this->logAdd(__METHOD__.'() start');
+        if(!$aOptions){
+            $aOptions = $this->_loadConfigfile();
+        }
+        
+        // builtin default options ... these will be overrided with crawler.config.json
+        if (isset($aOptions['options']) && array_key_exists('options', $aOptions)) {
+            // $this->aOptions = array_merge($this->aOptions, $aOptions['options']);
+            $this->aOptions = $aOptions['options'];
+        }
+        
+        // builtin default options ... these will be overrided with crawler.config.json
+        if (isset($aOptions['options']) && array_key_exists('options', $aOptions)) {
+            $this->aOptions = array_merge($this->aDefaultOptions, $aOptions['options']);
+        }
+        
+        // if there are new defaults that aren't in the config file of an older version yet
+        foreach($this->aDefaultOptions as $sKey1=>$data1){
+            $this->aOptions[$sKey1]=isset($this->aOptions[$sKey1]) ? $this->aOptions[$sKey1] : $data1;
+            if (is_array($data1)){
+                foreach($data1 as $sKey2=>$data2){
+                    $this->aOptions[$sKey1][$sKey2]=isset($this->aOptions[$sKey1][$sKey2]) ? $this->aOptions[$sKey1][$sKey2] : $data2;
+                }
+            }
+            
+        }
+        /*
+        echo '<pre>'. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre>';
+        echo '<pre>'. htmlentities(print_r($this->aOptions, 1)).'</pre>';
+        die();
+         */
+        return $this->aOptions;
     }
     /**
      * get profile for given SiteId tht is merged by defauls and loaded 
@@ -797,6 +892,9 @@ class crawler_base {
             } 
             if (!isset($aReturn['searchindex']['simultanousRequests']) || $aReturn['searchindex']['simultanousRequests']==false ) {
                 $aReturn['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
+            }
+            if (!isset($aReturn['searchindex']['regexToRemove']) || $aReturn['searchindex']['regexToRemove']==false ) {
+                $aReturn['searchindex']['regexToRemove'] = $this->aOptions['searchindex']['regexToRemove'];
             }
             if (!isset($aReturn['ressources']['simultanousRequests']) || $aReturn['ressources']['simultanousRequests']==false ) {
                 $aReturn['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
