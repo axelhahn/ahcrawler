@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-04-08: v0.64
+  * backend: searches - fix url behind action button
+  * backend: headers - show cookies
+
 2019-04-07: v0.63
   * backend: update test search: use form elements with search class
   * backend: update test search: show more ranking details

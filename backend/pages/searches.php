@@ -127,7 +127,7 @@ if (count($aLastSearches)) {
         }
         $aRow['actions'] = $this->_getButton(array(
             // 'href' => 'overlay.php?action=search&query=' . $aRow['query'] . '&siteid=' . $this->_sTab . '&subdir=' . $sSubdir,
-            'href' => '?page=status&action=search&query=' . $aRow['query'] . '&subdir=' . $sSubdir.'&tab=' . $this->_sTab ,
+            'href' => '?page=status&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir.'&tab=' . $this->_sTab ,
             'popup' => false,
             'class' => 'button-secondary',
             'label' => 'button.search'

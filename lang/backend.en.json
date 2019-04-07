@@ -421,6 +421,8 @@
 
     "httpheader.securityheaders": "Check of existing security headers (%s/ %s)",
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
+    "httpheader.cookies": "Saved Cookies",
+    "httpheader.cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.",
 
     "sslcheck.label": "SSL-Certificate",
     "sslcheck.description": "Information about the used SSL certificate.",

@@ -59,7 +59,9 @@ $aInfos=json_decode($sInfos,1);
 // _responseheader ?? --> see crawler.class - method processResponse()
 $oHttpheader->setHeaderAsString($aInfos['_responseheader']);
 
-// --- header dump
+// ----------------------------------------------------------------------
+// header dump
+// ----------------------------------------------------------------------
 $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
         . sprintf($this->lB('httpheader.data.description'), $aPagedata[0]['url']).'<br><br>'
@@ -69,7 +71,9 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<pre>'.print_r($aInfos['_responseheader'], 1).'</pre>'
         ;
 
-// --- warnings
+// ----------------------------------------------------------------------
+// warnings
+// ----------------------------------------------------------------------
 $iWarnings=0;
 $sWarnings='';
 $sTiles='';
@@ -142,7 +146,9 @@ $sTiles='';
         ;
     // $sReturn.='<pre>'.print_r($aWarnheader, 1).'</pre>';
 
-// --- security header
+// ----------------------------------------------------------------------
+// security header
+// ----------------------------------------------------------------------
 $aSecHeader=$oHttpheader->checkSecurityHeaders();
 
 $sSecOk='';
@@ -188,7 +194,57 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecH
     . '</ul>'
     ;
 
+// ----------------------------------------------------------------------
+// COOKIES
+// ----------------------------------------------------------------------
 
+$this->setSiteId($this->_sTab);
+$aCookies=$oHttpheader->checkCookiefile($this->sCcookieFilename);
+$sReturn.=''
+        . '<h3>'.$this->lB('httpheader.cookies').' ('.count($aCookies['cookies']).')</h3>'
+        . '<p>'.$this->lB('httpheader.cookies.hint').'</p>'
+        ;
 
+/*
+    Array
+    (
+        [httponly] => 1
+        [domain] => www.axel-hahn.de
+        [flag] => FALSE
+        [path] => /
+        [secure] => TRUE
+        [expiration-epoch] => 0
+        [name] => fpsess_fp-d791af8a
+        [value] => 63bf7bff96341825f42fcfb23a0c36e9
+        [expiration] => -
+    )
+ */
+if(count($aCookies['cookies'])>0){
+    $aTbl=array(
+        array(
+            'domain',
+            'name',
+            'value',
+            'httponly',
+            'secure',
+            'expiration',
+        )
+    );
+    foreach($aCookies['cookies'] as $aCookie){
+        $aTbl[]=array(
+            $aCookie['domain'],
+            $aCookie['name'],
+            $aCookie['value'],
+            $aCookie['httponly'],
+            $aCookie['secure'],
+            $aCookie['expiration'],
+        );
+    }
+}
+$sReturn.=$this->_getSimpleHtmlTable($aTbl, true);
+        ;
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
+// ----------------------------------------------------------------------
+// output
+// ----------------------------------------------------------------------
 return $sReturn;

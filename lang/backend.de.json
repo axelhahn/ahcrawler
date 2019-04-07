@@ -413,7 +413,9 @@
 
     "httpheader.securityheaders": "Check der vorhandenen Security-Header (%s/ %s)",
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
-    
+    "httpheader.cookies": "Gespeicherte Cookies",
+    "httpheader.cookies.hint": "Beim Crawlen durch deine Website und Nachverfolgen der Links k&ouml;nnen Cookies bei euren Besuchern gespeichert werden.",
+
     "sslcheck.label": "SSL-Zertifikat",
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
     "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
