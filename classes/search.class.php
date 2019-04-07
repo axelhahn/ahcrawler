@@ -318,7 +318,7 @@ class ahsearch extends crawler_base {
         preg_match_all('/\W' . $sNeedle . '/i', $sHaystack, $a2);
         $iWordStart = is_array($a2) ? count($a2[0]) : 0;
         preg_match_all('/^' . $sNeedle . '\W/i', $sHaystack, $a1);
-        $iWordStart += is_array($a2) ? count($a2[0]) : 0;
+        $iWordStart += is_array($a1) ? count($a1[0]) : 0;
 
         preg_match_all('/' . $sNeedle . '/i', $sHaystack, $a3);
         return array(
@@ -358,7 +358,7 @@ class ahsearch extends crawler_base {
                 foreach (array('title', 'description', 'keywords', 'url', 'content') as $sCol) {
                     foreach ($this->_countHits($sWord, $aItem[$sCol]) as $sKey => $iHits) {
                         $iCount+=$iHits * $this->_aRankCounter[$sKey][$sCol];
-                        $aResults[$sWord][$sKey][$sCol] = $iHits;
+                        $aResults[$sWord][$sKey][$sCol] = array($iHits, $this->_aRankCounter[$sKey][$sCol]);
                     }
                 }
             }
@@ -666,8 +666,7 @@ class ahsearch extends crawler_base {
                                         $iPreview++;
                                         if ($iPreview > 1) {
                                             $iMore = count($aPreviews) - $iPreview;
-                                            // TODO: langTxt
-                                            $sDetail.='... ' . $iMore . ' weitere' . ($iMore === 1 ? 'r' : '') . ' Treffer im Text';
+                                            $sDetail.=sprintg($this->lF('searchout.n-more-hits'), $iMore);
                                             break;
                                         }
                                         $sDetail.='...' . $sPreview . '...<br>';

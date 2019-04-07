@@ -130,44 +130,47 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
             // search form
             // ----------------------------------------------------------------------
 
-            $sQuery = $this->_getRequestParam('query');
-            $sSubdir = $this->_getRequestParam('subdir');
+            $sQuery = $this->_getRequestParam('q');
             $o = new ahsearch($this->_sTab);
 
-            $aResult = $o->search($sQuery, array('subdir'=>$sSubdir));
-            // $sReturn.='<pre>'.print_r($aResult,1).'</pre>';
+            $aResult = $o->search($sQuery);
 
-            $sSelect='';
-            $aCat=$o->getSearchCategories();
-            if ($aCat){
-                foreach ($aCat as $sLabel=>$sUrl){
-                    $sSelect.='<option value="'.$sUrl.'" '.($sSubdir==$sUrl?'selected="selected"':'').' >'.$sLabel.'</option>';
-                }
-                $sSelect=' <select name="subdir" class="form-control">'.$sSelect.'</select> ';
-            }
-
-            // TODO: use search.class.php
             $sForm = '<h3>'.$this->lB('status.search').'</h3>'
                     . '<p>'.$this->lB('status.search.hint').'</p>'
-                    . '<form action="" method="get" class="pure-form">'
-                    . '<input type="hidden" name="page" value="status">'
-                    . '<input type="hidden" name="action" value="search">'
-                    . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
-                    // . '<input type="hidden" name="subdir" value="' . $sSubdir . '">'
-                    . '<label>' . $this->lB('searches.query') . '</label> '
-                    . '<input type="text" name="query" value="' . htmlentities($sQuery) . '" required="required">'
-                    . ' '
-                    . $sSelect
-                    . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $o->lF('btn.search.label') . '</button> '
-                    . ($sQuery ? '<a href="?page=status" class="pure-button button-error">' . $this->_getIcon('button.close') . '</a>' : '' )
-                    . '</form>';
+                    
+                    . '<div style="border: 2px solid #ddd; padding: 2em;">'
+                        . '<form action="" method="get" class="pure-form">'
+                            . '<input type="hidden" name="page" value="status">'
+                            . '<input type="hidden" name="action" value="search">'
+                            . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
+
+                            . $o->renderLabelSearch().' '. $o->renderInput(array('size'=>100))
+                            . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $o->lF('btn.search.label') . '</button> '
+                            . ($sQuery ? '<a href="?page=status" class="pure-button button-error">' . $this->_getIcon('button.close') . '</a>' : '' )
+                            . '<br><br><br>'
+                            . '<div style="margin-left: 5em;">'
+                                . '<strong>'.$this->lB('status.searchoptions').':</strong><br>'
+                                .($o->getSearchCategories(false) ? $o->renderLabelCategories() .': '.$o->renderSelectCategories().' ' : '')
+                                .($o->getSearchLang(false)       ? $o->renderLabelLang()       .': '.$o->renderSelectLang().' '       : '')
+                                . '<br>'
+                                . $o->renderLabelMode() .': '. $o->renderSelectMode(array('class'=>'form-control'))
+                            . '</div>'
+                        . '</form>'
+                    . '</div>'
+                    ;
 
             $iResults = $o->getCountOfSearchresults($aResult);
             $sReturn .= ''
                     . $sForm
-                    . ($sQuery ? '<p>' . $this->lB('searches.results') . ': ' . $iResults . '<p>' : '');
+                    . ($sQuery ? '<p>' . $this->lB('searches.results') . ': <strong>' . $iResults . '</strong><p>' : '');
 
             $aTable = array();
+            /*
+            $aTable = array(
+                array('#', $this->lB('search.summary'), $this->lB('search.ranking'), '')
+            );
+             * 
+             */
 
             $iCounter = 0;
             $iMaxRanking = false;
@@ -184,28 +187,32 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                         $iCounter ++;
                         $sResult = '';
                         foreach ($aItem['results'] as $sWord => $aMatchTypes) {
-                            $sResult.='<strong>' . $sWord . '</strong><br>';
+                            // $sResult.='<strong>' . $sWord . '</strong><br>';
                             foreach ($aMatchTypes as $sType => $aHits) {
                                 $sMatches = '';
-                                foreach ($aHits as $sWhere => $iHits) {
-                                    if ($iHits) {
-                                        $sMatches.='...... ' . $sWhere . ': ' . $iHits . '<br>';
+                                foreach ($aHits as $sWhere => $aValues) {
+                                    if ($aValues[0]) {
+                                        $sMatches.='... ' . $sWhere . ': <strong>' . $aValues[0] . '</strong> (x'.$aValues[1].')<br>';
                                     }
                                 }
                                 if ($sMatches) {
-                                    $sResult.='.. ' . $sType . '<br>' . $sMatches;
+                                    $sResult.=($sResult ? '<br>' : '') . $sType . '<br>' . $sMatches;
                                 }
                             }
                         }
                         $aTable[] = array(
                             'search.#' => $iCounter,
-                            'search.summary' => '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong><br>'
-                                . 'url: <em>' . $aItem['url'] . '</em><br>'
-                                . 'description: <em>' . $aItem['description'] . '</em><br>'
-                                . 'keywords: <em>' . $aItem['keywords'] . '</em><br>'
-                                . 'content: <em>' . $this->_prettifyString($aItem['content'], 200) . '</em><br>'
+                            'search.summary' => 
+                                    $this->_getSimpleHtmlTable(array(
+                                    array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
+                                    array('url', $aItem['url']),
+                                    array('description', $aItem['description']),
+                                    array('keywords', $aItem['keywords']),
+                                    array('content', $this->_prettifyString($aItem['content'], 400)),
+                                ))
                             ,
-                            'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
+                            // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
+                            'search.ranking' => '<strong>'.$iRanking . '</strong><br><br>' . $sResult . '</span>',
                             $this->_getButton(array(
                                 'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$aItem['id'],
                                 'class' => 'button-secondary',
@@ -220,8 +227,8 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
             }
             $sReturn.=''
                 . $this->_getHtmlTable($aTable)
-                . (($iResults > 3) ? '<br>' . $sForm : '')
-                . '<br>'
+                // . (($iResults > 3) ? '<br>' . $sForm : '')
+                // . '<br>'
                 /*
                 . $this->_getButton(array(
                     'href' => './?page=searches',

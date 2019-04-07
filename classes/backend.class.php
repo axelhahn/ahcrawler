@@ -142,6 +142,7 @@ class backend extends crawler_base {
         'button'=>array(
             'button.add' => 'fas fa-plus',
             'button.back' => 'fas fa-chevron-left',
+            'button.close' => 'fas fa-times',
             'button.continue' => 'fas fa-chevron-right',
             'button.create' => 'far fa-star',
             'button.delete' => 'fas fa-trash',

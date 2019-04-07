@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-04-07: v0.63
+  * backend: update test search: use form elements with search class
+  * backend: update test search: show more ranking details
+  * search: fix counter for word start
+
 2019-04-07: v0.62
   * fixed: curl accepts cookies
   * backend: options to remove content for search index are editable in settings and profiles

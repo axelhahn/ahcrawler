@@ -18,6 +18,7 @@
     "searchout.results": "Suchergebnisse",
     "searchout.nohit": "Kein Treffer :-/",
     "searchout.too-many-hits": "Hinweis: Es kommen zu viele Treffer - ich denke, Du solltest einen weiteren Begriff in der Suche hinzuf&uuml;gen. Mehrere Suchbegriffe werden mit UND verkn&uuml;pft und reduzieren die Treffer.",
+    "searchout.n-more-hits": "... %s weitere(r) Treffer im Text",
     "searchout.hits": "Treffer: <strong>%s</strong>",
     
     "about.infostring": "OpenSource Suchmaschine und Webseitenanalyse"
