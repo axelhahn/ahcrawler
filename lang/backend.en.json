@@ -61,6 +61,9 @@
     "nav.httpstatuscode.label": "Http status codes",
     "nav.httpstatuscode.hint": "List of Http status codes and their description",
 
+    "nav.langedit.label": "Language texts",
+    "nav.langedit.hint": "Compare language texts",
+
     "nav.about.label": "About ...",
     "nav.about.hint": "Version infos and Thanks",
 
@@ -423,6 +426,12 @@
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
     "httpheader.cookies": "Saved Cookies",
     "httpheader.cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.",
+    "httpheader.col-domain": "Domain",
+    "httpheader.col-name": "Name",
+    "httpheader.col-value": "Wert",
+    "httpheader.col-httponly": "Httponly",
+    "httpheader.col-secure": "Secure",
+    "httpheader.col-expiration": "Expiration",
 
     "sslcheck.label": "SSL-Certificate",
     "sslcheck.description": "Information about the used SSL certificate.",

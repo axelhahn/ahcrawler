@@ -61,6 +61,9 @@
     "nav.httpstatuscode.label": "Http Statuscodes",
     "nav.httpstatuscode.hint": "Liste der Http Statuscodes und deren Bedeutung",
 
+    "nav.langedit.label": "Sprachtexte",
+    "nav.langedit.hint": "Vergleich der Sprachtexte",
+
     "nav.about.label": "&Uuml;ber ...",
     "nav.about.hint": "Versionsinfos und Danksagungen",
 
@@ -259,7 +262,7 @@
     
     "status.overview": "Zusammenfassung",
     "status.search": "Test-Suche im Suchindex",
-    "status.search.hint": "Hier kannst du den erstellten Suchindex durchsuchen und das Ergebnisverhalten testen, wie es eingebaut auf der Webseite w&auml;re. Die hier imBackend eingebenen Suchbegriffe werden nicht als Suchbegriff gespeichert.",
+    "status.search.hint": "Hier kannst du den erstellten Suchindex durchsuchen und das Ergebnisverhalten testen, wie es eingebaut auf der Webseite w&auml;re. Die hier im Backend eingebenen Suchbegriffe werden nicht als Suchbegriff gespeichert.",
     "status.searchoptions": "Einstellungen",
     "status.detail": "Detailseite",
     "status.emptyindex": "Der Suchindex ist noch leer. Der Job zum Indexieren wurde noch nicht gestartet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
@@ -414,7 +417,13 @@
     "httpheader.securityheaders": "Check der vorhandenen Security-Header (%s/ %s)",
     "httpheader.securityheaders.description": "Der Einsatz der Security-Header ist kein Muss für das Funktionieren einer Webseite, aber eine dringende Empfehlung zu deren Schutz.",
     "httpheader.cookies": "Gespeicherte Cookies",
-    "httpheader.cookies.hint": "Beim Crawlen durch deine Website und Nachverfolgen der Links k&ouml;nnen Cookies bei euren Besuchern gespeichert werden.",
+    "httpheader.cookies.hint": "Beim Crawlen durch die Website und Nachverfolgen der Links k&ouml;nnen Cookies bei euren Besuchern gespeichert werden.",
+    "httpheader.col-domain": "Domain",
+    "httpheader.col-name": "Name",
+    "httpheader.col-value": "Wert",
+    "httpheader.col-httponly": "Httponly",
+    "httpheader.col-secure": "Secure",
+    "httpheader.col-expiration": "Ablaufdatum",
 
     "sslcheck.label": "SSL-Zertifikat",
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",

@@ -16,6 +16,8 @@ namespace axelhahn;
  * TODO:
  * support jsdelivr, i.e.
  * https://cdn.jsdelivr.net/npm/vis@4.21.0/dist/vis.min.js
+ * AND/ OR
+ * https://unpkg.com/
  * 
  * @version 1.0.4
  * @author Axel Hahn

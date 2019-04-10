@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2019-04-10: v0.65
+  * backend: show cookies in a sortable table
+  * backend: do not delete cookie file on start of indexing
+  * backend: add page to compare lang texts
+  * backend: add release date in about page
+
 2019-04-08: v0.64
   * backend: searches - fix url behind action button
   * backend: headers - show cookies

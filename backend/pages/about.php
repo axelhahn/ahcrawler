@@ -18,7 +18,7 @@ $oUpdate=new ahwiupdatecheck(array(
 
 */
 $oRenderer=new ressourcesrenderer();
-$sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '</h3>'
+$sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
 
         // update info
         . '<p>' . $this->lB('about.info') . '</p>'

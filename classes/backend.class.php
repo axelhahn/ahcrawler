@@ -41,6 +41,7 @@ class backend extends crawler_base {
         ), 
         'tools'=>array(
             'httpstatuscode'=>array(), 
+            'langedit'=>array(), 
         ),
         'about'=>array(
             'update'=>array(), 
@@ -71,6 +72,7 @@ class backend extends crawler_base {
             'ressourcedetail'=>'fas fa-map-marked', 
             'tools'=>'fas fa-tools', 
             'httpstatuscode'=>'fab fa-font-awesome', 
+            'langedit'=>'far fa-comment', 
             'about'=>'fas fa-info-circle', 
             'update'=>'fas fa-cloud-download-alt', 
             'project'=>'fas fa-book', 
@@ -106,6 +108,15 @@ class backend extends crawler_base {
             'time'=>'far fa-clock', 
             
             'updateisrunning'=>'fas fa-spinner fa-spin', 
+            
+            // cookies
+            'domain'=>'fas fa-atlas', 
+            'name'=>'fas fa-tag ', 
+            'value'=>'fas fa-chevron-right', 
+            'httponly'=>'far fa-flag', 
+            'secure'=>'fas fa-shield-alt', 
+            'expiration'=>'far fa-clock', 
+            
         ),
         'res'=>array(
             /*

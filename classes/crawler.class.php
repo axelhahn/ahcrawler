@@ -481,9 +481,11 @@ class crawler extends crawler_base{
         // ------------------------------------------------------------
         // remove cookies
         // ------------------------------------------------------------
+        /* v0.65 disable deletion of cookies
         if (file_exists($this->sCcookieFilename)){
             unlink($this->sCcookieFilename);
         }
+         */
 
         // ------------------------------------------------------------
         // crawling

@@ -204,44 +204,23 @@ $sReturn.=''
         . '<h3>'.$this->lB('httpheader.cookies').' ('.count($aCookies['cookies']).')</h3>'
         . '<p>'.$this->lB('httpheader.cookies.hint').'</p>'
         ;
-
-/*
-    Array
-    (
-        [httponly] => 1
-        [domain] => www.axel-hahn.de
-        [flag] => FALSE
-        [path] => /
-        [secure] => TRUE
-        [expiration-epoch] => 0
-        [name] => fpsess_fp-d791af8a
-        [value] => 63bf7bff96341825f42fcfb23a0c36e9
-        [expiration] => -
-    )
- */
 if(count($aCookies['cookies'])>0){
-    $aTbl=array(
-        array(
-            'domain',
-            'name',
-            'value',
-            'httponly',
-            'secure',
-            'expiration',
-        )
-    );
+    
+    $aTbl=array();
     foreach($aCookies['cookies'] as $aCookie){
         $aTbl[]=array(
-            $aCookie['domain'],
-            $aCookie['name'],
-            $aCookie['value'],
-            $aCookie['httponly'],
-            $aCookie['secure'],
-            $aCookie['expiration'],
+            'domain'=>$aCookie['domain'],
+            'name'=>$aCookie['name'],
+            'value'=>'<div style="max-width: 25em;overflow-wrap: break-word; word-wrap: break-word;">'.$aCookie['value'].'</div>',
+            'httponly'=>$aCookie['httponly'],
+            'secure'=>$aCookie['secure'],
+            'expiration'=>$aCookie['expiration'],
         );
     }
 }
-$sReturn.=$this->_getSimpleHtmlTable($aTbl, true);
+$sTableId='tblSavedCookies';
+$sReturn.=$this->_getHtmlTable($aTbl, 'httpheader.col-',$sTableId)
+        .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable( {\'lengthMenu\': [[-1], [\'All\']] } );} );</script>'
         ;
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
 // ----------------------------------------------------------------------
