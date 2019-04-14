@@ -33,6 +33,7 @@ class backend extends crawler_base {
         'analysis'=>array(
             'sslcheck'=>array(), 
             'httpheaderchecks'=>array(), 
+            'cookies'=>array(), 
             'htmlchecks'=>array(), 
             'linkchecker'=>array(), 
             'ressources'=>array(),
@@ -68,6 +69,7 @@ class backend extends crawler_base {
             'linkchecker'=>'fas fa-chart-pie', 
             'htmlchecks'=>'fab fa-html5', 
             'httpheaderchecks'=>'far fa-flag', 
+            'cookies'=>'fas fa-cookie-bite', 
             'checkurl'=>'fas fa-globe-americas', 
             'ressourcedetail'=>'fas fa-map-marked', 
             'tools'=>'fas fa-tools', 
@@ -111,6 +113,7 @@ class backend extends crawler_base {
             
             // cookies
             'domain'=>'fas fa-atlas', 
+            'path'=>'fas fa-folder', 
             'name'=>'fas fa-tag ', 
             'value'=>'fas fa-chevron-right', 
             'httponly'=>'far fa-flag', 
@@ -145,9 +148,11 @@ class backend extends crawler_base {
             'http-code-5xx'=>'fas fa-spinner',
              */
             
-            'ressources.showtable'=>'fa fa-table',
-            'ressources.showreport'=>'fa fa-file-o',
-            'ressources.ignorelimit'=>'fa fa-unlock',
+            'filter'=>'fas fa-filter',
+            
+            'ressources.showtable'=>'fas fa-table',
+            'ressources.showreport'=>'far fa-file',
+            'ressources.ignorelimit'=>'fas fa-unlock',
             
         ),
         'button'=>array(
@@ -429,7 +434,11 @@ class backend extends crawler_base {
 
     /**
      * get html code for horizontal navigation
-     * @param array $aTabs  nav items
+     * 
+     * @param array    $aTabs        nav items
+     * @param boolean  $bAddButton   flag for add button; default false; set true on profile setup
+     * @param string   $sUpUrl       url for "up" tab in front of other tabs
+     * 
      * @return string
      */
     private function _getNavi2($aTabs=array(), $bAddButton=false, $sUpUrl=false) {

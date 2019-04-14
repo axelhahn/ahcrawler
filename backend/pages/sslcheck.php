@@ -108,7 +108,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             // $sReturn.= $this->oDB->last().'<br>';
             $iChartWarnings = $bShowAll ? $iNonHttps : $iNonHttpsNoLink;
             
-            $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttps) . '</h3>'
+            $sReturn.= '<h3>' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttpsNoLink) . '</h3>'
                 .'<p>'.$this->lB('sslcheck.nonhttps.hint').'</p>'
                 // .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)
                 . $oRenderer->renderTileBar(
@@ -163,7 +163,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                 }
                 $sReturn.=(count($aTable) 
                         ? $this->_getHtmlTable($aTable, "db-ressources.", $sTableId)
-                            .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable();} );</script>'
+                            . $oRenderer->renderInitDatatable('#' . $sTableId)
                         : ''
                     );
             }

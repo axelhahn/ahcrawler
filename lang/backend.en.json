@@ -43,6 +43,9 @@
     "nav.httpheaderchecks.label": "Http Header check",
     "nav.httpheaderchecks.hint": "Analysis of Http header",
         
+    "nav.cookies.label": "Cookies",
+    "nav.cookies.hint": "Saved cookies during crawling and following the links.",
+        
     "nav.htmlchecks.label": "HTML checks",
     "nav.htmlchecks.hint": "Analysis of html code and recommendations",
         
@@ -163,10 +166,6 @@
     "hr-time-d":"day(s)",
     "hr-time-y":"year(s)",
     "hr-time-never":"(never)",
-    
-    "00000": "--------------------------------------------------------------",
-    "11111": "TODO AB HIER WEITER UEBERSETZEN",
-    "22222": "--------------------------------------------------------------",
     
     "error.404": "404 Page not found",
     "error.404.description": "The requested page does not exist.",
@@ -424,14 +423,31 @@
 
     "httpheader.securityheaders": "Check of existing security headers (%s/ %s)",
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
-    "httpheader.cookies": "Saved Cookies",
-    "httpheader.cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.",
-    "httpheader.col-domain": "Domain",
-    "httpheader.col-name": "Name",
-    "httpheader.col-value": "Wert",
-    "httpheader.col-httponly": "Httponly",
-    "httpheader.col-secure": "Secure",
-    "httpheader.col-expiration": "Expiration",
+    
+    "cookies.headline": "Saved Cookies",
+    "cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.<br>Remark: Cookies that are set by javascript are not in this list.",
+    "cookies.nofile": "Remark: No cookie file was created yet. Wait for the next craling process, please.",
+    "cookies.nocookie": "No cookie was created. Respect!",
+    "cookies.count": "Count of cookies",
+    "cookies.since": "Created cookies since",
+    "cookies.delete": "Delete all cookies",
+    "cookies.delete.hint": "Here you can delete all cookies. You can have look here after the next crawling process.",
+    "cookies.legend": "Legend",
+    "cookies.col-domain": "Domain",
+    "cookies.col-domain.description": "Domain scope where the cookie was set and is valid.<br>If it starts with a dot it is valid for subdomains too.",
+    "cookies.col-path": "Path",
+    "cookies.col-path.description": "Limitation to a part of a website with a given path. A slash means it visible for the whole website.",
+    "cookies.col-name": "Name",
+    "cookies.col-name.description": "Name of the cookie",
+    "cookies.col-value": "Value",
+    "cookies.col-value.description": "Value of the cookie",
+    "cookies.col-httponly": "Httponly",
+    "cookies.col-httponly.description": "Set and Transmited with http(s) only; they are not available in Javascripts Document.cookie",
+    "cookies.col-secure": "Secure",
+    "cookies.col-secure.description": "The Http Cookie (see Httponly) requires a secure connection with https to be set and transmitted.",
+    "cookies.col-expiration": "Expiration",
+    "cookies.col-expiration.description": "Expiration time of the cookie. If it is a minus it is a session cookie and expires with closing the browser.",
+
 
     "sslcheck.label": "SSL-Certificate",
     "sslcheck.description": "Information about the used SSL certificate.",
@@ -519,6 +535,7 @@
 
     "update.available-yes": "There is an update to version %s available.",
     "update.available-no": "The software is up to date.",
+    "update.output": "Console output",
                 
     "overlay.viewIndexItem": "Data of a single indexed web page",
     "overlay.updateIndexItem": "Update a single URL",

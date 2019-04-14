@@ -324,8 +324,8 @@ if(!$iPageId && !$iResults){
     if (count($aAllInIndex)) {
         $sTableId='tbl-alldata';
         $sReturn.='<h3>' . $this->lB('status.all_data') .' ('.count($aAllInIndex).')</h3>'
-                . $this->_getSearchindexTable($aAllInIndex, 'db-pages.', $sTableId)
-                .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable();} );</script>';
+            . $this->_getSearchindexTable($aAllInIndex, 'db-pages.', $sTableId)
+            . $oRenderer->renderInitDatatable('#' . $sTableId)
         ;
     }
 }

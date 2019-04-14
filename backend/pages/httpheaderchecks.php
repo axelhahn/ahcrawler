@@ -194,34 +194,6 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecH
     . '</ul>'
     ;
 
-// ----------------------------------------------------------------------
-// COOKIES
-// ----------------------------------------------------------------------
-
-$this->setSiteId($this->_sTab);
-$aCookies=$oHttpheader->checkCookiefile($this->sCcookieFilename);
-$sReturn.=''
-        . '<h3>'.$this->lB('httpheader.cookies').' ('.count($aCookies['cookies']).')</h3>'
-        . '<p>'.$this->lB('httpheader.cookies.hint').'</p>'
-        ;
-if(count($aCookies['cookies'])>0){
-    
-    $aTbl=array();
-    foreach($aCookies['cookies'] as $aCookie){
-        $aTbl[]=array(
-            'domain'=>$aCookie['domain'],
-            'name'=>$aCookie['name'],
-            'value'=>'<div style="max-width: 25em;overflow-wrap: break-word; word-wrap: break-word;">'.$aCookie['value'].'</div>',
-            'httponly'=>$aCookie['httponly'],
-            'secure'=>$aCookie['secure'],
-            'expiration'=>$aCookie['expiration'],
-        );
-    }
-}
-$sTableId='tblSavedCookies';
-$sReturn.=$this->_getHtmlTable($aTbl, 'httpheader.col-',$sTableId)
-        .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable( {\'lengthMenu\': [[-1], [\'All\']] } );} );</script>'
-        ;
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';
 // ----------------------------------------------------------------------
 // output

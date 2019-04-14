@@ -42,6 +42,6 @@ for ($i=0; $i<1000; $i++){
 $sTableId='httpstatuscdodes';
 $sReturn.= $this->_getHtmlTable($aTable,'httpstatus-', $sTableId)
         . '<div style="clear: both;"></div>'
-        .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable( {\'lengthMenu\': [[-1], [\'All\']] } );} );</script>'
+        . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(-1))))
         ;
 return $sReturn;

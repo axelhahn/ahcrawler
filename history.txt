@@ -14,6 +14,15 @@
 
 ----------------------------------------------------------------------
 
+2019-04-14: v0.66
+  * backend: cookies were moved to a seperate page; added: delete cookies
+  * backend: added: delete cookies
+  * backend: added: legend and tiles for cookies
+  * backend: fix ressources view - wrongly detected loops
+  * backend: ressources: filter with less space
+  * backend: ssl check headline shows count excluding links (instead of all non https ressources)
+  * backend: added function to initialize datatables
+
 2019-04-10: v0.65
   * backend: show cookies in a sortable table
   * backend: do not delete cookie file on start of indexing

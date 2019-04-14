@@ -56,16 +56,16 @@ if (is_array($aFilterItems) && is_array($aFilterValues)){
         // $sUrl=str_replace($sRemove, '', $sSelfUrl);
         $sFilter.='<a href="'.$sUrl.'"'
                 . ' class="pure-button"'
-                . '><span class="varname">'.$this->_getIcon($aFilterItems[$i]).$aFilterItems[$i].'</span> = <span class="value">'.$oRenderer->renderValue($aFilterItems[$i], $aFilterValues[$i]).'</span> '
-                . '<i class="fa fa-close"></i>'
+                . '><span class="varname">'.$this->_getIcon($aFilterItems[$i]).$this->lB('db-ressources.'.$aFilterItems[$i]).'</span> = <span class="value">'.$oRenderer->renderValue($aFilterItems[$i], $aFilterValues[$i]).'</span> .. '
+                . $this->_getIcon('button.close')
                 . '</a> ';
     }
-    $sFilter= '<i class="fa fa-filter"></i> '
-            . $this->lB('ressources.filter').$sFilter.' '
+    $sFilter= $this->_getIcon('filter')
+            . $this->lB('ressources.filter').' '.$sFilter.' '
             . ($i>1 ? '<a href="'.$sBaseUrl.'"'
                 . ' class="pure-button button-error"'
                 . '> '
-                . '<i class="fa fa-close"></i>'
+                . $this->_getIcon('button.close')
                 . '</a>'
             : '')
             . '<br><br>';
@@ -102,7 +102,9 @@ if ($iResCount) {
                 $sReport.=''
                         .'<div class="counter">'. $iReportCounter.'</div>'
                         . '<div style="clear: left;"></div>'
-                        .$oRenderer->renderReportForRessource($aRow);
+                        //  . '<pre>'.print_r($aRow, 1).'</pre>'
+                        .$oRenderer->renderReportForRessource($aRow)
+                        ;
             }
             // --- generate table view
             if ($bShowRessourcetable){
@@ -138,6 +140,7 @@ if ($iResCount) {
         }
     }
 
+    /*
     foreach ($aFilter as $sKey){
         $sRessourcelabel=(array_key_exists($sKey, $this->_aIcons['cols']) ? '<i class="'.$this->_aIcons['cols'][$sKey].'"></i> ' : '') . $sKey;
         $aTableFilter[]=array('<strong>'.$sRessourcelabel.'</strong>', '', '');
@@ -157,6 +160,33 @@ if ($iResCount) {
             );
         }
     }
+     */
+    
+    $sFilterArea='';
+    
+    foreach ($aFilter as $sKey){
+        $sRessourcelabel=$this->_getIcon($sKey).$this->lB('db-ressources.'.$sKey);
+        $aTableF=array();
+        $aTableF[]=array('<strong>'.$sRessourcelabel.'</strong>', '');
+        foreach ($aCounter2[$sKey] as $aCounterItem){
+            $sCounter=$aCounterItem[$sKey];
+            $iValue=$aCounterItem['count'];
+            $aTableF[]=array(
+                (count($aCounter2[$sKey])>1
+                    ? '<a href="'.$sSelfUrl.'&amp;filteritem[]='.$sKey.'&amp;filtervalue[]='.$sCounter.'">'
+                        .$oRenderer->renderValue($sKey, $sCounter)
+                        .'</a>'
+                    : $oRenderer->renderValue($sKey, $sCounter)
+                )
+                , 
+                $iValue
+            );
+        }
+        $sFilterArea.='<div style="float: left; margin-right: 1em;">'
+                . $this->_getSimpleHtmlTable($aTableF, 1)
+                .'</div>';
+    }
+    $sFilterArea.='<div style="clear: both"></div>';
 }
 
 // --- output
@@ -189,7 +219,9 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
 
 
 if ($iResCount) {
-    $sReturn.=$this->_getSimpleHtmlTable($aTableFilter)
+    $sReturn.=''
+            // .$this->_getSimpleHtmlTable($aTableFilter)
+            . $sFilterArea
             . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>' ;
 
     if ($bShowRessourcetable){
@@ -230,8 +262,7 @@ if ($iResCount) {
     $sReturn.='<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
 
-$sReturn.='<script>$(document).ready( function () {$(\'.datatable\').DataTable();} );</script>';
-
+$sReturn.= $oRenderer->renderInitDatatable('.datatable', array('lengthMenu'=>array(array(20, 50, 100, -1))));
 
 return $sReturn;
 

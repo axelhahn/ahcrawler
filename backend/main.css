@@ -183,7 +183,7 @@ ul.tiles a.tile{
     border: 1px outset rgba(0,0,0,0.2); 
     border-radius: 0.3em;
     box-shadow: 0.3em 0.3em 1em #ccc;
-    color:#777;
+    color:#789;
     display: block;
     float: left;
     height: 6em;
@@ -261,7 +261,7 @@ div.message-error{background: #fcc; color:#955;}
 .type-local{color:#aaaaaa;}
 
 /* --- icons --- */
-.ico-security{color:#48a;}
+.ico-security{color:#0c6;}
 .ico-httpv1{color:#083;}
 .ico-unknown{color:#c8c;}
 .ico-warn{color:#fa2;}
@@ -304,7 +304,7 @@ div.message-error{background: #fcc; color:#955;}
 
 /* --- tables --- */
 
-.pure-table-horizontal th{background-color:#789; color:#eee;}
+.pure-table-horizontal th{background-color:#789; color:#eee; text-align: left;}
 .pure-table-horizontal th:hover{background-color:#89a; color:#eee;}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
     background-color:#abc; color:#343;

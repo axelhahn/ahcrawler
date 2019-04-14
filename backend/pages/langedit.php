@@ -53,34 +53,7 @@ foreach ($aTexts as $sKey=>$aAllLangTxt){
 $sTableId='tblLangtexts';
 // $sReturn .= $this->_getSimpleHtmlTable($aTbl, true)
 $sReturn .= $this->_getHtmlTable($aTbl, '', $sTableId)
-    .'<script>$(document).ready( function () {$(\'#'.$sTableId.'\').DataTable( {\'lengthMenu\': [[-1], [\'All\']] } );} );</script>'
-    ;
-// $sReturn .= '<pre>'.print_r($aTexts, 1).'</pre>';
-
-/*
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAuth.'username', 'label'=>$this->lB('setup.section.auth.user')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAuth.'user', 
-                    'name'=>'options[auth][user]',
-                    'value'=>isset($aOptions['options']['auth']['user']) ? $aOptions['options']['auth']['user'] : '',
-                    ), false)
-                . '</div>'
-
-*/
-
-
-// ----------------------------------------------------------------------
-// javascript: define datatables
-// ----------------------------------------------------------------------
-$sReturn.='<script>$(document).ready(function () {'
-        . '$(\'#tableCrawlerErrors\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortTitles\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortDescr\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortKeywords\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableLongLoad\').DataTable({"aaSorting":[[1,"desc"]]});'
-        . '$(\'#tableLargePages\').DataTable({"aaSorting":[[1,"desc"]]});'
-        . '} );'
-        . '</script>';
+    . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(-1))))
+;
 
 return $sReturn;

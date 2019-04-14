@@ -219,14 +219,12 @@ if ($iCountLargePages) {
 // ----------------------------------------------------------------------
 // javascript: define datatables
 // ----------------------------------------------------------------------
-$sReturn.='<script>$(document).ready(function () {'
-        . '$(\'#tableCrawlerErrors\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortTitles\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortDescr\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableShortKeywords\').DataTable({"aaSorting":[[1,"asc"]]});'
-        . '$(\'#tableLongLoad\').DataTable({"aaSorting":[[1,"desc"]]});'
-        . '$(\'#tableLargePages\').DataTable({"aaSorting":[[1,"desc"]]});'
-        . '} );'
-        . '</script>';
-
+$sReturn.=''
+    . $oRenderer->renderInitDatatable('#tableCrawlerErrors',  array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableShortTitles',    array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableShortDescr',     array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableShortKeywords',  array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableLongLoad',       array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableLargePages',     array('aaSorting'=>array(array(1, 'asc'))))
+    ;
 return $sReturn;
