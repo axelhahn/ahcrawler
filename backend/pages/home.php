@@ -21,8 +21,8 @@ if(!$this->_configExists() || !$this->oDB){
     .$oRenderer->oHtml->getTag('a',array(
         'href' => '?page=setup',
         'class' => 'pure-button button-secondary',
-        'title' => $this->lB('nav.setup.label.hint'),
-        'label' => $this->lB('nav.setup.label'),
+        'title' => $this->lB('nav.setup.hint'),
+        'label' => $this->_getIcon('setup').$this->lB('nav.setup.label'),
     ))
     ;
 } else {
@@ -38,11 +38,11 @@ if(!$this->_configExists() || !$this->oDB){
             . '<h3>' . $this->lB('home.welcome') . '</h3>'
             // . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), 0, '', '')
             . $this->lB('home.noprojectyet').'<br><br>'
-            . $this->_getButton(array(
+            . $oRenderer->oHtml->getTag('a',array(
                         'href'=>'?page=profiles&tab=add',
-                        'popup'=>false,
-                        'class'=>'button-secondary',
-                        'label'=>'button.add',
+                        'class'=>'pure-button button-secondary',
+                        'title' => $this->lB('nav.profiles.hint'),
+                        'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
                         ))
                 ;
     } else {

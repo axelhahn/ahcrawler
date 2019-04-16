@@ -14,6 +14,13 @@
 
 ----------------------------------------------------------------------
 
+2019-04-17: v0.67
+  * backend: show lang in searchindex
+  * init: add menu in default config
+  * fixed default for regexToRemove in the searchindex
+  * backend: remove cookie file creation
+  * preparations for a single page bookmarklet
+
 2019-04-14: v0.66
   * backend: cookies were moved to a seperate page; added: delete cookies
   * backend: added: delete cookies

@@ -302,6 +302,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iDepth', 
                     'name'=>'searchindex[iDepth]',
+                    'placeholder'=>$this->aProfileDefault['searchindex']['iDepth'],
                     'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
                     ), false)
                 . '</div>'
@@ -310,6 +311,7 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'userpwd', 
                     'name'=>'userpwd',
+                    'placeholder'=>'',
                     'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
                     ), false)
                 . '</div>'
@@ -322,7 +324,8 @@ $sReturn.='
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iMaxUrls', 
                     'name'=>'searchindex[iMaxUrls]',
-                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : '0',
+                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
+                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
                     ), false)
                 . '</div>'
 

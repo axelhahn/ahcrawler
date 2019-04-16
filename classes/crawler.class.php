@@ -709,22 +709,28 @@ class crawler extends crawler_base{
         preg_match("@\<html.*\ lang=[\"\'](.*)[\"\']@i", $sContent, $aTmp);
         $sLang=isset($aTmp[1]) ? $aTmp[1] : '';
         
-        // print_r($this->aProfileEffective['searchindex']['regexToRemove']); die();
-        if(isset($this->aProfileEffective['searchindex']['regexToRemove']) 
+        // print_r($this->aProfileEffective['searchindex']['regexToRemove']); echo count($this->aProfileEffective['searchindex']['regexToRemove']); die();
+        if(!strlen($sContent)){
+            echo "WARNING: content is EMPTY for url [$url]?!\n";
+        } else if(isset($this->aProfileEffective['searchindex']['regexToRemove']) 
                 && is_array($this->aProfileEffective['searchindex']['regexToRemove'])
-                && count($this->aProfileEffective['searchindex']['regexToRemove'])
+                && count($this->aProfileEffective['searchindex']['regexToRemove'])>0
         ){
             foreach ($this->aProfileEffective['searchindex']['regexToRemove'] as $sRegex){
                 if($sRegex){
                     try{
                         $sContent = preg_replace("@".$sRegex."@si", " ", $sContent);
+                        if(!strlen($sContent)){
+                            echo "WARNING: content is EMPTY after applying regex [$sRegex] on $url\n";
+                        }
                     } 
                     catch(Exception $e) {
-                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] could be wrong. ', error);
+                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] seems to be wrong. ', error);
                     }
                 }
             }
         }
+
         /*
         $sContent = preg_replace("/<link rel[^<>]*>/i", " ", $sContent);
         $sContent = preg_replace("@<!--sphider_noindex-->.*?<!--\/sphider_noindex-->@si", " ", $sContent);
@@ -742,6 +748,7 @@ class crawler extends crawler_base{
         $sContent = strip_tags($sContent);
         $sContent = preg_replace("/&nbsp;/", " ", $sContent);
         $sContent = preg_replace('/\s+/', ' ', $sContent);
+        // echo "DEBUG content strlen is finally ".strlen($sContent)." byte\n";
 
         $this->_addToSearchIndex(
                 array(

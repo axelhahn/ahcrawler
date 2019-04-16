@@ -1,11 +1,12 @@
 <?php
 /**
- * page analysis
+ * page analysis :: search for an url
  */
 $sReturn='';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $sReturn.='<br>';
 $sQuery = $this->_getRequestParam('query');
+$bRedirect = $this->_getRequestParam('redirect');
 
 $sReturn.= '<p>' . $this->lB('ressources.searchurl-hint') . '</p>'
         .'<form action="" method="get" class="pure-form">'
@@ -26,6 +27,11 @@ if ($sQuery){
     $aData=$oRessources->getRessourceDetailsByUrl($sQuery);
 
     if ($aData && count($aData)){
+        if($bRedirect && count($aData)===1){
+            $sUrl='?page=ressourcedetail&id=' . $aData[0]['id'] . '&tab='.$aData[0]['siteid'];
+            header('location: '.$sUrl);
+        }
+            
         $sReturn.='<h3>exact results '.count($aData).' </h3>'
                 . $this->lB('ressources.total')
                 . ': <strong>' . count($aData) . '</strong><br><br>'

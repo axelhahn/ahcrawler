@@ -42,7 +42,7 @@ if (file_exists($this->sCcookieFilename)) {
     $sReturn .= ''
         . $oRenderer->renderTileBar(
             $oRenderer->renderTile($iCookieCount ? '' : 'ok', $this->lB('cookies.count'), $iCookieCount, '', '')
-            . $oRenderer->renderTile('', $this->lB('cookies.since'), $oRenderer->hrAge(filectime($this->sCcookieFilename)), date('Y-m-d H:i', filectime($this->sCcookieFilename)), '')
+            // . $oRenderer->renderTile('', $this->lB('cookies.since'), $oRenderer->hrAge(filectime($this->sCcookieFilename)), date('Y-m-d H:i', filectime($this->sCcookieFilename)), '')
         )
         .'<div style="clear: both;"></div>'
     ;
@@ -58,7 +58,8 @@ if (file_exists($this->sCcookieFilename)) {
                 'httponly' => $aCookie['httponly'],
                 'secure' => ($aCookie['secure'] === 'TRUE' 
                                 ? '<span class="ok">' 
-                                : ($aCookie['secure'] === 'FALSE' ? '<span class="warning">' : '<span>')
+                                // : ($aCookie['secure'] === 'FALSE' ? '<span class="warning">' : '<span>')
+                                : '<span>'
                         )
                         . $aCookie['secure']
                         .'</span>',

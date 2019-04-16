@@ -13,8 +13,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.66',
-        'date' => '2019-04-14',
+        'version' => '0.67',
+        'date' => '2019-04-17',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -40,6 +40,7 @@ class crawler_base {
         ),
         'debug' => 'false',
         'lang' => 'en',
+        'menu' => array(),
         'crawler' => array(
             'searchindex' => array(
                 'simultanousRequests' => 2,
@@ -52,10 +53,11 @@ class crawler_base {
             'regexToRemove' => array(
                 // '<!--googleoff\:\ index-->.*?<!--googleon\:\ index-->',
                 // '<!--sphider_noindex-->.*?<!--/sphider_noindex-->',
-                '<!--.*?-->',
-                '<link rel[^<>]*>',
-                '<footer.*>.*?</footer>',
-                '<nav.*>.*?</nav>',
+                // '<!--.*?-->',
+                // '<link rel[^<>]*>',
+                '<footer[^>]*>.*?</footer>',
+                '<header[^>]*>.*?</header>',
+                '<nav[^>]*>.*?</nav>',
                 '<script[^>]*>.*?</script>',
                 '<style[^>]*>.*?</style>',
             ),
@@ -893,7 +895,12 @@ class crawler_base {
             if (!isset($aReturn['searchindex']['simultanousRequests']) || $aReturn['searchindex']['simultanousRequests']==false ) {
                 $aReturn['searchindex']['simultanousRequests'] = $this->aOptions['crawler']['searchindex']['simultanousRequests'];
             }
-            if (!isset($aReturn['searchindex']['regexToRemove']) || $aReturn['searchindex']['regexToRemove']==false ) {
+            
+            if (!isset($aReturn['searchindex']['regexToRemove']) 
+                    || $aReturn['searchindex']['regexToRemove']==false 
+                    || !is_array($aReturn['searchindex']['regexToRemove'])
+                    || !count($aReturn['searchindex']['regexToRemove'])
+            ) {
                 $aReturn['searchindex']['regexToRemove'] = $this->aOptions['searchindex']['regexToRemove'];
             }
             if (!isset($aReturn['ressources']['simultanousRequests']) || $aReturn['ressources']['simultanousRequests']==false ) {

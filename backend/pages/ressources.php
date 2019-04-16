@@ -214,15 +214,18 @@ $sBtnTable=$this->_getButton(array(
 $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         . $oRenderer->renderRessourceStatus(). '<div style="clear: both;"></div>'
         . '<p>'.$this->lB('ressources.overview.intro').'</p>'
-        . $sFilter
         ;
 
 
 if ($iResCount) {
     $sReturn.=''
             // .$this->_getSimpleHtmlTable($aTableFilter)
-            . $sFilterArea
-            . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>' ;
+            . '<div class="actionbox">'
+                . $sFilter
+                . $sFilterArea
+            . '</div>'
+            . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>'
+            ;
 
     if ($bShowRessourcetable){
         $sReturn.='<p>'

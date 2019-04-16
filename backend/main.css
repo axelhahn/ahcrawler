@@ -224,19 +224,7 @@ ul.tiles a.tile:hover{
 .chartcolor-4{color:#a8c;}
 .chartcolor-5{color:#eb6;}
 
-/* --- overlay --- */
 
-div#overlay{
-    position: fixed; height: 100%; width: 100%; top:0; left:0;
-    background: #ccc; background: rgba(0,0,0,0.3);
-    z-index: 1000; display: none;
-}
-.divdialog{
-    background: #fff; position: absolute; margin: 1%; z-index: 1000; 
-    width: 94%; min-height: 90%;
-    border: 2px solid rgba(0,0,0,0.7); border-radius: 1em; box-shadow: 0 0 1em #333;
-    padding: 1em;
-}
 .more:before{content: ' (...)'; color: #f00; background: #fee;}
 
 div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
@@ -246,7 +234,21 @@ div.message-ok{background: #cfc; color:#080;}
 div.message-warning{background: #fec; color:#975;}
 div.message-error{background: #fcc; color:#955;}
 
-/* --- ressources --- */
+/* 
+--------------------------------------------------------------------------------
+    action box
+--------------------------------------------------------------------------------
+*/
+
+.actionbox{
+    background: #f0f4f8;
+    border: 2px solid #e0e4e8; padding: 1em;
+}
+/* 
+--------------------------------------------------------------------------------
+    ressources 
+--------------------------------------------------------------------------------
+*/
 .http-code{padding: 0.05em 0.5em; background:#ddd; color:#fff; box-shadow: 0 0 0.2em #fff; min-width: 3em; display: inline-block;}
 .http-code-{background:#ccd;}
 .http-code--1 {background: #d0d0d8;}
@@ -303,7 +305,7 @@ div.message-error{background: #fcc; color:#955;}
 .divRessourceReport .references{border-left: 1px dotted #ccc; margin: 0 0 0 1em; padding-left: 0.5em;}
 
 /* --- tables --- */
-
+.pure-table{background:#fff;}
 .pure-table-horizontal th{background-color:#789; color:#eee; text-align: left;}
 .pure-table-horizontal th:hover{background-color:#89a; color:#eee;}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {

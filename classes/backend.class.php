@@ -349,7 +349,8 @@ class backend extends crawler_base {
      */
     private function _getTab($aTabs=false) {
         $sAdd = $this->_getRequestParam('tab', '/add/');
-        $this->_sTab = $sAdd ? $sAdd : $this->_getRequestParam('tab', false, 'int');
+        $sAll = $this->_getRequestParam('tab', '/all/');
+        $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('tab', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
             setcookie("tab", $this->_sTab, time() + 3600);
         }

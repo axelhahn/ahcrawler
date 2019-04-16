@@ -83,7 +83,7 @@ class status {
      * @return boolean
      */
     private function _save(){
-        echo "STATUS: running " . $this->_aMsg['action']."\n";
+        // echo "STATUS: running " . $this->_aMsg['action']."\n";
         $sFile=$this->_getTouchfile();
         
         // $this->_aMsg['last']=microtime(1);

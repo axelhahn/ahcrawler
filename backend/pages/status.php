@@ -138,7 +138,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
             $sForm = '<h3>'.$this->lB('status.search').'</h3>'
                     . '<p>'.$this->lB('status.search.hint').'</p>'
                     
-                    . '<div style="border: 2px solid #ddd; padding: 2em;">'
+                    . '<div div class="actionbox">'
                         . '<form action="" method="get" class="pure-form">'
                             . '<input type="hidden" name="page" value="status">'
                             . '<input type="hidden" name="action" value="search">'
@@ -192,7 +192,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                                 $sMatches = '';
                                 foreach ($aHits as $sWhere => $aValues) {
                                     if ($aValues[0]) {
-                                        $sMatches.='... ' . $sWhere . ': <strong>' . $aValues[0] . '</strong> (x'.$aValues[1].')<br>';
+                                        $sMatches.='... ' . $sWhere . ': <strong>' . $aValues[0] . '</strong> (x'.$aValues[1].' = '.($aValues[0]*$aValues[1]).')<br>';
                                     }
                                 }
                                 if ($sMatches) {
@@ -206,6 +206,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                                     $this->_getSimpleHtmlTable(array(
                                     array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
                                     array('url', $aItem['url']),
+                                    array('lang', $aItem['lang']),
                                     array('description', $aItem['description']),
                                     array('keywords', $aItem['keywords']),
                                     array('content', $this->_prettifyString($aItem['content'], 400)),

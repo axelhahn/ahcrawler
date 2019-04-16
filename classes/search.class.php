@@ -223,7 +223,7 @@ class ahsearch extends crawler_base {
         
         $aResult = $this->oDB->select(
                 'pages', 
-                array('id', 'url', 'title', 'description', 'keywords', 'content', 'ts'), 
+                array('id', 'url', 'lang', 'title', 'description', 'keywords', 'content', 'ts'), 
                 array(
                     'AND' => $aSelect,
                     'LIMIT' => 55
