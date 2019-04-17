@@ -107,6 +107,8 @@ class ressourcesrenderer extends crawler_base {
         'ico.non-standard' => 'far fa-check-circle',
         'ico.security' => 'fas fa-lock',
         'ico.warn' => 'fas fa-exclamation-triangle',
+        
+        'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
     );
     public $oHtml=false;
 
@@ -468,6 +470,27 @@ class ressourcesrenderer extends crawler_base {
         return $sReturn;
     }
 
+    public function renderBookmarklet(){
+        $sMyUrl = $_SERVER["REQUEST_SCHEME"]
+                . "://"
+                . $_SERVER["HTTP_HOST"]
+                . ':' . $_SERVER["SERVER_PORT"]
+                . $_SERVER["SCRIPT_NAME"]
+                . '?page=checkurl&siteid=all&redirect=1&query='
+                ;
+        return 
+            '<h3>'.$this->lB('bookmarklet.head').'</h3>'
+            . $this->lB('bookmarklet.hint').':<br><br>'
+            .'<a class="pure-button" href="javascript:document.location.href=\''.$sMyUrl.'\'+encodeURI(document.location.href);" '
+                . 'onclick="alert(\''.$this->lB('bookmarklet.hint').'\'); return false;" '
+                . 'title="'.$this->lB('bookmarklet.hint').'">'
+                . $this->_getIcon('ico.bookmarklet')
+                . $this->lB('bookmarklet.label')
+            . '</a><br><br>'
+            . $this->lB('bookmarklet.posthint')
+            ;
+    }
+    
     /**
      * get html code for report item with redirects and and its references
      * 

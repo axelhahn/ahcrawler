@@ -8,20 +8,23 @@ $sReturn.='<br>';
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 
-$sReturn.= '<p>' . $this->lB('ressources.searchurl-hint') . '</p>'
-        .'<form action="" method="get" class="pure-form">'
-        . '<input type="hidden" name="page" value="checkurl">'
-        . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
-        . '<label>' . $this->lB('ressources.searchurl') . '</label>'
-        . '<input type="text" name="query" value="' . $sQuery . '" required="required" size="80" placeholder="https://www...">'
-        . ' '
-        // . $sSelect
-        . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $this->lB('button.search') . '</button>'
-        . '</form><br><br>';
+$sReturn.= '<h3>' . $this->lB('ressources.searchurl-head') . '</h3>'
+        . '<div div class="actionbox">'
+            . $this->lB('ressources.searchurl-hint').'<br><br>'
+            . '<form action="" method="get" class="pure-form">'
+            . '<input type="hidden" name="page" value="checkurl">'
+            . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
+            . '<label>' . $this->lB('ressources.searchurl') . '</label> '
+            . '<input type="text" name="query" value="' . $sQuery . '" required="required" size="80" placeholder="">'
+            . ' '
+            // . $sSelect
+            . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $this->lB('button.search') . '</button>'
+            . '</form>'
+        . '</div>';
 
+$oRenderer=new ressourcesrenderer($this->_sTab);
 if ($sQuery){
     $oRessources=new ressources($this->_sTab);
-    $oRenderer=new ressourcesrenderer($this->_sTab);
 
     // $aData=$oRessources->getRessources('*', array('url'=>$sQuery), array('url'=>'ASC'));
     $aData=$oRessources->getRessourceDetailsByUrl($sQuery);
@@ -55,7 +58,9 @@ if ($sQuery){
             $sReturn.='<p>'.$this->lB('ressources.itemsnone').'</p>';                    
         }
     }
-
-
+} else {
+    
 }
+
+$sReturn.='<br><br>'.$oRenderer->renderBookmarklet();
 return $sReturn;

@@ -3,11 +3,12 @@
 
 ## DESCRIPTION ## 
 
-Open Source tool written in PHP with 
+This is free software and Open Source written in PHP with 
 - crawler (spider) and indexer
-- simple search for your website
+- search for your website
 - website analyzer with
   - ssl certificate check
+  - saved cookies
   - http response header check
   - linkchecker
 
@@ -47,7 +48,7 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 ### search for your website ###
 - search with OR or AND
 - search in language (requires lang attribute in your html tags)
-- search in a subfolder only
+- search in a given subfolder only
 - several methods for pre defined forms or for fully customized form
 - stores users searchterms for a statistics
 
@@ -57,6 +58,7 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
   - unwanted headers
   - security headers
 - check ssl certificate (if your website uses https)
+- show stored server cookies during crawling and following links
 - show webite errors, warnings based on http status code (a.k.a. linkchecker)
   with giving hints what to do at which status code
 - for a given url: display where it is used and where it links to showing

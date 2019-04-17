@@ -149,7 +149,7 @@ pre{font-size: 80%; padding: 0.5em; background: #cde; color:#345;}
 /* --- tiles --- */
 
 a.childitem{
-    border: 1px solid #f0f4f8;
+    border: 1px solid #e0e8f4;
     border-left: 6px solid #789; 
     background: #e0e8f4;
     border-radius: 0.5em;
@@ -163,8 +163,8 @@ a.childitem{
     transition: ease-in-out all 0.2s;
     width: 18%;
 }
-a.childitem:hover{background: #e0e8f4; background: #f0f4f8; border-color: #d0d8e0;}
-a.childitem:focus{background: #e0e8f0; }
+a.childitem:hover{background: #f0f4f8; border-color: #d0d8e0;}
+a.childitem:focus{background: #fff; }
 a.childitem i{color: #789; font-size: 300%; min-height: 3em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
 a.childitem:hover i{color: #abc;}
 a.childitem strong{color: #789; font-size: 150%; text-shadow: 1px 1px 1px #fff;}
@@ -180,7 +180,7 @@ ul.tiles a.tile{
     background: #abc;
     background: radial-gradient(#def,#bcd);
     border: 1px solid #ddd;
-    border: 1px outset rgba(0,0,0,0.2); 
+    border: 2px outset rgba(0,0,0,0.1); 
     border-radius: 0.3em;
     box-shadow: 0.3em 0.3em 1em #ccc;
     color:#789;
@@ -188,6 +188,7 @@ ul.tiles a.tile{
     float: left;
     height: 6em;
     margin: 0 1em 1em 0;
+    min-width: 6em;
     padding: 1em;
     text-align: center;
     text-decoration: none;

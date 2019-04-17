@@ -80,6 +80,11 @@
     "var.string": "String",
     "var.array": "Array",
     
+    "bookmarklet.head": "Bookmarklet",
+    "bookmarklet.hint": "Ziehen Sie den Button in die Lesezeichen-Toolbar",
+    "bookmarklet.posthint": "Wenn Sie auf irgendeiner im Crawler erfassten Seite sind - dann den Bookmark anklicken - dann erhalten Sie die direkte Detailseite inkl. derer ein- und ausgehenden Links.",
+    "bookmarklet.label": "ahCrawler: Details",
+    
     "button.add": "Hinzuf&uuml;gen",
     "button.add.hint": "",
     "button.back": "Zur&uuml;ck",
@@ -315,7 +320,7 @@
     "ressources.overview.intro": "Ressourcen sind alle einzelnen Seiten und hierin verlinkte Elemente, wie CSS-, Javascript-, Bild-Dateien, verlinkte externe Webseiten u.s.w.<br>Sie k&ouml;nnen hier nach Elementen und Eigenschaften filtern, um die Ansicht der Ressourcen in der darunter folgenen Tabelle einzuschr&auml;nken.",
     "ressources.itemsnone": "Leider gab es keinen Treffer.",
     "ressources.total": "gesamt",
-    "ressources.itemstotal": "Anzahl der Ressourcen gesamt",
+    "ressources.itemstotal": "Anzahl Ressourcen ges.",
     "ressources.ressourceitemfull" : "Details zu einer Ressource",
     "ressources.status": "Stand",
     "ressources.filter": "Filter",
@@ -329,6 +334,7 @@
     "ressources.report.intro": "",
     "ressources.searchressourceid": "ID",
     "ressources.searchressourceid-hint": "Hinweis: Diese Seite wird von anderen Analyse-Seiten zur Detailansicht verlinkt. Diese Suche hier richtet sich eher an Sysadmins und Webmaster mit Datenbankzugriff.",
+    "ressources.searchurl-head": "URL-Suche",
     "ressources.searchurl": "URL",
     "ressources.searchurl-hint": "Geben Sie eine vollst&auml;ndige URL oder einen Teil davon (Domain, Pfad, Dateiname, Erweiterung) an.",
     "ressources.showreport": "Report",

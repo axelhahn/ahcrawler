@@ -492,7 +492,7 @@ class ressources extends crawler_base {
         $aData = $this->getRessources(
                 '*', array(
             'url' . ($bUseLike ? '[~]' : '' ) => $sUrl,
-            'siteid' .((int)$this->iSiteId>1 ? '' : '[>]') => ((int)$this->iSiteId>1 ? $this->iSiteId : '0'),
+            'siteid' .((int)$this->iSiteId>0 ? '' : '[>]') => ((int)$this->iSiteId>0 ? $this->iSiteId : '0'),
                 ), array('url' => 'ASC')
         );
         // echo $this->oDB->last()."\n"; 

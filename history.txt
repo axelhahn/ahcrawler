@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-04-18: v0.68
+  * backend: added bookmarklet to drag and drop into bookmarks toolbar
+    (see analysis -> seach or about page)
+
 2019-04-17: v0.67
   * backend: show lang in searchindex
   * init: add menu in default config

@@ -80,6 +80,11 @@
     "var.string": "String",
     "var.array": "Array",
     
+    "bookmarklet.head": "Bookmarklet",
+    "bookmarklet.hint": "Drag and drop the button into the bookmarks toolbar",
+    "bookmarklet.posthint": "If you are on any page that was indexed by ahCrawler - then click the bookmark - and you get the detail page with incoming and outgoing links.",
+    "bookmarklet.label": "ahCrawler: details",
+    
     "button.add": "Add",
     "button.add.hint": "",
     "button.back": "Back",
@@ -331,6 +336,7 @@
     "ressources.report.intro": "",
     "ressources.searchressourceid": "ID",
     "ressources.searchressourceid-hint": "Remark: This page is linked in other analysis pages to show details.",
+    "ressources.searchurl-head": "Url search",
     "ressources.searchurl": "Url",
     "ressources.searchurl-hint": "Enter a complete url or a part of it (domain, path, filename, extension).",
     "ressources.showreport": "Show report",
