@@ -1,0 +1,5 @@
+/config/crawler.config.json
+/data/*.txt
+/data/*.db
+/tmp/*.tmp
+/backend/get.php

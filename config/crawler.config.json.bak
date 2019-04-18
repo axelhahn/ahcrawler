@@ -1,0 +1,168 @@
+{
+    "options": {
+        "database": {
+            "database_type": "mysql",
+            "database_file": "D:\\htdocs\\axel-hahn.de\\tools\\ahcrawler\/data\/ahcrawl.db",
+            "server": "localhost",
+            "port": false,
+            "database_name": "ahcrawler",
+            "username": "root",
+            "password": "",
+            "charset": "utf8"
+        },
+        "lang": "de",
+        "menu": [],
+        "crawler": {
+            "searchindex": {
+                "simultanousRequests": 2
+            },
+            "ressources": {
+                "simultanousRequests": 3
+            }
+        },
+        "searchindex": {
+            "regexToRemove": [
+                "<footer[^>]*>.*?<\/footer>",
+                "<header[^>]*>.*?<\/header>",
+                "<nav[^>]*>.*?<\/nav>",
+                "<script[^>]*>.*?<\/script>",
+                "<style[^>]*>.*?<\/style>"
+            ]
+        },
+        "analysis": {
+            "MinTitleLength": 20,
+            "MinDescriptionLength": 40,
+            "MinKeywordsLength": 10,
+            "MaxPagesize": 150000,
+            "MaxLoadtime": 500
+        },
+        "debug": false
+    },
+    "profiles": {
+        "1": {
+            "label": "Axels Webseite",
+            "description": "Axels private Webseite plus Blog",
+            "searchindex": {
+                "urls2crawl": [
+                    "https:\/\/www.axel-hahn.de\/startseite"
+                ],
+                "stickydomain": "www.axel-hahn.de",
+                "include": [],
+                "includepath": [
+                    "^\/batch__.*",
+                    "^\/blog__.*",
+                    "^\/diashows__.*",
+                    "^\/docs__.*",
+                    "^\/kiste__.*",
+                    "^\/music.*",
+                    "^\/projects\/programme__.*",
+                    "^\/projects__.*",
+                    "^\/startseite.*"
+                ],
+                "exclude": [
+                    "\/blog\/$",
+                    "\/blog\/[0-9][0-9][0-9][0-9]\/$",
+                    "\/blog\/[0-9][0-9][0-9][0-9]\/[0-9][0-9]\/$",
+                    "\/blog\/category\/.*",
+                    "\/blog\/page\/.*",
+                    "\/startseite\/impressum$"
+                ],
+                "iDepth": 7,
+                "iMaxUrls": 0,
+                "simultanousRequests": 3,
+                "regexToRemove": []
+            },
+            "userpwd": "",
+            "frontend": {
+                "searchcategories": {
+                    "... Axels Webseite :: Startseite, Kontakt, Impressum": "\/startseite",
+                    "... Axels Webseite :: Batch": "\/batch",
+                    "... Axels Webseite :: Projekte": "\/projects",
+                    "... Axels Webseite :: Musik": "\/music",
+                    "... Axels Webseite :: Kiste": "\/kiste",
+                    "... Blog": "\/blog\/",
+                    "... Docs (englisch)": "\/docs\/"
+                },
+                "searchlang": [
+                    "de",
+                    "en"
+                ]
+            },
+            "ressources": {
+                "simultanousRequests": false
+            }
+        },
+        "2": {
+            "label": "putzi4win",
+            "description": "Putzi4win",
+            "searchindex": {
+                "stickydomain": "www.putzi4win.de",
+                "urls2crawl": [
+                    "http:\/\/www.putzi4win.de\/index.htm"
+                ],
+                "iDepth": 7,
+                "include": [],
+                "exclude": [
+                    "\/blog\/$",
+                    "\/blog\/[0-9][0-9][0-9][0-9]\/$",
+                    "\/blog\/[0-9][0-9][0-9][0-9]\/[0-9][0-9]\/$",
+                    "\/blog\/category\/.*",
+                    "\/blog\/page\/.*"
+                ]
+            }
+        },
+        "3": {
+            "label": "russisch.in-bern.ch",
+            "description": "",
+            "searchindex": {
+                "urls2crawl": [
+                    "https:\/\/russisch.in-bern.ch\/startseite\/"
+                ],
+                "stickydomain": "russisch.in-bern.ch",
+                "include": [],
+                "includepath": [],
+                "exclude": [],
+                "iDepth": 7,
+                "iMaxUrls": false,
+                "simultanousRequests": false
+            },
+            "userpwd": "",
+            "frontend": {
+                "searchcategories": [],
+                "searchlang": []
+            },
+            "ressources": {
+                "simultanousRequests": false
+            }
+        },
+        "4": {
+            "label": "IML-Test",
+            "description": "test ... debugging",
+            "searchindex": {
+                "urls2crawl": [
+                    "https:\/\/www.iml.unibe.ch\/ueber-uns\/organisation\/personen\/guttormsen-sissel"
+                ],
+                "stickydomain": "",
+                "include": [],
+                "includepath": [
+                    "sissel"
+                ],
+                "exclude": [],
+                "iDepth": false,
+                "iMaxUrls": 3,
+                "simultanousRequests": false,
+                "regexToRemove": [
+                    "bbbbbbbbbbbbbbdrtertw"
+                ]
+            },
+            "userpwd": "",
+            "frontend": {
+                "searchcategories": [],
+                "searchlang": []
+            },
+            "ressources": {
+                "simultanousRequests": false
+            }
+        }
+    }
+}

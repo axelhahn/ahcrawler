@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-04-18: v0.69
+  * backend: fix bookmarklet url (on some systems the url scheme was not set)
+  * backend: a few optical improvements
+
 2019-04-18: v0.68
   * backend: added bookmarklet to drag and drop into bookmarks toolbar
     (see analysis -> seach or about page)

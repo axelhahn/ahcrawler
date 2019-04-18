@@ -3,7 +3,10 @@
 
 ## DESCRIPTION ## 
 
-This is free software and Open Source written in PHP with 
+This is free software and Open Source 
+GNU General Public License (GNU GPL) version 3
+
+It is written in PHP and consists of
 - crawler (spider) and indexer
 - search for your website
 - website analyzer with

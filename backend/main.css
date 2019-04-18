@@ -210,6 +210,7 @@ ul.tiles a.tile:hover{
 .bar .bar-ok,       ul.tiles li a.ok,      ul.ok       a.tile,  span.ok{background:#9c5; background: radial-gradient(#fff,#9c5); color:#694; }
 .bar .bar-todo,     ul.todo a.tile, span.todo{background:#d0d0d8; background: radial-gradient(#f0f0f8,#d0d0d8); color:#778;}
 
+span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
 
 /* --- color for pie chart --- */
 
@@ -287,6 +288,12 @@ div.message-error{background: #fcc; color:#955;}
 
 /* --- ressource rendering --- */
 
+.divRessourceAsLine{
+    border-bottom: 1px solid #fff; 
+    padding: 0.2em;
+    margin-bottom: 0.05em;
+}
+.divRessourceAsLine:hover{background:rgba(255,255,255,0.4);}
 .divRessource{
     border: 1px solid #ccc;
     margin: 0 1em 1em 0;
@@ -303,7 +310,7 @@ div.message-error{background: #fcc; color:#955;}
 .counter{background: rgba(0,0,0,0.05); float: left; margin-top: 1em; padding: 1em;}
 .divRessourceReport{border: 1px solid #eee; padding: 0.5em; background: linear-gradient(#f8f8f8,#fff,#f8f8f8);}
 .pure-table tr:hover, .divRessourceReport:hover{background:#eee;}
-.divRessourceReport .references{border-left: 1px dotted #ccc; margin: 0 0 0 1em; padding-left: 0.5em;}
+.divRessourceReport .references{border-left: 0px dotted #ccc; margin: 0 0 0 0em; padding-left: 0.5em;}
 
 /* --- tables --- */
 .pure-table{background:#fff;}

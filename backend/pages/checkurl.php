@@ -55,7 +55,7 @@ if ($sQuery){
                 $sReturn.=$oRenderer->renderRessourceItemAsLine($aItem, true).'<br>';
             }
         } else {
-            $sReturn.='<p>'.$this->lB('ressources.itemsnone').'</p>';                    
+            $sReturn.='<br><p>'.$this->lB('ressources.itemsnone').'</p>';                    
         }
     }
 } else {

@@ -109,6 +109,7 @@ class ressourcesrenderer extends crawler_base {
         'ico.warn' => 'fas fa-exclamation-triangle',
         
         'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
+        'ico.redirect' => 'fas fa-share',
     );
     public $oHtml=false;
 
@@ -413,9 +414,9 @@ class ressourcesrenderer extends crawler_base {
         }
         $sReturn = ''
                 // . ' #'.$iIdRessource.' '
+                . ($iLevel===2 ? '<br>' : '')
                 . $this->renderRessourceItemAsLine($aRessourceItem, true)
                 // . ' ('.$aRessourceItem['http_code']
-                .'<br>'
                 ;
         $aUrllist[$iIdRessource]=true;
         if ($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400) {
@@ -457,22 +458,23 @@ class ressourcesrenderer extends crawler_base {
             $sReturn.='<div class="references"><br>'
                 . $this->lB('ressources.referenced-in').'<br>';
                 foreach ($aResIn as $aInItem){
-                    $sReturn.=$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external').'<br>';
+                    $sReturn.=$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external');
                     if ($aInItem['type']=='external'){
-                        $sReturn.=$this->_renderIncomingWithRedirects($aInItem).'<br>';
+                        $sReturn.=$this->_renderIncomingWithRedirects($aInItem);
                     }
                 }
             $sReturn.='</div>';
 
         } else {
-            $sReturn.='<br>';
+            // $sReturn.='<br>';
         }
         return $sReturn;
     }
 
     public function renderBookmarklet(){
-        $sMyUrl = $_SERVER["REQUEST_SCHEME"]
-                . "://"
+        $sMyUrl = 'http'
+                . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? 's' : '')
+                . '://'
                 . $_SERVER["HTTP_HOST"]
                 . ':' . $_SERVER["SERVER_PORT"]
                 . $_SERVER["SCRIPT_NAME"]
@@ -645,13 +647,16 @@ class ressourcesrenderer extends crawler_base {
         if (!is_array($aResourceItem) || !count($aResourceItem) || !array_key_exists('ressourcetype', $aResourceItem)) {
             return false;
         }
-        return ''
+        return '<div class="divRessourceAsLine">'
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
                 . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . $aResourceItem['url'] . '</a>'
                 . ' <a href="' . $aResourceItem['url'] . '" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a>'
-                . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] ? ' <<< <span class="error">' . $this->lB('ressources.link-is-external-redirect') . '</span>' : '')
+                . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
+                        ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 
+                        : '')
+                . '</div>'
                 // . print_r($aResourceItem, 1)
             ;
     }

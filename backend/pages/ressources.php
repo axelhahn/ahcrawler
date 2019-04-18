@@ -5,7 +5,7 @@
 $sReturn = '';
 $aCounter = array();
 $aFilter=array('http_code', 'ressourcetype','type', 'content_type');
-$aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
+$aFields = array('id', 'url', 'siteid', 'http_code', 'ressourcetype', 'type', 'content_type');
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aUrl=array();
@@ -60,8 +60,7 @@ if (is_array($aFilterItems) && is_array($aFilterValues)){
                 . $this->_getIcon('button.close')
                 . '</a> ';
     }
-    $sFilter= $this->_getIcon('filter')
-            . $this->lB('ressources.filter').' '.$sFilter.' '
+    $sFilter= ' '.$sFilter.' '
             . ($i>1 ? '<a href="'.$sBaseUrl.'"'
                 . ' class="pure-button button-error"'
                 . '> '
@@ -221,7 +220,9 @@ if ($iResCount) {
     $sReturn.=''
             // .$this->_getSimpleHtmlTable($aTableFilter)
             . '<div class="actionbox">'
-                . $sFilter
+                . $this->_getIcon('filter')
+                . $this->lB('ressources.filter')
+                . ($sFilter ? $sFilter : '<br><br>')
                 . $sFilterArea
             . '</div>'
             . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>'
