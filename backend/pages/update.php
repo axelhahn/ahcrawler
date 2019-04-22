@@ -23,23 +23,20 @@ $sTargetPath = $sApproot;
 $sLatestUrl=$this->oUpdate->getDownloadUrl();
 
 $oInstaller=new ahwi(array(
-    'product'=>'dummy',
+    'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
     'source'=>$sLatestUrl,
     'installdir'=>$sTargetPath,
     'tmpzip'=>$sZipfile,
-    'checks'=>array(
-        'phpversion'=>'5.3',
-        'phpextensions'=>array('curl', 'zip')
-    ),
+    'checks'=>$this->aAbout['requirements'],
 ));
 
 
 
-$sStep=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
+$iStep=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
 
-$iStep=array_search($sStep, $aSteps);
+$iStep=array_search($iStep, $aSteps);
 if($iStep===false){
-    $sStep=$aSteps[0];
+    $iStep=$aSteps[0];
     $iStep=0;
 }
 $sNextUrl=$iStep < (count($aSteps)-1)
@@ -55,10 +52,10 @@ $sBtnNext=$this->_getButton(array(
 
 
 $sOutput='';
-$sReturn .= '<h3>'. $this->lB('update.'.$sStep.'.label') . '</h3>'
-    . '<p>'. $this->lB('update.'.$sStep.'.description') . '</p><hr>'
+$sReturn .= '<h3>'. $this->lB('update.'.$iStep.'.label') . '</h3>'
+    . '<p>'. $this->lB('update.'.$iStep.'.description') . '</p><hr>'
     ;
-switch ($sStep) {
+switch ($iStep) {
     case 'welcome':
         // force update check to refresh the locally cached version infos
         $this->oUpdate->getUpdateInfos(true);

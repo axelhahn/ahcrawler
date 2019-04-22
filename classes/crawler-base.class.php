@@ -13,13 +13,17 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.69',
-        'date' => '2019-04-18',
+        'version' => '0.70',
+        'date' => '2019-04-22',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
+        'requirements' => array(
+            'phpversion'=>'5.5',
+            'phpextensions'=>array('curl', 'PDO','xml','zip')
+        ),
     );
 
     /**
@@ -38,7 +42,7 @@ class crawler_base {
         ),
         'auth' => array(
         ),
-        'debug' => 'false',
+        'debug' => false,
         'lang' => 'en',
         'menu' => array(),
         'crawler' => array(
@@ -76,6 +80,10 @@ class crawler_base {
             'ttl'=>86400,     // 1 day
         ),
     );
+    /**
+     * defaults for each web profile
+     * @var array
+     */
     protected $aProfileDefault = array(
         'label' => '',
         'description' => '',
@@ -293,10 +301,55 @@ class crawler_base {
     // OPTIONS + DATA
     // ----------------------------------------------------------------------
 
+    /**
+     * get full path of local config file
+     * @return string
+     */
     protected function _getConfigFile() {
         return dirname(__DIR__) . '/config/crawler.config.json';
     }
-
+    /**
+     * return value of a $_POST or $_GET variable if it exists
+     * 
+     * @param string  $sVarname      name of post or get variable (POST has priority)
+     * @param regex   $sRegexMatch   set a regex that must match
+     * @param string  $sType         force type: false|int
+     * @return type
+     */
+    protected function _getRequestParam($sVarname, $sRegexMatch=false, $sType=false) {
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) start");
+        
+        // check if it exist
+        if(!isset($_POST[$sVarname]) && !isset($_GET[$sVarname])){
+            $this->logAdd(__METHOD__."($sVarname) $sVarname does not exist");
+            return false;
+        }
+        
+        // set it to POST or GET variable
+        $return = isset($_POST[$sVarname]) && $_POST[$sVarname]
+                ? $_POST[$sVarname] 
+                : (isset($_GET[$sVarname]) && $_GET[$sVarname])
+                    ? $_GET[$sVarname] 
+                    : false
+            ;
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [".print_r($return, 1)."]");
+        
+        // verify regex
+        if ($sRegexMatch && !preg_match($sRegexMatch,$return)){
+            $this->logAdd(__METHOD__."($sVarname) $sVarname does not match regex $sRegexMatch");
+            return false;
+        }
+        
+        // force given type
+        switch ($sType){
+            case 'int': 
+                $return=(int)$return;
+                break;
+        }
+        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) returns $sVarname = [".print_r($return, 1)."]");
+        return $return;
+    }
+    
     /**
      * get fixed array of $aOptions['options']['database'] 
      * @param array  $aDbConfig  $aOptions['options']['database'] 
@@ -656,6 +709,24 @@ class crawler_base {
     }
     
     /**
+     * get available languages for that exist language files
+     * @param string  $sTarget  target; one of backend|frontend; default is backend
+     * @return array
+     */
+    public function getLanguages($sTarget='backend') {
+        $aReturn=array();
+        foreach(glob(dirname(__DIR__).'/lang/'.$sTarget.'.*.json') as $sJsonfile){
+            $aData = json_decode(file_get_contents($sJsonfile), true);
+            if(isset($aData['id'])){
+                $sKey2=str_replace($sTarget.'.','',basename($sJsonfile));
+                $sKey2=str_replace('.json','',$sKey2);
+                $aReturn[$sKey2]=$aData['id'] ? $aData['id'] : $sKey2;
+            }
+        }
+        return $aReturn;
+    }
+    
+    /**
      * get latest record of a db table
      * 
      * @param string  $sTable   name of database table (pages|ressources)
@@ -784,7 +855,8 @@ class crawler_base {
         $this->getEffectiveOptions($aOptions);
 
         // $this->sLang = (array_key_exists('lang', $this->aOptions)) ? $this->sLang = $this->aOptions['lang'] : $this->sLang;
-        $this->sLang = $this->aOptions['lang'];
+        $this->sLang=$this->_getRequestParam('lang') ? $this->_getRequestParam('lang') : $this->aOptions['lang'];
+
 
         // curl options:
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
@@ -812,7 +884,9 @@ class crawler_base {
     public function getProfileIds() {
         $aOptions = $this->_loadConfigfile();
         if (
-                is_array($aOptions) && array_key_exists('profiles', $aOptions)
+                is_array($aOptions) 
+                && array_key_exists('profiles', $aOptions)
+                && is_array($aOptions['profiles']) 
         ) {
             return array_keys($aOptions['profiles']);
         }
@@ -983,6 +1057,14 @@ class crawler_base {
         ;
     }
 
+    /**
+     * return boolean if an initial setup was done
+     * @return boolean
+     */
+    public function installationWasDone(){
+        return ($this->_configExists());
+    }
+    
     /**
      * get language specific text of backend
      * @param type    $sId     id of a text

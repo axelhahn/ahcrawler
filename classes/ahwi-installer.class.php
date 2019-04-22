@@ -20,10 +20,11 @@ class ahwi {
     // ----------------------------------------------------------------------
     // INTERNAL CONFIG
     // ----------------------------------------------------------------------
-    var $aCfg = array();
-    var $iTimeStart = false;
-    var $sAbout = "PHP WEB INSTALLER";
-    var $aErrors = array();
+    protected $aCfg = array();
+    protected $iTimeStart = false;
+    protected $sAbout = "AXELS PHP WEB INSTALLER";
+    protected $aErrors = array();
+    protected $aChecks = array();
 
     // ----------------------------------------------------------------------
     // METHODS
@@ -56,7 +57,7 @@ class ahwi {
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'php-curl :: web installer');
+        curl_setopt($ch, CURLOPT_USERAGENT, 'php-curl :: '.$this->sAbout);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -204,6 +205,24 @@ class ahwi {
     public function getProduct(){
         return $this->aCfg['product'];
     }
+    /**
+     * get array with all requirements, found values and success.
+     * @see getRequirementErrors() to get a list of errors only
+     * @return array
+     */
+    public function getRequirements(){
+        $this->checkRequirements();
+        return $this->aChecks;
+    }
+    /**
+     * get errors if method checkRequirements() failed.
+     * @see getRequirements() to get a list of all requirements and their success
+     * @return array
+     */
+    public function getRequirementErrors(){
+        $this->checkRequirements();
+        return $this->aErrors;
+    }
     
     /**
      * get url of new sources
@@ -254,13 +273,17 @@ class ahwi {
             
             $aAllMods=get_loaded_extensions(false);
             asort($aAllMods);
+            // echo '<pre>aAllMods = '.print_r($aAllMods, 1).'</pre>';
             
             foreach($this->aCfg['checks']['phpextensions'] as $sMod){
                 // echo $sMod.' - ';
-                if(!array_search($sMod, $aAllMods)===false){
-                    // echo  '<span class="ok">OK</span> installed';
-                } else {
-                    // echo '<span class="error">does not exist</span>';
+                $bModuleExists=!array_search($sMod, $aAllMods)===false;
+                $this->aChecks['phpextensions'][$sMod]=array(
+                    'required'=>'1',
+                    'value'=>$bModuleExists,
+                    'result'=>$bModuleExists,
+                );
+                if(!$bModuleExists){
                     $this->aErrors[]="php module $sMod was not found";
                 }
             }
@@ -296,21 +319,36 @@ class ahwi {
      */
     function checkRequirements() {
         $this->aErrors=array();
+        $this->aChecks=array();
+        /*
         if(!$this->aCfg['source']){
             return true;
         }
+         */
+        $this->aChecks['phpversion']=array(
+            'required'=>isset($this->aCfg['checks']['phpversion']) ? $this->aCfg['checks']['phpversion'] : false,
+            'value'=>phpversion(),
+            'result'=>'?',
+        );
         if (isset($this->aCfg['checks']['phpversion']) 
             && $this->aCfg['checks']['phpversion']
-            && version_compare(phpversion(), $this->aCfg['checks']['phpversion'],'<')){
+            && version_compare(phpversion(), $this->aCfg['checks']['phpversion'],'<')
+        ){
             $this->aErrors[]="Your PHP version is ".phpversion()."; required: ".$this->aCfg['checks']['phpversion'];
+            $this->aChecks['phpversion']['result']=false;
+        } else {
+            $this->aChecks['phpversion']['result']=true;
         }
         $this->_checkModules();
         $this->_checkDenyroot();
 
         if(count($this->aErrors)){
-            echo "Check for requirements failed.\n";
-            echo implode("\n*", $this->aErrors);
-            die();
+            if (php_sapi_name() == "cli") {
+                echo "Check for requirements failed.\n";
+                echo implode("\n*", $this->aErrors);
+                die();
+            }
+            return false;
         }
         return true;
     }

@@ -52,7 +52,7 @@ function getNewQs($aQueryParams = array()) {
 
 
 ?><!doctype html>
-<html lang="en">
+<html>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,15 +129,12 @@ function getNewQs($aQueryParams = array()) {
                         
                 <div class="pure-menu">
                     
-                    <?php echo $oBackend->getNavi(); ?>
+                    <?php echo $oBackend->installationWasDone() ? $oBackend->getNavi() : ''; ?>
                     
                 </div>
 
             </div>
         </div>
-        <style>
-            span.warning1{background: #ff0000;}
-        </style>
         <script>
             initPage();
         </script>

@@ -1,9 +1,14 @@
 {
+    "id": "english",
+    
     "nav.label": "Menu",
 
     "nav.error404.label": "Error :-/",
     "nav.error404.hint": "404 - Page not found.",
     
+    "nav.installer.label": "Installer",
+    "nav.installer.hint": "Setup the application",
+
     "nav.login.label": "Login required",
     "nav.login.access-denied": "Error: Access denied.",
 
@@ -175,10 +180,30 @@
     "error.404": "404 Page not found",
     "error.404.description": "The requested page does not exist.",
 
+    "installer.back": "back",
+    "installer.continue": "OK, continue",
+    "installer.refresh": "Repeat the test",
+    "installer.lang": "Language",
+    "installer.lang.hint": "Select a language for the the installation process",
+    "installer.requirements": "Requirements",
+    "installer.requirements.hint": "Make a few checks if the application can run on this host.",
+    "installer.requirement.test": "Test",
+    "installer.requirement.result": "Result",
+    "installer.requirement.phpversion": "PHP version %s",
+    "installer.requirement.phpextension": "PHP module %s",
+    "installer.requirement-ok": "OK",
+    "installer.requirement-fail": "Failed",
+    "installer.requirement-fail.hint": "To check it again install the missing components, restart the webservice and then reload the page.",
+    "installer.database": "Database",
+    "installer.database.hint": "Enter parameters to connect to a database.",
+    "installer.database.mysql": "Just as a hint: these are the commands to create a new database.<br>[webserver] is <em>localhost</em> for a local connection or <em>%</em> to allow a connect with that user from any host.",
+    "installer.done": "OK, let's start.",
+    "installer.done.hint": "The most basic step were done. A few more are needed ... but let's go to the backend the first time.",
+
     "home.welcome": "Welcome to the ahCrawler!",
-    "home.welcome.introtext": "Let's go to the setup to initialize the database.",
+    "home.nosavedsettings": "Let's go to the setup to initialize the default application settings.<br>Maybe you see some default behaviour you would like to change.<br>Press the Save button there to remove this text.",
     "home.cfg.unprotected": "WARNING:<br>The backend seems to be unprotected!<br>Go to the program settings and a &quot;user&quot; and &quot;password&quot;.",
-    "home.noprojectyet": "There is no project yet. Let's create a profile for a website.",
+    "home.noprojectyet": "There is no project yet. Let's create a profile to crawl and analyze a website.<br>This text disappears if you created the first profile.",
     "home.status": "Status",
     "home.status.hint": "Summary of the profiles and status of data.",
     
@@ -202,13 +227,13 @@
     "setup.section.auth.pw2": "repeat it",
     
     "setup.section.database": "Database",
-    "setup.section.database.hint": "Select a databasy type and enter its access values.",
+    "setup.section.database.hint": "Select a database type and enter its access values.",
     "setup.section.database.type": "Type",
     "setup.section.database.type.sqlite": "SqLite (for testing or small webs only)",
     "setup.section.database.type.mysql": "Mysql (incl. MariaDb, ...)",
-    "setup.section.database.file": "Filename (i.e. __DIR__/data/[filename])",
+    "setup.section.database.file": "Filename (i.e. __DIR__/data/[filename]<br>where __DIR__ is an allowed placeholder)",
     "setup.section.database.server": "Server",
-    "setup.section.database.port": "Port",
+    "setup.section.database.port": "Port (optional)",
     "setup.section.database.name": "Scheme",
     "setup.section.database.username": "Usename",
     "setup.section.database.password": "Password",
@@ -216,8 +241,6 @@
     "setup.section.backend": "Backend",
     "setup.section.backend.hint": "Settings for the backend",
     "setup.section.backend.lang": "Language in the backend",
-    "setup.section.backend.lang.de": "German",
-    "setup.section.backend.lang.en": "English",
     "setup.section.backend.menu": "Hide menu items (JSON)",
     "setup.section.backend.debug": "Show debugging information<br>(for developers)",
     "setup.section.crawler": "Crawler defaults",

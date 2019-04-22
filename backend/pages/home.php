@@ -7,35 +7,50 @@ $sHtml='';
 $sTable='';
 $sTiles='';
 
+$aOptions = $this->_loadConfigfile();
+$bShowTable=true;
 
-if(!$this->_configExists() || !$this->oDB){
-    
+// echo '<pre>'.print_r($aOptions,1 ).'</pre>';
+if(!$this->_configExists() ){
     // ------------------------------------------------------------
     // INITIAL SETUP PART ONE
     // program settings
     // ------------------------------------------------------------
-    $oRenderer=new ressourcesrenderer($this->_sTab);
-    $sHtml.=''
-    . '<h3>' . $this->lB('home.welcome') . '</h3>'
-    .$this->lB('home.welcome.introtext').'<br><br>'
-    .$oRenderer->oHtml->getTag('a',array(
-        'href' => '?page=setup',
-        'class' => 'pure-button button-secondary',
-        'title' => $this->lB('nav.setup.hint'),
-        'label' => $this->_getIcon('setup').$this->lB('nav.setup.label'),
-    ))
-    ;
+    header('Location: ?page=installer');
+    die();
+
 } else {
+    $sHtml.=''
+        . '<h3>' . $this->lB('home.welcome') . '</h3>'
+        ;
+    if (!isset($aOptions['options']['searchindex'])){
+        // ------------------------------------------------------------
+        // INITIAL SETUP PART TWO
+        // program settings
+        // ------------------------------------------------------------
+        $bShowTable=false;
+        $oRenderer=new ressourcesrenderer($this->_sTab);
+        $sHtml.=''
+        .$this->lB('home.nosavedsettings').'<br><br>'
+        .$oRenderer->oHtml->getTag('a',array(
+            'href' => '?page=setup',
+            'class' => 'pure-button button-secondary',
+            'title' => $this->lB('nav.setup.hint'),
+            'label' => $this->_getIcon('setup').$this->lB('nav.setup.label'),
+        ))
+        .'<br><br><br>'
+        ;
+    } 
 
     $aProfiles=$this->getProfileIds();
     $aTable=array();
     if(!$aProfiles || !count($aProfiles)){
         // ------------------------------------------------------------
-        // INITIAL SETUP PART TWO
+        // INITIAL SETUP PART THREE
         // setup a website profile
         // ------------------------------------------------------------
-        $sTiles.=''
-            . '<h3>' . $this->lB('home.welcome') . '</h3>'
+        $bShowTable=false;
+        $sHtml.=''
             // . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), 0, '', '')
             . $this->lB('home.noprojectyet').'<br><br>'
             . $oRenderer->oHtml->getTag('a',array(
@@ -44,8 +59,9 @@ if(!$this->_configExists() || !$this->oDB){
                         'title' => $this->lB('nav.profiles.hint'),
                         'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
                         ))
-                ;
-    } else {
+            ;
+    }
+    if ($bShowTable) {
         // ------------------------------------------------------------
         // DEFAULT INTRO PAGE
         // ------------------------------------------------------------

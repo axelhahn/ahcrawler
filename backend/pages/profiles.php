@@ -4,7 +4,8 @@
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
-$aOptions = $this->_loadConfigfile();
+// $aOptions = $this->_loadConfigfile();
+$aOptions = array('options'=>$this->getEffectiveOptions());
 // TODO ?
 // $aOptions['profiles'][currentid] = $this->getEffectiveProfile();
 // echo '<pre>options: '.print_r($aOptions['profiles'], 1).'</pre><br>';

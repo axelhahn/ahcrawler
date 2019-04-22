@@ -1,4 +1,6 @@
 {
+    "id": "deutsch",
+    
     "btn.search.label": "Suche",
     "label.searchterm": "Begriff(e)",
     "label.searchoptions": "Erweiterte Optionen",

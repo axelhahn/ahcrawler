@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-04-22: v0.70
+  * added index file in app root
+  * detect installation state to autorun initial setup
+  * lang files contain value "id" to specify their own language
+
 2019-04-18: v0.69
   * backend: fix bookmarklet url (on some systems the url scheme was not set)
   * backend: a few optical improvements

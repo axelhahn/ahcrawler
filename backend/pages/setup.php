@@ -216,9 +216,9 @@ $aDbOptions[$sDefaultDb]['selected']='selected';
 
 $aLangOptions=array();
 $sDefaultLang=isset($aOptions['options']['lang']) ? $aOptions['options']['lang'] : 'en';
-foreach(array('en', 'de') as $sLangOption){   
+foreach($this->getLanguages('backend') as $sLangOption=>$sLangname){
     $aLangOptions[$sLangOption]=array(
-        'label'=>$this->lB('setup.section.backend.lang.'.$sLangOption),
+        'label'=>$sLangname,
         'value'=>$sLangOption,
     );
 }

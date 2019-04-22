@@ -168,7 +168,7 @@ class backend extends crawler_base {
             'button.home' => 'fas fa-home',
             'button.login' => 'fas fa-check',
             'button.logoff' => 'fas fa-power-off',
-            // 'button.reindex' => 'fa fa-refresh',
+            'button.refresh' => 'fas fa-sync',
             'button.save' => 'fas fa-paper-plane',
             'button.search' => 'fas fa-search',
             'button.truncateindex' => 'fas fa-trash',
@@ -368,34 +368,49 @@ class backend extends crawler_base {
 
     private function _getNavItems($aNav){
         $sNavi = '';
+        
+        $aProfiles=$this->getProfileIds();
+        $bHasProfile=($aProfiles && count($aProfiles));
+        $aDisabled=!$bHasProfile 
+                ? array('search','analysis')
+                : array()
+                ;
+        // echo '<pre>'.print_r($aDisabled,1).'</pre>';
         foreach ($aNav as $sItem=>$aSubItems) {
             $sNaviNextLevel='';
             if (count($aSubItems)){
                 $sNaviNextLevel.=$this->_getNavItems($aSubItems);
             }
-            $bHasActiveSubitem=strpos($sNaviNextLevel, 'pure-menu-link-active');
-            $bIsActive=$this->_sPage == $sItem || $bHasActiveSubitem;
-            $sClass = $bIsActive ? ' pure-menu-link-active' : '';
-            $sUrl = '?page=' . $sItem;
-            if ($this->_sTab) {
-                $sUrl.='&amp;tab=' . $this->_sTab;
-            }
+            // check options->menu: is this item hidden?
             if(array_key_exists('menu', $this->aOptions)
                     && array_key_exists($sItem, $this->aOptions['menu'])
                     && !$this->aOptions['menu'][$sItem]
             ){
                 // hide menu 
             } else {
+                $bHasActiveSubitem=strpos($sNaviNextLevel, 'pure-menu-link-active');
+                $bIsActive=$this->_sPage == $sItem || $bHasActiveSubitem;
+                $sClass = $bIsActive ? ' pure-menu-link-active' : '';
+                $sUrl = '?page=' . $sItem;
+                if ($this->_sTab) {
+                    $sUrl.='&amp;tab=' . $this->_sTab;
+                }
+            
+                // echo "$sItem - ".array_search($sItem, $aDisabled)."<br>";
+                if(array_search($sItem, $aDisabled)!==false){
+                    $sClass = ' pure-menu-disabled';
+                    $sUrl='#';
+                }
                 // $sNavi.='<li class="pure-menu-item"><a href="?'.$sItem.'" class="pure-menu-link'.$sClass.'">'.$sItem.'</a></li>';
                 $sNavi.='<li class="pure-menu-item">'
-                    . '<a href="?page=' . $sItem . '" class="pure-menu-link' . $sClass . '"'
+                    . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'
                         . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
                         . '><i class="'.$this->_aIcons['menu'][$sItem].'"></i> ' 
                         . $this->lB('nav.' . $sItem . '.label') 
                     . '</a>'
                     . ($bIsActive ? $sNaviNextLevel : '')
                     ;
-            
+                
                 $sNavi.='</li>';
             }
         }
@@ -414,6 +429,10 @@ class backend extends crawler_base {
         if (!$this->_checkAuth()) {
             return '';
         }
+        if (!$this->installationWasDone()){
+            return '';
+        }
+        
         $sNavi = $this->_getNavItems($this->_aMenu);
         /*
         foreach ($this->_aMenu as $sItem) {
@@ -927,47 +946,7 @@ class backend extends crawler_base {
     // OVERLAY CONTENT
     // ----------------------------------------------------------------------
 
-    /**
-     * return value of a $_POST or $_GET variable if it exists
-     * 
-     * @param string  $sVarname      name of post or get variable (POST has priority)
-     * @param regex   $sRegexMatch   set a regex that must match
-     * @param string  $sType         force type: false|int
-     * @return type
-     */
-    private function _getRequestParam($sVarname, $sRegexMatch=false, $sType=false) {
-        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) start");
-        
-        // check if it exist
-        if(!isset($_POST[$sVarname]) && !isset($_GET[$sVarname])){
-            $this->logAdd(__METHOD__."($sVarname) $sVarname does not exist");
-            return false;
-        }
-        
-        // set it to POST or GET variable
-        $return = isset($_POST[$sVarname]) && $_POST[$sVarname]
-                ? $_POST[$sVarname] 
-                : (isset($_GET[$sVarname]) && $_GET[$sVarname])
-                    ? $_GET[$sVarname] 
-                    : false
-            ;
-        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [".print_r($return, 1)."]");
-        
-        // verify regex
-        if ($sRegexMatch && !preg_match($sRegexMatch,$return)){
-            $this->logAdd(__METHOD__."($sVarname) $sVarname does not match regex $sRegexMatch");
-            return false;
-        }
-        
-        // force given type
-        switch ($sType){
-            case 'int': 
-                $return=(int)$return;
-                break;
-        }
-        $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) returns $sVarname = [".print_r($return, 1)."]");
-        return $return;
-    }
+
 
     /**
      * wrapper function: get page content as html
