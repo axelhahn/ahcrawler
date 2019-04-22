@@ -235,7 +235,7 @@
     "setup.section.database.server": "Server",
     "setup.section.database.port": "Port (optional)",
     "setup.section.database.name": "Schema",
-    "setup.section.database.username": "Usename",
+    "setup.section.database.username": "Username",
     "setup.section.database.password": "Passwort",
     "setup.section.database.charset": "Zeichensatz (utf8)",
     "setup.section.backend": "Backend",
