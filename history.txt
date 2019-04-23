@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-04-23: v0.71
+  * backend: update font-awesome/5.8.1, jquery/3.4.0, Chart.js/2.8.0
+
 2019-04-22: v0.70
   * added index file in app root
   * detect installation state to autorun initial setup

@@ -15,9 +15,9 @@ $oCdn=new axelhahn\cdnorlocal(array(
 $oCdn->setLibs(array(
     "pure/1.0.0",
     "datatables/1.10.19",
-    "font-awesome/5.7.2",
-    "jquery/3.3.1",
-    "Chart.js/2.7.3"
+    "font-awesome/5.8.1",
+    "jquery/3.4.0",
+    "Chart.js/2.8.0"
 ));
 
 
