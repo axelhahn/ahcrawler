@@ -33,13 +33,13 @@ if (count($aData)){
 } else {
     $sReturn.= '<p>' . $this->lB('ressources.searchressourceid-hint') . '</p>'
 
-            . '<a href="?page=linkchecker" class="pure-menu-linkwarnings"'
+            . '<a href="?page=linkchecker" class="pure-menu-linkwarnings pure-button"'
                 . ' title="' . $this->lB('nav.linkchecker.hint') . '"'
                 . '><i class="'.$this->_aIcons['menu']['linkchecker'].'"></i> ' 
                 . $this->lB('nav.linkchecker.label') 
                 .'</a>'
-            .' | '
-            . '<a href="?page=ressources" class="pure-menu-linkressources"'
+            .' '
+            . '<a href="?page=ressources" class="pure-menu-linkressources pure-button"'
                 . ' title="' . $this->lB('nav.ressources.hint') . '"'
                 . '><i class="'.$this->_aIcons['menu']['ressources'].'"></i> ' 
                 . $this->lB('nav.ressources.label') 

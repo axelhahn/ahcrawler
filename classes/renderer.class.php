@@ -478,17 +478,22 @@ class ressourcesrenderer extends crawler_base {
                 . $_SERVER["HTTP_HOST"]
                 . ':' . $_SERVER["SERVER_PORT"]
                 . $_SERVER["SCRIPT_NAME"]
-                . '?page=checkurl&siteid=all&redirect=1&query='
+                    // tab=all + siteid=all
+                    // TODO to switch to siteid later
+                . '?page=checkurl&tab=all&siteid=all&redirect=1&query='
                 ;
         return 
             '<h3>'.$this->lB('bookmarklet.head').'</h3>'
             . $this->lB('bookmarklet.hint').':<br><br>'
-            .'<a class="pure-button" href="javascript:document.location.href=\''.$sMyUrl.'\'+encodeURI(document.location.href);" '
-                . 'onclick="alert(\''.$this->lB('bookmarklet.hint').'\'); return false;" '
-                . 'title="'.$this->lB('bookmarklet.hint').'">'
-                . $this->_getIcon('ico.bookmarklet')
-                . $this->lB('bookmarklet.label')
-            . '</a><br><br>'
+            . $this->oHtml->getTag('a', array(
+                    'class'=>'pure-button',
+                    'href'=>'javascript:document.location.href=\''.$sMyUrl.'\'+encodeURI(document.location.href);',
+                    'onclick'=>'alert(\''.$this->lB('bookmarklet.hint').'\'); return false;',
+                    'title'=>$this->lB('bookmarklet.hint'),
+                    'label'=>$this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.label'),
+              ))
+            
+            . '<br><br>'
             . $this->lB('bookmarklet.posthint')
             ;
     }

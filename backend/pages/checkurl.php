@@ -52,7 +52,13 @@ if ($sQuery){
                 . ': <strong>' . count($aDataLazy) . '</strong><br><br>'
                 ;
             foreach($aDataLazy as $aItem){
-                $sReturn.=$oRenderer->renderRessourceItemAsLine($aItem, true).'<br>';
+                
+                $sReturn.=''
+                        // TODO
+                        // . '<pre>'.print_r($aItem, 1).'</pre>' 
+                        // if $this->_sTab === "all"
+                        // $aItem['siteid'] --> project name
+                        . $oRenderer->renderRessourceItemAsLine($aItem, true).'<br>';
             }
         } else {
             $sReturn.='<br><p>'.$this->lB('ressources.itemsnone').'</p>';                    

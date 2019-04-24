@@ -32,11 +32,11 @@ $oInstaller=new ahwi(array(
 
 
 
-$iStep=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
+$sStepName=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
 
-$iStep=array_search($iStep, $aSteps);
+$iStep=array_search($sStepName, $aSteps);
 if($iStep===false){
-    $iStep=$aSteps[0];
+    $sStepName=$aSteps[0];
     $iStep=0;
 }
 $sNextUrl=$iStep < (count($aSteps)-1)
@@ -52,10 +52,10 @@ $sBtnNext=$this->_getButton(array(
 
 
 $sOutput='';
-$sReturn .= '<h3>'. $this->lB('update.'.$iStep.'.label') . '</h3>'
-    . '<p>'. $this->lB('update.'.$iStep.'.description') . '</p><hr>'
+$sReturn .= '<h3>'. $this->lB('update.'.$sStepName.'.label') . '</h3>'
+    . '<p>'. $this->lB('update.'.$sStepName.'.description') . '</p><hr>'
     ;
-switch ($iStep) {
+switch ($sStepName) {
     case 'welcome':
         // force update check to refresh the locally cached version infos
         $this->oUpdate->getUpdateInfos(true);

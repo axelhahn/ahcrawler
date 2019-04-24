@@ -14,8 +14,10 @@
 
 ----------------------------------------------------------------------
 
-2019-04-23: v0.71
+2019-04-24: v0.71
   * backend: update font-awesome/5.8.1, jquery/3.4.0, Chart.js/2.8.0
+  * backend: fix texts in updater
+  * backend: fix bookmarklet url to scan all profiles
 
 2019-04-22: v0.70
   * added index file in app root
