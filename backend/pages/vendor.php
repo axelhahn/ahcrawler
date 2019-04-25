@@ -2,6 +2,7 @@
 
     $iCount=0;
     $iCountLocal=0;
+    $iCountUnused=0;
     
     global $oCdn;
     require_once(__DIR__ . '/../../classes/cdnorlocal-admin.class.php');
@@ -21,6 +22,7 @@
     $oCdnAdmin->setLibs(array_keys($oCdn->getLibs()));
     
     // echo '<pre>'.print_r($oCdn->getLibs(), 1).'</pre>';
+    // echo '<pre>'.print_r($oCdn->getFilteredLibs(array('islocal'=>1, 'isunused'=>1)), 1).'</pre>';
     // echo '<pre>'.print_r($oCdnAdmin->getLibs(), 1).'</pre>';
     // echo '<pre>'.print_r($oCdnAdmin->getLibs(true), 1).'</pre>';
     
@@ -41,7 +43,6 @@
         $this->lB('vendor.local'),
     );
     foreach($oCdnAdmin->getLibs(true) as $sLibname=>$aLib){
-        $iCount++;
         
         // --- download
         if ($sLib2download && $aLib['lib']===$sLib2download && !$aLib['islocal']){
@@ -56,9 +57,6 @@
             $oCdnAdmin->delete($sLib2delete, $sVersion2delete);
             echo "<script>window.setTimeout('location.href=\"?&page=vendor\"', 20);</script>";
             // TODO re-enable $oCdn->setLibs($aEnv['vendor']);
-        }
-        if ($aLib['islocal']){
-            $iCountLocal++;
         }
 
         $aTable[]=array(
@@ -86,12 +84,19 @@
                 :''),
         );
     }
+    $iCount=count($oCdn->getLibs());
+    $iCountLocal=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>0)));
+    $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
     
     return  (($iCount && $iCount===$iCountLocal)
             ? sprintf($this->lB('vendor.AllLocal'), $iCount)
             : sprintf($this->lB('vendor.Localinstallations'), $iCount, $iCountLocal)
-    )
+    ).'<br>'
     . $sHtml
+    . ($iCountUnused
+            ? sprintf($this->lB('vendor.DeleteUnused'), $iCountUnused).'<br><br>'
+            : ''
+    )
     . $this->_getSimpleHtmlTable($aTable, true)
     ;
     // echo 'Libs:<br><pre>'. print_r($oCdn->getLibs(),1). '</pre>---<br>';    

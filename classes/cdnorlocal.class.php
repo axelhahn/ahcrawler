@@ -9,9 +9,12 @@ namespace axelhahn;
  * you need just this class for your projects
  *
  * @example 
+ * 
+ * load a library from CDN
+ * <code>
  * $oCdn->new axelhahn\cdnorlocal();
  * echo $oCdn->getHtmlInclude("jquery/3.2.1/jquery.min.js");
- * 
+ * </code>
  * 
  * TODO:
  * support jsdelivr, i.e.
@@ -19,7 +22,7 @@ namespace axelhahn;
  * AND/ OR
  * https://unpkg.com/
  * 
- * @version 1.0.4
+ * @version 1.0.5
  * @author Axel Hahn
  * @link https://www.axel-hahn.de
  * @license GPL
@@ -204,6 +207,7 @@ class cdnorlocal {
                 'version' => $aTmp[1],
                 'relpath' => $sReldir,
                 'islocal' => !!$this->getLocalfile($sReldir),
+                'isunused'=>false,
                 'files'=>array(),
                 );
         } else {
@@ -217,6 +221,42 @@ class cdnorlocal {
         ksort($this->_aLibs);
         $this->_wd(__METHOD__ . " ... ".print_r($this->_aLibs, 1));
         return true;
+    }
+    /**
+     * return array of all libs filtered by criteria
+     * 
+     * @example 
+     * 
+     *   get used libs that are local:
+     *   <code>$oCdn->getFilteredLibs(array('islocal'=>1));</code>
+     * 
+     *   get used libs that are loaded from CDN:
+     *   <code>$oCdn->getFilteredLibs(array('islocal'=>0));</code>
+     * 
+     *   get unused libs that are still local (and can be deleted)
+     *   <code>$oCdn->getFilteredLibs(array('islocal'=>1, 'isunused'=>1))</code>
+     * 
+     * @param array  $aFilter  array with filter items containing these keys:
+     *                         - islocal   true|false; default is false
+     *                         - isunused  true|false; default is false
+     * @return array
+     */
+    public function getFilteredLibs($aFilter=array()){
+        $this->_wd(__METHOD__ . "()");
+        $aReturn=array();
+        foreach(array('islocal', 'isunused') as $sKey){
+            $aFilter[$sKey]=isset($aFilter[$sKey]) ? $aFilter[$sKey] : false;
+        }
+        foreach($this->getLibs($aFilter['isunused']) as $sLibKey=>$aItem){
+            $bAdd=true;
+            foreach(array('islocal', 'isunused') as $sFilterKey){
+                $bAdd=$bAdd && ($aFilter[$sFilterKey]==$aItem[$sFilterKey]);
+            }
+            if($bAdd){
+                $aReturn[$sLibKey]=$aItem;
+            }
+        }
+        return $aReturn;
     }
     /**
      * return all libs from lib stack; with enabled flag entries in local 

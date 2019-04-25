@@ -545,6 +545,7 @@
     "update.welcome.description": "The following assistent guides you through the update process.<br>Let's start with the version comparison.",
     "update.welcome.available-yes": "There is an update to version %s available. Follow the assistent to update the software.",
     "update.welcome.available-no": "The software is up to date. It is not required to follow the update assistent.",
+    "update.welcome.unusedLibs": "Remark: there are <strong>%s</strong> unused vendor libs that could be deleted.",
     "update.welcome.version-on-client": "Your version",
     "update.welcome.version-latest": "Latest version",
     "update.info.label": "Information",
@@ -581,6 +582,7 @@
     "vendor.unused": "not used anymore",
     "vendor.Localinstallations": "<strong>%s</strong> libs are in use and <strong>%s</strong> of them are local. Download all libs for best performance.",
     "vendor.AllLocal": "All <strong>%s</strong> used libs are local.",
+    "vendor.DeleteUnused": "Unused local libs: <strong>%s</strong>",
 
     "httpcode.todo":"What to do",
     "httpcode.-1.label":"todo",

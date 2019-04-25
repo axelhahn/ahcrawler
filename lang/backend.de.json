@@ -544,6 +544,7 @@
     "update.welcome.available-no": "Die Software ist auf dem aktuellen Stand. Dem Update-Assistenten zu folgen, ist nicht zwingend notwendig.",
     "update.welcome.version-on-client": "Deine Version",
     "update.welcome.version-latest": "Aktuelle Version",
+    "update.welcome.unusedLibs": "Hinweis: es gibt <strong>%s</strong> ungenutze Vendor-Bibliotheken, die man l&ouml;schen kann.",
     "update.info.label": "Informationen zum Ablauf",
     "update.info.description": "Eine kurze Beschreibung, wie das Update abl&auml;ft.",
     "update.steps": "Die Aktualisierung erfolgt in wenigen Schritten. Es geht wie folgt weiter:",
@@ -578,6 +579,7 @@
     "vendor.unused": "nicht mehr verwendet",
     "vendor.Localinstallations": "<strong>%s</strong> verwendete Bibliotheken gesamt - davon liegen <strong>%s</strong> lokal. Lade alle herunter, um die beste Performance zu haben.",
     "vendor.AllLocal": "Alle <strong>%s</strong> verwendeten Bibliotheken sind lokal.",
+    "vendor.DeleteUnused": "Lokale, nicht mehr benutze Bibliotheken: <strong>%s</strong>",
     
     "httpcode.todo":"Was zu tun ist",
     "httpcode.-1.label":"noch offen",

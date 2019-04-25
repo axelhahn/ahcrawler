@@ -35,6 +35,7 @@ if ($sQuery){
             header('location: '.$sUrl);
         }
             
+        // TODO lang text
         $sReturn.='<h3>exact results '.count($aData).' </h3>'
                 . $this->lB('ressources.total')
                 . ': <strong>' . count($aData) . '</strong><br><br>'

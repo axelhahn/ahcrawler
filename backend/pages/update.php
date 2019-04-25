@@ -59,6 +59,11 @@ switch ($sStepName) {
     case 'welcome':
         // force update check to refresh the locally cached version infos
         $this->oUpdate->getUpdateInfos(true);
+        
+        global $oCdn;
+        $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+        echo $iCountUnused;
+        
         $sReturn .= '<p>'
             .($this->oUpdate->hasUpdate() || 0
                 ?  
@@ -72,7 +77,18 @@ switch ($sStepName) {
                     . '<br>'
                 :  
                     $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
-                    .'<br>'.$this->_getButton(array(
+                    .'<br>'
+                    .($iCountUnused 
+                        ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
+                            .$oRenderer->oHtml->getTag('a', array(
+                                'href' => '?page=vendor',
+                                'class' => 'pure-button',
+                                'title' => $this->lB('nav.vendor.hint'),
+                                'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
+                            )).'<br><br><br>'
+                        : ''
+                    )
+                    .$this->_getButton(array(
                         'href' => '?',
                         'class' => 'button-secondary',
                         'label' => 'button.home',
