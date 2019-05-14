@@ -314,10 +314,9 @@
     "status.empty_data": "leere Daten",
     "status.error_urls": "fehlerhaft markierte URLs im Index",
     "status.all_data": "URLs im Suchindex",
-        
-    "profile.searches.last": "Letzte Suchanfragen (max. 20)",
-    "profile.searches.empty": "Es gibt noch keine gesuchten Begriffe.<br>Damit hier Daten erscheinen, muss die Suchmaske und die Ausgabe der Suchergebnisse auf der Webseite integriert worden sein.",
-    "profile.searches.top10lastdays": "Top 10 - letzte %s Tage",
+     
+    "searches.last": "Letzte Suchanfragen (max. 20)",
+    "searches.empty": "Es gibt noch keine gesuchten Begriffe.<br>Damit hier Daten erscheinen, muss die Suchmaske und die Ausgabe der Suchergebnisse auf der Webseite integriert worden sein.",
     
     
     "search.#": "Nr.",
@@ -339,6 +338,14 @@
     "searches.count": "Anzahl",
     "searches.actions": "Aktionen",
     "searchout.hits": "Treffer: <strong>%s</strong>",
+
+    "searches.topn.headline": "Top Suchbegriffe in einem Zeitraum",
+    "searches.topn.count": "Anzahl Top N",
+    "searches.topn.since": "Zeitraum - letzte %s Tage",
+    "searches.topn.headline2": "Top %s - letzte %s Tage",
+    "searches.topn.from": "von: %s",
+    "searches.topn.to": "bis: %s",
+    "searches.topn.now": "jetzt",
     
     "ressources.overview": "Ressourcen auf der Website",
     "ressources.overview.intro": "Ressourcen sind alle einzelnen Seiten und hierin verlinkte Elemente, wie CSS-, Javascript-, Bild-Dateien, verlinkte externe Webseiten u.s.w.<br>Sie k&ouml;nnen hier nach Elementen und Eigenschaften filtern, um die Ansicht der Ressourcen in der darunter folgenen Tabelle einzuschr&auml;nken.",

@@ -19,7 +19,7 @@ $iSearches=$this->oDB->count(
 $sTiles = $oRenderer->renderTile('', $this->lB('searches.total'), $iSearches, '', '');
 if(!$iSearches){
     $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
-        .'<br>'.$this->_getMessageBox($this->lB('profile.searches.empty'), 'warning');
+        .'<br>'.$this->_getMessageBox($this->lB('searches.empty'), 'warning');
     return $sReturn;
 }
 
@@ -65,39 +65,6 @@ $aSearches = $this->oDB->select(
  * 
  */
 
-$aDays=array(7,30,90,365);
-foreach($aDays as $iDays){
-    $sQuery=''
-            . 'SELECT query, count(query) as count, results '
-            . 'FROM searches '
-            . 'WHERE siteid = '.$this->_sTab.' '
-            . 'AND ts > \''.date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))).'\' '
-            . 'GROUP BY query '
-            . 'ORDER BY count desc, query asc '
-            . 'LIMIT 0,10';
-    $oResult=$this->oDB->query($sQuery);
-
-    /*
-     * TODO: FIX ME
-    $oResult = $this->oDB->select(
-            'searches', 
-            array('ts', 'query', 'count(query) as count', 'results'),
-            array(
-                'AND' => array(
-                    'siteid' => $this->_sTab,
-                    '[>]ts' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))),
-                ),
-                "GROUP" => "query",
-                "ORDER" => array("count"=>"DESC", "query"=>"asc"),
-                "LIMIT" => 10
-            )
-    );
-     */
-
-    // echo "$sQuery ".($oResult ? "OK" : "fail")."<br>";
-    $aSearches[$iDays]=($oResult ? $oResult->fetchAll(PDO::FETCH_ASSOC) : array());
-}
-
 // --- output
 
 if (count($aLastSearches)) {
@@ -135,18 +102,112 @@ if (count($aLastSearches)) {
 
         $aTable[] = $aRow;
     }
-    $sReturn.='<h3>' . $this->lB('profile.searches.last') . '</h3>' 
+    $sReturn.='<h3>' . $this->lB('searches.last') . '</h3>' 
             . $this->_getHtmlTable($aTable, "searches.");
 } 
 
+// ----------------------------------------------------------------------
+// top N form
+// ----------------------------------------------------------------------
 
+$iCount = $this->_getRequestParam('count', false, 'int');
+if(!$iCount){
+    $iCount=10;
+}
+$iSinceDays = $this->_getRequestParam('lastdays', false, 'int');
+if(!$iSinceDays){
+    $iSinceDays=7;
+}
 
-foreach($aDays as $iDays){
-    if (count($aSearches[$iDays])) {
+$sOptionsTop='';
+foreach(array(10,20,50,100) as $iTopvalue){
+    $sOptionsTop.='<option value="'.$iTopvalue.'"'
+            .($iTopvalue===$iCount ? ' selected="selected"' : '')
+            . '>'.$iTopvalue.'</option>'
+            ;
+    
+}
+$sOptionsSince='';
+foreach(array(
+    7,
+    30,
+    90,
+    365,
+    730,
+    10000,
+) as $iDays){
+    $sOptionsSince.='<option value="'.$iDays.'"'
+            .($iDays===$iSinceDays ? ' selected="selected"' : '')
+            . '>'.$iDays.'</option>';
+}
+        
+// $since=date("Y-m-d 00:00:00", (date("U") - (60 * 60 * 24 * $iDays)));
+        
+$sReturn.=''
+        . '<h3 id="searchtopn">'.$this->lB('searches.topn.headline').'</h3>'
+    . '<div div class="actionbox">'
+        . '<form action="#searchtopn" method="get" class="pure-form">'
+            . '<input type="hidden" name="page" value="searches">'
+            . '<input type="hidden" name="action" value="search">'
+            . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
+        
+            . '<label for="eCount">'.$this->lB('searches.topn.count').'</label>'
+            . ' '
+            . '<select name="count" id="eCount">' . $sOptionsTop . '</select>'
+            . ' '
+        
+            . sprintf($this->lB('searches.topn.since'), '<select name="lastdays">' . $sOptionsSince . '</select>')
+        
+            // . '<br><br>'
+            . ' '
+            . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $this->lB('button.search') . '</button> '
+        . '</form>'
+    . '</div>'
+    ;
+
+$sDateFrom=date("Y-m-d 00:00:00", (date("U") - (60 * 60 * 24 * $iSinceDays)));
+$sDateTo=date("Y-m-d H:i:s");
+$sQuery=''
+        . 'SELECT query, count(query) as count, results '
+        . 'FROM searches '
+        . 'WHERE siteid = '.$this->_sTab.' '
+        . 'AND ts >= \''.$sDateFrom.'\' '
+        . 'AND ts < \''.$sDateTo.'\' '
+        . 'GROUP BY query '
+        . 'ORDER BY count desc, query asc '
+        . 'LIMIT 0,'.$iCount;
+// echo "DEBUG: query 1: $sQuery<br>";
+$oResult=$this->oDB->query($sQuery);
+
+/*
+ * TODO: FIX ME
+ * 
+$oResult = $this->oDB->debug()->select(
+        'searches', 
+        // problem 1: 'count(query) as count' - is not what we expect
+        array('query', 'count(query) as count', 'results'),
+        array(
+            'AND' => array(
+                'siteid' => $this->_sTab,
+                'ts[>=]' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))),
+            ),
+            "GROUP" => "query",
+            // problem 2: just one ORDER item
+            "ORDER" => array("count"=>"DESC", "query"=>"asc"),
+            "LIMIT" => 10
+        )
+);
+// echo "$sQuery ".($oResult ? "OK" : "fail")."<br>";
+echo "DEBUG: query 2: ".$this->oDB->last()."<br>";
+*/
+
+$aSearchterms=($oResult ? $oResult->fetchAll(PDO::FETCH_ASSOC) : array());
+
+    if (count($aSearchterms)) {
         $aTable = array();
         $aChartitems=array();
         $iCount=0;
-        foreach ($aSearches[$iDays] as $aRow) {
+        foreach ($aSearchterms as $aRow) {
             $iCount++;
             foreach ($aRow as $key => $value) {
                 $aRow[$key]=htmlentities($value);
@@ -160,7 +221,11 @@ foreach($aDays as $iDays){
             );
         }
 
-        $sReturn.= '<h3>' . sprintf($this->lB('profile.searches.top10lastdays'), $iDays) . '</h3>'
+        $sReturn.= '<h4>' . sprintf($this->lB('searches.topn.headline2'), $iCount, $iSinceDays) . '</h4>'
+                . '<p>'
+                    . sprintf($this->lB('searches.topn.from'), $sDateFrom).'<br>'
+                    . sprintf($this->lB('searches.topn.to'), $sDateTo).'<br>'
+                . '</p>'
                 . '<div style="float: right;">' 
                 . $this->_getChart(array(
                     'type'=>'pie',
@@ -171,27 +236,8 @@ foreach($aDays as $iDays){
                 . '<div style="clear: both;"></div>' 
                 ;
     }         
-}
-/*
-  // echo $this->oDB->last_query() . '<br>';
-  foreach ($aResult as $aRow){
-  $sReturn.='<tr>';
-  foreach ($aFields as $sField){
-  $sReturn.='<td class="td-'.$sField.'">'.$aRow[$sField].'</td>';
-  }
-  $sReturn.='</tr>';
-  }
-  if($sReturn){
-  $sTh='';
-  foreach ($aFields as $sField){
-  $sTh.='<th class="th-'.$sField.'">'.$this->lB('searches.'.$sField).'</th>';
-  }
-  $sReturn='<table class="pure-table pure-table-horizontal pure-table-striped">'
-  . '<thead><tr>'.$sTh.'</tr></thead>'
-  . '<tbody>'.$sReturn.''
-  . '</tbody>'
-  . '</table>';
-  }
- * 
- */
+
+
+// ----------------------------------------------------------------------
+
 return $sReturn;

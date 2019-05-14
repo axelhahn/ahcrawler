@@ -189,17 +189,33 @@ class ressources extends crawler_base {
 
         // get id if it should exist
 
+        $sUrl=$aData['url'];
 
+        $bExists = (isset($this->_aRessourceIDs[$sUrl])
+                || isset($this->_aUrls2Crawl[$sUrl])
+                );
 
-        $bExists = (array_key_exists($aData['url'], $this->_aRessourceIDs));
-
+        if($sUrl=="https://examic.ch/products/measured/"){
+            echo "ressourcen: " . count($this->_aRessourceIDs)."\n"
+                    . "..." . (isset($this->_aRessourceIDs[$sUrl]) ? $this->_aRessourceIDs[$sUrl] : ' -- ') ."\n"
+                    . "urls: ". count($this->_aUrls2Crawl)."\n"
+                    . "..." . (isset($this->_aUrls2Crawl[$sUrl]) ? $this->_aUrls2Crawl[$sUrl] : ' -- ') ."\n"
+                    ;
+            
+            echo "EXISTS " . ($bExists ? "JA" : "Nein");
+            if(!$bExists){
+                print_r($this->_aUrls2Crawl);
+                sleep(10);
+            }
+            sleep(3);
+        }
 
         // if (count($aCurrent) && $aCurrent[0]['id']) {
         if ($bExists) {
             if ($bSkipIfExist) {
-                // echo 'SKIP ressource ' . $aData['url'] . "\n";
+                echo 'SKIP ressource ' . $sUrl . " (exists)\n";
             } else {
-                echo 'UPDATE ressource ' . $aData['url'] . "\n";
+                echo 'UPDATE existing ressource ' . $sUrl . "\n";
                 /*
                   $aCurrent = $this->oDB->select('ressources', array('id'), array(
                   'url' => $aData['url'],
@@ -208,7 +224,7 @@ class ressources extends crawler_base {
                  */
                 $aResult = $this->oDB->update('ressources', $aData, array(
                     'AND' => array(
-                        'url' => $aData['url'],
+                        'url' => $sUrl,
                         'siteid' => $this->iSiteId
                         )
                     )
@@ -216,10 +232,10 @@ class ressources extends crawler_base {
                 $this->_checkDbResult($aResult);
             }
         } else {
-            echo 'INSERT ressource ' . $aData['url'] . "\n";
+            echo 'INSERT new ressource ' . $aData['url'] . "\n";
             $aResult = $this->oDB->insert('ressources', $aData);
             $this->_checkDbResult($aResult);
-            $this->_aRessourceIDs[$aData['url']] = true;
+            $this->_aRessourceIDs[$sUrl] = true;
         }
     }
 
@@ -751,25 +767,39 @@ class ressources extends crawler_base {
 
         $aUrls = $this->oDB->select(
                 'ressources', 'url', array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-                'OR' => array(
-                    'rescan' => 1,
-                    'http_code' => 0,
-                    'http_code' => 500,
-                ),
-            ),
+                    'AND' => array(
+                        'siteid' => $this->iSiteId,
+                        'OR' => array(
+                            'rescan' => 1,
+                            'http_code' => 0,
+                            'http_code[>=]' => 500,
+                        ),
+                    ),
                 // "LIMIT" => 2,
+                )
+        );
+        $aUrlsDone = $this->oDB->select(
+                'ressources', 'url', array(
+                    'AND' => array(
+                        'siteid' => $this->iSiteId,
+                        'OR' => array(
+                            'rescan' => 0,
+                            'http_code[>]' => 0,
+                            'http_code[<]' => 500,
+                        ),
+                    ),
                 )
         );
         // echo $this->oDB->last()."\n"; die("STOP in ".__FUNCTION__);
 
-
         foreach ($aUrls as $sUrl) {
             $this->_addUrl2Crawl($sUrl, true);
         }
-        echo "\n\n----- start http requests<br>\n";
+        foreach ($aUrlsDone as $sUrl) {
+            $this->_aRessourceIDs[$sUrl]=1;
+        }
 
+        echo "\n\n----- start http requests<br>\n";
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');

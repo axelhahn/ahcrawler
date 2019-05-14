@@ -9,7 +9,7 @@ require_once 'cdnorlocal.class.php';
  * admin functions to request API, download, read existing local downloads
  * This file is needed by admin/index.php only - NOT in your projects to publish
  *
- * @version 1.0.2
+ * @version 1.0.6
  * @author Axel Hahn
  * @link https://www.axel-hahn.de
  * @license GPL
@@ -504,7 +504,7 @@ class cdnorlocaladmin extends cdnorlocal{
             if (!file_exists($sTmpdir.'/'.$sFilename) || !filesize($sTmpdir.'/'.$sFilename) ){
                 if(count($aDownloads) < $iMaxFiles){
                     $aDownloads[]=array(
-                        'url'=>$this->sCdnUrl.'/'.$sRelUrl.'/'.$sFilename,
+                        'url'=>$this->getFullCdnUrl($sRelUrl.'/'.$sFilename),
                         'file'=>$sTmpdir.'/'.$sFilename,
                     );
                 }

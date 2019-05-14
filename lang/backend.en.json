@@ -317,9 +317,8 @@
     "status.error_urls": "urls with error",
     "status.all_data": "Urls in the search index",
         
-    "profile.searches.last": "Last searches (max. 20)",
-    "profile.searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
-    "profile.searches.top10lastdays": "Top 10 - last %s days",
+    "searches.last": "Last searches (max. 20)",
+    "searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
     
     "search.#": "Nr.",
     "search.summary": "Summary",
@@ -340,6 +339,14 @@
     "searches.count": "Count",
     "searches.actions": "Actions",
     "searchout.hits": "Hits: <strong>%s</strong>",
+
+    "searches.topn.headline": "Top search terms in a time range",
+    "searches.topn.count": "Count Top N",
+    "searches.topn.since": "Range - last %s days",
+    "searches.topn.headline2": "Top %s - last %s days",
+    "searches.topn.from": "from: %s",
+    "searches.topn.to": "to: %s",
+    "searches.topn.now": "now",
 
     "ressources.overview": "Ressources on the website",
     "ressources.overview.intro": "Ressources are all single pages and here linked elements like CSS-, javascript-, image files, external websites and so on.<br>You can filter by elements and properties to reduce the listed ressources in the table below.",

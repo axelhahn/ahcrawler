@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-05-14: v0.73
+  * backend: fix creating/ saving profile
+  * crawler: fix double ressources
+  * backend: WIP - select range for search statistics 
+
 2019-04-25: v0.72
   * backend: fix count of local vendor libs; show count of unused libs
   * backend: updater: show hint and link to delete unused libs
