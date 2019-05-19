@@ -108,6 +108,7 @@ if ($iCountShortTitles) {
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinTitleLength).'</p>'
         .'<div style="clear: both;"></div>'
         .$this->_getHtmlchecksTable('select title, length(title) as length, url
             from pages 
@@ -134,6 +135,7 @@ if ($iCountShortDescr) {
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinDescriptionLength).'</p>'
         .'<div style="clear: both;"></div>'
         .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
             from pages 
@@ -176,6 +178,7 @@ if ($iCountShortKeywords) {
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinKeywordsLength).'</p>'
         .'<div style="clear: both;"></div>'
         .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
             from pages 
@@ -191,6 +194,7 @@ if ($iCountShortKeywords) {
 if ($iCountLongload) {
     $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
         .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
         .$this->_getHtmlchecksTable('select title, time, size, url
             from pages 

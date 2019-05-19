@@ -1,7 +1,25 @@
 <?php
 /**
+ * ____________________________________________________________________________
+ *          __    ______                    __             
+ *   ____ _/ /_  / ____/________ __      __/ /__  _____    
+ *  / __ `/ __ \/ /   / ___/ __ `/ | /| / / / _ \/ ___/    
+ * / /_/ / / / / /___/ /  / /_/ /| |/ |/ / /  __/ /        
+ * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
+ * ____________________________________________________________________________ 
+ * Free software and OpenSource * GNU GPL 3
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
  * 
- * AXLES CRAWLER AND INDEXER
+ * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
+ * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
+ * OTHER PARTIES PROVIDE THE PROGRAM ?AS IS? WITHOUT WARRANTY OF ANY KIND, <br>
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED <br>
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE <br>
+ * ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. <br>
+ * SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY <br>
+ * SERVICING, REPAIR OR CORRECTION.<br>
+ * 
+ * ----------------------------------------------------------------------------
  * status ... set, read, delete status of a running action to prevent
  * multiple simultanous actions
  * 2017-04-nn  created

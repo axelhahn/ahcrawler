@@ -5,7 +5,27 @@ require_once 'httpheader.class.php';
 require_once 'htmlelements.class.php';
 
 /**
- * Description of ressources-renderer
+ * ____________________________________________________________________________
+ *          __    ______                    __             
+ *   ____ _/ /_  / ____/________ __      __/ /__  _____    
+ *  / __ `/ __ \/ /   / ___/ __ `/ | /| / / / _ \/ ___/    
+ * / /_/ / / / / /___/ /  / /_/ /| |/ |/ / /  __/ /        
+ * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
+ * ____________________________________________________________________________ 
+ * Free software and OpenSource * GNU GPL 3
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * 
+ * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
+ * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
+ * OTHER PARTIES PROVIDE THE PROGRAM ?AS IS? WITHOUT WARRANTY OF ANY KIND, <br>
+ * EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED <br>
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE <br>
+ * ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. <br>
+ * SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY <br>
+ * SERVICING, REPAIR OR CORRECTION.<br>
+ * 
+ * ----------------------------------------------------------------------------
+ * ressources-renderer
  *
  * @author hahn
  */
@@ -269,6 +289,9 @@ class ressourcesrenderer extends crawler_base {
             case 'ressourcetype':
             case 'type':
                 $sReturn = '<span class="' . $sType . ' ' . $sType . '-' . $value . '">' . $sIcon . $value . '</span>';
+                break;
+            case 'url':
+                $sReturn = $sIcon . htmlentities($value);
                 break;
 
             default:
@@ -656,7 +679,7 @@ class ressourcesrenderer extends crawler_base {
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
-                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . $aResourceItem['url'] . '</a>'
+                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
                 . ' <a href="' . $aResourceItem['url'] . '" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a>'
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 

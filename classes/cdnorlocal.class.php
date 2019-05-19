@@ -22,7 +22,7 @@ namespace axelhahn;
  * AND/ OR
  * https://unpkg.com/
  * 
- * @version 1.0.6
+ * @version 1.0.7
  * @author Axel Hahn
  * @link https://www.axel-hahn.de
  * @license GPL
@@ -109,7 +109,9 @@ class cdnorlocal {
             $this->setVendorUrl('/vendor');
             $this->setVendorDir($_SERVER['DOCUMENT_ROOT'].'/vendor');
         }
-        $this->_sCdn=array_key_first($this->aCdnUrls);
+        // $this->_sCdn=array_key_first($this->aCdnUrls);
+        reset($this->aCdnUrls);
+        $this->_sCdn=key($this->aCdnUrls);
     }
 
     /**

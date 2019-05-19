@@ -118,7 +118,7 @@ $sTiles='';
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
                     );
             $sLegendeWarn .='<li>'
-                    . $this->lB('httpheader.'.$aHeaderitem['var'].'.description').'<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+                    . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description').'<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
                     ;
         }
         /*

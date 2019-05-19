@@ -314,11 +314,10 @@
     "status.newest_urls_in_index": "newest urls in the index",
     "status.oldest_urls_in_index": "oldest urls in the index",
     "status.empty_data": "empty data",
+    "status.noresult": "Sorry, no result.",
     "status.error_urls": "urls with error",
     "status.all_data": "Urls in the search index",
         
-    "searches.last": "Last searches (max. 20)",
-    "searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
     
     "search.#": "Nr.",
     "search.summary": "Summary",
@@ -340,12 +339,19 @@
     "searches.actions": "Actions",
     "searchout.hits": "Hits: <strong>%s</strong>",
 
+    "searches.last.head": "Last %s search requests",
+    "searches.last.count": "Number of search requests to show",
+    "searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
+
     "searches.topn.headline": "Top search terms in a time range",
-    "searches.topn.count": "Count Top N",
-    "searches.topn.since": "Range - last %s days",
+    "searches.topn.since": "Range",
+    "searches.topn.all": "all",
+    "searches.topn.today": "today",
+    "searches.topn.lastdays": "last %s days",
+    "searches.topn.lastyears": "last %s years",
     "searches.topn.headline2": "Top %s - last %s days",
-    "searches.topn.from": "from: %s",
-    "searches.topn.to": "to: %s",
+    "searches.topn.from": "from",
+    "searches.topn.to": "to",
     "searches.topn.now": "now",
 
     "ressources.overview": "Ressources on the website",
@@ -385,9 +391,9 @@
     "ressources.references-out": "Ressources",
         
     "htmlchecks.overview": "Overview",
-    "htmlchecks.overview.introtext": "Meta tags are evaluated by many search engines. It is not a must, but it helps to index the site better.<br>When using the ahCrawler as a search engine for the website, hits in the metadata have higher priority than the content text.",
-    
+    "htmlchecks.overview.introtext": "Meta tags are evaluated by many search engines. It is not a must, but it helps to index the site better.<br>When using the ahCrawler as a search engine for the website, hits in the metadata have higher priority than the content text.",    
     "htmlchecks.tile-crawlererrors": "Crawl errors",
+    "htmlchecks.customvalue": "Remark: the used value <em>%s</em> can be changed in the program settings.",
     "htmlchecks.tile-check-no-title": "No title",
     "htmlchecks.tile-check-short-title": "Too short titles<br>(less than %s chars)",
     "htmlchecks.tile-check-no-description": "No description",

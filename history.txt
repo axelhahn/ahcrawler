@@ -14,6 +14,14 @@
 
 ----------------------------------------------------------------------
 
+2019-05-19: v0.74
+  * internal: added header for product and licence
+  * internal: update cdnorlocal for backward compatibility PHP below v7.3
+  * backend: show search requests with dynamic values and ranges
+  * backend: html checks show hint that dynamic values can be changed in the settings
+  * backend: url search (used in the bookmarklet) shows project on siteid=all
+  * backend: use htmlentities in url labels
+
 2019-05-14: v0.73
   * backend: fix creating/ saving profile
   * crawler: fix double ressources

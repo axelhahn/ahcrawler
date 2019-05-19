@@ -312,12 +312,9 @@
     "status.newest_urls_in_index": "Neueste URLs im Index",
     "status.oldest_urls_in_index": "&auml;lteste URLs im Index",
     "status.empty_data": "leere Daten",
+    "status.noresult": "Tut mir leid, kein Treffer.",
     "status.error_urls": "fehlerhaft markierte URLs im Index",
-    "status.all_data": "URLs im Suchindex",
-     
-    "searches.last": "Letzte Suchanfragen (max. 20)",
-    "searches.empty": "Es gibt noch keine gesuchten Begriffe.<br>Damit hier Daten erscheinen, muss die Suchmaske und die Ausgabe der Suchergebnisse auf der Webseite integriert worden sein.",
-    
+    "status.all_data": "URLs im Suchindex",    
     
     "search.#": "Nr.",
     "search.summary": "Zusammenfassung",
@@ -339,12 +336,19 @@
     "searches.actions": "Aktionen",
     "searchout.hits": "Treffer: <strong>%s</strong>",
 
+    "searches.last.head": "Letzte %s Suchanfragen",
+    "searches.last.count": "Anzahl der zu zeigenden letzten Suchanfragen",
+    "searches.empty": "Es gibt noch keine gesuchten Begriffe.<br>Damit hier Daten erscheinen, muss die Suchmaske und die Ausgabe der Suchergebnisse auf der Webseite integriert worden sein.",
+
     "searches.topn.headline": "Top Suchbegriffe in einem Zeitraum",
     "searches.topn.count": "Anzahl Top N",
-    "searches.topn.since": "Zeitraum - letzte %s Tage",
-    "searches.topn.headline2": "Top %s - letzte %s Tage",
-    "searches.topn.from": "von: %s",
-    "searches.topn.to": "bis: %s",
+    "searches.topn.since": "Zeitraum",
+    "searches.topn.all": "alle",
+    "searches.topn.today": "heute",
+    "searches.topn.lastdays": "letzte %s Tage",
+    "searches.topn.lastyears": "letzte %s Jahre",
+    "searches.topn.from": "von",
+    "searches.topn.to": "bis",
     "searches.topn.now": "jetzt",
     
     "ressources.overview": "Ressourcen auf der Website",
@@ -391,6 +395,7 @@
     "htmlchecks.overview": "Zusammenfassung der HTML-Checks",
     "htmlchecks.overview.introtext": "Meta-Tags werden von vielen Suchmaschinen ausgewertet. Es ist kein Muss, hilft aber, die Seite besser zu verschlagworten.<br>Bei der Verwendung des ahCrawlers als Suchmaschine für die Webseite haben Treffer in den Metadaten höhere Priorität, als der Inhaltstext.",
     "htmlchecks.tile-crawlererrors": "Fehler beim Crawlen",
+    "htmlchecks.customvalue": "Hinweis: der verwendete Wert <em>%s</em> ist in den Programm-Einstellungen ver&auml;nderbar.",
 
     "htmlchecks.tile-check-no-title": "Kein Titel",
     "htmlchecks.tile-check-short-title": "Zu kurze Titel<br>(kleiner %s Zeichen)",

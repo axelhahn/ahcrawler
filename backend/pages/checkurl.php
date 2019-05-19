@@ -8,6 +8,7 @@ $sReturn.='<br>';
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 
+$aProfiles=$this->_getProfiles();
 $sReturn.= '<h3>' . $this->lB('ressources.searchurl-head') . '</h3>'
         . '<div div class="actionbox">'
             . $this->lB('ressources.searchurl-hint').'<br><br>'
@@ -59,6 +60,10 @@ if ($sQuery){
                         // . '<pre>'.print_r($aItem, 1).'</pre>' 
                         // if $this->_sTab === "all"
                         // $aItem['siteid'] --> project name
+                        . ($this->_sTab==='all'
+                            ? $this->_getIcon('project').$aProfiles[$aItem['siteid']]
+                            : ''
+                        )
                         . $oRenderer->renderRessourceItemAsLine($aItem, true).'<br>';
             }
         } else {

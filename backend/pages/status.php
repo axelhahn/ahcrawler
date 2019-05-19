@@ -225,6 +225,8 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                         );
                     }
                 }
+            } else {
+                $sReturn.= $sQuery ? $this->_getMessageBox($this->lB('status.noresult'), 'warning') : '';
             }
             $sReturn.=''
                 . $this->_getHtmlTable($aTable)
