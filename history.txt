@@ -21,6 +21,7 @@
   * backend: html checks show hint that dynamic values can be changed in the settings
   * backend: url search (used in the bookmarklet) shows project on siteid=all
   * backend: use htmlentities in url labels
+  * deleted: sws class and references
 
 2019-05-14: v0.73
   * backend: fix creating/ saving profile
