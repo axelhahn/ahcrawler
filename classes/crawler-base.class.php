@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.74',
-        'date' => '2019-05-19',
+        'version' => '0.75',
+        'date' => '2019-05-24',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -65,6 +65,8 @@ class crawler_base {
         'lang' => 'en',
         'menu' => array(),
         'crawler' => array(
+            'userAgent' => false,
+            'memoryLimit' => '512M',
             'searchindex' => array(
                 'simultanousRequests' => 2,
             ),
@@ -520,7 +522,7 @@ class crawler_base {
             CURLOPT_HEADER => true,
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERAGENT => $this->sUserAgent,
+            CURLOPT_USERAGENT => $this->aOptions['crawler']['userAgent'],
             CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfileEffective) ? $this->aProfileEffective['userpwd']:false,
             CURLOPT_VERBOSE => false,
             CURLOPT_ENCODING => '',  // to fetch encoding
@@ -868,16 +870,18 @@ class crawler_base {
 
         $this->iSiteId = false;
         $this->aProfileSaved = array();
+        $this->aDefaultOptions['crawler']['userAgent']=$this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlDocs'] . ')';
         
         $aOptions = $this->_loadConfigfile();
 
         $this->getEffectiveOptions($aOptions);
-
+        
         // $this->sLang = (array_key_exists('lang', $this->aOptions)) ? $this->sLang = $this->aOptions['lang'] : $this->sLang;
         $this->sLang=$this->_getRequestParam('lang') ? $this->_getRequestParam('lang') : $this->aOptions['lang'];
 
 
         // curl options:
+        // $aDefaultOptions['crawler']['userAgent']=$this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
         
         $this->_initDB();
@@ -946,6 +950,14 @@ class crawler_base {
             }
             
         }
+        $this->aOptions['crawler']['memoryLimit']=isset($this->aOptions['crawler']['memoryLimit']) && $this->aOptions['crawler']['memoryLimit']
+            ? $this->aOptions['crawler']['memoryLimit']
+            : $this->aDefaultOptions['crawler']['memoryLimit']
+        ;
+        $this->aOptions['crawler']['userAgent']=isset($this->aOptions['crawler']['userAgent']) && $this->aOptions['crawler']['userAgent']
+            ? $this->aOptions['crawler']['userAgent']
+            : $this->aDefaultOptions['crawler']['userAgent']
+        ;
         /*
         echo '<pre>'. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre>';
         echo '<pre>'. htmlentities(print_r($this->aOptions, 1)).'</pre>';

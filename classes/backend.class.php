@@ -210,6 +210,14 @@ class backend extends crawler_base {
         if (!isset($_SESSION)) {
             session_start();
         }
+        
+        // for settings: create a default array with all available menu items
+        foreach($this->_aMenu as $sKey=>$aItem){
+            $this->aDefaultOptions['menu'][$sKey]=true;
+            foreach(array_keys($aItem) as $sKey2){
+                $this->aDefaultOptions['menu'][$sKey2]=true;
+            }
+        }
         $this->setSiteId($iSiteId);
         $this->logAdd(__METHOD__.' site id was set');
         $this->setLangBackend();

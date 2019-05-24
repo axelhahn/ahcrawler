@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-05-24: v0.75
+  * internal: set other user agent in the setup (prevent blocking in the link scan)
+  * backend: update settings page (user and database don't need to be on top)
+  * backend: customizable memory limit for cli script
+
 2019-05-19: v0.74
   * internal: added header for product and licence
   * internal: update cdnorlocal for backward compatibility PHP below v7.3

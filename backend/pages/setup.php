@@ -267,14 +267,70 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 'name'=>'action',
                 'value'=>'setoptions',
                 ), false)
+
+
+        
+        
+            // ------------------------------------------------------------
+            // setup options - backend
+            // ------------------------------------------------------------
+            . '<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
+                . ' '.$this->lB('setup.section.backend')
+            .'</h3>'
+            . '<h4>'.$this->lB('setup.section.backend.hint').'</h4>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'lang', 'label'=>$this->lB('setup.section.backend.lang')))
+                . $oRenderer->oHtml->getFormSelect(array(
+                    'id'=>$sIdPrefixOther.'lang', 
+                    'name'=>'options[lang]',
+                    // 'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
+                    ), $aLangOptions)
+            . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>$sIdPrefixOther.'menu', 
+                    'name'=>'options[menu]',
+                    'cols'=>50,
+                    'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
+                    ), true)
+                . '</div>'
+            /*
+            . '<div class="pure-control-group">'
+                // . '<label> </label>'
+                . '<label class="pure-checkbox" for="'.$sIdPrefixother.'debug">'
+                . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixother.'debug', 
+                        'type'=>'checkbox',
+                        'name'=>'options[debug]',
+                        'value'=>'true',
+                        'checked'=>isset($aOptions['options']['debug']) && $aOptions['options']['debug'] ? 'checked' : '',
+                        ))
+                        .' '.$this->lB('setup.section.backend.debug')
+                . '</label>'
+                . '</div>'
+             * 
+             */
+            . '<div class="pure-control-group">'
+                // . '<label> </label>'
+                . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
+                . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
+                        .' '.$this->lB('setup.section.backend.debug')
+                . '</label>'
+                . '</div>'
             // ------------------------------------------------------------
             // setup options - auth
             // ------------------------------------------------------------
             
-            . '<h3>'
+            . '<h4>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('setup.section.auth')
-            .'</h3>'
+            .'</h4>'
             . $this->lB('setup.section.auth.hint').'<br><br>'
             . (isset($aOptions['options']['auth']['user']) && $aOptions['options']['auth']['user']
                 ? ''
@@ -346,6 +402,138 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ), false)
                 . '</div>'
 
+            // ------------------------------------------------------------
+            // setup options - crawler
+            // ------------------------------------------------------------
+            
+            . '<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-spinner')) 
+                . ' '.$this->lB('setup.section.crawler')
+            .'</h3>'
+            . $this->lB('setup.section.crawler.hint').'<br><br>'
+        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 'label'=>$this->lB('setup.section.crawler.searchindex.simultanousRequests')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 
+                    'name'=>'options[crawler][searchindex][simultanousRequests]',
+                    'value'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] : 2,
+                    ), false)
+                . '</div>'
+        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 'label'=>$this->lB('setup.section.crawler.ressources.simultanousRequests')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 
+                    'name'=>'options[crawler][ressources][simultanousRequests]',
+                    'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] : 3,
+                    ), false)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'memoryLimit', 'label'=>$this->lB('setup.section.crawler.memoryLimit')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixCrawler.'memoryLimit', 
+                    'name'=>'options[crawler][memoryLimit]',
+                    'placeholder'=>$this->aDefaultOptions['crawler']['memoryLimit'],
+                    'value'=>isset($aOptions['options']['crawler']['memoryLimit']) ? $aOptions['options']['crawler']['memoryLimit'] : '',
+                    ), false)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'userAgent', 'label'=>$this->lB('setup.section.crawler.userAgent')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixCrawler.'userAgent', 
+                    'name'=>'options[crawler][userAgent]',
+                    'size'=>130,
+                    'placeholder'=>$this->aDefaultOptions['crawler']['userAgent'],
+                    'value'=>isset($aOptions['options']['crawler']['userAgent']) ? $aOptions['options']['crawler']['userAgent'] : '',
+                    ), false)
+                . '<br>'
+                . $oRenderer->oHtml->getTag('label', array())
+                . $oRenderer->oHtml->getTag('button', array(
+                    'class'=>'pure-button',
+                    'label'=>$this->lB('setup.section.crawler.userAgent.button'),
+                    'onclick'=>'$(\'#'.$sIdPrefixCrawler.'userAgent\').val(\''.$_SERVER['HTTP_USER_AGENT'].' '.$this->aAbout['product'] . '/' . $this->aAbout['version'].'\'); return false;',
+                    'title'=>$_SERVER['HTTP_USER_AGENT'],
+                    ), true)
+                . ' '
+                . $oRenderer->oHtml->getTag('button', array(
+                    'class'=>'pure-button',
+                    'label'=>$this->_getIcon('button.close'),
+                    'title'=>$this->aDefaultOptions['crawler']['userAgent'],
+                    'onclick'=>'$(\'#'.$sIdPrefixCrawler.'userAgent\').val(\'\'); return false;',
+                    ), true)
+                . '</div>'
+            . '<br>'
+        
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixSearchindex.'regexToRemove', 'label'=>$this->lB('setup.section.searchindex.regexToRemove')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>$sIdPrefixSearchindex.'regexToRemove', 
+                    'name'=>'options[searchindex][regexToRemove]',
+                    'cols'=>50,
+                    'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
+                    ), true)
+                . '</div>'
+
+            // ------------------------------------------------------------
+            // setup options - analysis constants
+            // ------------------------------------------------------------
+            . '<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                . ' '.$this->lB('setup.section.analysis')
+            .'</h3>'
+            . $this->lB('setup.section.analysis.hint').'<br><br>'
+        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinTitleLength', 
+                    'name'=>'options[analysis][MinTitleLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] : 20,
+                    ), false)
+                . '</div>'
+        
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinDescriptionLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinDescriptionLength', 
+                    'name'=>'options[analysis][MinDescriptionLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] ? $aOptions['options']['analysis']['MinDescriptionLength'] : 40,
+                    ), false)
+                . '</div>'
+       
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinKeywordsLength', 'label'=>$this->lB('setup.section.analysis.MinKeywordsLength')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
+                    'name'=>'options[analysis][MinKeywordsLength]',
+                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] ? $aOptions['options']['analysis']['MinKeywordsLength'] : 10,
+                    ), false)
+                . '</div>'
+       
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxPagesize', 'label'=>$this->lB('setup.section.analysis.MaxPagesize')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MaxPagesize', 
+                    'name'=>'options[analysis][MaxPagesize]',
+                    'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] ? $aOptions['options']['analysis']['MaxPagesize'] : 150000,
+                    ), false)
+                . '</div>'
+       
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxLoadtime', 'label'=>$this->lB('setup.section.analysis.MaxLoadtime')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixAnalyis.'MaxLoadtime', 
+                    'name'=>'options[analysis][MaxLoadtime]',
+                    'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] ? $aOptions['options']['analysis']['MaxLoadtime'] : 500,
+                    ), false)
+                . '</div>'
+       
             // ------------------------------------------------------------
             // setup options - database
             // ------------------------------------------------------------
@@ -434,154 +622,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '</div>'
             . '</div>'
         
-        
-            // ------------------------------------------------------------
-            // setup options - backend
-            // ------------------------------------------------------------
-            . '<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-cogs')) 
-                . ' '.$this->lB('setup.section.backend')
-            .'</h3>'
-            . $this->lB('setup.section.backend.hint').'<br><br>'
 
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'lang', 'label'=>$this->lB('setup.section.backend.lang')))
-                . $oRenderer->oHtml->getFormSelect(array(
-                    'id'=>$sIdPrefixOther.'lang', 
-                    'name'=>'options[lang]',
-                    // 'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
-                    ), $aLangOptions)
-            . '</div>'
-
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>$sIdPrefixOther.'menu', 
-                    'name'=>'options[menu]',
-                    'cols'=>50,
-                    'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
-                    // 'label'=>$sValueSearchCategories,
-                    'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
-                    ), true)
-                . '</div>'
-            /*
-            . '<div class="pure-control-group">'
-                // . '<label> </label>'
-                . '<label class="pure-checkbox" for="'.$sIdPrefixother.'debug">'
-                . $oRenderer->oHtml->getTag('input', array(
-                        'id'=>$sIdPrefixother.'debug', 
-                        'type'=>'checkbox',
-                        'name'=>'options[debug]',
-                        'value'=>'true',
-                        'checked'=>isset($aOptions['options']['debug']) && $aOptions['options']['debug'] ? 'checked' : '',
-                        ))
-                        .' '.$this->lB('setup.section.backend.debug')
-                . '</label>'
-                . '</div>'
-             * 
-             */
-            . '<div class="pure-control-group">'
-                // . '<label> </label>'
-                . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
-                . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
-                        .' '.$this->lB('setup.section.backend.debug')
-                . '</label>'
-                . '</div>'
-
-            // ------------------------------------------------------------
-            // setup options - crawler
-            // ------------------------------------------------------------
-            
-            . '<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-spinner')) 
-                . ' '.$this->lB('setup.section.crawler')
-            .'</h3>'
-            . $this->lB('setup.section.crawler.hint').'<br><br>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'username', 'label'=>$this->lB('setup.section.crawler.searchindex.simultanousRequests')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 
-                    'name'=>'options[crawler][searchindex][simultanousRequests]',
-                    'value'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] : 2,
-                    ), false)
-                . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'password', 'label'=>$this->lB('setup.section.crawler.ressources.simultanousRequests')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 
-                    'name'=>'options[crawler][ressources][simultanousRequests]',
-                    'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] : 3,
-                    ), false)
-                . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixSearchindex.'regexToRemove', 'label'=>$this->lB('setup.section.searchindex.regexToRemove')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>$sIdPrefixSearchindex.'regexToRemove', 
-                    'name'=>'options[searchindex][regexToRemove]',
-                    'cols'=>50,
-                    'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
-                    // 'label'=>$sValueSearchCategories,
-                    'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
-                    ), true)
-                . '</div>'
-
-            // ------------------------------------------------------------
-            // setup options - analysis constants
-            // ------------------------------------------------------------
-            . '<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
-                . ' '.$this->lB('setup.section.analysis')
-            .'</h3>'
-            . $this->lB('setup.section.analysis.hint').'<br><br>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAnalyis.'MinTitleLength', 
-                    'name'=>'options[analysis][MinTitleLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] : 20,
-                    ), false)
-                . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinDescriptionLength')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAnalyis.'MinDescriptionLength', 
-                    'name'=>'options[analysis][MinDescriptionLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] ? $aOptions['options']['analysis']['MinDescriptionLength'] : 40,
-                    ), false)
-                . '</div>'
-       
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinKeywordsLength', 'label'=>$this->lB('setup.section.analysis.MinKeywordsLength')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
-                    'name'=>'options[analysis][MinKeywordsLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] ? $aOptions['options']['analysis']['MinKeywordsLength'] : 10,
-                    ), false)
-                . '</div>'
-       
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxPagesize', 'label'=>$this->lB('setup.section.analysis.MaxPagesize')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAnalyis.'MaxPagesize', 
-                    'name'=>'options[analysis][MaxPagesize]',
-                    'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] ? $aOptions['options']['analysis']['MaxPagesize'] : 150000,
-                    ), false)
-                . '</div>'
-       
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxLoadtime', 'label'=>$this->lB('setup.section.analysis.MaxLoadtime')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixAnalyis.'MaxLoadtime', 
-                    'name'=>'options[analysis][MaxLoadtime]',
-                    'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] ? $aOptions['options']['analysis']['MaxLoadtime'] : 500,
-                    ), false)
-                . '</div>'
-       
-            . '<br>'
+        . '<br>'
         
 /*
     'MinTitleLength' => 20,

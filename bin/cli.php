@@ -95,9 +95,6 @@ function getProfile(){
 // echo $oCli->getlabel();
 $oCrawler=new crawler();
 
-
-ini_set('memory_limit', '512M');
-
 $oCli=new axelhahn\cli($aParamDefs);
 // http://www.patorjk.com/software/taag/#p=display&f=JS%20Stick%20Letters&t=ahCrawler%20-%20CLI
 
@@ -112,7 +109,8 @@ echo
      \_,_/_//_/\___/_/  \_,_/|__,__/_/\__/_/    \___/____/___/  v'.$oCrawler->aAbout['version'].'
 
      DOCS: '.$oCrawler->aAbout['urlDocs'].'
-     '.$oCrawler->aAbout['license'].'; release date: '.$oCrawler->aAbout['date'].'; (c) '.$oCrawler->aAbout['author'].'
+     free software and open source. '.$oCrawler->aAbout['license'].'; release date: '.$oCrawler->aAbout['date'].'
+     (c) '.$oCrawler->aAbout['author'].'
 
 _______________________________________________________________________________
 
@@ -154,6 +152,7 @@ EXAMPLES:
 
     '.$sBase.' -a update -d all -p 1
         update missed items in search index and ressources for profile [1]
+
 ';
     exit(0);
 }
@@ -213,11 +212,15 @@ if ($oCli->getvalue("profile")===false){
 }
 $oCli->color('ok', 'OK, profile is ['.$oCli->getvalue("profile").']'."\n\n");
 
+$aOptions=$oCrawler->getEffectiveOptions();
+echo "INFO: set memory_limit to ".$aOptions['crawler']['memoryLimit']."\n";
+ini_set('memory_limit', $aOptions['crawler']['memoryLimit']);
+
 $aProfileIds=$oCli->getvalue("profile") ? array($oCli->getvalue("profile")) : $oCrawler->getProfileIds();
 foreach ($aProfileIds as $sSiteId){
     echo "\n-------------------------------------------------------------------------------\n"
         . "profile id $sSiteId ... $sAction ... $sWhat\n"
-        ;
+        ;    
     $oCli->color('cli');
     switch ($sAction){
         
