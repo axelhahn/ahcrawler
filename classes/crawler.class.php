@@ -151,7 +151,7 @@ class crawler extends crawler_base{
      */
     private function _GetExcludesFromRobotsTxt($sUrl) {
         $urlRobots = preg_replace('#^(http.*//.*)/.*$#U', '$1', $sUrl ) . "/robots.txt";
-        echo "ROBOTS.TXT: reading $urlRobots\n";    
+        $this->cliprint('info', "ROBOTS.TXT: reading $urlRobots\n");
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
 
@@ -246,7 +246,7 @@ class crawler extends crawler_base{
      * @return boolean
      */
     private function _addUrl2Crawl($sUrl, $bDebug=false) {
-        echo $bDebug ? __FUNCTION__."($sUrl)\n" : "";
+        $this->cliprint('cli', $bDebug ? __FUNCTION__."($sUrl)\n" : "");
         
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
@@ -254,13 +254,13 @@ class crawler extends crawler_base{
         $sUrl = str_replace(' ', '%20', $sUrl);
 
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            echo $bDebug ? "... don't adding $sUrl - it was added already\n" : "";
+            $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         }
 
         // TODO remove stickydomain
         if (array_key_exists('stickydomain', $this->aProfileSaved['searchindex']) && $this->aProfileSaved['searchindex']['stickydomain'] && $this->aProfileSaved['searchindex']['stickydomain'] != parse_url($sUrl, PHP_URL_HOST)) {
-            echo $bDebug ? "... SKIP url is outside sticky domain " . $this->aProfileSaved['searchindex']['stickydomain']."\n" : "";
+            $this->cliprint('info', $bDebug ? "... SKIP url is outside sticky domain " . $this->aProfileSaved['searchindex']['stickydomain']."\n" : "");
             return false;
         }
 
@@ -271,31 +271,32 @@ class crawler extends crawler_base{
             $bFound = $this->_checkRegexArray('includepath', $sPath);
         }
         if ($bFound && $this->_checkRegexArray('exclude', $sUrl)) {
-            echo $bDebug ? "... SKIP Found in exclude for $sUrl\n" : "";
+            $this->cliprint('info', $bDebug ? "... SKIP Found in exclude for $sUrl\n" : "");
             $bFound = false;
+            sleep(2);
         }
         if (!$bFound) {
-            echo $bDebug ? "... SKIP by config $sUrl (no include for it)\n" : "";
+            $this->cliprint('info', $bDebug ? "... SKIP by config $sUrl (no include for it)\n" : "");
             return false;
         }
         foreach ($this->aExclude as $sRegex) {
             // echo "check regex $sRegex on $sUrl\n";
             if (preg_match('#' . $sRegex . '#', $sUrl)) {
-                echo $bDebug ? "... SKIP - it matches exclude $sRegex \n" : "";
+                $this->cliprint('info', $bDebug ? "... SKIP - it matches exclude $sRegex \n" : "");
                 return false;
             }
         }
 
         $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')/i';
         if (preg_match($sSkipExtensions, $sUrl)) {
-            echo $bDebug ? "... SKIP ext " . $sSkipExtensions."\n" : "";
+            $this->cliprint('info', $bDebug ? "... SKIP ext " . $sSkipExtensions."\n" : "");
             return false;
         }
 
         
         $curr_depth = substr_count(str_replace("//", "/", parse_url($sUrl, PHP_URL_PATH)), "/");
         if ($this->aProfileEffective['searchindex']['iDepth'] && $curr_depth > $this->aProfileEffective['searchindex']['iDepth']) {
-            echo $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfileEffective['searchindex']['iDepth']."\n" : "";
+            $this->cliprint('info', $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfileEffective['searchindex']['iDepth']."\n" : "");
             return false;
         }
 
@@ -306,15 +307,15 @@ class crawler extends crawler_base{
             if($iMax 
                 && count($this->_aUrls2Crawl) >= $this->aProfileEffective['searchindex']['iMaxUrls']
             ){
-                echo "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n";
+                $this->cliprint('warning', "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n");
                 return false;
             }
-            echo "... adding [$iCount".($iMax ? ' of ' .$iMax : '')."] $sUrl\n";
+            $this->cliprint('cli', "... adding [$iCount".($iMax ? ' of ' .$iMax : '')."] $sUrl\n");
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;
         }
-        echo $bDebug ? "... was added already." : "";
+        $this->cliprint('cli',  $bDebug ? "... was added already." : "");
         return false;
     }
 
@@ -389,13 +390,13 @@ class crawler extends crawler_base{
 
         // echo "DEBUG: ".__FUNCTION__."$url  - STATUS " . $oHttpstatus->getHttpcode() . "\n";
         if ($oHttpstatus->isError()) {
-            echo "ERROR: fetching $url FAILED. Status: ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus().".\n";
+            $this->cliprint('error', "ERROR: fetching $url FAILED. Status: ".$oHttpstatus->getHttpcode()." (".$oHttpstatus->getStatus().").\n");
             // print_r($aTmp); sleep(5);
             return false;
         }
         if ($oHttpstatus->isRedirect()) {
             $sNewUrl=$oHttpstatus->getRedirect();
-            echo "REDIRECT: $url ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus()." -> ".$sNewUrl.".\n";
+            $this->cliprint('cli', "REDIRECT: $url ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus()." -> ".$sNewUrl.".\n");
             if ($sNewUrl){
                 $this->_addUrl2Crawl($sNewUrl, true);
             }
@@ -407,7 +408,7 @@ class crawler extends crawler_base{
                     $this->_processHtmlPage($sHttpBody, $info);
                     break;
                 default:
-                    echo "WARNING: handling of MIME [".$oHttpstatus->getContenttype()."] was not implemented (yet). Cannot proceed with url $url ... \n";
+                    $this->cliprint('cli', "SKIP: MIME [".$oHttpstatus->getContenttype()."] of $url ... \n");
                     return false;
             }
         }
@@ -469,7 +470,7 @@ class crawler extends crawler_base{
         $aStartUrls=array();
         if ($bMissesOnly){
             // ... pages with error
-            echo "RESCAN index for pages with error.\n";
+            $this->cliprint('info', "RESCAN index for pages with error.\n");
             $this->_bFollowLinks=false;
             $aUrls=$this->oDB->select('pages', 
                 array('url'), 
@@ -487,9 +488,9 @@ class crawler extends crawler_base{
             }
         } else {
             // ... starturls in config
-            echo "RESCAN complete index.\n";
+            $this->cliprint('info', "RESCAN complete index.\n");
             if(!count($this->aProfileEffective['searchindex']['urls2crawl'])){
-                echo 'WARNING: no urls in profiles->'.$this->iSiteId.'->urls2crawl->searchindex<br>'."\n";
+                $this->cliprint('warning', 'WARNING: no urls in profiles->'.$this->iSiteId.'->urls2crawl->searchindex<br>'."\n");
             } else  {
                 foreach ($this->aProfileEffective['searchindex']['urls2crawl'] as $sUrl) {
                     $aStartUrls[]=$sUrl;
@@ -524,13 +525,13 @@ class crawler extends crawler_base{
                 'siteid' => $this->iSiteId,
             ),));
 
-        echo "\n"
-        . "Crawler has finished.\n\n"
-        . "STATUS: \n"
-                . $this->_iUrlsCrawled . " urls were crawled\n"
-                . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
-                . "$iUrls of profile [".$this->iSiteId."] the search index now (table 'pages')\n"
-                ;
+        $this->cliprint('info', "\n"
+            . "Crawler has finished.\n\n"
+            . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
+            . $this->_iUrlsCrawled . " urls were crawled\n"
+            . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
+            . "$iUrls urls are in the search index now (table 'pages')\n"
+        );
         
     }
     
@@ -544,12 +545,17 @@ class crawler extends crawler_base{
         // echo "--- ".__FUNCTION__."([array], [$bFollowLinks]) \n";
         $sMsgId='crawler-'.($bFollowLinks ? 'index':'update').'-profile-'.$this->iSiteId;
         if (!is_array($aUrls) || !count($aUrls)){
-            echo "WARNING: list of starting urls is empty. This seems to be a misconfiguration.\n";
-            sleep(5);
+            $this->cliprint(
+                $bFollowLinks ? 'error': 'info', 
+                $bFollowLinks 
+                    ? "ERROR: list of starting urls is empty. This seems to be a misconfiguration.\n"
+                    : "WARNING: no list of updatetable urls was found. Maybe you want to index - or here is no error to re-index.\n"
+            )
+            ;
             return false;
         }
         if (!$this->enableLocking(__CLASS__, ($bFollowLinks ? 'index':'update'), $this->iSiteId)){
-            echo "ABORT: the action is still running.\n";
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
         
@@ -573,7 +579,7 @@ class crawler extends crawler_base{
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
-                echo "sleep ..." . $this->iSleep . "s\n";
+                $this->cliprint('info', "sleep ..." . $this->iSleep . "s\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
@@ -681,13 +687,12 @@ class crawler extends crawler_base{
         // print_r($aPage['header']);
         $url = $aPage['header']['url'];
         if ($aPage['header']['http_code'] >= '400') {
-            echo "ERROR: http code ".$aPage['header']['http_code'];
-            print_r($aPage['header']); 
+            $this->cliprint('error', "ERROR: http code ".$aPage['header']['http_code']."\n" . print_r($aPage['header'], 1));
             if ($aPage['header']['http_code']<500){
-                echo " - remove from index: $url<br>\n";
+                $this->cliprint('error', " - increasing error counter: $url<br>\n");
                 $this->_markAsErrorInSearchIndex($url, $aPage['header']);
             } else {
-                echo " - NO UPDATE: $url<br>\n";
+                $this->cliprint('info', " - NO UPDATE: $url<br>\n");
             }
             // echo "\n";sleep(5);
             return false;
@@ -702,7 +707,7 @@ class crawler extends crawler_base{
                 strpos($sRobotsX, 'noindex') === 0 || strpos($sRobotsX, 'noindex') > 0
                 || strpos($sRobotsX, 'none') === 0 || strpos($sRobotsX, 'none') > 0)
         ) {
-            echo "Skip: X-Robots-Tag $sRobotsX for url $url\n";
+            $this->cliprint('info', "Skip: X-Robots-Tag $sRobotsX for url $url\n");
             return false;
         }
         
@@ -716,7 +721,7 @@ class crawler extends crawler_base{
         $sRobots=$this->_getMetaHead($sContent, 'robots');
         
         if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
-            echo "Skip: meta robots $sRobots for url $url\n";
+            $this->cliprint('info', "Skip: meta robots $sRobots for url $url\n");
             return false;
         }
 
@@ -725,12 +730,12 @@ class crawler extends crawler_base{
         $sKeywords = $this->_getMetaHead($sContent, 'keywords');
 
         // get lang from <html lang=...>
-        preg_match("@\<html.*\ lang=[\"\'](.*)[\"\']@i", $sContent, $aTmp);
+        preg_match("@\<html.*\ lang=[\"\'](.*)[\"\']@iU", $sContent, $aTmp);
         $sLang=isset($aTmp[1]) ? $aTmp[1] : '';
         
         // print_r($this->aProfileEffective['searchindex']['regexToRemove']); echo count($this->aProfileEffective['searchindex']['regexToRemove']); die();
         if(!strlen($sContent)){
-            echo "WARNING: content is EMPTY for url [$url]?!\n";
+            $this->cliprint('warning', "WARNING: content is EMPTY for url [$url]?!\n");
         } else if(isset($this->aProfileEffective['searchindex']['regexToRemove']) 
                 && is_array($this->aProfileEffective['searchindex']['regexToRemove'])
                 && count($this->aProfileEffective['searchindex']['regexToRemove'])>0
@@ -740,7 +745,7 @@ class crawler extends crawler_base{
                     try{
                         $sContent = preg_replace("@".$sRegex."@si", " ", $sContent);
                         if(!strlen($sContent)){
-                            echo "WARNING: content is EMPTY after applying regex [$sRegex] on $url\n";
+                            $this->cliprint('warning', "WARNING: content is EMPTY after applying regex [$sRegex] on $url\n");
                         }
                     } 
                     catch(Exception $e) {
@@ -809,7 +814,7 @@ class crawler extends crawler_base{
      */
     private function _addToSearchIndex($aData) {
         if (!$this->iSiteId) {
-            echo "WARNING: you need to set the siteId first.\n";
+            $this->cliprint('info', "WARNING: you need to set the siteId first.\n");
             return false;
         }
         
@@ -834,9 +839,9 @@ class crawler extends crawler_base{
         // if ($iPageId) {
 
             if ($aCurrent[0][$sFieldToCompare] == $aData[$sFieldToCompare]){
-                echo 'NO CHANGE';
+                $this->cliprint('cli', 'NO CHANGE');
             } else {
-                echo 'UPDATE CONTENT';
+                $this->cliprint('cli', 'UPDATE CONTENT');
             }
             // echo ' ('.$aCurrent[0]['errorcount'] . ' errors) ';
             $aResult = $this->oDB->update('pages', array(
@@ -863,10 +868,10 @@ class crawler extends crawler_base{
                 )
             );
             
-            echo ' ' . $aData['url'] . "\n";
+            $this->cliprint('cli', ' ' . $aData['url'] . "\n");
         } else {
-            echo 'INSERT data for ' . $aData['url'] . "\n";
-            echo "  title: " . $aData['title'] . "\n";
+            $this->cliprint('ok', 'INSERT data for ' . $aData['url'] . "\n");
+            // echo "  title: " . $aData['title'] . "\n";
             $aResult = $this->oDB->insert(
                     'pages', 
                     array(
@@ -919,7 +924,7 @@ class crawler extends crawler_base{
      */
     private function _markAsErrorInSearchIndex($sUrl, $aHeader = array()) {
         if (!$this->iSiteId) {
-            echo "WARNING: you need to set the siteId first.";
+            $this->cliprint('warning', "WARNING: you need to set the siteId first.");
             return false;
         }
         $aResult = $this->oDB->update(
@@ -958,7 +963,7 @@ class crawler extends crawler_base{
             return false;
         }
         $characterMap='À..ÿ'; // chars #192 .. #255
-        echo "BUILD INDEX ... finding words ";
+        $this->cliprint('cli', "BUILD INDEX ... finding words ");
         $aWords=array();
         $aResult = $this->oDB->select(
             'pages', 
@@ -971,7 +976,7 @@ class crawler extends crawler_base{
             )
         );
         $this->_checkDbResult($aResult);
-        echo "... and count ";
+        $this->cliprint('cli', "... and count ");
         foreach($aResult as $aRow){
             // print_r($aRow);
             foreach(str_word_count(
@@ -997,7 +1002,7 @@ class crawler extends crawler_base{
                 }
             }
         }
-        echo "... and sort ";
+        $this->cliprint('cli', "... and sort ");
         arsort($aWords);
         // print_r($aWords);
 
@@ -1005,7 +1010,7 @@ class crawler extends crawler_base{
         $aResult = $this->oDB->delete('words', array('siteid'=>$this->iSiteId));
         $this->_checkDbResult($aResult);
         
-        echo "... and insert " .count($aWords). " words to siteid " . $this->iSiteId ;
+        $this->cliprint('cli', "... and insert " .count($aWords). " words to siteid " . $this->iSiteId) ;
         $aInsertdata=array();
         $iCounter=0;
         foreach ($aWords as $sWord=>$iCount){
@@ -1013,7 +1018,7 @@ class crawler extends crawler_base{
             $aInsertdata[]=array('word'=>$sWord, 'count'=>$iCount, 'siteid'=>$this->iSiteId);
             if($iCounter>99){
                 $aResult = $this->oDB->insert('words', $aInsertdata);
-                echo ".";
+                $this->cliprint('cli', ".");
                 // echo "\n" . $this->oDB->last_query() . "<br>\n";
                 $this->_checkDbResult($aResult);
                 $aInsertdata=array();
@@ -1028,7 +1033,7 @@ class crawler extends crawler_base{
          * 
          */
         // echo "\n" . $this->oDB->last() . "\n"; die("ABOORT in ". __FILE__ .' '.__METHOD__);
-        echo "\n";
+        $this->cliprint('cli', "\n");
         return $aResult;
 
     }

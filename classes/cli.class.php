@@ -77,12 +77,12 @@ class cli {
     protected $_aThemes = array(
         'default' => array(
             'reset' => array('reset', null),
-            'head' => array('light cyan', null),
+            'head' => array('light blue', null),
             'input' => array('white', 'green'),
             'cli' => array('cyan', null),
             
             'ok' => array('light green', null),
-            'info' => array('yellow', null),
+            'info' => array('light cyan', null),
             'warning' => array('yellow', null),
             'error' => array('light red', null),
             // 'warning' => array('black', 'yellow'),

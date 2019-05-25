@@ -62,7 +62,6 @@ switch ($sStepName) {
         
         global $oCdn;
         $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
-        echo $iCountUnused;
         
         $sReturn .= '<p>'
             .($this->oUpdate->hasUpdate() || 0

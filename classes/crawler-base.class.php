@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.75',
-        'date' => '2019-05-24',
+        'version' => '0.76',
+        'date' => '2019-05-25',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1098,7 +1098,7 @@ class crawler_base {
     
     /**
      * get language specific text of backend
-     * @param type    $sId     id of a text
+     * @param string    $sId     id of a text
      * @return string
      */
     public function lB($sId, $sAltId = false) {
@@ -1107,7 +1107,7 @@ class crawler_base {
 
     /**
      * get language specific text of frontend
-     * @param type    $sId     id of a text
+     * @param string    $sId     id of a text
      * @return string
      */
     public function lF($sId) {
@@ -1122,8 +1122,9 @@ class crawler_base {
         $oStatus = new status();
         $sMsgId = $sLockitem . '-' . $sAction . '-' . $iProfile;
         if (!$oStatus->startAction($sMsgId, $iProfile)) {
+            $this->clicolor('error');
             $oStatus->showStatus();
-            echo "ABORT: the action is still running.\n";
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
         $this->aStatus = array(
@@ -1145,6 +1146,43 @@ class crawler_base {
         $oStatus = new status();
         $oStatus->finishAction($this->aStatus['messageid']);
         $this->aStatus = false;
+        return true;
+    }
+    
+    // ----------------------------------------------------------------------
+    // COLORS n CLI mode
+    // ----------------------------------------------------------------------
+
+    /**
+     * print a colored text but on cli only; after the output the color will be switched to 'cli'
+     * @param string  $sColor    color key; one of head|input|cli|ok|info|warning|error
+     * @param string  $sMessage  string to show
+     * Description
+     */
+    public function clicolor($sColor){
+        $this->cliprint($sColor, '', '');
+        return true;
+    }
+    /**
+     * print a colored text but on cli only; after the output the color will be switched to 'cli'
+     * @param string  $sColor      color key; one of head|input|cli|ok|info|warning|error
+     * @param string  $sMessage    string to show
+     * @param string  $sNextColor  color key after printing message; default is 'cli'
+     * Description
+     */
+    public function cliprint($sColor, $sMessage='', $sNextColor='cli'){
+        static $oCli;
+        if (php_sapi_name() !== "cli") {
+            return false;
+        }
+        if(!$oCli){
+            require_once 'cli.class.php';
+            $oCli=new axelhahn\cli();
+        }
+        $oCli->color($sColor, $sMessage);
+        if($sNextColor){
+            $oCli->color($sNextColor);
+        }
         return true;
     }
 

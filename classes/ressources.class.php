@@ -95,13 +95,13 @@ class ressources extends crawler_base {
             return false;
         }
 
-        echo "CLEANUP ressources_rel<br>\n";
+        $this->cliprint('info', "CLEANUP ressources_rel<br>\n");
         $this->oDB->delete('ressources_rel', array(
             'AND' => array(
                 'siteid' => $this->iSiteId,
             ),
         ));
-        echo "CLEANUP ressources<br>\n";
+        $this->cliprint('info', "CLEANUP ressources<br>\n");
         $this->oDB->delete('ressources', array(
             'AND' => array(
                 'siteid' => $this->iSiteId,
@@ -214,27 +214,12 @@ class ressources extends crawler_base {
                 || isset($this->_aUrls2Crawl[$sUrl])
                 );
 
-        if($sUrl=="https://examic.ch/products/measured/"){
-            echo "ressourcen: " . count($this->_aRessourceIDs)."\n"
-                    . "..." . (isset($this->_aRessourceIDs[$sUrl]) ? $this->_aRessourceIDs[$sUrl] : ' -- ') ."\n"
-                    . "urls: ". count($this->_aUrls2Crawl)."\n"
-                    . "..." . (isset($this->_aUrls2Crawl[$sUrl]) ? $this->_aUrls2Crawl[$sUrl] : ' -- ') ."\n"
-                    ;
-            
-            echo "EXISTS " . ($bExists ? "JA" : "Nein");
-            if(!$bExists){
-                print_r($this->_aUrls2Crawl);
-                sleep(10);
-            }
-            sleep(3);
-        }
-
         // if (count($aCurrent) && $aCurrent[0]['id']) {
         if ($bExists) {
             if ($bSkipIfExist) {
-                echo 'SKIP ressource ' . $sUrl . " (exists)\n";
+                $this->cliprint('cli', 'SKIP ressource ' . $sUrl . " (exists)\n");
             } else {
-                echo 'UPDATE existing ressource ' . $sUrl . "\n";
+                $this->cliprint('info', 'UPDATE existing ressource ' . $sUrl . "\n");
                 /*
                   $aCurrent = $this->oDB->select('ressources', array('id'), array(
                   'url' => $aData['url'],
@@ -251,7 +236,7 @@ class ressources extends crawler_base {
                 $this->_checkDbResult($aResult);
             }
         } else {
-            echo 'INSERT new ressource ' . $aData['url'] . "\n";
+            $this->cliprint('info', 'INSERT new ressource ' . $aData['url'] . "\n");
             $aResult = $this->oDB->insert('ressources', $aData);
             $this->_checkDbResult($aResult);
             $this->_aRessourceIDs[$sUrl] = true;
@@ -326,9 +311,9 @@ class ressources extends crawler_base {
      */
     public function addRelRessourcesOfAPage($aData) {
         $iLen = strlen($aData['response']);
-        echo "RESPONSE: $iLen byte - " . $aData['url'] . "<br>\n";
+        $this->cliprint('cli', "RESPONSE: $iLen byte - " . $aData['url'] . "<br>\n");
         if ($iLen) {
-            echo "----- relitems for " . $aData['url'] . "<br>\n";
+            $this->cliprint('cli', "----- relitems for " . $aData['url'] . "<br>\n");
             $oHtml = new analyzerHtml($aData['response'], $aData['url']);
             $this->addPageRelItems($aData, $oHtml->getCss());
             $this->addPageRelItems($aData, $oHtml->getImages());
@@ -358,7 +343,7 @@ class ressources extends crawler_base {
      */
     private function _prepareRelitem($aRelItem, $sSourceId) {
         if (!array_key_exists('url', $aRelItem)) {
-            echo "ERROR: missing url key in " . print_r($aRelItem, 1) . "\n";
+            $this->cliprint('error', "ERROR: missing url key in " . print_r($aRelItem, 1) . "\n");
             return false;
         }
         $aRelItem['siteid'] = $this->iSiteId;
@@ -391,12 +376,11 @@ class ressources extends crawler_base {
         );
         unset($aData['content']);
         unset($aData['response']);
-        $sOut = '';
         // $sOut.=$sSourceId . " - " . $aData['url'] . "\n" . print_r($aRelData); sleep (10);
         if (is_array($aRelData) && count($aRelData)) {
             foreach ($aRelData as $sGroup => $aItems) {
                 if (is_array($aItems) && count($aItems) && array_search($sGroup, $aGroups) !== false) {
-                    $sOut .= "--- addPageRelItems ... [" . $aData['url'] . "] .  found " . count($aItems) . " items of group $sGroup<br>\n";
+                    $this->cliprint('cli', "--- addPageRelItems ... [" . $aData['url'] . "] .  found " . count($aItems) . " items of group $sGroup<br>\n");
                     $aRel = array();
                     foreach ($aItems as $aItem) {
                         if (array_key_exists('_url', $aItem) && $aItem['_url'] !== $aData['url']) {
@@ -421,7 +405,7 @@ class ressources extends crawler_base {
                 }
             }
         }
-        echo $sOut;
+        return true;
     }
 
     /**
@@ -432,7 +416,7 @@ class ressources extends crawler_base {
         if (!$this->iSiteId) {
             return false;
         }
-        echo "INFO: reading pages ...<br>\n";
+        $this->cliprint('info', "INFO: reading pages ...<br>\n");
         $aResult = $this->oDB->select(
                 'pages', '*', array(
             'AND' => array(
@@ -442,7 +426,7 @@ class ressources extends crawler_base {
         );
 
         if (is_array($aResult) && count($aResult)) {
-            echo "INFO: insert " . count($aResult) . " already crawled pages as ressource<br>\n";
+            $this->cliprint('cli', "INFO: insert " . count($aResult) . " already crawled pages as ressource<br>\n");
             // sleep(2);
             $aPages = array();
             foreach ($aResult as $aData) {
@@ -460,14 +444,14 @@ class ressources extends crawler_base {
             $this->oDB->insert('ressources', $aPages);
             $this->_checkDbResult($aResult);
 
-            echo "INFO ... adding relitems of already crawled pages<br>\n";
+            $this->cliprint('cli', "INFO ... adding relitems of already crawled pages<br>\n");
             sleep(2);
             foreach ($aResult as $aData) {
                 unset($aData['id']);
                 $this->addRelRessourcesOfAPage($aData);
             }
         }
-        echo "<br>\n";
+        $this->cliprint('cli', "<br>\n");
     }
 
     // ----------------------------------------------------------------------
@@ -612,7 +596,7 @@ class ressources extends crawler_base {
      * @return boolean
      */
     private function _addUrl2Crawl($sUrl, $bDebug = false) {
-        echo $bDebug ? __FUNCTION__ . "($sUrl)\n" : "";
+        $this->cliprint('cli', $bDebug ? __FUNCTION__ . "($sUrl)\n" : "");
 
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
@@ -620,10 +604,10 @@ class ressources extends crawler_base {
         $sUrl = str_replace(' ', '%20', $sUrl);
 
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            echo $bDebug ? "... don't adding $sUrl - it was added already\n" : "";
+            $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         } else {
-            echo "... adding $sUrl\n";
+            $this->cliprint('cli', "... adding $sUrl\n");
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;
@@ -693,7 +677,7 @@ class ressources extends crawler_base {
         $iId = $this->_getRessourceId($url);
 
         if ($oHttpstatus->isError()) {
-            echo "ERROR: fetching $url FAILED. Status: " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . ".\n";
+            $this->cliprint('error', "ERROR: fetching $url FAILED. Status: " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . ".\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -708,7 +692,7 @@ class ressources extends crawler_base {
         }
         if ($oHttpstatus->isRedirect()) {
             $sNewUrl = $oHttpstatus->getRedirect();
-            echo "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . " -> " . $sNewUrl . ".\n";
+            $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . " -> " . $sNewUrl . ".\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -735,7 +719,7 @@ class ressources extends crawler_base {
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
-            echo "OK: http code " . $info['http_code'] . " $url \n";
+            $this->cliprint('cli', "OK: http code " . $info['http_code'] . " $url \n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -753,21 +737,6 @@ class ressources extends crawler_base {
         // print_r($aRessource);
         $this->updateRessource($aRessource);
 
-        // $this->updateRessource($aRelItem, false);
-        // echo $this->oDB->last()."\n"; 
-        // die("STOP in ".__FUNCTION__);
-
-
-        /*
-          switch ($sType) {
-          case 'text/html':
-          $this->_processHtmlPage($response, $info);
-          break;
-          default:
-          echo "WARNING: handling of MIME [$sType] was not implemented (yet). Cannot proceed with url $url ... ".print_r($info)."\n";
-          return false;
-          }
-         */
         return true;
     }
 
@@ -780,7 +749,7 @@ class ressources extends crawler_base {
         $bPause = false;
         $sMsgId = 'ressources-profile-' . $this->iSiteId;
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            echo "ABORT: the action is still running.\n";
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
 
@@ -818,11 +787,11 @@ class ressources extends crawler_base {
             $this->_aRessourceIDs[$sUrl]=1;
         }
 
-        echo "\n\n----- start http requests<br>\n";
+        $this->cliprint('info', "\n\n----- start http requests<br>\n");
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
-                echo "sleep ..." . $this->iSleep . "s\n";
+                $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
@@ -835,7 +804,6 @@ class ressources extends crawler_base {
 
             $aCurlOpt=$this->_getCurlOptions();
             $aCurlOpt[CURLOPT_NOBODY]=true; // means: fetch the ressponse header only
-            
             $rollingCurl->setOptions($aCurlOpt)
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);
@@ -853,13 +821,14 @@ class ressources extends crawler_base {
             'AND' => array(
                 'siteid' => $this->iSiteId,
             ),));
-        echo "\n"
-        . "Ressource Scan has finished.\n\n"
-        . "STATUS: \n"
-        . $this->_iUrlsCrawled . " urls were crawled\n"
-        . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
-        . "$iUrls ressource urls for profile [" . $this->iSiteId . "] are in the index now (table 'ressources')\n"
-        ;
+        $this->cliprint('info', 
+             "\n"
+            . "Ressource Scan has finished.\n\n"
+            . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
+            . $this->_iUrlsCrawled . " urls were crawled\n"
+            . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
+            . "$iUrls ressource urls are in the index now (table 'ressources')\n"
+        );
     }
 
 }

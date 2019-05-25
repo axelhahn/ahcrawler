@@ -38,7 +38,7 @@ error_reporting(E_ALL);
 // ----------------------------------------------------------------------
 
 $aParamDefs=array(
-    'label' => 'AhCRAWLER :: C L I',
+    'label' => 'AhCrawler :: C L I',
     'description' => 'CLI tool to start crawling and ressource scan',
     'params'=>array(
         'action'=>array(
@@ -109,7 +109,7 @@ echo
      \_,_/_//_/\___/_/  \_,_/|__,__/_/\__/_/    \___/____/___/  v'.$oCrawler->aAbout['version'].'
 
      DOCS: '.$oCrawler->aAbout['urlDocs'].'
-     free software and open source. '.$oCrawler->aAbout['license'].'; release date: '.$oCrawler->aAbout['date'].'
+     Free software and open source. '.$oCrawler->aAbout['license'].'; release date: '.$oCrawler->aAbout['date'].'
      (c) '.$oCrawler->aAbout['author'].'
 
 _______________________________________________________________________________
@@ -271,5 +271,5 @@ foreach ($aProfileIds as $sSiteId){
     }
 }
 $oCli->color('reset');
-echo "\nDONE.";
+echo "\nDONE.\n\n";
 // ----------------------------------------------------------------------

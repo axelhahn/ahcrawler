@@ -301,11 +301,14 @@ class httpstatus {
         if($this->isRedirect()){
             return '3xx redirect';
         }
-        if($this->isError()){
-            return '4xx error';
+        if($this->isClientError()){
+            return '4xx client-error';
         }
         if($this->isServerError()){
             return '5xx server-error';
+        }
+        if($this->isError()){
+            return '4xx + error';
         }
         return 'unknown';
         /*
