@@ -549,7 +549,7 @@ class crawler extends crawler_base{
                 $bFollowLinks ? 'error': 'info', 
                 $bFollowLinks 
                     ? "ERROR: list of starting urls is empty. This seems to be a misconfiguration.\n"
-                    : "WARNING: no list of updatetable urls was found. Maybe you want to index - or here is no error to re-index.\n"
+                    : "INFO: Nothing to do. No updatetable urls with errors were found to reindex them.\n"
             )
             ;
             return false;

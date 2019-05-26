@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.76',
-        'date' => '2019-05-25',
+        'version' => '0.77',
+        'date' => '2019-05-26',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1137,6 +1137,10 @@ class crawler_base {
         return true;
     }
 
+    /**
+     * 
+     * @param type $sMessage
+     */
     public function touchLocking($sMessage) {
         $oStatus = new status();
         $oStatus->updateAction($this->aStatus['messageid'], $sMessage);
@@ -1164,7 +1168,9 @@ class crawler_base {
         return true;
     }
     /**
-     * print a colored text but on cli only; after the output the color will be switched to 'cli'
+     * print a colored text but on cli only; after the output the color will be 
+     * switched to 'cli' or a given color code.
+     * 
      * @param string  $sColor      color key; one of head|input|cli|ok|info|warning|error
      * @param string  $sMessage    string to show
      * @param string  $sNextColor  color key after printing message; default is 'cli'
@@ -1179,7 +1185,9 @@ class crawler_base {
             require_once 'cli.class.php';
             $oCli=new axelhahn\cli();
         }
-        $oCli->color($sColor, $sMessage);
+        if($sMessage){
+            $oCli->color($sColor, $sMessage);
+        }
         if($sNextColor){
             $oCli->color($sNextColor);
         }

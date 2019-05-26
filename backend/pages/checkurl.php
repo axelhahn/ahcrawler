@@ -64,7 +64,9 @@ if ($sQuery){
                             ? $this->_getIcon('project').$aProfiles[$aItem['siteid']]
                             : ''
                         )
-                        . $oRenderer->renderRessourceItemAsLine($aItem, true).'<br>';
+                        // . $oRenderer->renderReportForRessource($aItem, false, false)
+                        . $oRenderer->renderRessourceItemAsLine($aItem, true).'<br>'
+                        ;
             }
         } else {
             $sReturn.='<br><p>'.$this->lB('ressources.itemsnone').'</p>';                    

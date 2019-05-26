@@ -308,7 +308,7 @@ class httpstatus {
             return '5xx server-error';
         }
         if($this->isError()){
-            return '4xx + error';
+            return 'nnn error';
         }
         return 'unknown';
         /*

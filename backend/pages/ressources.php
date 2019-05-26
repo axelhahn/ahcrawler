@@ -100,14 +100,14 @@ if ($iResCount) {
                 $iReportCounter++;
                 $sReport.=''
                         .'<div class="counter">'. $iReportCounter.'</div>'
-                        . '<div style="clear: left;"></div>'
+                        // . '<div style="clear: left;"></div>'
                         //  . '<pre>'.print_r($aRow, 1).'</pre>'
-                        .$oRenderer->renderReportForRessource($aRow)
+                        .$oRenderer->renderReportForRessource($aRow, true, true)
                         ;
             }
             // --- generate table view
             if ($bShowRessourcetable){
-                $aRow['url'] = '<a href="?page=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab.'">'.str_replace('/', '/&shy;', $aRow['url']).'</a>';
+                $aRow['url'] = '<a href="?page=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab.'">'. str_replace('/', '/&shy;', htmlentities($aRow['url'])).'</a>';
 
                 /*
                 $aRow['actions'] = $this->_getButton(array(

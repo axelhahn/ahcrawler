@@ -352,13 +352,13 @@ class backend extends crawler_base {
      * @return string
      */
     private function _getPage() {
-        $sPage = $this->_getRequestParam('page','/^[a-z]*$/');
+        // $sPage = $this->_getRequestParam('page','/^[a-z]*$/');
+        $sPage = $this->_getRequestParam('page');
         if (!$sPage) {
             $aKeys=array_keys($this->_aMenu);
             $sPage = $aKeys[0];
         }
-        $sPage2=preg_replace('/[^a-z]/', '', $sPage);
-        if(!$sPage || $sPage!==$sPage2){
+        if(!file_exists('pages/'.$sPage.'.php')){
             $sPage='error404';
             header("HTTP/1.0 404 Not Found");
         }
@@ -815,13 +815,7 @@ class backend extends crawler_base {
             return $this->_getLoginForm();
         }
         $sPagefile='pages/'.$this->_sPage.'.php';
-        if(!file_exists($sPagefile)){
-            $sPagefile='pages/error404.php';
-            return include $sPagefile;
-            // include $sPagefile;
-        } else {
-            return include $sPagefile;
-        }
+        return include $sPagefile;
     }
 
 

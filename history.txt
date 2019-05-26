@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-05-26: v0.77
+  * backend: fix page header in 404 pages
+  * backend: colored output of ressource items based on their status
+
 2019-05-25: v0.76
   * crawler: fix lang detection (on multiple attributes in html tag)
   * cli: show better warning on index action if there is no updatable url

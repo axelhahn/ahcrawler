@@ -259,6 +259,17 @@ class ressourcesrenderer extends crawler_base {
                 . $sReturn
             . '</table>';
     }
+    
+    /**
+     * get css classes for http status; it returns 2 classnames with
+     * 100 block grouping and the exact code
+     * 
+     * @param integer $iHttpStatus
+     * @return string
+     */
+    protected function _getCssClassesForHttpstatus($iHttpStatus){
+        return 'http-code-'.floor((int)$iHttpStatus/100).'xx http-code-'.(int)$iHttpStatus;
+    }
     /**
      * render a ressource value and add css class
      * 
@@ -281,7 +292,7 @@ class ressourcesrenderer extends crawler_base {
                 // $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
                 $shttpStatusDescr=$value.': '.$this->lB('httpcode.'.$value.'.descr', 'httpcode.???.descr')
                         .($this->lB('httpcode.'.$value.'.todo') ? "&#13;&#13;".$this->lB('httpcode.todo').":&#13;".$this->lB('httpcode.'.$value.'.todo') : '');
-                $sReturn='<span class="http-code http-code-'.floor((int)$value/100).'xx http-code-'.$value.'" '
+                $sReturn='<span class="http-code '.$this->_getCssClassesForHttpstatus($value).'" '
                         . 'title="'.$shttpStatusDescr.'"'
                         . '>'.$sIcon.$value.'</span>';
                 break;
@@ -350,12 +361,12 @@ class ressourcesrenderer extends crawler_base {
     public function hrSize($iValue) {
         $iOut = $iValue;
         foreach (array(
-    $this->lB('hr-size-byte'),
-    $this->lB('hr-size-kb'),
-    $this->lB('hr-size-MB'),
-    $this->lB('hr-size-GB'),
-    $this->lB('hr-size-TB'),
-    $this->lB('hr-size-PB'),
+            $this->lB('hr-size-byte'),
+            $this->lB('hr-size-kb'),
+            $this->lB('hr-size-MB'),
+            $this->lB('hr-size-GB'),
+            $this->lB('hr-size-TB'),
+            $this->lB('hr-size-PB'),
         ) as $sSuffix) {
             if ($iOut < 3000) {
                 return round($iOut, 2) . ' ' . $sSuffix;
@@ -411,7 +422,7 @@ class ressourcesrenderer extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * render redirects in ressource report
+     * render ressource with redirects in ressource report
      * @param array    $aRessourceItem  ressource item
      * @param integer  $iLevel          level
      * @return string
@@ -436,8 +447,8 @@ class ressourcesrenderer extends crawler_base {
                 ;
         }
         $sReturn = ''
-                // . ' #'.$iIdRessource.' '
-                . ($iLevel===2 ? '<br>' : '')
+                // . ' #'.$iIdRessource.' '.$iLevel.' '
+                . ($iLevel===2 ? '<div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
                 . $this->renderRessourceItemAsLine($aRessourceItem, true)
                 // . ' ('.$aRessourceItem['http_code']
                 ;
@@ -449,7 +460,7 @@ class ressourcesrenderer extends crawler_base {
             if ($aOutItem && count($aOutItem)) {
                 $iLevel++;
                 // $sReturn .= str_repeat('&nbsp;&nbsp;&nbsp;', $iLevel++) . '&gt; ' . $this->_renderWithRedirects($aOutItem[0], $iLevel++);
-                $sReturn .= '<div style="margin-left: 1em;">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
+                $sReturn .= '<div class="redirects">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
             }
         }
         return $sReturn;
@@ -478,8 +489,8 @@ class ressourcesrenderer extends crawler_base {
         $aUrllist[$iIdRessource]=true;
         if(count($aResIn)){
             // $sReport.='|   |<br>';
-            $sReturn.='<div class="references"><br>'
-                . $this->lB('ressources.referenced-in').'<br>';
+            $sReturn.='<div class="references">'
+                . '<div class="referenceslabel">'.sprintf($this->lB('ressources.referenced-in'), count($aResIn)).'</div>';
                 foreach ($aResIn as $aInItem){
                     $sReturn.=$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external');
                     if ($aInItem['type']=='external'){
@@ -527,19 +538,21 @@ class ressourcesrenderer extends crawler_base {
      * @param integer  $iRessourceId  id of the ressource
      * @return string
      */
-    public function renderReportForRessource($aRessourceItem, $bShowIncoming=true) {
+    public function renderReportForRessource($aRessourceItem, $bShowIncoming=true, $bShowRedirects=true) {
         $sReturn = '';
         $this->_initRessource();
         
-        $sReturn.=$this->_renderWithRedirects($aRessourceItem);
-        if ($bShowIncoming) {
-            $sReturn.=$this->_renderIncomingWithRedirects($aRessourceItem, true);
-        }
+        $sCssStatus=isset($aRessourceItem['http_code']) ? ' '.$this->_getCssClassesForHttpstatus($aRessourceItem['http_code']) : '';
         
-        return '<div class="divRessourceReport">'
-            . $sReturn
-            . '</div>'
-                ;
+        $sReturn.=$bShowRedirects
+            ? $this->_renderWithRedirects($aRessourceItem)
+            : $this->renderRessourceItemAsLine($aRessourceItem, true)
+        ;
+        if ($bShowIncoming) {
+            $sReturn.=$this->_renderIncomingWithRedirects($aRessourceItem, $bShowIncoming, $bShowRedirects);
+        }
+        // return $sReturn;
+        return '<div class="divRessourceReport '.$sCssStatus.'">'. $sReturn . '</div>';
     }
 
     /**
@@ -600,14 +613,16 @@ class ressourcesrenderer extends crawler_base {
 
         $sReturn.='<div class="divRessource">'
                 . '<div class="divRessourceHead">'
-                . $this->_renderArrayValue('type', $aRessourceItem)
-                . ' '
-                . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
-                . ' '
-                . '<a href="' . $aRessourceItem['url'] . '" target="_blank" title="'.$this->lB('ressources.link-to-url').'">'
-                . $this->_getIcon('link-to-url')
-                . $this->_renderArrayValue('url', $aRessourceItem)
-                . '</a>'
+                    . '<span style="float: right;">'
+                        . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
+                        . $this->_getIcon('link-to-url')
+                        . '</a>'
+                    . '</span>'
+                    . $this->_renderArrayValue('type', $aRessourceItem)
+                    . ' '
+                    . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
+                    . '<br>'
+                    . '<strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
                 . '</div>'
                 . '<div class="divRessourceContent">'
                 . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
@@ -676,16 +691,17 @@ class ressourcesrenderer extends crawler_base {
             return false;
         }
         return '<div class="divRessourceAsLine">'
+                . ' <span style="float: right; font-size: 70%;"><a href="' . $aResourceItem['url'] . '" class="pure-button" style="" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a></span>'
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
                 . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
-                . ' <a href="' . $aResourceItem['url'] . '" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a>'
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 
                         : '')
-                . '</div>'
-                // . print_r($aResourceItem, 1)
+            . '<div style="clear: both;"></div>'
+            . '</div>'
+            // . print_r($aResourceItem, 1)
             ;
     }
 
@@ -871,13 +887,11 @@ class ressourcesrenderer extends crawler_base {
         $aResponsemetadata= json_decode($aItem['header'], 1);
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
+        
         /*
-        $sReturn.='<pre>$aIn = '.print_r($aIn,1).'</pre>';
-        $sReturn.='<pre>$aOut = '.print_r($aOut,1).'</pre>';
-         * 
-         */
-                
-        /*
+         
+        // data mapping into JS to visualize a map
+         
         $aNodes=array();
         $aEdges=array();
         
@@ -913,17 +927,17 @@ class ressourcesrenderer extends crawler_base {
         
         $sReturn.=''
                 . '<table><tr>'
-                . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
-                . $this->lB('ressources.references-in') . '<br>'
-                . '<span class="ressourcecounter"><a href="#listIn">' . count($aIn) . '<br><i class="fa fa-arrow-right"></i></a></span>'
-                . '</td>'
-                . '<td>'
-                . $this->renderRessourceItemAsBox($aItem)
-                . '</td>'
-                . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
-                . $this->lB('ressources.references-out') . '<br>'
-                . '<span class="ressourcecounter"><a href="#listOut">' . count($aOut) . '<br><i class="fa fa-arrow-right"></i></a></span>'
-                . '</td>'
+                    . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
+                        . $this->lB('ressources.references-in') . '<br>'
+                        . '<span class="ressourcecounter"><a href="#listIn">' . count($aIn) . '<br><i class="fa fa-arrow-right"></i></a></span>'
+                    . '</td>'
+                    . '<td>'
+                        . $this->renderRessourceItemAsBox($aItem)
+                    . '</td>'
+                        . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
+                        . $this->lB('ressources.references-out') . '<br>'
+                        . '<span class="ressourcecounter"><a href="#listOut">' . count($aOut) . '<br><i class="fa fa-arrow-right"></i></a></span>'
+                    . '</td>'
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 ;
@@ -934,19 +948,21 @@ class ressourcesrenderer extends crawler_base {
                 . ': <strong>' . count($aIn) . '</strong><br><br>'
         ;
         if (count($aIn)){
+            $iReportCounter=1;
             foreach ($aIn as $aTmpItem) {
-                // $sReturn.=$this->renderRessourceItemAsLine($aTmpItem) . '<br>';
-                $sReturn.=$this->renderReportForRessource($aTmpItem, false);
+                // $sReturn.=$this->renderRessourceItemAsLine($aTmpItem, true) . '<br>';
+                $sReturn.='<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, false, false);
             }
         }
         $sReturn.='<h3 id="listOut">' . sprintf($this->lB('ressources.references-h3-out'), count($aOut)) . '</h3>'
                 . $this->lB('ressources.total') . ': <strong>' . count($aOut) . '</strong><br><br>'
         ;
         if (count($aOut)){
+            $iReportCounter=1;
             foreach ($aOut as $aTmpItem) {
                 // $sReturn.=$oRenderer->renderRessourceItemAsBox($aItem);
                 // $sReturn.=$this->renderRessourceItemAsLine($aItem, true) . '<br>';
-                $sReturn.=$this->renderReportForRessource($aTmpItem, false);
+                $sReturn.='<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, false, true);
             }
         }
         return $sReturn;

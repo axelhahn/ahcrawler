@@ -307,10 +307,19 @@ div.message-error{background: #fcc; color:#955;}
 }
 .ressourcecounter a{font-size: 250%; color:#abc; text-decoration: none;}
 
-.counter{background: rgba(0,0,0,0.05); float: left; margin-top: 1em; padding: 1em;}
-.divRessourceReport{border: 1px solid #eee; padding: 0.5em; background: linear-gradient(#f8f8f8,#fff,#f8f8f8);}
+.counter{background: rgba(0,0,0,0.05); display: inline-block; float: left; padding: 0.2em 0em; text-align: center; width: 3em;}
+.divRessourceReport{border: 0px; border-left: 5px solid #eee; border-top: 1px solid #eee; margin-bottom: 1em; padding: 0em; background: none;}
+.divRessourceReport.http-code--1 {border-color: #d0d0d8;}
+.divRessourceReport.http-code-2xx {border-color: #8b4;}
+.divRessourceReport.http-code-3xx{border-color: #ea5;}
+.divRessourceReport.http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {border-color: #e55;}
+.divRessourceReport.http-code-5xx {border-color: #b6b;}
+
 .pure-table tr:hover, .divRessourceReport:hover{background:#eee;}
-.divRessourceReport .references{border-left: 0px dotted #ccc; margin: 0 0 0 0em; padding-left: 0.5em;}
+.divRessourceReport .redirectslabel{border-left: 3px dotted #888; padding-left: 0.5em; padding-top: 0.5em; font-weight: bold;}
+.divRessourceReport .redirects{margin: 0 0 0 2em; padding-left: 0.5em;}
+.divRessourceReport .referenceslabel{border-left: 3px dotted #888; padding-left: 0.5em; padding-top: 2em; font-weight: bold;}
+.divRessourceReport .references{margin: 0 0 0 2em; padding-left: 0.5em;}
 
 /* --- tables --- */
 .pure-table{background:#fff;}
