@@ -273,7 +273,6 @@ class crawler extends crawler_base{
         if ($bFound && $this->_checkRegexArray('exclude', $sUrl)) {
             $this->cliprint('info', $bDebug ? "... SKIP Found in exclude for $sUrl\n" : "");
             $bFound = false;
-            sleep(2);
         }
         if (!$bFound) {
             $this->cliprint('info', $bDebug ? "... SKIP by config $sUrl (no include for it)\n" : "");

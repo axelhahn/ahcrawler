@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.77',
-        'date' => '2019-05-26',
+        'version' => '0.78',
+        'date' => '2019-05-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1178,7 +1178,7 @@ class crawler_base {
      */
     public function cliprint($sColor, $sMessage='', $sNextColor='cli'){
         static $oCli;
-        if (php_sapi_name() !== "cli") {
+        if (php_sapi_name() !== "cli" && php_sapi_name() !== "cgi-fcgi") {
             return false;
         }
         if(!$oCli){
