@@ -77,7 +77,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             
             $sTableId='tbl-nonhttpsitems';
             $oRessources=new ressources();
-            $aFields = array('id', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
+            $aFields = array('id', 'siteid', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
             $aWhere=array('siteid' => $this->_sTab, 'url[~]'=>'http:%');
             $aWhereNoLink=array_merge($aWhere, array('ressourcetype[!]' => 'link'));
 

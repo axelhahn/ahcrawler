@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.78',
-        'date' => '2019-05-27',
+        'version' => '0.79',
+        'date' => '2019-05-30',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -258,6 +258,24 @@ class crawler_base {
                     array('id_ressource_to', array('id_ressource_to')),
                 ),
             ),
+            /*
+            'stats' => array(
+                'columns'=>array(
+                    // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                    'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'siteid' => 'INTEGER NOT NULL',
+                    'itemid' => 'VARCHAR(16) NOT NULL',
+                    'count' => 'INTEGER NULL',
+                    'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
+                ),
+                'indexes'=>array(
+                    array('siteid', array('siteid')),
+                    array('itemid', array('itemid')),
+                    array('ts', array('url'), ''),
+                ),
+            ),
+             * 
+             */
         ),
     );
     protected $_aCurlopt=array();
@@ -540,6 +558,25 @@ class crawler_base {
             $aReturn[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2_0;
         }
         return $aReturn;
+    }
+    
+    /**
+     * make an http GET request
+     * @param string $sUrl  any url
+     * @return array
+     */
+    private function _getSingleCurlrequest($sUrl) {
+        // $this->cliprint('info', "INFO: respect the ROBOTS.TXT: reading $urlRobots\n");
+        $rollingCurl = new \RollingCurl\RollingCurl();
+        $self = $this;
+        $rollingCurl->setOptions($this->_getCurlOptions())
+            ->get($sUrl)
+            ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
+                $self->addExcludesFromRobotsTxt($request->getResponseText());
+            })
+            ->execute()    
+            ;
+        return true;
     }
 
     /**

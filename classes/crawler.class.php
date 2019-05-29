@@ -151,7 +151,7 @@ class crawler extends crawler_base{
      */
     private function _GetExcludesFromRobotsTxt($sUrl) {
         $urlRobots = preg_replace('#^(http.*//.*)/.*$#U', '$1', $sUrl ) . "/robots.txt";
-        $this->cliprint('info', "ROBOTS.TXT: reading $urlRobots\n");
+        $this->cliprint('info', "INFO: respect the ROBOTS.TXT: reading $urlRobots\n");
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
 

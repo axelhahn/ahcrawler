@@ -685,7 +685,7 @@ class ahsearch extends crawler_base {
                                         $iPreview++;
                                         if ($iPreview > 1) {
                                             $iMore = count($aPreviews) - $iPreview;
-                                            $sDetail.=sprintg($this->lF('searchout.n-more-hits'), $iMore);
+                                            $sDetail.=sprintf($this->lF('searchout.n-more-hits'), $iMore);
                                             break;
                                         }
                                         $sDetail.='...' . $sPreview . '...<br>';

@@ -15,7 +15,7 @@ It is written in PHP and consists of
   - http response header check
   - linkchecker
 
-Runs with PHP 5.5 and higher (up to PHP 7.3); PHP7 is recommended.
+Runs with PHP 7 and higher (up to PHP 7.3) Maybe it runs on PHP 5.5, but PHP7 is recommended.
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
 
 This software has BETA status.
@@ -30,18 +30,18 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 
 ## FEATURES ##
 
-- multiple website support within a single installation
+- Free software and Open Source.
+- you can install it on your location. 
+  - All data stay under your control. 
+  - And you have full control about the age of the checked content. After fixing errors rerun the indexer and immediately get fresh results.
 - multi language support (backend and frontend)
-- install on your location - all data stay under your control
-- you time the run of the spider: make a check based on a full scan of your
-  website (you don't know when a webbot has seen all of you pages the last time)
 - built in web updater
 
 ### spider ###
 - respect exclude rules 
   - robots.txt
-  - meta robots values noindex, no follow
   - x-robots http header
+  - meta robots values noindex, no follow
   - rel=nofollow in links
 - additional rules for include and exclude rules with regex
 - multiple simultanous requests
@@ -62,7 +62,7 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
   - security headers
 - check ssl certificate (if your website uses https)
 - show stored server cookies during crawling and following links
-- show webite errors, warnings based on http status code (a.k.a. linkchecker)
+- show website errors, warnings based on http status code (a.k.a. linkchecker)
   with giving hints what to do at which status code
 - for a given url: display where it is used and where it links to showing
   as cascade on redirects (30x status in repsonse header)
@@ -70,3 +70,4 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
   - http status code
   - mime type
   - place (internal item or extern)
+- multiple website support within a single installation
