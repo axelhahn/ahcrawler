@@ -122,6 +122,7 @@ if ($iResCount) {
                 $aRow['http_code'] = $oRenderer->renderArrayValue('http_code', $aRow);
 
                 unset($aRow['id']);
+                unset($aRow['siteid']);
                 $aTable[] = $aRow;
             }
 

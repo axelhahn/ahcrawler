@@ -265,10 +265,12 @@ class ressourcesrenderer extends crawler_base {
      * 100 block grouping and the exact code
      * 
      * @param integer $iHttpStatus
+     * @param boolean $bOnlyFirst   optional flag: use grouped code "http-code-Nxx" without full statuscode; default: false (=show http code as number)
      * @return string
      */
-    protected function _getCssClassesForHttpstatus($iHttpStatus){
-        return 'http-code-'.floor((int)$iHttpStatus/100).'xx http-code-'.(int)$iHttpStatus;
+    protected function _getCssClassesForHttpstatus($iHttpStatus, $bOnlyFirst=false){
+        return 'http-code-'.floor((int)$iHttpStatus/100).'xx'.
+                (!$bOnlyFirst ? ' http-code-'.(int)$iHttpStatus : '');
     }
     /**
      * render a ressource value and add css class
@@ -446,14 +448,19 @@ class ressourcesrenderer extends crawler_base {
                 . '</span>'
                 ;
         }
+        $oStatus=new httpstatus($aRessourceItem['http_code']);
+        $bIsRedirect=($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
         $sReturn = ''
                 // . ' #'.$iIdRessource.' '.$iLevel.' '
-                . ($iLevel===2 ? '<div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
-                . $this->renderRessourceItemAsLine($aRessourceItem, true)
+                . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
+                    . ($iLevel>2 ? '<div class="redirects">' : '')
+                    . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
+                    . ($iLevel===2 ? '</div>' : '')
+                . ($iLevel>2 ? '</div>' : '')
                 // . ' ('.$aRessourceItem['http_code']
                 ;
         $aUrllist[$iIdRessource]=true;
-        if ($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400) {
+        if ($bIsRedirect) {
             // echo " scan sub elements of # $iIdRessource ...<br>";
             $aOutItem = $this->oRes->getRessourceDetailsOutgoing($iIdRessource);
             // $sReturn .= count($aOutItem) .  " sub elements ... recursion with <pre>" . print_r($aOutItem, 1) . "</pre><br>";
@@ -535,7 +542,9 @@ class ressourcesrenderer extends crawler_base {
     /**
      * get html code for report item with redirects and and its references
      * 
-     * @param integer  $iRessourceId  id of the ressource
+     * @param integer  $iRessourceId    id of the ressource
+     * @param boolean  $bShowIncoming   optional flag: show ressources that use the current ressource? default: true (=yes)
+     * @param boolean  $bShowRedirects  optional flag: show redrirects? default: true (=yes)
      * @return string
      */
     public function renderReportForRessource($aRessourceItem, $bShowIncoming=true, $bShowRedirects=true) {
@@ -681,24 +690,28 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * render a ressource as a line (for reporting)
-     * @param array    $aResourceItem
-     * @param boolean  $bShowHttpstatus
+     * @param array    $aResourceItem    array of ressurce item
+     * @param boolean  $bShowHttpstatus  flasg: show http code? default: false (=no)
+     * @param boolean  $bUseLast         add css class "last" to highlight it? default; flase (=no)
      * @return boolean
      */
-    public function renderRessourceItemAsLine($aResourceItem, $bShowHttpstatus = false) {
+    public function renderRessourceItemAsLine($aResourceItem, $bShowHttpstatus = false, $bUseLast=false) {
         $sReturn = '';
         if (!is_array($aResourceItem) || !count($aResourceItem) || !array_key_exists('ressourcetype', $aResourceItem)) {
             return false;
         }
-        return '<div class="divRessourceAsLine">'
+        return '<div class="divRessourceAsLine'.($bUseLast ? ' last last-'.$this->_getCssClassesForHttpstatus($aResourceItem['http_code'], true) : '').'">'
                 . ' <span style="float: right; font-size: 70%;"><a href="' . $aResourceItem['url'] . '" class="pure-button" style="" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a></span>'
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
                 . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
+                /*
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 
                         : '')
+                 * 
+                 */
             . '<div style="clear: both;"></div>'
             . '</div>'
             // . print_r($aResourceItem, 1)

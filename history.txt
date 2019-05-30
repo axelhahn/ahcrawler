@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-05-30: v0.80
+  * backend: link and ressource details: highligt last target
+
 2019-05-30: v0.79
   * backend: fix output for non ssl items 
   * search frontend: fix output of search results

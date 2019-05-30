@@ -259,6 +259,11 @@ div.message-error{background: #fcc; color:#955;}
 .http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {background:#e55;}
 .http-code-5xx {background:#b6b;}
 
+.last-http-code-2xx {background:#dec;}
+.last-http-code-3xx{background:#fec;}
+.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#fdd;}
+.last-http-code-5xx {background:#ece;}
+
 /* --- types --- */
 .type-external{color:#0066cc;}
 .type-internal{color:#009999;}
@@ -318,7 +323,7 @@ div.message-error{background: #fcc; color:#955;}
 .pure-table tr:hover, .divRessourceReport:hover{background:#eee;}
 .divRessourceReport .redirectslabel{border-left: 3px dotted #888; padding-left: 0.5em; padding-top: 0.5em; font-weight: bold;}
 .divRessourceReport .redirects{margin: 0 0 0 2em; padding-left: 0.5em;}
-.divRessourceReport .referenceslabel{border-left: 3px dotted #888; padding-left: 0.5em; padding-top: 2em; font-weight: bold;}
+.divRessourceReport .referenceslabel{border-left: 3px dotted #888; padding-left: 0.5em; padding-top: 1em; font-weight: bold;}
 .divRessourceReport .references{margin: 0 0 0 2em; padding-left: 0.5em;}
 
 /* --- tables --- */

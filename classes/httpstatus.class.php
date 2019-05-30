@@ -279,7 +279,7 @@ class httpstatus {
     }
     
     /**
-     * get textinfos of a status
+     * get textinfos of a status; can be used as css class
      * @return array
      */
     public function getStatus(){
