@@ -4,7 +4,6 @@
  */
 $sReturn='';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-$sReturn.='<br>';
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 

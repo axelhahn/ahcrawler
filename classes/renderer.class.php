@@ -130,6 +130,7 @@ class ressourcesrenderer extends crawler_base {
         
         'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
         'ico.redirect' => 'fas fa-share',
+        'ico.filter'=>'fas fa-filter',
     );
     public $oHtml=false;
 
@@ -160,7 +161,7 @@ class ressourcesrenderer extends crawler_base {
             $this->oRes = new ressources();
         }
         if (!$this->oCrawler) {
-            $this->oCrawler = new crawler($iSiteId);
+            $this->oCrawler = new crawler();
         }
         if ($iSiteId) {
             $this->oRes->setSiteId($iSiteId);
@@ -890,6 +891,82 @@ class ressourcesrenderer extends crawler_base {
     }
     
     /**
+     * get html code for a list of ressource items and an added http-status group filter 
+     * used in renderRessourceItemFull()
+     * 
+     * @staticvar int $iListcounter
+     * @param array    $aItemlist       array of ressource items to display
+     * @param boolean  $bShowIncoming   optional flag: show ressources that use the current ressource? default: true (=yes)
+     * @param boolean  $bShowRedirects  optional flag: show redrirects? default: true (=yes)
+     * @return string
+     */
+    protected function _renderRessourceListWithGroups($aItemlist, $bShowIncoming=true, $bShowRedirects=true){
+        $sReturn=$this->lB('ressources.total'). ': <strong>' . count($aItemlist) . '</strong>';
+        if(!count($aItemlist)){
+            return $sReturn;
+        }
+        static $iListcounter;
+        if(!isset($iListcounter)){
+            $iListcounter=0;
+        }
+        $iListcounter++;
+        
+        $oHttp=new httpstatus();
+        $sDivClass='resitemout'.$iListcounter;
+        $iReportCounter=1;
+        $sFilter='';
+        $sOut='';
+        $aHttpStatus=array();
+        $aTypes=array();
+        foreach ($aItemlist as $aTmpItem) {
+            $oHttp->setHttpcode($aTmpItem['http_code']);
+            $sHttpStatusgroup=$oHttp->getStatus();
+            $sRestype=$aTmpItem['ressourcetype'];
+            $aHttpStatus[$sHttpStatusgroup]=(isset($aHttpStatus[$sHttpStatusgroup])) ? $aHttpStatus[$sHttpStatusgroup]+1 : 1;
+            $aTypes[$sRestype]=(isset($aTypes[$sRestype])) ? $aTypes[$sRestype]+1 : 1;
+
+            $sOut.='<div class="'.$sDivClass.' group-'.$sHttpStatusgroup.' restype-'.$sRestype.'">'
+                    . '<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, $bShowIncoming, $bShowRedirects)
+                    . '</div>'
+                    ;
+        }
+        if(count($aHttpStatus)>0){
+            ksort($aHttpStatus);
+            foreach($aHttpStatus as $sHttpStatusgroup=>$iStatusCount){
+                $sCss='http-code-'.implode(' http-code-',explode('-', $sHttpStatusgroup));
+                $sFilter.=''
+                        . '<a href="#" class="pure-button '.$sCss.'" '
+                        . 'onclick="$(this).toggleClass(\''.$sCss.'\'); $(\'div.'.$sDivClass.'.group-'.$sHttpStatusgroup.'\').toggle(); return false;"'
+                        . '><strong>'.$iStatusCount . '</strong> x ' .$this->lB('http-status-group-'.$sHttpStatusgroup).'</a>'
+                        . ' '
+                        ;
+            }
+            /*
+             * only useful with a tab control
+             * 
+            $sFilter.=$sFilter ? ' ... ' : '';
+            foreach($aTypes as $sTypegroup=>$iStatusCount){
+                $sCss='restype-'.implode(' restype-',explode('-', $sTypegroup));
+                $sFilter.=''
+                        . '<a href="#" class="pure-button button-secondary '.$sCss.'" '
+                        . 'onclick="$(this).toggleClass(\'button-secondary\'); $(\'div.'.$sDivClass.'.restype-'.$sTypegroup.'\').toggle(); return false;"'
+                        . '><strong>'.$iStatusCount . '</strong> x ' .$sTypegroup.'</a>'
+                        . ' '
+                        ;
+            }
+             * 
+             */
+            $sFilter='<div class="actionbox">'
+                . $this->_getIcon('ico.filter')
+                . $this->lB('ressources.filter').'<br>'
+                . $this->lB('ressources.filter-httpgroups').'<br>'
+                .'<br>'
+                .$sFilter
+                .'</div><br>';
+        }
+        return $sReturn.'<br><br>'.$sFilter.$sOut;
+    }    
+    /**
      * get html code for full detail of a ressource with properties, in and outs
      * @param array $aItem  ressource item
      * @return string
@@ -937,7 +1014,9 @@ class ressourcesrenderer extends crawler_base {
         }
         */
 
-        
+        // --------------------------------------------------
+        // table on top
+        // --------------------------------------------------
         $sReturn.=''
                 . '<table><tr>'
                     . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
@@ -956,28 +1035,18 @@ class ressourcesrenderer extends crawler_base {
                 ;
         
 
+        // --------------------------------------------------
+        // wher it is linked
+        // --------------------------------------------------
         $sReturn.='<h3 id="listIn">' . sprintf($this->lB('ressources.references-h3-in'), count($aIn)) . '</h3>'
-                . $this->lB('ressources.total')
-                . ': <strong>' . count($aIn) . '</strong><br><br>'
+                . $this->_renderRessourceListWithGroups($aIn, false, false)
         ;
-        if (count($aIn)){
-            $iReportCounter=1;
-            foreach ($aIn as $aTmpItem) {
-                // $sReturn.=$this->renderRessourceItemAsLine($aTmpItem, true) . '<br>';
-                $sReturn.='<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, false, false);
-            }
-        }
+        // --------------------------------------------------
+        // outgoing links / redirects
+        // --------------------------------------------------
         $sReturn.='<h3 id="listOut">' . sprintf($this->lB('ressources.references-h3-out'), count($aOut)) . '</h3>'
-                . $this->lB('ressources.total') . ': <strong>' . count($aOut) . '</strong><br><br>'
+                . $this->_renderRessourceListWithGroups($aOut,false, true)
         ;
-        if (count($aOut)){
-            $iReportCounter=1;
-            foreach ($aOut as $aTmpItem) {
-                // $sReturn.=$oRenderer->renderRessourceItemAsBox($aItem);
-                // $sReturn.=$this->renderRessourceItemAsLine($aItem, true) . '<br>';
-                $sReturn.='<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, false, true);
-            }
-        }
         return $sReturn;
     }
 
@@ -1021,7 +1090,7 @@ class ressourcesrenderer extends crawler_base {
      */
     public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
         return '<li>'
-            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#" onclick="return false;').'" class="tile '.$sType.' scroll-link">'
+            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#" onclick="return false;').'" class="tile '.$sType.' scroll-link '.($sTargetUrl ? '' : 'nonclickable').'">'
                 . $sIntro
                 . (strstr($sIntro, '<br>') ? '' : '<br>')
                 . '<br>'

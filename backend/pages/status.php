@@ -201,8 +201,8 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                             }
                         }
                         $aTable[] = array(
-                            'search.#' => $iCounter,
-                            'search.summary' => 
+                            'id' => $iCounter,
+                            'summary' => 
                                     $this->_getSimpleHtmlTable(array(
                                     array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
                                     array('url', $aItem['url']),
@@ -213,8 +213,8 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                                 ))
                             ,
                             // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
-                            'search.ranking' => '<strong>'.$iRanking . '</strong><br><br>' . $sResult . '</span>',
-                            $this->_getButton(array(
+                            'ranking' => '<strong>'.$iRanking . '</strong><br><br>' . $sResult . '</span>',
+                            'actions' => $this->_getButton(array(
                                 'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$aItem['id'],
                                 'class' => 'button-secondary',
                                 'popup' => false,
@@ -229,7 +229,7 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 $sReturn.= $sQuery ? $this->_getMessageBox($this->lB('status.noresult'), 'warning') : '';
             }
             $sReturn.=''
-                . $this->_getHtmlTable($aTable)
+                . $this->_getHtmlTable($aTable,'db-search.')
                 // . (($iResults > 3) ? '<br>' . $sForm : '')
                 // . '<br>'
                 /*

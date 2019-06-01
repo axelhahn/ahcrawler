@@ -290,25 +290,25 @@ class httpstatus {
             return 'todo';
         }
         if($this->isWrongRequest()){
-            return 'todo';
+            return '0-noConnect';
         }
         if($this->isProcessing()){
-            return '1xx processing';
+            return '1xx-processing';
         }
         if($this->isOperationOK()){
-            return '2xx ok';
+            return '2xx-ok';
         }
         if($this->isRedirect()){
-            return '3xx redirect';
+            return '3xx-redirect';
         }
         if($this->isClientError()){
-            return '4xx client-error';
+            return '4xx-client-error';
         }
         if($this->isServerError()){
-            return '5xx server-error';
+            return '5xx-server-error';
         }
         if($this->isError()){
-            return 'nnn error';
+            return 'other-error';
         }
         return 'unknown';
         /*

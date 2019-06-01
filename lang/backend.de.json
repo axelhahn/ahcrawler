@@ -161,6 +161,11 @@
     "db-ressources._dlspeed": "Geschwindigkeit",
     "db-ressources._size_download": "Gr&ouml;sse",
     "db-ressources._meta_total_time": "Transferdauer [s]",
+    
+    "db-search.id": "Id",
+    "db-search.summary": "Zusammenfassung",
+    "db-search.ranking": "Ranking",
+    "db-search.actions": "Aktionen",
 
     "hr-size-byte":"Byte",
     "hr-size-kb":"kB",
@@ -362,6 +367,7 @@
     "ressources.ressourceitemfull" : "Details zu einer Ressource",
     "ressources.status": "Stand",
     "ressources.filter": "Filter",
+    "ressources.filter-httpgroups": "Es wurden Links mit nachfolgendem Status gefunden. Mit Klick auf eine Gruppe kannst du alle entsprechenden Links aus- und wieder einblenden.",
     "ressources.link-is-external-redirect": "Redirect",
     "ressources.link-to-details": "Details zu dieser Url",
     "ressources.link-to-url": "Url &ouml;ffnen",
@@ -531,6 +537,16 @@
     "linkchecker.ok-none-was-found": "Sehr gut: kein Eintrag gefunden!",
     "linkchecker.loop-detected": "Abbruch: Loop zu dieser URL gefunden:<br>%s",
     "linkchecker.legend": "Legende zu den Http-Statuscodes",
+    
+    "http-status-group-todo": "Offene Requests",
+    "http-status-group-0-noConnect": "Keine Verbindung",
+    "http-status-group-0-noConnect-hint": "Keine Verbindung zum Zielserver.",
+    "http-status-group-1xx-processing": "In Arbeit",
+    "http-status-group-2xx-ok": "OK",
+    "http-status-group-3xx-redirect": "Weiterleitung",
+    "http-status-group-4xx-client-error": "Http-Client-Fehler",
+    "http-status-group-5xx-server-error": "Http-Server-Fehler",
+    "http-status-group-other-error": "andere Fehler",
     
     "httpstatuscode.headline": "Tabelle der Http Statuscodes",
     "httpstatuscode.infos": "Nachfolgende Tabelle listet die Http Statuscodes auf sowie in h&auml;ufigen Konstellationen die Handlungsanweisungen f&uuml;r Webmaster, um jene zu beheben.",

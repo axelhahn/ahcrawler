@@ -163,6 +163,11 @@
     "db-ressources._size_download": "Size",
     "db-ressources._meta_total_time": "Total time of transfer [s]",
     
+    "db-search.id": "Id",
+    "db-search.summary": "Summary",
+    "db-search.ranking": "Ranking",
+    "db-search.actions": "Actions",
+
     "hr-size-byte":"byte",
     "hr-size-kb":"kB",
     "hr-size-MB":"MB",
@@ -365,6 +370,7 @@
     "ressources.ressourceitemfull": "Details of a ressource",
     "ressources.status": "Status",
     "ressources.filter": "Filter",
+    "ressources.filter-httpgroups": "Links with shown status were found. Click on a group to hide and show all corresponding links.",
     "ressources.link-is-external-redirect": "redirect only",
     "ressources.link-to-details": "click to see details for this url",
     "ressources.link-to-url": "open url",
@@ -535,6 +541,16 @@
     "linkchecker.ok-none-was-found": "Excellent, no entry was found!",
     "linkchecker.loop-detected": "Abort: A loop to this url was found:<br>%s",
     "linkchecker.legend": "Legend of the status codes",
+
+    "http-status-group-todo": "Todo",
+    "http-status-group-0-noConnect": "No connect",
+    "http-status-group-0-noConnect-hint": "Keine Verbindung zum Zielserver.",
+    "http-status-group-1xx-processing": "Processing",
+    "http-status-group-2xx-ok": "OK",
+    "http-status-group-3xx-redirect": "Redirect",
+    "http-status-group-4xx-client-error": "Http client error",
+    "http-status-group-5xx-server-error": "Http server error",
+    "http-status-group-other-error": "other error",
 
     "httpstatuscode.headline": "Table with Http status codes",
     "httpstatuscode.infos": "The following table lists Http status codes and often the required actions for webmasters to repair it.",

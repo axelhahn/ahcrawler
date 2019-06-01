@@ -45,17 +45,18 @@ if (count($aData)){
                 . $this->lB('nav.ressources.label') 
                 .'</a>'
             .'<br><br><hr><br>'
+            .'<div class="actionbox">'
 
             .'<form action="" method="get" class="pure-form">'
             . '<input type="hidden" name="page" value="ressourcedetail">'
             . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
             // . '<label>' . $this->lB('searches.url') . '</label> '
-            . '<label>' . $this->lB('ressources.searchressourceid') . '</label>'
+            . '<label>' . $this->lB('ressources.searchressourceid') . '</label> '
             . '<input type="text" name="id" value="' . $iRessourceId . '" required="required" size="5" placeholder="ID">'
             . ' '
             // . $sSelect
             . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $this->lB('button.search') . '</button>'
-            . '</form><br><br>';
+            . '</form></div><br>';
     if ($iRessourceId){
         $sReturn.='<p>'.$this->lB('ressources.itemsnone').'</p>';
     }

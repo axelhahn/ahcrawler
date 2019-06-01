@@ -101,6 +101,9 @@ class backend extends crawler_base {
             'logoff'=>'fas fa-power-off', 
         ),
         'cols'=>array(
+            'id'=>'fas fa-hashtag', 
+            'summary'=>'far fa-comment', 
+            'ranking'=>'fas fa-chart-bar', 
             'url'=>'fas fa-link', 
             'title'=>'fas fa-chevron-right', 
             'description'=>'fas fa-chevron-right', 
@@ -375,13 +378,14 @@ class backend extends crawler_base {
      * @return string|integer
      */
     private function _getTab($aTabs=false) {
-        $sAdd = $this->_getRequestParam('tab', '/add/');
-        $sAll = $this->_getRequestParam('tab', '/all/');
-        $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('tab', false, 'int');
+        $sAdd = $this->_getRequestParam('siteid', '/add/');
+        $sAll = $this->_getRequestParam('siteid', '/all/');
+        $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
             setcookie("tab", $this->_sTab, time() + 3600);
         }
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
+            // header('location: '.$_SERVER['REQUEST_URI'].'&siteid='.$_COOKIE['tab']);
             $this->_sTab = $_COOKIE['tab'];
         }
 
@@ -505,7 +509,7 @@ class backend extends crawler_base {
                     . '>' . $this->_getIcon('button.up') . '</a></li>';            
         }
         foreach ($aTabs as $sId => $sLabel) {
-            $sUrl = '?page=' . $this->_sPage . '&amp;tab=' . $sId;
+            $sUrl = '?page=' . $this->_sPage . '&amp;siteid=' . $sId;
             $sClass = ($this->_sTab == $sId) ? ' pure-menu-link-active' : '';
             $sReturn.='<li class="pure-menu-item">'
                     . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'

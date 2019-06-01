@@ -181,8 +181,8 @@ ul.tiles a.tile{
     background: radial-gradient(#def,#bcd);
     border: 1px solid #ddd;
     border: 2px outset rgba(0,0,0,0.1); 
-    border-radius: 0.3em;
-    box-shadow: 0.3em 0.3em 1em #ccc;
+    border-radius: 0.5em;
+    box-shadow: 1px 1px 5px #fff, 0.2em 0.2em 1em #aaa;
     color:#789;
     display: block;
     float: left;
@@ -193,12 +193,17 @@ ul.tiles a.tile{
     text-align: center;
     text-decoration: none;
 }
+ul.tiles a.tile.nonclickable,
+ul.tiles a.tile.nonclickable:hover{box-shadow: none;
+    border: 2px solid rgba(255,255,255,0.4); 
+}
+
 ul.tiles a.tile strong{
     text-shadow: 0 0 0.1em #fff;
     font-size: 200%;
 }
 ul.tiles a.tile:hover{
-    box-shadow: 0 0 1em #ccc;
+    box-shadow: 0 0 5px #fff, 0 0 1em #aaa;
 }
 
 
