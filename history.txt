@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-06-03: v0.82
+  * backend: continued: make visible if a tile is clickable or not
+
 2019-06-02: v0.81
   * backend: make visible if a tile is clickable or not
   * backend: ressoure detail page got a group based filter on outgoing links

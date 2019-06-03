@@ -615,11 +615,11 @@
     
     "httpcode.todo":"Was zu tun ist",
     "httpcode.-1.label":"noch offen",
-    "httpcode.-1.descr":"Die URLs wurden als zu Verarbeiten erfasst, sind aber noch nicht analysiert worden. Dies ist nur ein interner Code.",
+    "httpcode.-1.descr":"Die URLs wurden als zu Verarbeiten erfasst, sind aber noch nicht analysiert worden.",
     "httpcode.-1.todo":"Bitte warten Sie, bis die Abarbeitung erledigt ist. Gibt es in einigen Sekunden keinen Fortschritt, muss der Ressourcen-Index aktualisiert oder neu aufgebaut werden (Cronjob).",
 
     "httpcode.0.label":"nicht erreicht",
-    "httpcode.0.descr":"Das Ziel wurde nicht erreicht. Dies ist nur ein interner Code.",
+    "httpcode.0.descr":"Das Ziel wurde nicht erreicht. Dies ist kein offizieller Http Standard, sondern nur ein interner Code.",
     "httpcode.0.todo":"Pr&uuml;fen Sie, ob der Servername ist g&uuml;ltig ist. Es kann aber auch verschiedene andere Gr&uuml;nde haben: Netzwerk-Probleme, der Servername wird nicht im DNS gefunden, der Webservice funktioniert derzeit nicht, Port geschlossen, Problem mit dem SSL-Zertifikat, ...",
 
     "httpcode.100.label":"Information: Continue.",

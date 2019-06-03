@@ -195,7 +195,8 @@ ul.tiles a.tile{
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
-    border: 2px solid rgba(255,255,255,0.4); 
+    border: 2px solid rgba(0,0,0,0.1); 
+    cursor: default;
 }
 
 ul.tiles a.tile strong{

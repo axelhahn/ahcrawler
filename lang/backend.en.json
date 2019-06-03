@@ -619,11 +619,11 @@
 
     "httpcode.todo":"What to do",
     "httpcode.-1.label":"todo",
-    "httpcode.-1.descr":"The urls were detected and added but not analyzed yet. This is an internal code only.",
+    "httpcode.-1.descr":"The urls were detected and added but not analyzed yet.",
     "httpcode.-1.todo":"Please wait. If there is no progress in a few seonnds then the ressource index must be updated or reindexed (by cronjob)",
 
     "httpcode.0.label": "not reached",
-    "httpcode.0.descr": "The target was not reached. This is an internal code only.",
+    "httpcode.0.descr": "The target was not reached. This is not an official Http standard code - it is just an internal one.",
     "httpcode.0.todo": "Check if the server name is valid. However, it can also have various other reasons: Network problems, server name not found in DNS, web service currently not working, port closed, problem with SSL,...",
 
     "httpcode.100.label": "Information: Continue.",

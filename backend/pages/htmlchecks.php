@@ -102,9 +102,9 @@ if ($iCountShortTitles) {
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoTitle ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-title'), $iCountNoTitle,(floor($iCountNoTitle/$iRessourcesCount*1000)/10).'%', '#tblshorttitle') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-title'), $iCountNoTitle,(floor($iCountNoTitle/$iRessourcesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles-$iCountNoTitle, (floor(($iCountShortTitles-$iCountNoTitle)/$iRessourcesCount*1000)/10).'%', '#tblshorttitle')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles-$iCountNoTitle, (floor(($iCountShortTitles-$iCountNoTitle)/$iRessourcesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
@@ -129,9 +129,9 @@ if ($iCountShortDescr) {
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoDescr ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-description'), $iCountNoDescr,(floor($iCountNoDescr/$iRessourcesCount*1000)/10).'%', '#tblshortdescription') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-description'), $iCountNoDescr,(floor($iCountNoDescr/$iRessourcesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr-$iCountNoDescr, (floor(($iCountShortDescr-$iCountNoDescr)/$iRessourcesCount*1000)/10).'%', '#tblshortdescription')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr-$iCountNoDescr, (floor(($iCountShortDescr-$iCountNoDescr)/$iRessourcesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
@@ -172,9 +172,9 @@ if ($iCountShortKeywords) {
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoKeywords ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-keywords'), $iCountNoKeywords,(floor($iCountNoKeywords/$iRessourcesCount*1000)/10).'%', '#tblshortkeywords') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-keywords'), $iCountNoKeywords,(floor($iCountNoKeywords/$iRessourcesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords-$iCountNoKeywords, (floor(($iCountShortKeywords-$iCountNoKeywords)/$iRessourcesCount*1000)/10).'%', '#tblshortkeywords')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords-$iCountNoKeywords, (floor(($iCountShortKeywords-$iCountNoKeywords)/$iRessourcesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
