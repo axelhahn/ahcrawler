@@ -193,9 +193,15 @@ if ($iCountShortKeywords) {
 // ----------------------------------------------------------------------
 if ($iCountLongload) {
     $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
+        . '<div style="float: right; margin: 0 0 1em 1em;">'
+            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
+        . '</div>'
+        .$oRenderer->renderTileBar(
+                $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iRessourcesCount*1000)/10).'%', '')
+                , '')
+        .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
-        .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
         .$this->_getHtmlchecksTable('select title, time, size, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and time>'.$iMaxLoadtime.'
@@ -209,8 +215,14 @@ if ($iCountLongload) {
 // ----------------------------------------------------------------------
 if ($iCountLargePages) {
     $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
+        . '<div style="float: right; margin: 0 0 1em 1em;">'
+            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
+        . '</div>'
+        .$oRenderer->renderTileBar(
+                $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '')
+                , '')
+        .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
-        .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
         .$this->_getHtmlchecksTable('select title, size, time, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
@@ -228,7 +240,7 @@ $sReturn.=''
     . $oRenderer->renderInitDatatable('#tableShortTitles',    array('aaSorting'=>array(array(1, 'asc'))))
     . $oRenderer->renderInitDatatable('#tableShortDescr',     array('aaSorting'=>array(array(1, 'asc'))))
     . $oRenderer->renderInitDatatable('#tableShortKeywords',  array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableLongLoad',       array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableLargePages',     array('aaSorting'=>array(array(1, 'asc'))))
+    . $oRenderer->renderInitDatatable('#tableLongLoad',       array('aaSorting'=>array(array(1, 'desc'))))
+    . $oRenderer->renderInitDatatable('#tableLargePages',     array('aaSorting'=>array(array(1, 'desc'))))
     ;
 return $sReturn;

@@ -90,7 +90,7 @@ if ($iRessourcesCount){
                 $sTileClass, 
                 $this->lB('linkchecker.found-http-'.$sSection), 
                 $aBoxes[$sSection]['total'],
-                '',
+                (floor($aBoxes[$sSection]['total']/$iRessourcesCount*1000)/10).'%',
                 ($aBoxes[$sSection]['total'] ? '#h3-'.$sSection : '')
         );
         

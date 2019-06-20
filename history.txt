@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-06-20: v0.83
+  * backend: linkchecker - tiles on top: show percent values
+  * backend: htmlchecks - harmonize sections long loading and large pages + flip sortorder
+
 2019-06-03: v0.82
   * backend: continued: make visible if a tile is clickable or not
 
