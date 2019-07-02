@@ -77,7 +77,7 @@ if (count($aLastSearches)) {
             $aRow[$key] = htmlentities($value);
         }
         $aRow['actions'] = $this->_getButton(array(
-            'href' => '?page=status&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir . '&tab=' . $this->_sTab,
+            'href' => '?page=status&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir . '&siteid=' . $this->_sTab,
             'popup' => false,
             'class' => 'button-secondary',
             'label' => 'button.search'

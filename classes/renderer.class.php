@@ -522,7 +522,7 @@ class ressourcesrenderer extends crawler_base {
                 . $_SERVER["SCRIPT_NAME"]
                     // tab=all + siteid=all
                     // TODO to switch to siteid later
-                . '?page=checkurl&tab=all&siteid=all&redirect=1&query='
+                . '?page=checkurl&siteid=all&redirect=1&query='
                 ;
         return 
             '<h3>'.$this->lB('bookmarklet.head').'</h3>'
@@ -706,7 +706,7 @@ class ressourcesrenderer extends crawler_base {
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
-                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&tab='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
+                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
                 /*
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 

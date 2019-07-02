@@ -54,7 +54,7 @@ if(!$this->_configExists() ){
             // . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), 0, '', '')
             . $this->lB('home.noprojectyet').'<br><br>'
             . $oRenderer->oHtml->getTag('a',array(
-                        'href'=>'?page=profiles&tab=add',
+                        'href'=>'?page=profiles&siteid=add',
                         'class'=>'pure-button button-secondary',
                         'title' => $this->lB('nav.profiles.hint'),
                         'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
@@ -94,7 +94,7 @@ if(!$this->_configExists() ){
                 '<strong>'.$this->aProfileSaved['label'].'</strong><br>'
                     . $this->aProfileSaved['description'].'<br><br>'
                     . $this->_getButton(array(
-                                'href'=>'?page=profiles&tab='.$iProfileId,
+                                'href'=>'?page=profiles&siteid='.$iProfileId,
                                 'popup'=>false,
                                 'class'=>'button-secondary',
                                 'label'=>'button.edit',
@@ -106,7 +106,7 @@ if(!$this->_configExists() ){
                             . $this->getLastTsRecord('pages', array('siteid'=>$iProfileId)).'<br>'
                             . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('pages', array('siteid'=>$iProfileId))))).'<br>'
                             . $this->_getButton(array(
-                                'href'=>'?page=status&tab='.$iProfileId,
+                                'href'=>'?page=status&siteid='.$iProfileId,
                                 'popup'=>false,
                                 'class'=>'button-secondary',
                                 ))
@@ -120,7 +120,7 @@ if(!$this->_configExists() ){
                             . $this->getLastTsRecord('ressources', array('siteid'=>$iProfileId)).'<br>'
                             . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('ressources', array('siteid'=>$iProfileId))))).'<br>'
                             . $this->_getButton(array(
-                                'href'=>'?page=ressources&tab='.$iProfileId,
+                                'href'=>'?page=ressources&siteid='.$iProfileId,
                                 'popup'=>false,
                                 'class'=>'button-secondary',
                                 ))
@@ -134,7 +134,7 @@ if(!$this->_configExists() ){
                             .$this->getLastTsRecord('searches', array('siteid'=>$iProfileId)).'<br>'
                             . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('searches', array('siteid'=>$iProfileId))))).'<br>'
                             . $this->_getButton(array(
-                                'href'=>'?page=searches&tab='.$iProfileId,
+                                'href'=>'?page=searches&siteid='.$iProfileId,
                                 'popup'=>false,
                                 'class'=>'button-secondary',
                                 // 'label'=>'searches',

@@ -38,7 +38,7 @@ foreach ($aFilter as $sKey){
 // line with set filters
 //
 $sSelfUrl='?'.$_SERVER["QUERY_STRING"];
-$sBaseUrl='?page='.$this->_getRequestParam('page').'&tab='.$this->_sTab;
+$sBaseUrl='?page='.$this->_getRequestParam('page').'&siteid='.$this->_sTab;
 $sFilter='';
 $sReport = '';
 

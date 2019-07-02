@@ -14,6 +14,9 @@
 
 ----------------------------------------------------------------------
 
+2019-07-02: v0.84
+  * backend: replace URL param tab with siteid
+
 2019-06-20: v0.83
   * backend: linkchecker - tiles on top: show percent values
   * backend: htmlchecks - harmonize sections long loading and large pages + flip sortorder

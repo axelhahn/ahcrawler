@@ -31,7 +31,7 @@ if ($sQuery){
 
     if ($aData && count($aData)){
         if($bRedirect && count($aData)===1){
-            $sUrl='?page=ressourcedetail&id=' . $aData[0]['id'] . '&tab='.$aData[0]['siteid'];
+            $sUrl='?page=ressourcedetail&id=' . $aData[0]['id'] . '&siteid='.$aData[0]['siteid'];
             header('location: '.$sUrl);
         }
             

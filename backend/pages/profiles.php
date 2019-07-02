@@ -153,9 +153,9 @@ if(isset($_POST['action'])){
     }
     
     $sNextUrl=$_SERVER['QUERY_STRING'];
-    $sNextUrl=preg_replace('/\&tab=add/' , '', $sNextUrl);
-    $sNextUrl=preg_replace('/\&tab=[0-9]*/' , '', $sNextUrl);
-    $sNextUrl.='&tab='.$iProfileId;
+    $sNextUrl=preg_replace('/\&siteid=add/' , '', $sNextUrl);
+    $sNextUrl=preg_replace('/\&siteid=[0-9]*/' , '', $sNextUrl);
+    $sNextUrl.='&siteid='.$iProfileId;
     $sReturn.='<hr><br>'
         .$oRenderer->oHtml->getTag('a',array(
             'href' => '?'.$sNextUrl,

@@ -427,7 +427,7 @@ class backend extends crawler_base {
                 $sClass = $bIsActive ? ' pure-menu-link-active' : '';
                 $sUrl = '?page=' . $sItem;
                 if ($this->_sTab) {
-                    $sUrl.='&amp;tab=' . $this->_sTab;
+                    $sUrl.='&amp;siteid=' . $this->_sTab;
                 }
             
                 // echo "$sItem - ".array_search($sItem, $aDisabled)."<br>";
@@ -549,7 +549,7 @@ class backend extends crawler_base {
             if ($this->_sPage!==$sItem){
                 $sUrl = '?page=' . $sItem;
                 if ($this->_sTab) {
-                    $sUrl.='&amp;tab=' . $this->_sTab;
+                    $sUrl.='&amp;siteid=' . $this->_sTab;
                 }
                 // $sNavi.='<li class="pure-menu-item"><a href="?'.$sItem.'" class="pure-menu-link'.$sClass.'">'.$sItem.'</a></li>';
                 if(array_key_exists('menu', $this->aOptions)
