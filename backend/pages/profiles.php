@@ -259,14 +259,6 @@ $sReturn.='
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex[stickydomain]', 'label'=>$this->lB('profile.searchindex.stickydomain')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>'searchindex-stickydomain', 
-                    'name'=>'searchindex[stickydomain]',
-                    'value'=>isset($this->aProfileSaved['searchindex']['stickydomain']) ? $this->aProfileSaved['searchindex']['stickydomain'] : '',
-                    ), false)
-                . '</div>'
-            . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.searchindex.include')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'searchindex-include', 

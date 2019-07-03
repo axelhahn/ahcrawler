@@ -199,7 +199,6 @@ class ahsearch extends crawler_base {
 
         // echo '<pre>'.print_r($aOptions,1).'</pre>';
         if (!array_key_exists('url', $aOptions)){
-            // $aOptions['url']='//'.$this->aProfile['searchindex']['stickydomain'];
             $aOptions['url']='//'.parse_url($this->aProfileSaved['searchindex']['urls2crawl'][0], PHP_URL_HOST);
         }
         

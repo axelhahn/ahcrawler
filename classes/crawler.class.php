@@ -50,6 +50,7 @@ class crawler extends crawler_base{
      * @var array
      */
     private $_aUrls2Crawl = array();
+    private $_aUrls2Skip = array();
     private $_iUrlsCrawled = 0;
     
     /**
@@ -134,6 +135,7 @@ class crawler extends crawler_base{
     public function __construct($iSiteId = false) {
         $this->setSiteId($iSiteId);
         $this->_aUrls2Crawl = array();
+        $this->_aUrls2Skip = array();
         return true;
     }
 
@@ -226,10 +228,12 @@ class crawler extends crawler_base{
      * @return boolean
      */
     private function _checkRegexArray($sOptionKey, $sString) {
-        $bFound = false;
+        $bFound = true;
         if (array_key_exists($sOptionKey, $this->aProfileEffective['searchindex']) && count($this->aProfileEffective['searchindex'][$sOptionKey])) {
+            $bFound = false;
             foreach ($this->aProfileEffective['searchindex'][$sOptionKey] as $sRegex) {
                 // TODO: mask regex - i.e. $sRegex is "/*search_ger\.html$.*"
+                // echo "DEBUG check $sOptionKey -> $sRegex\n";
                 if (preg_match('#' . $sRegex . '#', $sString)) {
                     // echo "OK\n";
                     $bFound = true;
@@ -247,6 +251,7 @@ class crawler extends crawler_base{
      */
     private function _addUrl2Crawl($sUrl, $bDebug=false) {
         $this->cliprint('cli', $bDebug ? __FUNCTION__."($sUrl)\n" : "");
+        $bDebug=true;
         
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
@@ -254,30 +259,45 @@ class crawler extends crawler_base{
         $sUrl = str_replace(' ', '%20', $sUrl);
 
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
+            $this->cliprint('cli', $bDebug ? "... was added already: $sUrl\n" : "");
+            return false;
+        }
+        if (array_key_exists($sUrl, $this->_aUrls2Skip)) {
+            $this->cliprint('cli', $bDebug ? "... was marked to skip already: $sUrl\n" : "");
             return false;
         }
 
-        // TODO remove stickydomain
-        if (array_key_exists('stickydomain', $this->aProfileSaved['searchindex']) && $this->aProfileSaved['searchindex']['stickydomain'] && $this->aProfileSaved['searchindex']['stickydomain'] != parse_url($sUrl, PHP_URL_HOST)) {
-            $this->cliprint('info', $bDebug ? "... SKIP url is outside sticky domain " . $this->aProfileSaved['searchindex']['stickydomain']."\n" : "");
+        // check if the given url matches any vhost in the start urls
+        
+        if(!$this->_checkRegexArray('_vhosts', $sUrl)){
+            $this->cliprint('info', "... SKIP outside search url(s): $sUrl\n");
             return false;
         }
 
         $sPath = parse_url($sUrl, PHP_URL_PATH);
 
         $bFound = $this->_checkRegexArray('include', $sUrl);
-        if (!$bFound) {
-            $bFound = $this->_checkRegexArray('includepath', $sPath);
+        if ($bFound) {
+            if ($this->_checkRegexArray('includepath', $sPath)){
+                if ($bFound && $this->_checkRegexArray('exclude', $sUrl)) {
+                    $this->cliprint('cli', "... SKIP Found in exclude for $sUrl\n");
+                    return false;
+                }
+            } else {
+                $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any includepath rule: $sUrl\n");
+                return false;
+            }
+        } else {
+            $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any include: $sUrl\n");
+            return false;
         }
-        if ($bFound && $this->_checkRegexArray('exclude', $sUrl)) {
-            $this->cliprint('info', $bDebug ? "... SKIP Found in exclude for $sUrl\n" : "");
-            $bFound = false;
-        }
+        /*
         if (!$bFound) {
             $this->cliprint('info', $bDebug ? "... SKIP by config $sUrl (no include for it)\n" : "");
             return false;
         }
+         * 
+         */
         foreach ($this->aExclude as $sRegex) {
             // echo "check regex $sRegex on $sUrl\n";
             if (preg_match('#' . $sRegex . '#', $sUrl)) {
@@ -307,9 +327,10 @@ class crawler extends crawler_base{
                 && count($this->_aUrls2Crawl) >= $this->aProfileEffective['searchindex']['iMaxUrls']
             ){
                 $this->cliprint('warning', "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n");
+                $this->_aUrls2Skip[$sUrl] = true;
                 return false;
             }
-            $this->cliprint('cli', "... adding [$iCount".($iMax ? ' of ' .$iMax : '')."] $sUrl\n");
+            $this->cliprint('info', "... adding #$iCount".($iMax ? ' of ' .$iMax : '').": $sUrl\n");
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;
@@ -962,7 +983,7 @@ class crawler extends crawler_base{
             return false;
         }
         $characterMap='À..ÿ'; // chars #192 .. #255
-        $this->cliprint('cli', "BUILD INDEX ... finding words ");
+        $this->cliprint('info', "BUILD INDEX ... finding words ");
         $aWords=array();
         $aResult = $this->oDB->select(
             'pages', 

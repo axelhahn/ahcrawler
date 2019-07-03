@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+
+2019-07-03: v0.85
+  * remove setting for "stickydomain"
+
 2019-07-02: v0.84
   * backend: replace URL param tab with siteid
 

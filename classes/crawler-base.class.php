@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.84',
-        'date' => '2019-07-02',
+        'version' => '0.85',
+        'date' => '2019-07-03',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -109,7 +109,6 @@ class crawler_base {
         'label' => '',
         'description' => '',
         'searchindex' => array(
-            'stickydomain' => '',
             'urls2crawl' => array(),
             'iDepth' => 7,
             'iMaxUrls' => 0,
@@ -996,8 +995,8 @@ class crawler_base {
             : $this->aDefaultOptions['crawler']['userAgent']
         ;
         /*
-        echo '<pre>'. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre>';
-        echo '<pre>'. htmlentities(print_r($this->aOptions, 1)).'</pre>';
+        echo '<pre>aDefaultOptions = '. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre><hr>';
+        echo '<pre>aOptions = '. htmlentities(print_r($this->aOptions, 1)).'</pre>';
         die();
          */
         return $this->aOptions;
@@ -1049,7 +1048,21 @@ class crawler_base {
                 $aReturn['ressources']['simultanousRequests'] = $this->aOptions['crawler']['ressources']['simultanousRequests'];
             }
             
-        } 
+        }
+        // detect sticky domains for content crawling
+        $aIncludeurls=array();
+        $aReturn['searchindex']['_vhosts']=array();
+        if(count($aReturn['searchindex']['urls2crawl'])){
+            foreach($aReturn['searchindex']['urls2crawl'] as $sMyUrl){
+                $sKeepUrl='^'.preg_replace('#(http.*//.*)/(.*)$#U', '$1', $sMyUrl).'/.*';
+                $aIncludeurls[$sKeepUrl]=true;
+            }
+            if(count($aIncludeurls)){
+                foreach(array_keys($aIncludeurls) as $sMyUrl){
+                    $aReturn['searchindex']['_vhosts'][]=$sMyUrl;
+                }
+            }
+        }
         $this->logAdd(__METHOD__.'() profile defaults<pre>'.print_r($this->aProfileDefault,1).'</pre>');
         $this->logAdd(__METHOD__.'() saved profile data<pre>'.print_r($aProfile,1).'</pre>');
         $this->logAdd(__METHOD__.'() merged effective profile<pre>'.print_r($aReturn,1).'</pre>');
