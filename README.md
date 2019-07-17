@@ -13,7 +13,7 @@ It is written in PHP and consists of
   - ssl certificate check
   - saved cookies
   - http response header check
-  - linkchecker
+  - linkchecker (http status check of all links, css, images, ...)
 
 Runs with PHP 7 and higher (up to PHP 7.3) Maybe it runs on PHP 5.5, but PHP7 is recommended.
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
@@ -38,7 +38,7 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 - built in web updater
 
 ### spider ###
-- respect exclude rules 
+- respects exclude rules in
   - robots.txt
   - x-robots http header
   - meta robots values noindex, no follow
@@ -63,7 +63,7 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 - check ssl certificate (if your website uses https)
 - show stored server cookies during crawling and following links
 - show website errors, warnings based on http status code (a.k.a. linkchecker)
-  with giving hints what to do at which status code
+  for all links, images, css, javascripts, media, ... including hints what to do on which status code
 - for a given url: display where it is used and where it links to showing
   as cascade on redirects (30x status in repsonse header)
 - view over all webpage items (pages, js, css, media) with filter by

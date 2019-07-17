@@ -155,7 +155,7 @@ foreach ($aTimes as $iDays => $sLabeltext) {
 // $since=date("Y-m-d 00:00:00", (date("U") - (60 * 60 * 24 * $iDays)));
 
 $sReturn .= ''
-        . '<h3 id="searchtopn">' . $this->lB('searches.topn.headline') . '</h3>'
+        . '<h3 id="searchtopn">' . sprintf($this->lB('searches.topn.headline'), $iCount) . '</h3>'
         . '<div div class="actionbox">'
         . '<form action="#searchtopn" method="get" class="pure-form">'
         . '<input type="hidden" name="page" value="searches">'

@@ -347,11 +347,11 @@
     "searches.actions": "Actions",
     "searchout.hits": "Hits: <strong>%s</strong>",
 
-    "searches.last.head": "Last %s search requests",
+    "searches.last.head": "Last <strong>%s</strong> search requests",
     "searches.last.count": "Number of search requests to show",
     "searches.empty": "No search was executed yet.<br>To see some data here, you need to integrate the search in the website first.",
 
-    "searches.topn.headline": "Top search terms in a time range",
+    "searches.topn.headline": "Top <strong>%s</strong> search terms in a time range",
     "searches.topn.since": "Range",
     "searches.topn.all": "all",
     "searches.topn.today": "today",

@@ -344,11 +344,11 @@
     "searches.actions": "Aktionen",
     "searchout.hits": "Treffer: <strong>%s</strong>",
 
-    "searches.last.head": "Letzte %s Suchanfragen",
+    "searches.last.head": "Letzte <strong>%s</strong> Suchanfragen",
     "searches.last.count": "Anzahl der zu zeigenden letzten Suchanfragen",
     "searches.empty": "Es gibt noch keine gesuchten Begriffe.<br>Damit hier Daten erscheinen, muss die Suchmaske und die Ausgabe der Suchergebnisse auf der Webseite integriert worden sein.",
 
-    "searches.topn.headline": "Top Suchbegriffe in einem Zeitraum",
+    "searches.topn.headline": "Top <strong>%s</strong> Suchbegriffe im Zeitraum X",
     "searches.topn.count": "Anzahl Top N",
     "searches.topn.since": "Zeitraum",
     "searches.topn.all": "alle",

@@ -15,6 +15,10 @@
 ----------------------------------------------------------------------
 
 
+2019-07-03: v0.86
+  * backend: update components: fontawesome, pure
+  * backend: update page searches
+
 2019-07-03: v0.85
   * remove setting for "stickydomain"
 
