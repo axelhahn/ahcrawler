@@ -821,12 +821,13 @@ class ressources extends crawler_base {
             'AND' => array(
                 'siteid' => $this->iSiteId,
             ),));
+        $iTotal=date("U") - $this->iStartCrawl;
         $this->cliprint('info', 
              "\n"
             . "Ressource Scan has finished.\n\n"
             . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
             . $this->_iUrlsCrawled . " urls were crawled\n"
-            . "process needed " . (date("U") - $this->iStartCrawl) . " sec.\n"
+            . "process needed $iTotal sec; ". number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec.\n"
             . "$iUrls ressource urls are in the index now (table 'ressources')\n"
         );
     }

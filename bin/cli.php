@@ -44,9 +44,9 @@ $aParamDefs=array(
         'action'=>array(
             'short' => 'a',
             'value'=> CLIVALUE_REQUIRED,
-            'pattern'=>'/^(list|index|update|empty|flush)$/',
+            'pattern'=>'/^(list|index|update|empty|flush|reindex)$/',
             'shortinfo' => 'name of action',
-            'description' => 'The action value is one of list | index | update | empty | flush',
+            'description' => 'The action value is one of list | index | update | empty | flush | reindex',
         ),
         'data'=>array(
             'short' => 'd',
@@ -123,35 +123,49 @@ if ($oCli->getvalue("help") ||!count($oCli->getopt())){
     $sBase='php ./'.basename(__FILE__);
     echo '
 ACTIONS:
-    list:   list all existing profiles
+    empty:   remove existing data of a profile
+             (requires -d [value] and -p [profile])
 
-    index:  start crawler to reindex searchindex or ressources 
-            (requires -d [value] and -p [profile])
+    flush:   drop data for ALL profiles
+             (requires -d [value])
 
-    update: start crawler to update missed searchindex or ressources 
-            (requires -d [value] and -p [profile])
+    index:   start crawler to reindex searchindex or ressources 
+             (requires -d [value] and -p [profile])
 
-    empty:  remove existing data of a profile
-            (requires -d [value] and -p [profile])
+    list:    list all existing profiles
 
-    flush:  drop data for ALL profiles
-            (requires -d [value])
+    reindex: delete existing data of the given profile an reindex searchindex 
+             and ressources (requires -p [profile])
+             This is a combination of actions empty + index for [all] data.
+
+    update:  start crawler to update missed searchindex or ressources 
+             (requires -d [value] and -p [profile])
 
 EXAMPLES:
-    '.$sBase.' -a list
-        list all profiles
 
-    '.$sBase.' -a flush -d all
-        drop all data of all profiles (it keeps the search results)
+    show infos:
 
-    '.$sBase.' -a empty -d all -p 1
-        erase data for profile [1] (it keeps the search results)
+      '.$sBase.' -a list
+          list all profiles
 
-    '.$sBase.' -a index -d all -p 1
-        create search index and ressources for profile [1]
+    delete indexed data:
 
-    '.$sBase.' -a update -d all -p 1
-        update missed items in search index and ressources for profile [1]
+      '.$sBase.' -a flush
+          drop all data of ALL profiles (it keeps the search results)
+
+      '.$sBase.' -a empty -d all -p 1
+          erase data for single profile [1] (it keeps the search results)
+
+    index data:
+
+      '.$sBase.' -a reindex -p 1
+          recreate search index + ressources for profile [1]
+
+      '.$sBase.' -a index -d all -p 1
+          create search index and ressources for profile [1]
+
+      '.$sBase.' -a update -d all -p 1
+          update missed items in search index and ressources for profile [1]
 
 ';
     exit(0);
@@ -178,7 +192,7 @@ if ($sAction==="list"){
     exit(0);
 }
 
-if ($sAction!=="list" && $oCli->getvalue("data")===false){
+if ($sAction!=="list" && $sAction!=="reindex" && $oCli->getvalue("data")===false){
     echo "\nwhat data ??\n";
     $oCli->read("data");
 }
@@ -224,6 +238,13 @@ foreach ($aProfileIds as $sSiteId){
     $oCli->color('cli');
     switch ($sAction){
         
+        case 'reindex':
+            $oCrawler->setSiteId($sSiteId);
+            $oCrawler->flushData(array('searchindex'=>1, 'ressources'=>1), $sSiteId);
+            
+            $sWhat='all';
+            // no break but continue :-)
+
         case 'index':
             switch ($sWhat){
                 case "all":

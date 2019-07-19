@@ -324,7 +324,7 @@ class cli {
         ;
         foreach ($this->_aConfig['params'] as $sParam => $aData) {
             $sReturn.='  --' . $sParam . ' (or -' . $aData['short'] . ') '
-                    . ($aData['value'] === CLIVALUE_REQUIRED ? 'value (required)' : '')
+                    . ($aData['value'] === CLIVALUE_REQUIRED ? '[value] (required)' : '')
                     . ($aData['value'] === CLIVALUE_OPTIONAL ? '[value] (optional)' : '')
                     . "\n"
                     . '    ' . $aData['shortinfo'] . "\n"
