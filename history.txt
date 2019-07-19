@@ -15,7 +15,10 @@
 ----------------------------------------------------------------------
 
 
-2019-07-03: v0.86
+2019-07-19: v0.87
+  * searchindex: fix host detection to stay on domain; added password filter
+
+2019-07-17: v0.86
   * backend: update components: fontawesome, pure
   * backend: update page searches
 

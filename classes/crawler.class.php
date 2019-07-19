@@ -308,7 +308,7 @@ class crawler extends crawler_base{
 
         $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')/i';
         if (preg_match($sSkipExtensions, $sUrl)) {
-            $this->cliprint('info', $bDebug ? "... SKIP ext " . $sSkipExtensions."\n" : "");
+            $this->cliprint('cli', $bDebug ? "... SKIP by extension: $sUrl\n" : "");
             return false;
         }
 

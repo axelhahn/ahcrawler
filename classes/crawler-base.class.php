@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.86',
-        'date' => '2019-07-17',
+        'version' => '0.87',
+        'date' => '2019-07-19',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1054,7 +1054,14 @@ class crawler_base {
         $aReturn['searchindex']['_vhosts']=array();
         if(count($aReturn['searchindex']['urls2crawl'])){
             foreach($aReturn['searchindex']['urls2crawl'] as $sMyUrl){
-                $sKeepUrl='^'.preg_replace('#(http.*//.*)/(.*)$#U', '$1', $sMyUrl).'/.*';
+                $sKeepUrl='^'.preg_replace('#(http.*//.*)/(.*)$#U', '$1', $sMyUrl).'.*';
+                
+                // remove user and pw from https://myuser:password@examle.com
+                if(strstr($sKeepUrl, '@')){
+                    $sKeepUrl2=preg_replace('#(http.*//)(.*)@(.*)$#U', '$1.*@$3', $sKeepUrl);
+                    $sKeepUrl=preg_replace('#(http.*//)(.*)@(.*)$#U', '$1$3', $sKeepUrl);
+                    $aIncludeurls[$sKeepUrl2]=true;
+                }
                 $aIncludeurls[$sKeepUrl]=true;
             }
             if(count($aIncludeurls)){
