@@ -55,13 +55,6 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                 )
                 . '</ul><div style="clear: both;"></div>'
                 . $this->_getSimpleHtmlTable($aTbl, 1)
-                /*
-                . '<br>'
-                . '<p>'.$this->lB('httpheader.sslcheck.raw').':</p>'
-                . '<pre>'
-                . print_r($oSsl->getCertinfos($aFirstPage[0]['url']), 1)
-                . '</pre>'
-                 */
                 ;
 
         // ------------------------------------------------------------

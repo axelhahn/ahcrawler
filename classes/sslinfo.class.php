@@ -166,23 +166,26 @@ class sslinfo {
         $iDaysleft = round(($certinfo['validTo_time_t'] - date('U')) / 60 / 60 / 24);
 
         if ($iDaysleft > $this->_iWarnBeforeExpiration) {
-            $aReturn['ok'][] = "Zertifikat ist noch $iDaysleft Tage gueltig";
+            $aReturn['ok'][] = "Certificate is still valid for $iDaysleft more days.";
         } elseif ($iDaysleft > 0) {
-            $aReturn['warnings'][] = "Zertifikat läuft in in $iDaysleft Tagen ab.";
+            $aReturn['warnings'][] = "Certificate expires in $iDaysleft days.";
         } else {
-            $aReturn['errors'][] = "Zertifikat ist " . (-$iDaysleft) . " Tage überschritten.";
+            $aReturn['errors'][] = "Certificate is invalid for " . (-$iDaysleft) . " days.";
         }
 
         // ----- current domain is part of dns names?
         $sHost = $this->_sHost;
         $sDNS = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
         if (strstr($sDNS, 'DNS:' . $sHost) === false) {
-            $aReturn['errors'][] = "Domainname $sHost ist nicht als DNS ALias im Zertifikat enthalten.";
+            $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
         } else {
-            $aReturn['ok'][] = "Domainname $sHost ist als DNS ALias im Zertifikat enthalten.";
+            $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate..";
         }
 
+        /*
+
         // ----- check all DNS names
+
         preg_match_all('/DNS:([a-z0-9\-\.]*)/s', $certinfo['extensions']['subjectAltName'], $aMatches);
         $sMustIp = gethostbyname($sHost); // gets ipv4 address if OK - or hostname on failure
         if (preg_match('/[0-9]*\.[0-9]*\.[0-9]*\.[0-9]/', $sMustIp)) {
@@ -198,8 +201,9 @@ class sslinfo {
                 }
             }
         } else {
-            $aReturn['errors'][] = "DNS:$sHost - Der Hostname wurde nicht gefunden. Anm: Es gibt keinen Check der anderen DNS Aliase.";
+            $aReturn['errors'][] = "DNS:$sHost - the hostname was not found";
         }
+        */
 
         // ----- get return status
         $aReturn['status'] = count($aReturn['errors']) ? 'error' : (count($aReturn['warnings']) ? 'warning' : 'ok');
@@ -242,7 +246,7 @@ class sslinfo {
             $aInfos['validto'] = date("Y-m-d H:i", $certinfo['validTo_time_t']);
 
         } else {
-            $aInfos['_error'] = 'Zertifikat nicht lesbar.';
+            $aInfos['_error'] = 'Certificate is not readable.';
         }
         return $aInfos;
     }
