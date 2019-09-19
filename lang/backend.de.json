@@ -427,8 +427,11 @@
     
     "htmlchecks.tableLoadtimePages": "Lange ladende Seiten (%s)",
     "htmlchecks.tableLoadtimePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Es werden nachfolgend diejenigen Seiten mit einer Ladezeit von mehr als <em>%s</em> ms ausgegeben.<br>Seiten mit langer Ladezeit wirken sich schlecht auf das Suchmaschinen-Ranking aus. Weiterhin: wenn es eine Seite mit höherem Traffic ist, generiert es hohe Last auf dem Webserver - dies sind Ansatzpunkte, um einen Cache einzusetzen, die Applikation oder aber deren Datenbank-Queries zu optimieren.",
+    "htmlchecks.tableLoadtimePages.range": "Diese Grafik zeigt die Verteilung der Ladezeiten aller Einzelseiten des Webauftritts.<br>Dies dient einer qualitativen Beurteilung.<br>Ein schmaler Peak ist ein Hinweis auf einzelne Ausreisser von langsamen Seiten, die es sich ggf. gezielt zu optimieren lohnt.<br><br>Der gelbe Anteil ist derjenige, der oberhalb des Limits liegt.<br>Jene Seiten sind in der nachfolgenden Tabelle aufgelistst.",
+
     "htmlchecks.tableLargePages": "Grosse Seiten (%s)",
     "htmlchecks.tableLargePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Nachfolgend werden Seiten mit etwas mehr als <em>%s</em> Byte an HTML Code aufgelistet. Sofern es komplexeres HTML ist, kann ein Browser Probleme beim Rendern bekommen.",
+    "htmlchecks.tableLargePages.range": "Diese Grafik zeigt die Verteilung der Downloadgr&ouml;ssen aller Einzelseiten des Webauftritts.<br>Dies dient einer qualitativen Beurteilung.<br>Ein schmaler Peak ist ein Hinweis auf einzelne Ausreisser von grossen Seiten, die es sich ggf. gezielt zu optimieren lohnt.<br><br>Der gelbe Anteil ist derjenige, der oberhalb des Limits liegt.<br>Jene Seiten sind in der nachfolgenden Tabelle aufgelistst.",
 
     "htmlchecks.label-errors": "Fehler",
     "htmlchecks.label-warnings": "Warnungen",

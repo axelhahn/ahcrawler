@@ -837,6 +837,8 @@ class backend extends crawler_base {
         $sVarChart='chartConfig'.$iChartCount;
         $sVarCtx='chartCtx'.$iChartCount;
         
+        $bShowLegend=$aOptions['type'] === 'pie';
+        
         if(isset($aOptions['data'])){
             $aOptions['labels']=array();
             $aOptions['values']=array();
@@ -859,6 +861,7 @@ class backend extends crawler_base {
                         datasets: [{
                                 data: '.json_encode($aOptions['values']).',
                                 backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
+                                fill: false
                         }],
                         labels: '.json_encode($aOptions['labels']).'
                     },
@@ -867,9 +870,12 @@ class backend extends crawler_base {
                             duration: 0
                         },
                         legend: {
-                            display: true
+                            display: '.($bShowLegend ? 'true' : 'false').'
                         },
-                        responsive: true
+                        responsive: true,
+                        scales: {
+                            
+                        }
                     }
                     
                 };
@@ -963,8 +969,18 @@ class backend extends crawler_base {
                 $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
             }
             $aTable = array();
+            $aData = array();
             foreach ($aTmp as $aRow) {
                 $aTable[] = $aRow;
+                /*
+                $aData[]=array(
+                        'label'=>$this->lB('htmlchecks.label-warnings'),
+                        'value'=>$iWarnings,
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-ok\')',
+                        // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    );
+                */
             }
             return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
         }
