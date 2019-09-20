@@ -823,6 +823,19 @@ class backend extends crawler_base {
     }
 
 
+    /**
+     * return html + js code to draw a chart (pie or bar)
+     * 
+     * @staticvar int $iChartCount
+     * 
+     * @param type $aOptions
+     *              valid keys are
+     *              type   {string}  one of pie|bar
+     *              data   {array}   data of values
+     *              limit  {float}   render a limit value (for bars)
+     *              avg    {float}   render an average value (for bars)
+     * @return type
+     */
     private function _getChart($aOptions){
         $sReturn='';
         
@@ -839,6 +852,8 @@ class backend extends crawler_base {
         
         $bShowLegend=$aOptions['type'] === 'pie';
         
+        $sLimit='';
+        $sAvg='';
         if(isset($aOptions['data'])){
             $aOptions['labels']=array();
             $aOptions['values']=array();
@@ -847,6 +862,13 @@ class backend extends crawler_base {
                 $aOptions['labels'][]=$aItem['label'];
                 $aOptions['values'][]=$aItem['value'];
                 $aOptions['colors'][]=$aItem['color'];
+                if(isset($aOptions['limit']) && $aOptions['limit']){
+                    $sLimit .= ($sLimit ? ', ' : '') . $aOptions['limit'];
+                }
+                if(isset($aOptions['avg']) && $aOptions['avg']){
+                    $sAvg .= ($sAvg ? ', ' : '') . $aOptions['avg'];
+                }
+                
             }
         }
         return '
@@ -858,11 +880,36 @@ class backend extends crawler_base {
                 var '.$sVarChart.' = {
                     type: \''.$aOptions['type'].'\',
                     data: {
-                        datasets: [{
+                        datasets: [
+                            {
                                 data: '.json_encode($aOptions['values']).',
                                 backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
                                 fill: false
-                        }],
+                            }
+                            '.($sLimit
+                                ? ', {
+                                    type: \'line\',
+                                    data: JSON.parse(\'['.$sLimit.']\'),
+                                    borderColor: \'#c00\',
+                                    borderWidth: 1,
+                                    fill: false,
+                                    radius: 0
+                                }'
+                                : ''
+                            ).'
+                            '.($sAvg
+                                ? ', {
+                                    type: \'line\',
+                                    data: JSON.parse(\'['.$sAvg.']\'),
+                                    borderColor: \'#56a\',
+                                    borderWidth: 1,
+                                    borderDash: [3, 3],
+                                    fill: false,
+                                    radius: 0
+                                }'
+                                : ''
+                            ).'
+                        ],
                         labels: '.json_encode($aOptions['labels']).'
                     },
                     options: {
@@ -886,6 +933,47 @@ class backend extends crawler_base {
                 // };
             </script>
         ';
+    }
+    
+    private function _getChartOfRange($sQuery, $sColumn, $iLimit) {
+        $aTable = array();
+        $aData = array();
+        $iMaxItems=50;
+        $iNextStep=0;
+        $i=0;
+        
+        $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
+        if(!$aTmp ||!count($aTmp)){
+            return false;
+        }
+        $iStep=round(count($aTmp)/$iMaxItems);
+        
+        $iTotal=0;
+        
+        foreach ($aTmp as $aRow) {
+            $i++;
+            if($i>$iNextStep){
+                $iIsOK=$iLimit>$aRow[$sColumn];
+                $aData[]=array(
+                        // 'label'=>$aRow['url'],
+                        'label'=>'',
+                        // 'label'=>($iIsOK ? '< ' : '> ') .$iMaxLoadtime,
+                        'value'=>$aRow[$sColumn],
+                        'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iIsOK ? 'ok':'warning' ) .'\')',
+                        // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
+                    );
+                $iNextStep+=$iStep;
+            }
+            $iTotal+=$aRow[$sColumn];
+
+        }        
+        return $this->_getChart(array(
+                // 'type'=>'line',
+                'type'=>'bar',
+                'data'=>$aData,
+                'limit'=>$iLimit,
+                'avg'=>$iTotal/count($aTmp),
+            ));
     }
 
         /**

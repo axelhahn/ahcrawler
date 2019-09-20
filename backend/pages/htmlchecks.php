@@ -97,7 +97,7 @@ $iRessourcesCount=$iRessourcesCount-$iCountCrawlererrors;
 if ($iCountShortTitles) {
     $iCountNoTitle=$this->_getHtmlchecksCount('title', 1);
     $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
-        . '<div style="float: right; margin: 0 0 1em 1em;">'
+        . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortTitles-$iCountNoTitle, $iCountNoTitle)
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -124,7 +124,7 @@ if ($iCountShortTitles) {
 if ($iCountShortDescr) {
     $iCountNoDescr=$this->_getHtmlchecksCount('description', 1);
     $sReturn.= '<h3 id="tblshortdescription">' . sprintf($this->lB('htmlchecks.tableShortDescription'), $iCountShortDescr) . '</h3>'
-        . '<div style="float: right; margin: 0 0 1em 1em;">'
+        . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortDescr-$iCountNoDescr, $iCountNoDescr) 
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -167,7 +167,7 @@ if ($iCountShortDescr) {
 if ($iCountShortKeywords) {
     $iCountNoKeywords=$this->_getHtmlchecksCount('keywords', 1);
     $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
-        . '<div style="float: right; margin: 0 0 1em 1em;">'
+        . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortKeywords-$iCountNoKeywords, $iCountNoKeywords)    
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -194,39 +194,9 @@ if ($iCountShortKeywords) {
 // $iCountLongload=$this->_getHtmlchecksLarger('time', $iMaxLoadtime);
 
 if ($iCountLongload) {
-    $aTmp = $this->oDB
-            ->query('select time
-                from pages 
-                where siteid='.$this->_sTab.' and errorcount=0 -- and time>'.round($iMaxLoadtime/2).'
-                order by time desc'
-            )->fetchAll(PDO::FETCH_ASSOC);
-    $aTable = array();
-    $aData = array();
-    
-    $iMaxItems=50;
-    $iStep=round(count($aTmp)/$iMaxItems);
-    $iNextStep=0;
-    $i=0;
-    
-    foreach ($aTmp as $aRow) {
-        $i++;
-        if($i>$iNextStep){
-            $iIsOK=$iMaxLoadtime>$aRow['time'];
-            $aData[]=array(
-                    // 'label'=>$aRow['url'],
-                    'label'=>'',
-                    // 'label'=>($iIsOK ? '< ' : '> ') .$iMaxLoadtime,
-                    'value'=>$aRow['time'],
-                    'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iIsOK ? 'ok':'warning' ) .'\')',
-                    // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
-                );
-            $iNextStep+=$iStep;
-        }
-
-    }
     // return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
     $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
-        . '<div style="float: right; margin: 0 0 1em 1em;">'
+        . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -237,14 +207,18 @@ if ($iCountLongload) {
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
             
         .'<div style="clear: right;"></div>'
-        . '<div style="float: left; margin: 0 1em 1em 0;">'
-        . $this->_getChart(array(
-                // 'type'=>'line',
-                'type'=>'bar',
-                'data'=>$aData,
-            ))
+        .'<div class="floatleft">'
+            . $this->_getChartOfRange(
+                'select time
+                from pages 
+                where siteid='.$this->_sTab.' and errorcount=0
+                order by time desc',
+                'time',
+                $iMaxLoadtime
+            )
         . '</div>'
         .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.range').'</p>'
+        .'<p>'.$this->lB('htmlchecks.chartlegend').'</p>'
 
         .$this->_getHtmlchecksTable('select title, time, size, url
             from pages 
@@ -259,38 +233,8 @@ if ($iCountLongload) {
 // ----------------------------------------------------------------------
 // $iCountLargePages=$this->_getHtmlchecksLarger('size', $iMaxPagesize);
 if ($iCountLargePages) {
-    $aTmp = $this->oDB
-            ->query('select size
-                from pages 
-                where siteid='.$this->_sTab.' and errorcount=0
-                order by size desc'
-            )->fetchAll(PDO::FETCH_ASSOC);
-    $aTable = array();
-    $aData = array();
-    
-    $iMaxItems=50;
-    $iStep=round(count($aTmp)/$iMaxItems);
-    $iNextStep=0;
-    $i=0;
-    
-    foreach ($aTmp as $aRow) {
-        $i++;
-        if($i>$iNextStep){
-            $iIsOK=$iMaxPagesize>$aRow['size'];
-            $aData[]=array(
-                    // 'label'=>$aRow['url'],
-                    'label'=>'',
-                    // 'label'=>($iIsOK ? '< ' : '> ') .$iMaxLoadtime,
-                    'value'=>$aRow['size'],
-                    'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iIsOK ? 'ok':'warning' ) .'\')',
-                    // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
-                );
-            $iNextStep+=$iStep;
-        }
-
-    }
     $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
-        . '<div style="float: right; margin: 0 0 1em 1em;">'
+        . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -298,15 +242,20 @@ if ($iCountLargePages) {
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxPagesize.'').'</p>'
         .'<div style="clear: right;"></div>'
-        . '<div style="float: left; margin: 0 1em 1em 0;">'
-        . $this->_getChart(array(
-                // 'type'=>'line',
-                'type'=>'bar',
-                'data'=>$aData,
-            ))
+        . '<div class="floatleft">'
+            . $this->_getChartOfRange(
+                'select size
+                from pages 
+                where siteid='.$this->_sTab.' and errorcount=0
+                order by size desc',
+                'size',
+                $iMaxPagesize
+            )
         . '</div>'
         .'<p>'.$this->lB('htmlchecks.tableLargePages.range').'</p>'
+        .'<p>'.$this->lB('htmlchecks.chartlegend').'</p>'
 
         .$this->_getHtmlchecksTable('select title, size, time, url
             from pages 

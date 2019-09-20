@@ -220,7 +220,9 @@ span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#97
 
 /* --- color for pie chart --- */
 
-.piechart{border: 2px solid #fff; border-radius: 0.5em; box-shadow: 0.2em 0.2em 1em #ccc; width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cde,#fff,#f8e8d0);}
+.piechart{border: 2px solid #fff; border-radius: 0.5em; box-shadow: 0.2em 0.2em 1em #ccc; width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);}
+.floatright{float: right; margin: 0 0 1em 2em;}
+.floatleft{float: left; margin: 0 2em 1em 0;}
 .chartcolor-error{color:#d88;}
 .chartcolor-warning{color:#eb6;}
 .chartcolor-ok{color:#7a5;}

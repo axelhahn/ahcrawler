@@ -171,7 +171,7 @@ if ($iRessourcesCount){
                 }
             }
             $sResResult.=''
-                . '<div style="float: right; margin: 0 0 1em 1em;">'
+                . '<div class="floatright">'
                     . $this->_getChart(array(
                         'type'=>'pie',
                         'data'=>$aChartItemsOfSection

@@ -424,11 +424,13 @@
 
     "htmlchecks.tableLoadtimePages": "Long loading pages (%s)",
     "htmlchecks.tableLoadtimePages.description": "This is just a hint - not an error.<br>Here is a list with pages that need more than <em>%s</em> ms to load.<br>Long loading pages have a bad influence for the ranking in search engines. Additionally: if there are pages with higher traffic they will generate higher load on your webserver - there it is woths to add a cache or optimize the application or its database queries.",
-    "htmlchecks.tableLoadtimePages.range": "This graphic shows the distribution of the loading times of all single pages of the website.<br>This is used for a qualitative assessment.<br>A narrow peak is an indication of individual outliers from slow pages, which may be worth optimizing.<br><br>The yellow part is the one above the limit.<br>Those pages are listed in the following table.",
+    "htmlchecks.tableLoadtimePages.range": "This graphic shows the distribution of the loading times of all single pages of the website.<br>This is used for a qualitative assessment.<br>A narrow peak is an indication of individual outliers from slow pages, which may be worth optimizing.",
     
     "htmlchecks.tableLargePages": "Large pages (%s)",
     "htmlchecks.tableLargePages.description": "This is just a hint - not an error.<br>This part lists larger html code with more than <em>%s</em> byte in the response. If it it is a bit more complext html code the browser could have problems while rendereing it.",
-    "htmlchecks.tableLargePages.range": "This graphic shows the distribution of the download sizes of the individual pages of the website. This is used for a qualitative assessment. A narrow peak is an indication of individual outliers from large pages, which may be worth optimizing.<br><br>The yellow part is the one above the limit.<br>Those pages are listed in the following table.",
+    "htmlchecks.tableLargePages.range": "This graphic shows the distribution of the download sizes of the individual pages of the website. This is used for a qualitative assessment. A narrow peak is an indication of individual outliers from large pages, which may be worth optimizing.",
+
+    "htmlchecks.chartlegend": "<strong>Legend:</strong><br>The yellow part is the one above the limit (the red line). Those data are listed in the following table.<br>Green items are below the limit.<br>The dotted line is the average value of all data.",
 
     "htmlchecks.label-errors": "Errors",
     "htmlchecks.label-warnings": "Warnings",
