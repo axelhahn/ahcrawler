@@ -127,6 +127,8 @@
     "button.update.hint": "",
     "button.view": "Ansehen",
     "button.view.hint": "Details zu diesem Eintrag",
+    
+    "label.legend": "Legende",
 
     "login.title": "Login",
     "login.infotext": "Es ist eine Anmeldung erforderlich.",
@@ -134,18 +136,31 @@
     "login.password": "Passwort",
 
     "db-pages.url": "Url",
+    "db-pages.url.description": "Url der Seite oder des Elements",
     "db-pages.title": "Titel",
+    "db-pages.title.description": "Titel der Seite aus den Header-Metadaten",
     "db-pages.description": "Beschreibung",
+    "db-pages.description.description": "Beschreibungstxt aus den Header-Metadaten",
     "db-pages.keywords": "Keywords",
+    "db-pages.keywords.description": "Schl&uuml;sselw&ouml;rter aus den Header-Metadaten",
     "db-pages.content": "Inhalt",
+    "db-pages.content.description": "Inhalt der Seite",
     "db-pages.header": "Header",
+    "db-pages.header.description": "Http Response Header",
     "db-pages.ts": "Zeit",
+    "db-pages.ts.description": "Zeitpunkt der letzten Abfrage durch den Crawler",
     "db-pages.tserror": "Zeit des letzten Fehlers",
+    "db-pages.tserror.description": "Zeitpunkt, wann der letzte Fehler vermerkt wurde",
     "db-pages.errorcount": "Anzahl Fehler",
+    "db-pages.errorcount.description": "Anzahl Fehler, die insgesamt festgestellt wurden",
     "db-pages.lasterror": "letzter Fehler",
+    "db-pages.lasterror.description": "Beschreibung des zuletzt vermekten Fehlers",
     "db-pages.length": "Länge",
-    "db-pages.size": "Grösse",
+    "db-pages.length.description": "Anzahl der Zeichen",
+    "db-pages.size": "Gr&ouml;sse",
+    "db-pages.size.description": "Anzahl Bytes des Downloads",
     "db-pages.time": "Ladezeit [ms]",
+    "db-pages.time.description": "Gemessene Zeit zum Herunterladen aus Sicht eines Clients (inkl. DNS Abfrage, Netzwerkaufbau, Verarbeitung am Server und Daten&uuml;bertragung",
     "db-pages.actions": "Aktionen",
     
     "db-ressources.actions": "Aktionen",
@@ -427,13 +442,13 @@
     
     "htmlchecks.tableLoadtimePages": "Lange ladende Seiten (%s)",
     "htmlchecks.tableLoadtimePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Es werden nachfolgend diejenigen Seiten mit einer Ladezeit von mehr als <em>%s</em> ms ausgegeben.<br>Seiten mit langer Ladezeit wirken sich schlecht auf das Suchmaschinen-Ranking aus. Weiterhin: wenn es eine Seite mit höherem Traffic ist, generiert es hohe Last auf dem Webserver - dies sind Ansatzpunkte, um einen Cache einzusetzen, die Applikation oder aber deren Datenbank-Queries zu optimieren.",
-    "htmlchecks.tableLoadtimePages.range": "Diese Grafik zeigt die Verteilung der Ladezeiten aller Einzelseiten des Webauftritts.<br>Dies dient einer qualitativen Beurteilung.<br>Ein schmaler Peak ist ein Hinweis auf einzelne Ausreisser von langsamen Seiten, die es sich ggf. gezielt zu optimieren lohnt.",
+    "htmlchecks.tableLoadtimePages.range": "Geschwindigkeit ist ein Rankingfaktor bei Suchmaschinen!<br>Diese Grafik zeigt die Verteilung der Ladezeiten aller Einzelseiten des Webauftritts.<br>Dies dient einer qualitativen Beurteilung.<br>Ein schmaler Peak ist ein Hinweis auf einzelne Ausreisser von langsamen Seiten, die es sich ggf. gezielt zu optimieren lohnt.",
 
     "htmlchecks.tableLargePages": "Grosse Seiten (%s)",
     "htmlchecks.tableLargePages.description": "Dies ist lediglich ein Hinweis - kein Fehler.<br>Nachfolgend werden Seiten mit etwas mehr als <em>%s</em> Byte an HTML Code aufgelistet. Sofern es komplexeres HTML ist, kann ein Browser Probleme beim Rendern bekommen.",
     "htmlchecks.tableLargePages.range": "Diese Grafik zeigt die Verteilung der Downloadgr&ouml;ssen aller Einzelseiten des Webauftritts.<br>Dies dient einer qualitativen Beurteilung.<br>Ein schmaler Peak ist ein Hinweis auf einzelne Ausreisser von grossen Seiten, die es sich ggf. gezielt zu optimieren lohnt.",
 
-    "htmlchecks.chartlegend": "<strong>Legende:</strong><br>Der gelbe Anteil ist derjenige, der oberhalb des Limits (s. rote Linie) liegt. Jene Seiten sind in der nachfolgenden Tabelle aufgelistst.<br>Gr&uuml;n sind alle unterhalb der Warnschwelle.<br>Die gepunktete Linie ist der Mittelwert aller Daten.",
+    "htmlchecks.chartlegend": "Der gelbe Anteil ist derjenige, der oberhalb des Limits (s. rote Linie) liegt. Jene Seiten sind in der nachfolgenden Tabelle aufgelistst.<br>Gr&uuml;n sind alle unterhalb der Warnschwelle.<br>Die gepunktete Linie ist der Mittelwert aller Daten.",
 
     "htmlchecks.label-errors": "Fehler",
     "htmlchecks.label-warnings": "Warnungen",
@@ -485,7 +500,6 @@
     "cookies.nocookie": "Es wurde keinerlei Cookie erzeugt. Respekt!",
     "cookies.count": "Anzahl Cookies",
     "cookies.since": "Alter der Cookie-Datei",
-    "cookies.legend": "Legende",
     "cookies.delete": "Alle Cookies löschen",
     "cookies.delete.hint": "Sie k&ouml;nnen alle Cookies l&ouml;schen lassen. Mit dem n&auml;chsten Crawling Vorgang k&ouml;nnen Sie es dann neu begutachten.",
     "cookies.col-domain": "Domain",
@@ -541,7 +555,6 @@
     
     "linkchecker.ok-none-was-found": "Sehr gut: kein Eintrag gefunden!",
     "linkchecker.loop-detected": "Abbruch: Loop zu dieser URL gefunden:<br>%s",
-    "linkchecker.legend": "Legende zu den Http-Statuscodes",
     
     "http-status-group-todo": "Offene Requests",
     "http-status-group-0-noConnect": "Keine Verbindung",

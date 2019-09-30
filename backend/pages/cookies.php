@@ -70,6 +70,7 @@ if (file_exists($this->sCcookieFilename)) {
 
         $sReturn .= ''
                 . $this->_getHtmlTable($aTbl, 'cookies.col-', $sTableId)
+                . $this->_getHtmlLegend(array('domain', 'path', 'name', 'value', 'httponly', 'secure', 'expiration'), 'cookies.col-')
                 . '<h3>' . $this->lB('cookies.delete') . '</h3>'
                 . '<p>' . $this->lB('cookies.delete.hint') . '</p>'
                 . '<form class="pure-form pure-form-aligned" method="POST" action="?' . $_SERVER['QUERY_STRING'] . '">'
@@ -82,17 +83,6 @@ if (file_exists($this->sCcookieFilename)) {
                 . $oRenderer->oHtml->getTag('button', array('label' => $this->_getIcon('button.delete') . $this->lB('button.delete'), 'class' => 'pure-button button-error', 'name' => 'action', 'value' => 'deletecookie'))
                 . '</form>'
                 . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(50, -1))))
-                . '<h3>' . $this->lB('cookies.legend') . '</h3>'
-                . '<ul>'
-        ;
-        foreach (array('domain', 'path', 'name', 'value', 'httponly', 'secure', 'expiration') as $sKey) {
-            $sReturn .= '<li>'
-                    . '<strong>' . $this->_getIcon($sKey) . ' ' . $this->lB('cookies.col-' . $sKey) . '</strong><br>'
-                    . $this->lB('cookies.col-' . $sKey . '.description') . '<br><br>'
-                    . '</li>';
-        }
-
-        $sReturn .= '</ul>'
         ;
     } else {
         $sReturn .= $this->_getMessageBox($this->lB('cookies.nocookie'), 'ok');

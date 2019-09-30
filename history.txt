@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-10-01: v0.92
+  * html check: always show graphs for lading time and size (not on warning only) 
+  * http header: show html tags in values
+  * fix height of drop downs on Linux
+  * added more legend infos
 
 2019-09-21: v0.91
   * html check: added limit and average value in the graph

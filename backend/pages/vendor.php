@@ -65,7 +65,12 @@
                 // . '<a href="'.$oCdnAdmin->getLibraryHomepage($aLib['lib']).'">'.$oCdnAdmin->getLibraryHomepage($aLib['lib']).'</a><br>'
                 // . '('.$oCdnAdmin->getLibraryAuthor($aLib['lib']).')<br>'
                 ,
-            $aLib['version'].( (isset($aLib['isunused']) && $aLib['isunused'] && $aLib['isunused']) ? '<br>('.$this->lB('vendor.unused').')' : ''),
+            $aLib['version']
+            .( (isset($aLib['isunused']) && $aLib['isunused'] && $aLib['isunused']) 
+                ? '<br><span class="warning">'.$this->lB('vendor.unused').'</span>' 
+                : ''
+            )
+            ,
             (!$aLib['islocal'] ? $this->_getButton(array(
                             'onclick' => 'location.href=\''. getNewQs(array('download'=>$aLib['lib'], 'version'=>$aLib['version'])).'\';',
                             'class' => 'button-secondary',

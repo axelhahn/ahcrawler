@@ -244,6 +244,8 @@ div.message-ok{background: #cfc; color:#080;}
 div.message-warning{background: #fec; color:#975;}
 div.message-error{background: #fcc; color:#955;}
 
+.legend{background:#f4f8fa; border: 2px dashed #ccc; color:#789; padding: 1em; margin: 1em;}
+.legend ul{margin-bottom: 0;}
 /* 
 --------------------------------------------------------------------------------
     action box
@@ -357,3 +359,4 @@ td div.tdcenter strong{font-size: 150%; color:#8ac;}
 
 /* --- form --- */
 form.pure-form label{min-width: 20em;}
+.pure-form select {height: auto;}

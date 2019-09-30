@@ -1072,7 +1072,29 @@ class backend extends crawler_base {
             }
             return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
         }
-    
+        
+        private function _getHtmlLegend($Content, $sPrefix=''){
+            $sLegend='';
+            if(is_array($Content)){
+                $sLegend.='<ul>';
+                foreach ($Content as $sKey) {
+                    $sLegend .= '<li>'
+                        . '<strong>' . $this->_getIcon($sKey) . ' ' . $this->lB($sPrefix . $sKey) . '</strong><br>'
+                        . $this->lB($sPrefix . $sKey . '.description') . '<br><br>'
+                    . '</li>';
+                }
+                $sLegend.='</ul>';
+                
+            } else {
+                $sLegend=$Content;
+            }
+            
+            return '<div class="legend">'
+                . '<strong>'.$this->lB('label.legend').':</strong><br>'
+                .$sLegend
+            .'</div>'
+            ;
+        }
 
     // ----------------------------------------------------------------------
     // OVERLAY CONTENT

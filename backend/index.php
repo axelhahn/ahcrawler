@@ -1,4 +1,25 @@
 <?php
+
+/*
+require_once(dirname(__DIR__) . "/classes/cache.class.php");
+
+$sCacheId=$_SERVER['REQUEST_URI'];
+$sRefFile=__DIR__.'/../tmp/_last_change.txt';
+
+$oCache=new AhCache('ahcrawler', $sCacheId);
+if (!file_exists($sRefFile)){
+    touch($sRefFile);
+}
+
+if(
+    !$oCache->isExpired() && $oCache->isNewerThanFile($sRefFile)
+    && !count($_POST)
+) {  
+    echo $oCache->read();
+    return true;
+}
+*/
+
 require_once(dirname(__DIR__) . "/classes/backend.class.php");
 require_once(dirname(__DIR__) . "/classes/cdnorlocal.class.php");
 
@@ -49,7 +70,7 @@ function getNewQs($aQueryParams = array()) {
     return $s;
 }
 
-
+// ob_start();
 
 ?><!doctype html>
 <html>
@@ -140,4 +161,11 @@ function getNewQs($aQueryParams = array()) {
         </script>
         <div style="clear: both;"></div>
         <?php echo $oBackend->logRender(); ?>
-    </body></html>
+    </body></html><?php
+
+    /*
+    $sHtmldata= ob_get_contents();
+    // ob_end_flush();
+    
+    $oCache->write($sHtmldata,3600);
+     */

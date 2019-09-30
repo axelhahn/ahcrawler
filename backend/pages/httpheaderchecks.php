@@ -68,7 +68,7 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '</p>'
         . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders())
         . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
-        . '<pre>'.print_r($aInfos['_responseheader'], 1).'</pre>'
+        . '<pre>'. htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>'
         ;
 
 // ----------------------------------------------------------------------

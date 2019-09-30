@@ -64,11 +64,11 @@ $sTiles = ''
     )
     . ($iCountLongload
         ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iRessourcesCount*1000)/10).'%', '#tblloadtimepages')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, '', '')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, '', '#tblloadtimepages')
     )
     . ($iCountLargePages
         ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '#tbllargepages')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, '', '')
+        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, '', '#tbllargepages')
     )
     ;
 
@@ -115,7 +115,9 @@ if ($iCountShortTitles) {
             where siteid='.$this->_sTab.' and errorcount=0 and length(title)<'.$iMinTitleLength.'
             order by length(title), title',
             'tableShortTitles'
-        );
+        )
+        . $this->_getHtmlLegend(array('title', 'length','url'), 'db-pages.')
+        ;
 }
 
 // ----------------------------------------------------------------------
@@ -158,7 +160,9 @@ if ($iCountShortDescr) {
              */
             ,
             'tableShortDescr'
-        );
+        )
+        . $this->_getHtmlLegend(array('description', 'length', 'title', 'url'), 'db-pages.')
+        ;
 }
 
 // ----------------------------------------------------------------------
@@ -185,7 +189,9 @@ if ($iCountShortKeywords) {
             where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
             order by length, keywords',
             'tableShortKeywords'
-        );
+        )
+        . $this->_getHtmlLegend(array('keywords', 'length', 'title', 'url'), 'db-pages.')
+        ;
 }
 
 // ----------------------------------------------------------------------
@@ -193,10 +199,10 @@ if ($iCountShortKeywords) {
 // ----------------------------------------------------------------------
 // $iCountLongload=$this->_getHtmlchecksLarger('time', $iMaxLoadtime);
 
-if ($iCountLongload) {
-    // return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
-    $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
-        . '<div class="floatright">'
+// return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
+$sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
+    .($iCountLongload
+        ? '<div class="floatright">'
             .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
         . '</div>'
         .$oRenderer->renderTileBar(
@@ -204,46 +210,56 @@ if ($iCountLongload) {
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
-        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
-            
-        .'<div style="clear: right;"></div>'
-        .'<div class="floatleft">'
-            . $this->_getChartOfRange(
-                'select time
-                from pages 
-                where siteid='.$this->_sTab.' and errorcount=0
-                order by time desc',
-                'time',
-                $iMaxLoadtime
-            )
-        . '</div>'
-        .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.range').'</p>'
-        .'<p>'.$this->lB('htmlchecks.chartlegend').'</p>'
 
-        .$this->_getHtmlchecksTable('select title, time, size, url
+        .'<div style="clear: right;"></div>'
+        : ''
+    )
+    .'<div class="floatleft">'
+        . $this->_getChartOfRange(
+            'select time
+            from pages 
+            where siteid='.$this->_sTab.' and errorcount=0
+            order by time desc',
+            'time',
+            $iMaxLoadtime
+        )
+    . '</div>'
+    .'<p>'.$this->lB('htmlchecks.tableLoadtimePages.range').'</p>'
+    .$this->_getHtmlLegend($this->lB('htmlchecks.chartlegend'))
+    .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
+
+    .($iCountLongload
+        ? $this->_getHtmlchecksTable('select title, time, size, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and time>'.$iMaxLoadtime.'
             order by time',
             'tableLongLoad'
-        );
-}
+        )
+        . $this->_getHtmlLegend(array('title', 'time', 'size', 'url'), 'db-pages.')
+            
+        :'<div style="clear: both;"></div>'
+    )
+    ;
+
 
 // ----------------------------------------------------------------------
 // large pages
 // ----------------------------------------------------------------------
 // $iCountLargePages=$this->_getHtmlchecksLarger('size', $iMaxPagesize);
-if ($iCountLargePages) {
+
     $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
-        . '<div class="floatright">'
-            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
-        . '</div>'
-        .$oRenderer->renderTileBar(
-                $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '')
-                , '')
-        .'<div style="clear: left;"></div>'
-        .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
-        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxPagesize.'').'</p>'
-        .'<div style="clear: right;"></div>'
+        .($iCountLargePages
+            ? '<div class="floatright">'
+                .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
+            . '</div>'
+            .$oRenderer->renderTileBar(
+                    $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '')
+                    , '')
+            .'<div style="clear: left;"></div>'
+            .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
+            .'<div style="clear: right;"></div>'
+            : ''
+        )
         . '<div class="floatleft">'
             . $this->_getChartOfRange(
                 'select size
@@ -255,15 +271,21 @@ if ($iCountLargePages) {
             )
         . '</div>'
         .'<p>'.$this->lB('htmlchecks.tableLargePages.range').'</p>'
-        .'<p>'.$this->lB('htmlchecks.chartlegend').'</p>'
+        .$this->_getHtmlLegend($this->lB('htmlchecks.chartlegend'))
+        .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxPagesize.'').'</p>'
 
-        .$this->_getHtmlchecksTable('select title, size, time, url
-            from pages 
-            where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
-            order by size',
-            'tableLargePages'
-        );
-}
+        .($iCountLargePages
+            ? $this->_getHtmlchecksTable('select title, size, time, url
+                from pages 
+                where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
+                order by size',
+                'tableLargePages'
+            )
+            . $this->_getHtmlLegend(array('title', 'size', 'time', 'url'), 'db-pages.')
+            : ''
+        )
+        ;
+
 
 
 // ----------------------------------------------------------------------

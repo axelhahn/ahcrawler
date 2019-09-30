@@ -178,7 +178,10 @@ if ($iRessourcesCount){
                     ))
                 .'</div>'
                     . $sBoxes.'</ul>'
-                . ($sLegende ? '<div style="clear: left;"></div><p>'.$this->lB('linkchecker.legend').'</p><ul>'.$sLegende.'</ul>' : '')
+                . ($sLegende 
+                    ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend('<ul>'.$sLegende.'</ul>')
+                    : ''
+                )
                 . '<div style="clear: both;"></div>'
                 ;
         }
