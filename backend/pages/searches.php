@@ -68,6 +68,7 @@ $aLastSearches = $this->oDB->select(
 );
 if (count($aLastSearches)) {
     $aTable = array();
+    $aKeys=false;
     foreach ($aLastSearches as $aRow) {
         $aTmp = unserialize($aRow['searchset']);
         $sSubdir = (isset($aTmp['subdir']) && $aTmp['subdir']) ? $aTmp['subdir'] : '%'
@@ -76,6 +77,7 @@ if (count($aLastSearches)) {
         foreach ($aRow as $key => $value) {
             $aRow[$key] = htmlentities($value);
         }
+        $aKeys=$aKeys ? $aKeys : array_keys($aRow);
         $aRow['actions'] = $this->_getButton(array(
             'href' => '?page=status&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir . '&siteid=' . $this->_sTab,
             'popup' => false,
@@ -106,6 +108,7 @@ if (count($aLastSearches)) {
             . '</form>'
             . '</div><br>'
             . $this->_getHtmlTable($aTable, "searches.")
+            . $this->_getHtmlLegend($aKeys, "searches.")
     ;
 }
 

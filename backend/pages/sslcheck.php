@@ -158,6 +158,8 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                 $sReturn.=(count($aTable) 
                         ? $this->_getHtmlTable($aTable, "db-ressources.", $sTableId)
                             . $oRenderer->renderInitDatatable('#' . $sTableId)
+                            . $this->_getHtmlLegend(array_keys($aRow), 'db-ressources.')
+
                         : ''
                     );
             }

@@ -226,6 +226,8 @@ if ($iResCount) {
                 . ($sFilter ? $sFilter : '<br><br>')
                 . $sFilterArea
             . '</div>'
+            . $this->_getHtmlLegend($aFilter, 'db-ressources.')
+            
             . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>'
             ;
 

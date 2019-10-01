@@ -116,7 +116,6 @@ if ($iCountShortTitles) {
             order by length(title), title',
             'tableShortTitles'
         )
-        . $this->_getHtmlLegend(array('title', 'length','url'), 'db-pages.')
         ;
 }
 
@@ -161,7 +160,6 @@ if ($iCountShortDescr) {
             ,
             'tableShortDescr'
         )
-        . $this->_getHtmlLegend(array('description', 'length', 'title', 'url'), 'db-pages.')
         ;
 }
 
@@ -190,7 +188,6 @@ if ($iCountShortKeywords) {
             order by length, keywords',
             'tableShortKeywords'
         )
-        . $this->_getHtmlLegend(array('keywords', 'length', 'title', 'url'), 'db-pages.')
         ;
 }
 
@@ -235,8 +232,6 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
             order by time',
             'tableLongLoad'
         )
-        . $this->_getHtmlLegend(array('title', 'time', 'size', 'url'), 'db-pages.')
-            
         :'<div style="clear: both;"></div>'
     )
     ;
@@ -281,7 +276,6 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
                 order by size',
                 'tableLargePages'
             )
-            . $this->_getHtmlLegend(array('title', 'size', 'time', 'url'), 'db-pages.')
             : ''
         )
         ;

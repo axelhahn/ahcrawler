@@ -800,7 +800,13 @@ class backend extends crawler_base {
             ));
             $aTable[] = $aRow;
         }
-        return $this->_getHtmlTable($aTable, $sLangTxtPrefix, $sTableId);
+        $aKeys=array_keys($aResult[0]);
+        if($aKeys[0]==='id'){
+            unset($aKeys[0]);
+        }
+        return $this->_getHtmlTable($aTable, $sLangTxtPrefix, $sTableId)
+                .$this->_getHtmlLegend($aKeys, $sLangTxtPrefix)
+                ;
     }
 
     // ----------------------------------------------------------------------
@@ -1070,9 +1076,19 @@ class backend extends crawler_base {
                     );
                 */
             }
-            return $this->_getHtmlTable($aTable, "db-pages.", $sTableId);
+            $aKeys=array_keys($aTmp[0]);
+            return $this->_getHtmlTable($aTable, "db-pages.", $sTableId)
+                . $this->_getHtmlLegend($aKeys, 'db-pages.')
+                ;
         }
         
+        /**
+         * get html code to display a legend
+         * 
+         * @param string|array  $Content  legend text or an array of ids
+         * @param string        $sPrefix  for arrays as $Content: a prefix to scan for prefix+id in lang file
+         * @return string
+         */
         private function _getHtmlLegend($Content, $sPrefix=''){
             $sLegend='';
             if(is_array($Content)){
