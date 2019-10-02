@@ -127,11 +127,11 @@ if ($iRessourcesCount){
                         )
                         ;
                     $iCodeCount++;
-                    $sLegende.='<li>'
-                            . '<strong>'.$this->lB('linkchecker.found-http-external').'</strong><br>'
+                    $sLegende.($sLegende ? '<br>' : '')
+                            .'<strong>'.$this->lB('linkchecker.found-http-external').'</strong><br>'
                             . $this->lB('linkchecker.found-http-external-hint')
                             . '<br><em>'.$this->lB('httpcode.todo') .'</em>: '. $this->lB('linkchecker.found-http-external-todo')
-                            .'<br><br>'
+                            .'<br>'
                             ;
                 }
 
@@ -158,15 +158,15 @@ if ($iRessourcesCount){
                         )
                         ;
 
-                    $sLegende.='<li>'
-                            . $this->lB('db-ressources.http_code').' '
+                    $sLegende.= ($sLegende ? '<br>' : '')
+                            .'<strong>'.$this->lB('db-ressources.http_code').'</strong> '
                             . $oRenderer->renderValue('http_code', $iHttp_code)
                             // . '<strong>'.$iHttp_code.'</strong> '
                             . ' '
                             . '<strong>'.$shttpStatusLabel.'</strong><br>'
                             . $shttpStatusDescr
                             . ($shttpStatusTodo ? "<br><em>".$this->lB('httpcode.todo') ."</em>: ". $shttpStatusTodo : '')
-                            .'<br><br>'
+                            .'<br>'
                             ;
                 }
             }
@@ -179,7 +179,7 @@ if ($iRessourcesCount){
                 .'</div>'
                     . $sBoxes.'</ul>'
                 . ($sLegende 
-                    ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend('<ul>'.$sLegende.'</ul>')
+                    ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend($sLegende)
                     : ''
                 )
                 . '<div style="clear: both;"></div>'

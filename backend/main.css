@@ -244,8 +244,9 @@ div.message-ok{background: #cfc; color:#080;}
 div.message-warning{background: #fec; color:#975;}
 div.message-error{background: #fcc; color:#955;}
 
-.legend{background:#f4f8fa; border: 2px dashed #ccc; color:#789; padding: 1em; margin: 1em;}
-.legend ul{margin-bottom: 0;}
+.legendlabel{background:#e0e8f0; margin: 1em 1em 0;padding: 1em; display: inline-block;}
+.legend{background:#f8f8f8; border: 2px dashed #ccc;  padding: 1em; margin: 0 1em 1m;}
+.legend strong{color:#678; font-size: 110%;}
 /* 
 --------------------------------------------------------------------------------
     action box

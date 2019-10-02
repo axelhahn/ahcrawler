@@ -6,6 +6,11 @@ $sReturn = '';
 $aCounter = array();
 $aFilter=array('http_code', 'ressourcetype','type', 'content_type');
 $aFields = array('id', 'url', 'siteid', 'http_code', 'ressourcetype', 'type', 'content_type');
+
+$aLegendKeys=$aFields;
+unset($aLegendKeys[2]); // remove siteid
+unset($aLegendKeys[0]); // remove id
+
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aUrl=array();
@@ -237,6 +242,7 @@ if ($iResCount) {
                 . $this->lB('ressources.list.intro')
                 . '</p>'
             . $this->_getHtmlTable($aTable, "db-ressources.")
+            . $this->_getHtmlLegend($aLegendKeys, "db-ressources.")
             ;
     } 
     if ($bShowReport){

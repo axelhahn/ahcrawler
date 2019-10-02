@@ -1092,21 +1092,19 @@ class backend extends crawler_base {
         private function _getHtmlLegend($Content, $sPrefix=''){
             $sLegend='';
             if(is_array($Content)){
-                $sLegend.='<ul>';
                 foreach ($Content as $sKey) {
-                    $sLegend .= '<li>'
+                    $sLegend .= ($sLegend ? '<br>' : '')
                         . '<strong>' . $this->_getIcon($sKey) . ' ' . $this->lB($sPrefix . $sKey) . '</strong><br>'
-                        . $this->lB($sPrefix . $sKey . '.description') . '<br><br>'
-                    . '</li>';
+                        . $this->lB($sPrefix . $sKey . '.description') . '<br>'
+                        ;
                 }
-                $sLegend.='</ul>';
-                
             } else {
                 $sLegend=$Content;
             }
             
-            return '<div class="legend">'
-                . '<strong>'.$this->lB('label.legend').':</strong><br>'
+            return ''
+            . '<div class="legendlabel"><strong>'.$this->lB('label.legend').':</strong></div>'
+            . '<div class="legend">'
                 .$sLegend
             .'</div>'
             ;
