@@ -368,6 +368,7 @@
     "searches.referrer": "Referrer",
     "searches.referrer.description": "Herkunftsseite auf der der Suchbegriff eingeben wurde.",
     "searches.count": "Anzahl",
+    "searches.count.description": "Anzahl der Suchanfragen nach diesem Begriff",
     "searches.actions": "Aktionen",
     "searchout.hits": "Treffer: <strong>%s</strong>",
 
@@ -532,6 +533,10 @@
     "sslcheck.label": "SSL-Zertifikat",
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
     "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
+
+    "sslcheck.raw": "Rohdatem",
+    "sslcheck.raw.hint": "Die Rohdaten geben mehr Details und Einzelheiten preis.",
+
     "sslcheck.nonhttps": "Unverschl&uuml;sselte Ressourcen (%s)",
     "sslcheck.nonhttps.hint": "Wenn die Webseite mit https betrieben wird, dann zeigen Browser bei Einbettung unverschl&uuml;sselter Inhalte eine Warnung.",
     "sslcheck.nonhttpscount": "Ohne Https<br>gesamt",
@@ -544,6 +549,7 @@
     "sslcheck.thlabel": "Label",
     "sslcheck.thvalue": "Wert",
     "sslcheck.CN": "Common Name",
+    "sslcheck.type": "Typ des Zertifikats",
     "sslcheck.issuer": "Aussteller",
     "sslcheck.CA": "CA",
     "sslcheck.DNS": "DNS-Namen",

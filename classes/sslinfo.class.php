@@ -242,6 +242,10 @@ class sslinfo {
             $aInfos['CA'] = $certinfo['issuer']['CN'];
             $aInfos['CN'] = $certinfo['subject']['CN'];
             $aInfos['DNS'] = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
+
+            $aInfos['type'] = isset($certinfo['subject']['O']) ? 'Extended validation' : 'Business SSL';
+            $aInfos['subject'] = $certinfo['subject'];
+            
             $aInfos['validfrom'] = date("Y-m-d H:i", $certinfo['validFrom_time_t']);
             $aInfos['validto'] = date("Y-m-d H:i", $certinfo['validTo_time_t']);
 
@@ -261,7 +265,11 @@ class sslinfo {
      * @return boolean
      */
     public function setUrl($sUrl) {
-        $this->_sUrl=false;
+        if($sUrl && $sUrl===$this->_sUrl){
+            return false;
+        }
+        $this->_sUrl = false;
+        $this->_aCertInfos = false;
         
         $aUrldata = parse_url($sUrl);
         $this->_sHost = isset($aUrldata['host']) ? $aUrldata['host'] : false;

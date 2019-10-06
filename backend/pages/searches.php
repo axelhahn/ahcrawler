@@ -219,11 +219,20 @@ if (count($aSearchterms)) {
     $aTable = array();
     $aChartitems = array();
     $iCount = 0;
+    $aKeys=false;
     foreach ($aSearchterms as $aRow) {
         $iCount++;
+        $aKeys=$aKeys ? $aKeys : array_keys($aRow);
         foreach ($aRow as $key => $value) {
             $aRow[$key] = htmlentities($value);
+            $aRow['actions'] = $this->_getButton(array(
+                'href' => '?page=status&action=search&q=' . $aRow['query'] . '&subdir=&siteid=' . $this->_sTab,
+                'popup' => false,
+                'class' => 'button-secondary',
+                'label' => 'button.search'
+            ));
         }
+        
         $aTable[] = $aRow;
         $aChartitems[] = array(
             'label' => $aRow['query'],
@@ -247,6 +256,7 @@ if (count($aSearchterms)) {
             ))
             . '</div>'
             . $this->_getHtmlTable($aTable, "searches.")
+            . $this->_getHtmlLegend($aKeys, "searches.")
             . '<div style="clear: both;"></div>'
     ;
 }

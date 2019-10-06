@@ -36,7 +36,7 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                 array(
                     array($this->lB('about.thanks.chartjs'), '<a href="https://www.chartjs.org/">https://www.chartjs.org/</a>'),
                     array($this->lB('about.thanks.datatables'), '<a href="https://datatables.net/">https://datatables.net/</a>'),
-                    array($this->lB('about.thanks.fontawesome'), '<a href="https://fontawesome.io/">https://fontawesome.io/</a>'),
+                    array($this->lB('about.thanks.fontawesome'), '<a href="https://fontawesome.com/">https://fontawesome.com/</a>'),
                     array($this->lB('about.thanks.jquery'), '<a href="https://jquery.com/">https://jquery.com/</a>'),
                     array($this->lB('about.thanks.medoo'), '<a href="https://medoo.in/">https://medoo.in/</a>'),
                     array($this->lB('about.thanks.rollingcurl'), '<a href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'),

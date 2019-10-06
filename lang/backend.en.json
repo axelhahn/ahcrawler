@@ -371,6 +371,7 @@
     "searches.referrer": "Referrer",
     "searches.referrer.description": "Referrer page where the search term was entered",
     "searches.count": "Count",
+    "searches.count.description": "Number of search requests for the same query.",
     "searches.actions": "Actions",
     "searchout.hits": "Hits: <strong>%s</strong>",
 
@@ -536,6 +537,9 @@
     "sslcheck.description": "Information about the used SSL certificate.",
     "sslcheck.nostarturl": "There is no starting url for crawling in the config.",
     
+    "sslcheck.raw": "Raw data",
+    "sslcheck.raw.hint": "These raw data show more details.",
+
     "sslcheck.httponly": "No encryption,",
     "sslcheck.httponly.description": "no Https!",
     "sslcheck.httponly.hint": "Browser mark it insecure",
@@ -543,6 +547,7 @@
     "sslcheck.thlabel": "Item",
     "sslcheck.thvalue": "Value",
     "sslcheck.CN": "Common Name",
+    "sslcheck.type": "Type of certificate",
     "sslcheck.issuer": "Issuer",
     "sslcheck.CA": "CA",
     "sslcheck.DNS": "DNS names",

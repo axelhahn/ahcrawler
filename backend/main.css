@@ -186,10 +186,10 @@ ul.tiles a.tile{
     color:#789;
     display: block;
     float: left;
-    height: 6em;
+    height: 7em;
     margin: 0 1em 1em 0;
     min-width: 6em;
-    padding: 1em;
+    padding: 0.5em;
     text-align: center;
     text-decoration: none;
 }

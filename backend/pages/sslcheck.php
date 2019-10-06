@@ -11,6 +11,12 @@ $sReturn='';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
 $sFirstUrl=isset($this->aProfileSaved['searchindex']['urls2crawl'][0]) ? $this->aProfileSaved['searchindex']['urls2crawl'][0] : false;
+
+
+// ------------------------------------------------------------
+// SSL certificate infos
+// ------------------------------------------------------------
+
 $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
     . '<p>'
         . $this->lB('sslcheck.description').'<br>'
@@ -31,6 +37,8 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $oSsl=new sslinfo();
         $aSslInfos=$oSsl->getSimpleInfosFromUrl($sFirstUrl);
         $sStatus=$oSsl->getStatus();
+        $aSslInfosAll=$oSsl->getCertinfos($url=false);
+        
         $aTbl=array();
         $aTbl[]=array(
             $this->lB('sslcheck.thlabel'), 
@@ -38,6 +46,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         );
         foreach(array(
             'CN', 
+            'type',
             'issuer',
             'CA',
             'DNS',
@@ -52,10 +61,14 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
 
         $sReturn.= $oRenderer->renderTileBar(
                 $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'], $aSslInfos['validto'].' ('.$iDaysleft.' d)')
-                )
-                . '</ul><div style="clear: both;"></div>'
-                . $this->_getSimpleHtmlTable($aTbl, 1)
-                ;
+        )
+        . '</ul><div style="clear: both;"></div>'
+        . $this->_getSimpleHtmlTable($aTbl, 1)
+               
+        . '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
+        . '<p>'.$this->lB('sslcheck.raw.hint').'</p>'
+        . '<pre>'.json_encode($aSslInfosAll, JSON_PRETTY_PRINT).'</pre>'
+        ;
 
         // ------------------------------------------------------------
         // scan http ressources

@@ -14,6 +14,14 @@
 
 ----------------------------------------------------------------------
 
+2019-10-02: v0.95
+  * fix url of font awesome
+  * resize tiles (for Linux browsers)
+  * search statistics: added a search button in the top N list to repeat the search
+  * search statistics: legend for top N list
+  * ssl check: added certificate type (extended validation of business ssl)
+  * ssl check: show raw data
+
 2019-10-02: v0.94
   * added more legend infos
 
