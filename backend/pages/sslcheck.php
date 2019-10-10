@@ -67,7 +67,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                
         . '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
         . '<p>'.$this->lB('sslcheck.raw.hint').'</p>'
-        . '<pre>'.json_encode($aSslInfosAll, JSON_PRETTY_PRINT).'</pre>'
+        . $oRenderer->renderToggledContent($this->lB('sslcheck.raw.openclose'),'<pre>'.json_encode($aSslInfosAll, JSON_PRETTY_PRINT).'</pre>', false)
         ;
 
         // ------------------------------------------------------------

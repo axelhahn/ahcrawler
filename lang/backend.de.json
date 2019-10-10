@@ -320,7 +320,7 @@
     
     "status.overview": "Zusammenfassung",
     "status.search": "Test-Suche im Suchindex",
-    "status.search.hint": "Hier kannst du den erstellten Suchindex durchsuchen und das Ergebnisverhalten testen, wie es eingebaut auf der Webseite w&auml;re. Die hier im Backend eingebenen Suchbegriffe werden nicht als Suchbegriff gespeichert.",
+    "status.search.hint": "Hier kannst du den erstellten Suchindex durchsuchen und das Ergebnisverhalten testen, wie es eingebaut auf der Webseite w&auml;re. Die hier im Backend eingebenen Suchbegriffe werden nicht als Suchbegriff gespeichert und gehen nicht in die Statistik der Suchbegriffe der Webseitenbesucher ein.",
     "status.searchoptions": "Einstellungen",
     "status.detail": "Detailseite",
     "status.emptyindex": "Der Suchindex ist noch leer. Der Job zum Indexieren wurde noch nicht gestartet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
@@ -485,8 +485,8 @@
     "httpheader.thvalue": "Wert",
     "httpheader.thcomment": "Kommentar",
     "httpheader.plain": "Http-Header (Rohdaten)",
-    "httpheader.data": "Http-Header",
-    "httpheader.data.description": "Das Http Response Header von<br><em>%s</em>",
+    "httpheader.data": "Http-Response-Header",
+    "httpheader.data.description": "Der Http Response Header von<br><em>%s</em>",
     "httpheader.nopage-with-id": "Es wurde keine URL mit der ID %s der in der Datenbank gefunden.",
     "httpheader.varfound.httpv1": "",
     "httpheader.varfound.security": "Security Header",
@@ -496,7 +496,7 @@
     "httpheader.warnings": "Warnhinweise zu den Http-Headern (%s)",
 
     "httpheader.unknown.description": "Es wurden unbekannte Headervariablen im Http Response gefunden.",
-    "httpheader.unknown.todo": "Unbekannte Header Variablen sind im Browser unsichtbar. Biette diese aber pr&uuml;fen, ob sie notwendig sind und versuchen, diese zu eliminieren.",
+    "httpheader.unknown.todo": "Unbekannte Header Variablen sind im Browser unsichtbar. Bitte diese aber pr&uuml;fen, ob sie notwendig sind und versuche, diese zu eliminieren.",
 
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
@@ -534,8 +534,6 @@
     "sslcheck.description": "Informationen zum verwendeten SSL-Zertifikat.",
     "sslcheck.nostarturl": "Es wurde keine Start-URL zum Crawlen definiert.",
 
-    "sslcheck.raw": "Rohdatem",
-    "sslcheck.raw.hint": "Die Rohdaten geben mehr Details und Einzelheiten preis.",
 
     "sslcheck.nonhttps": "Unverschl&uuml;sselte Ressourcen (%s)",
     "sslcheck.nonhttps.hint": "Wenn die Webseite mit https betrieben wird, dann zeigen Browser bei Einbettung unverschl&uuml;sselter Inhalte eine Warnung.",
@@ -557,6 +555,8 @@
     "sslcheck.validto": "g&uuml;ltig bis",
     "sslcheck.validleft": "noch g&uuml;ltig (in Tagen)",
     "sslcheck.raw": "Rohdaten",
+    "sslcheck.raw.hint": "Die Rohdaten geben mehr Details und Einzelheiten preis.",
+    "sslcheck.raw.openclose": "Rohdaten zeigen/ verstecken",
     
     "linkchecker.check-links": "Verteilung der Statuscodes",
     "linkchecker.found-http-error": "Http-Fehler",

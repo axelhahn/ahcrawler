@@ -239,7 +239,9 @@ class ressourcesrenderer extends crawler_base {
         }
         $sReturn='';
         foreach($aHeaderWithChecks as $aEntry){
-            $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'">'
+            $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'" '
+                    . 'class="'.implode(' ', array_values($aEntry['tags'])).'"'
+                    . '>'
                     . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
                     . '<td style="max-width: 30em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
                     . '<td>'
@@ -247,6 +249,7 @@ class ressourcesrenderer extends crawler_base {
                         . ($aEntry['bad'] ? $this->_getIcon('ico.warn', false, 'ico-warn') : '')
                     .'</td>'
                     . '<td>'. $this->lB('httpheader.varfound.'.$aEntry['found']) .'</td>'
+                    // . '<td>'. print_r(array_values($aEntry['tags']),1) .'</td>'
                     . '</tr>'
                     ;
         }
@@ -657,7 +660,9 @@ class ressourcesrenderer extends crawler_base {
             $oHttpheader=new httpheader();
             $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
             // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
-            $sReturn.='<br>'.$this->lB('httpheader.data').'<br><br>'
+            $sReturn.='<br>'
+                    . '<br>'
+                    . '<strong>'.$this->lB('httpheader.data').'</strong><br><br>'
                     .$this->renderHttpheaderAsTable($oHttpheader->checkHeaders());
             
         }
@@ -1090,13 +1095,16 @@ class ressourcesrenderer extends crawler_base {
      */
     public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
         return '<li>'
-            . '<a href="'.($sTargetUrl ? $sTargetUrl : '#" onclick="return false;').'" class="tile '.$sType.' scroll-link '.($sTargetUrl ? '' : 'nonclickable').'">'
-                . $sIntro
-                . (strstr($sIntro, '<br>') ? '' : '<br>')
-                . '<br>'
-                . '<strong>'.$sCount.'</strong><br>'
-                . $sFoot
-            . '</a></li>';
+            . $this->oHtml->getTag('a', array(
+                'href'=>($sTargetUrl ? $sTargetUrl : '#" onclick="return false;'),
+                'class'=>'tile '.$sType.' scroll-link '.($sTargetUrl ? '' : 'nonclickable'),
+                'label'=> $sIntro
+                    . (strstr($sIntro, '<br>') ? '' : '<br>')
+                    . '<br>'
+                    . '<strong>'.$sCount.'</strong><br>'
+                    . $sFoot
+            ))
+            . '</li>';
     }
     
     /**
@@ -1109,5 +1117,38 @@ class ressourcesrenderer extends crawler_base {
      */
     public function renderTileBar($sTiles, $sType=''){
         return '<ul class="tiles '.$sType.'">'.$sTiles.'</ul>';
+    }
+    
+    /**
+     * get html code to show a toggable content box
+     * 
+     * @staticvar int $iToggleCounter  counter of toggled box on a page
+     * 
+     * @param string   $sHeader    clickable header text
+     * @param string   $sContent   content
+     * @param boolean  $bIsOpen    flag: open box by default? default: false (=closed content)
+     * @return string
+     */
+    public function renderToggledContent($sHeader,$sContent, $bIsOpen=false){
+        static $iToggleCounter;
+        if(!isset($iToggleCounter)){
+            $iToggleCounter=0;
+        }
+        $iToggleCounter++;
+        $sDivId='div-toggle-'.$iToggleCounter;
+        return ''
+            . '<div class="div-toggle-head">'
+                . $this->oHtml->getTag('a', array(
+                    'href'=>'#',
+                    'class'=>($bIsOpen ? 'open' : ''),
+                    'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
+                    'label'=>$sHeader,
+                ))
+            . '</div>'
+            . '<div'.($bIsOpen ? '' : ' style="display:none;"').' id="'.$sDivId.'" class="div-toggle">'
+                . $sContent
+            . '</div>'
+            ;
+        
     }
 }

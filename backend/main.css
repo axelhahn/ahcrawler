@@ -208,6 +208,40 @@ ul.tiles a.tile:hover{
 }
 
 
+.div-toggle-head{
+    padding: 0em;
+}
+.div-toggle-head a{
+    background: #f8f8f8;
+    color:#789;
+    display: block;
+    font-weight: bold;
+    padding: 1em;
+    text-decoration: none;
+    transition: all 1s;
+}
+.div-toggle-head a.open{
+    background: #e0e8f0;
+}
+.div-toggle-head a:after{
+    float: right;
+    font-size: 130%;
+    transition: all 1s;
+    content: " + ";
+}
+.div-toggle-head a.open:after{
+    color:#a00;
+    transform: rotate(135deg);
+}
+.div-toggle{
+    background: #f8f8f8;
+    border: 2px dotted rgba(0,0,0,0.1);
+    border-top: none;
+    padding: 1em;
+    margin-bottom: 2em;
+}
+
+
 .bar{width: 100%; border:none;}
 .bar div{border-right: 1px solid rgba(0,0,0,0.1); text-align:center; padding: 1em 0;}
 
@@ -353,6 +387,14 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .pure-table td .key2{color:#995599;font-style: italic;}
 .pure-table td .value{color:#0066cc;}
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
+
+/* --- http response header tags ---  */
+.pure-table tr.cache{background: #f0f8f0;}
+.pure-table tr.compression{background: #eef;}
+.pure-table tr.non-standard{background: #fec;}
+.pure-table tr.security{background: #ded; color: #171;}
+.pure-table tr.unknown{background: #fca;}
+.pure-table tr.unwanted{background: #fec;}
 
 td div.tdcenter{text-align: center;}
 td div.tdcenter:hover{background: rgba(0,40,80,0.1);}

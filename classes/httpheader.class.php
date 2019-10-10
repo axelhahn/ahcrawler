@@ -43,7 +43,7 @@ class httpheader {
             'Expect-CT' => array(),
             'Feature-Policy' => array(),
             'Public-Key-Pins' => array(),
-            'Referrer-Policy' => array(),
+            'Referrer-Policy' => array('badregex' => 'unsafe\-url'),
             'Strict-Transport-Security' => array(),
             'X-Content-Type-Options' => array(),
             'X-Frame-Options' => array(),
@@ -51,11 +51,14 @@ class httpheader {
             'X-XSS-Protection' => array(),
         ),
         // keys will be handled as lowercase
+        /*
         'unwanted' => array(
             'Referrer-Policy' => array('badregex' => 'unsafe\-url'), // not recommended
             'Server' => array('badregex' => '[0-9]\.[0-9]'), // only with a version i.e. Apache/2.4.34 (Unix)
             'X-Powered-By' => array(),
         ),
+         * 
+         */
         // en: https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
         // de: https://de.wikipedia.org/wiki/Liste_der_HTTP-Headerfelder
         'httpv1' => array(
@@ -68,7 +71,7 @@ class httpheader {
             'Accept-Features' => array(),
             'Accept-Language' => array(),
             'Accept-Ranges' => array(),
-            'Age' => array(),
+            'Age' => array('tags'=>array('cache')),
             'Allow' => array(),
             'Alternates' => array(),
             'Authentication-Info' => array(),
@@ -78,11 +81,11 @@ class httpheader {
             'C-Opt' => array(),
             'C-PEP' => array(),
             'C-PEP-Info' => array(),
-            'Cache-Control' => array(),
+            'Cache-Control' => array('tags'=>array('cache')),
             'Connection' => array(),
             'Content-Base' => array(),
             'Content-Disposition' => array(),
-            'Content-Encoding' => array(),
+            'Content-Encoding' => array('tags'=>array('compression')),
             'Content-ID' => array(),
             'Content-Language' => array(),
             'Content-Length' => array(),
@@ -104,9 +107,9 @@ class httpheader {
             'Destination' => array(),
             'Differential-ID' => array(),
             'Digest' => array(),
-            'ETag' => array(),
+            'ETag' => array('tags'=>array('cache')),
             'Expect' => array(),
-            'Expires' => array(),
+            'Expires' => array('tags'=>array('cache')),
             'Ext' => array(),
             'From' => array(),
             'GetProfile' => array(),
@@ -137,7 +140,7 @@ class httpheader {
             'PICS-Label' => array(),
             'Pep-Info' => array(),
             'Position' => array(),
-            'Pragma' => array(),
+            'Pragma' => array('tags'=>array('cache')),
             'ProfileObject' => array(),
             'Protocol' => array(),
             'Protocol-Info' => array(),
@@ -154,7 +157,7 @@ class httpheader {
             'Retry-After' => array(),
             'Safe' => array(),
             'Security-Scheme' => array(),
-            'Server' => array(),
+            'Server' => array('badregex' => '[0-9]\.[0-9]'),
             'Set-Cookie' => array(),
             'Set-Cookie2' => array(),
             'SetProfile' => array(),
@@ -179,7 +182,6 @@ class httpheader {
         ),
         // see  https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_response_fields
         'non-standard' => array(
-            'Content-Security-Policy' => array(),
             'Refresh' => array(),
             'Status' => array(),
             'Timing-Allow-Origin' => array(),
@@ -188,12 +190,11 @@ class httpheader {
             'X-Content-Type-Options' => array(),
             'X-Correlation-ID' => array(),
             'X-Pingback' => array(), // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
-            'X-Powered-By' => array(),
+            'X-Powered-By' => array('tags'=>array('unwanted')),
             'X-Request-ID' => array(),
             'X-Robots-Tag' => array(),
             'X-UA-Compatible' => array(),
             'X-WebKit-CSP' => array(),
-            'X-XSS-Protection' => array(),
         ),
     );
     protected $_sHeader = '';
@@ -210,6 +211,12 @@ class httpheader {
     // SETTER
     // ----------------------------------------------------------------------
 
+    protected function _splitHeaderLine($sLine){
+        $aTmp = explode(":", $sLine, 2);
+        $sVarname = count($aTmp) > 1 ? $aTmp[0] : '_status';
+        $value = count($aTmp) > 1 ? $aTmp[1] : $sLine;
+        return array($sVarname, trim($value));
+    }
     /**
      * set http header to analyze with a JSON string
      * 
@@ -226,10 +233,7 @@ class httpheader {
                 if (!$sLine) {
                     continue;
                 }
-                $aTmp = explode(":", $sLine, 2);
-                $sVarname = count($aTmp) > 1 ? $aTmp[0] : '_status';
-                $value = count($aTmp) > 1 ? $aTmp[1] : $sLine;
-                $this->_aHeader[] = array($sVarname, trim($value));
+                $this->_aHeader[] = $this->_splitHeaderLine($sLine);
             }
             // $this->_aHeader=$aTmp;
         }
@@ -275,53 +279,102 @@ class httpheader {
     }
 
     // ----------------------------------------------------------------------
-    // Bad Headers
-    // ----------------------------------------------------------------------
+    
+    /**
+     * get an array of tags by given header var + value
+     * 
+     * @param string  $varname
+     * @param string  $val
+     * @return array
+     */
+    protected function _getTagsForHeaderline($varname,$val){
+        $aTags=array();
+        foreach ($this->_aHeaderVars as $sSection => $aSection) {
+            foreach ($aSection as $sVar => $aChecks) {
+                
+                if (strtolower($varname) === strtolower($sVar)) {
+                    $aTags[] = $sSection;
+                    if (isset($aChecks['tags'])){
+                        $aTags= array_merge($aTags, $aChecks['tags']);
+                    }
+                    if (isset($aChecks['badregex'])) {
+                        preg_match('/(' . $sVar . '):\ (.*' . $aChecks['badregex'] . '.*)/i', "$varname: $val", $aMatches);
+                        if (count($aMatches)) {
+                            $aTags[] = 'unwanted';
+                        } 
+                    } 
+                }
+            }
+        }
+        if(!count($aTags)){
+            $aTags[]='unknown';
+        }
+        // echo "DEBUG: $varname: $val - ".print_r($aTags, 1).'<br>';
+        return $aTags;
+    }
+
+    /**
+     * ckeck if a header item matches a given tag and return its value
+     * 
+     * @param array   $aItem
+     * @param string  $sTag   tag to search for
+     * @return string
+     */
+    protected function _hasTag($aItem, $sTag){
+        return array_search($sTag, $aItem['tags'])!==false;
+    }
+    
+    /**
+     * check if a header item tag contains a known header var;
+     * if true it returns a string with the section
+     * 
+     * @param array  $aItem
+     * @return boolean
+     */
+    protected function _isKnownHeader($aItem) {
+        foreach(array('httpv1','non-standard', 'security') as $sSection){
+            if($this->_hasTag($aItem, $sSection)){
+                return $sSection;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * get an helper array with all header lines
+     * @return array
+     */
     public function checkHeaders() {
         $aReturn = array();
-        $aKnownHeader = array_merge($this->_aHeaderVars['httpv1'], $this->_aHeaderVars['security']);
 
         $iLine = 0;
         foreach ($this->_aHeader as $aLine) {
             $iLine++;
             list($varname, $val) = $aLine;
-            $sFound = false;
-            $sBad = false;
-            foreach (array('non-standard', 'httpv1', 'security') as $sSection) {
-                foreach ($this->_aHeaderVars[$sSection] as $sVar => $aChecks) {
-                    if (strtolower($varname) === strtolower($sVar)) {
-                        $sFound = $sSection;
-                    }
-                }
-            }
-            $sSection = 'unwanted';
-            foreach ($this->_aHeaderVars[$sSection] as $sVar => $aChecks) {
-
-                if (isset($aChecks['badregex'])) {
-                    preg_match('/(' . $sVar . '):\ (.*' . $aChecks['badregex'] . '.*)/i', "$varname: $val", $aMatches);
-                    if (count($aMatches)) {
-                        $sBad = $sSection;
-                    }
-                } else {
-                    if (strtolower($varname) === strtolower($sVar)) {
-                        $sBad = $sSection;
-                    }
-                }
-            }
 
             // $aReturn[strtolower($varname)]=array(
-            $aReturn[] = array(
+            // $sFound = count($this->isKnownHeadervar($sVar, $val)) ? true : 'unknown';
+            $aTags=$this->_getTagsForHeaderline($varname, $val);
+            $aItem = array(
                 'var' => $varname,
                 'value' => $val,
                 'line' => $iLine,
-                'found' => $sFound ? $sFound : 'unknown',
-                'bad' => $sBad ? $sBad : false,
+                'tags' => $this->_getTagsForHeaderline($varname, $val),
             );
+            $aItem['found']=$this->_isKnownHeader($aItem) ? $this->_isKnownHeader($aItem) : 'unknown';
+            $aItem['bad']=$this->_hasTag($aItem, 'unwanted');
+            // $aItem['bad']=$this->_isKnownHeader($aItem);
+            $aReturn[]=$aItem;
         }
+        // echo '<pre>'.print_r($aReturn, 1).'</pre>';
         return $aReturn;
     }
 
-    public function checkUnknowHeaders() {
+    /**
+     * get array of http headers with unknown headers
+     * @return array
+     */
+    public function getUnknowHeaders() {
         $aReturn = array();
         foreach ($this->checkHeaders() as $aData) {
             if ($aData['found'] === 'unknown') {
@@ -331,7 +384,11 @@ class httpheader {
         return $aReturn;
     }
 
-    public function checkUnwantedHeaders() {
+    /**
+     * get array of http headers with unwanted headers
+     * @return array
+     */
+    public function getUnwantedHeaders() {
         $aReturn = array();
         foreach ($this->checkHeaders() as $aData) {
             if ($aData['bad']) {
@@ -340,21 +397,20 @@ class httpheader {
             }
         }
         return $aReturn;
-        /*
-          $aReturn=array();
-          foreach($this->_aHeaderVars['unwanted'] as $sVar=>$aChecks){
-
-          if(isset($aChecks['badregex'])){
-          preg_match('/('.$sVar.'):\ (.*'.$aChecks['badregex'].'.*)\r\n/i', $this->_sHeader, $aMatches);
-          } else {
-          preg_match('/('.$sVar.'):\ (.*)\r\n/i', $this->_sHeader, $aMatches);
-          }
-          if(count($aMatches)){
-          $aReturn[$sVar]=array('var'=>$aMatches[1], 'value'=>$aMatches[2]);
-          }
-          }
-          return $aReturn;
-         */
+    }
+    /**
+     * get array of http headers with headers matching a given tag
+     * @return array
+     */
+    public function getHeadersWithTag($sTag) {
+        $aReturn = array();
+        foreach ($this->checkHeaders() as $aData) {
+            if (array_search($sTag, $aData['tags'])) {
+                $aReturn[] = array('var' => $aData['var'], 'value' => $aData['value'], 'line' => $aData['line']);
+                ;
+            }
+        }
+        return $aReturn;
     }
 
     /**

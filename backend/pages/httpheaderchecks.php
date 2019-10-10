@@ -66,9 +66,11 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
         . sprintf($this->lB('httpheader.data.description'), $aPagedata[0]['url']).'<br><br>'
         . '</p>'
+        . $oRenderer->renderToggledContent($this->lB('httpheader.plain'),'<pre>'.htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>', false)
+        . '<br>'
         . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders())
-        . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
-        . '<pre>'. htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>'
+        // . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
+        // . '<pre>'. htmlentities(print_r($oHttpheader->getHeadersWithTag('cache'), 1)).'</pre>'
         ;
 
 // ----------------------------------------------------------------------
@@ -83,7 +85,7 @@ $sTiles='';
 
     // --- unknown header vars
     // $sReturn.= '<pre>'.print_r($oHttpheader->checkHeaders(),1).'</pre>';
-    $aUnknownheader=$oHttpheader->checkUnknowHeaders();
+    $aUnknownheader=$oHttpheader->getUnknowHeaders();
     // $sReturn.= '<pre>'.print_r($aUnknownheader,1).'</pre>';
     if(is_array($aUnknownheader) && count($aUnknownheader)){
         $iWarnings+=count($aUnknownheader);
@@ -106,7 +108,7 @@ $sTiles='';
             ;
     }
     // --- unwanted header vars
-    $aWarnheader=$oHttpheader->checkUnwantedHeaders();
+    $aWarnheader=$oHttpheader->getUnwantedHeaders();
     if(is_array($aWarnheader) && count($aWarnheader)){
         $iWarnings+=count($aWarnheader);
         $sWarnings.= '<p>'

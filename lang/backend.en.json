@@ -322,7 +322,7 @@
     
     "status.overview": "Overview",
     "status.search": "Search test",
-    "status.search.hint": "Here you can search in the created search index to find out the behaviour of a search placed on your website. The search terms entered here in the backend won't be stored in the database.",
+    "status.search.hint": "Here you can search in the created search index to find out the behaviour of a search placed on your website. The search terms entered here in the backend won't be stored in the database and don't count in the statistics in the statistics of search terms.",
     "status.searchoptions": "Options",
     "status.detail": "Details",
     "status.emptyindex": "The search index is empty. The job to index a website was not startet yet.<br><pre>php [appdir]/bin/cli.php -a index -d searchindex -p %s</pre>",
@@ -484,7 +484,7 @@
     "httpheader.thvalue": "Value",
     "httpheader.thcomment": "Comment",
     "httpheader.plain": "Http-Header (plain)",
-    "httpheader.data": "Http header",
+    "httpheader.data": "Http response header",
     "httpheader.data.description": "This is the response header of<br><em>%s</em>",
     "httpheader.nopage-with-id": "There is no url with id %s in the database.",
 
@@ -537,8 +537,6 @@
     "sslcheck.description": "Information about the used SSL certificate.",
     "sslcheck.nostarturl": "There is no starting url for crawling in the config.",
     
-    "sslcheck.raw": "Raw data",
-    "sslcheck.raw.hint": "These raw data show more details.",
 
     "sslcheck.httponly": "No encryption,",
     "sslcheck.httponly.description": "no Https!",
@@ -555,6 +553,8 @@
     "sslcheck.validto": "valid to",
     "sslcheck.validleft": "still valid (in days)",
     "sslcheck.raw": "Raw data",
+    "sslcheck.raw.hint": "The raw data show more details under the hood.",
+    "sslcheck.raw.openclose": "show/ hide raw data",
     
     "sslcheck.nonhttps": "Check non https ressources",
     "sslcheck.nonhttps.hint": "If you have a website running with https then browsers can show a warning if you embed unencrypted ressources.",
