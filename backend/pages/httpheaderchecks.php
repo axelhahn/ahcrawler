@@ -59,6 +59,45 @@ $aInfos=json_decode($sInfos,1);
 // _responseheader ?? --> see crawler.class - method processResponse()
 $oHttpheader->setHeaderAsString($aInfos['_responseheader']);
 
+$aSecHeader=$oHttpheader->getSecurityHeaders();
+
+// ----------------------------------------------------------------------
+// tiles
+// ----------------------------------------------------------------------
+$aFoundTags=$oHttpheader->getExistingTags();
+$iTotalHeaders=count($oHttpheader->getHeaderAsArray());
+$iSecHeader=isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
+$iUnkKnown=isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
+$iUnwanted=isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
+$sTiles=''
+    . $oRenderer->renderTile('', $this->lB('httpheader.header.total'), $iTotalHeaders, '')
+        
+    . (isset($aFoundTags['httpv1'])
+        ? $oRenderer->renderTile(($aFoundTags['httpv1']+$iSecHeader===$iTotalHeaders ? 'ok' : '' ), $this->lB('httpheader.header.httpv1'), $aFoundTags['httpv1'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.httpv1'), 0, '', '')
+      )
+    . ($iSecHeader
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.security'), $aFoundTags['security'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.security'), $oRenderer->renderShortInfo('miss'), '', '')
+      )
+    . (isset($aFoundTags['cache'])
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.cache'), $aFoundTags['cache'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '')
+      )
+    . (isset($aFoundTags['compression'])
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.compression'), $aFoundTags['compression'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '')
+      )
+    . ($iUnkKnown
+        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unknown'), $aFoundTags['unknown'], (floor($aFoundTags['unknown']/$iTotalHeaders*1000)/10).'%', '')
+        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unknown'), 0, '', '')
+      )
+    . ($iUnwanted
+        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unwanted'), $iUnwanted, '', '')
+        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unwanted'), 0, '', '')
+      )
+    ;
+        
 // ----------------------------------------------------------------------
 // header dump
 // ----------------------------------------------------------------------
@@ -66,9 +105,10 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
         . sprintf($this->lB('httpheader.data.description'), $aPagedata[0]['url']).'<br><br>'
         . '</p>'
+        . $oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>'
         . $oRenderer->renderToggledContent($this->lB('httpheader.plain'),'<pre>'.htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>', false)
         . '<br>'
-        . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders())
+        . $oRenderer->renderHttpheaderAsTable($oHttpheader->parseHeaders())
         // . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
         // . '<pre>'. htmlentities(print_r($oHttpheader->getHeadersWithTag('cache'), 1)).'</pre>'
         ;
@@ -137,6 +177,29 @@ $sTiles='';
             . '<ul>'.$sLegendeWarn.'</ul>'
             ;
     } 
+    if (!isset($aFoundTags['cache'])){
+        $iWarnings++;
+        $sWarnings.=$oRenderer->renderTileBar(
+                    $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '')
+            )
+            . '<div style="clear: both;"></div>'
+            .'<p>'
+            . $this->lB('httpheader.warnings.nocache')
+            . '</p>'
+        ;
+    }
+    
+    if (!isset($aFoundTags['compression'])){
+        $iWarnings++;
+        $sWarnings.=$oRenderer->renderTileBar(
+                    $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '')
+            )
+            . '<div style="clear: both;"></div>'
+            .'<p>'
+            . $this->lB('httpheader.warnings.nocompression')
+            . '</p>'
+        ;
+    }
     $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h3>'
         . ($iWarnings
             ? $sWarnings
@@ -151,7 +214,6 @@ $sTiles='';
 // ----------------------------------------------------------------------
 // security header
 // ----------------------------------------------------------------------
-$aSecHeader=$oHttpheader->checkSecurityHeaders();
 
 $sSecOk='';
 $sSecMiss='';

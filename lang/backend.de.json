@@ -481,6 +481,14 @@
     "httpheader.no-value": "kein Wert",
 
 
+    "httpheader.header.total": "gesamt",
+    "httpheader.header.httpv1": "Korrekte<br>Http Variablen",
+    "httpheader.header.cache": "Caching Angaben",
+    "httpheader.header.compression": "Kompression",
+    "httpheader.header.unwanted": "Unerw&uuml;nscht",
+    "httpheader.header.unknown": "unbekannte<br>Variablen",
+    "httpheader.header.security": "Security<br>Header",
+    
     "httpheader.thvariable": "Variable",
     "httpheader.thvalue": "Wert",
     "httpheader.thcomment": "Kommentar",
@@ -501,6 +509,8 @@
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
     "httpheader.warnings.ok": "OK",
+    "httpheader.warnings.nocompression": "Es wurde keine Kompression erkannt - es gibt keinen Header <em>Content-Encoding</em>.<br>Lassen Sie Ihern Webserver Textdateien, wie Html, JS, CSS, XML komprimieren.<br>Die Last am Server ist nur wenig h&ouml;her und der Seitenaufbau wird (insbesondere) bei entfernteren Benutern beschleunigt.",
+    "httpheader.warnings.nocache": "Es wurden keinerlei Caching Informationen gefunden. Setzen Sie explizite Informationen, ob und / oder wie lange ein Browser Ihren Inhalt cachen darf.",
     "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server l&auml;uft. Sie können die Versionsnummer l&ouml;schen: setzen Sie den Server Header nur auf den Produktnamen oder aber entfernen Sie den Wert ganz.",
     "httpheader.x-powered-by.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
 

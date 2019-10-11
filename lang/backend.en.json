@@ -480,6 +480,14 @@
     "httpheader.server.description": "This Server header seems to advertise the software being run on the server. You can remove the version number or delete this value.",    
     "httpheader.no-value": "kein Wert",
 
+    "httpheader.header.total": "total",
+    "httpheader.header.httpv1": "valid<br>Http variables",
+    "httpheader.header.cache": "Caching information",
+    "httpheader.header.compression": "Compression",
+    "httpheader.header.unwanted": "Unwanted<br>data",
+    "httpheader.header.unknown": "unknown<br>variables",
+    "httpheader.header.security": "Security<br>header",
+    
     "httpheader.thvariable": "Variable",
     "httpheader.thvalue": "Value",
     "httpheader.thcomment": "Comment",
@@ -501,6 +509,8 @@
     "httpheader.warnings.description": "You should not show too many details of your system in the http header. Even if sniffer tools can analyze several details.",
     "httpheader.warnings.ok-label": "nothing was found",
     "httpheader.warnings.ok": "OK",
+    "httpheader.warnings.nocompression": "No compression was detected - there is no header <em>Content-Encoding</em>.<br>Let your webserver compress text content like html, javascript, css, xml.<br>The load impact on your server in minimal and the page performance (especially on distant) users will increase.",
+    "httpheader.warnings.nocache": "No caching information was detected. You should set explizit information if / how long a browser is allowed to cache your content.",
     
     "httpheader.server.description": "Remove the details for version number and operating system on a productive system. Set the server header to a product name only.",
     "httpheader.x-powered-by.description": "On a productive system do not show the technology behind. Remove this header variable.",

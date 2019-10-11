@@ -29,7 +29,7 @@ if (isset($_POST['action'])) {
 // COOKIES
 // ----------------------------------------------------------------------
 
-$aCookies = $oHttpheader->checkCookiefile($this->sCcookieFilename);
+$aCookies = $oHttpheader->parseCookiefile($this->sCcookieFilename);
 $sReturn .= ''
         . '<h3>' . sprintf($this->lB('cookies.headline'), count($aCookies['cookies'])) . '</h3>'
         . '<p>' . $this->lB('cookies.hint') . '</p>'

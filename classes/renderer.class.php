@@ -663,7 +663,7 @@ class ressourcesrenderer extends crawler_base {
             $sReturn.='<br>'
                     . '<br>'
                     . '<strong>'.$this->lB('httpheader.data').'</strong><br><br>'
-                    .$this->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+                    .$this->renderHttpheaderAsTable($oHttpheader->parseHeaders());
             
         }
         /*

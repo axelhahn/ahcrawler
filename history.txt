@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2019-10-12: v0.97
+  * http header check: added tiles
+  * http header check: warnings if there is no caching or no compression
+
 2019-10-10: v0.96
   * added coloring of http response headers
   * added toggable content elements (see ssl raw data and http response)

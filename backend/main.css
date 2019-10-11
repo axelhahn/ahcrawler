@@ -389,8 +389,8 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
 
 /* --- http response header tags ---  */
-.pure-table tr.cache{background: #f0f8f0;}
-.pure-table tr.compression{background: #eef;}
+.pure-table tr.cache{background: #e0e0f8;}
+.pure-table tr.compression{background: #f8e0f8;}
 .pure-table tr.non-standard{background: #fec;}
 .pure-table tr.security{background: #ded; color: #171;}
 .pure-table tr.unknown{background: #fca;}
