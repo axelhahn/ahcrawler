@@ -169,7 +169,7 @@ class ahsearch extends crawler_base {
      * @param type $aOptions
      *   url    {string}  limit url i.e. //[domain]/[path] - without "%"
      *   subdir {string}  => subset of search without domain with starting slash (/[path])
-     *   mode   {string}  one of AND |OR (default: OR)
+     *   mode   {string}  one of AND | OR | PHRASE (default: OR)
      *   lang   {string}  force language of the document; default: all
      * @param string  $aOptions     options
      * @return array
@@ -218,15 +218,27 @@ class ahsearch extends crawler_base {
             $aOptions['url'] = str_replace('%', '', $aOptions['url']);
         }
         $aSearchwords = explode(" ", $q);
-        foreach ($aSearchwords as $sWord) {
-            $aQuery['OR # query for ['.$sWord.']'] = array(
-                'title[~]' => $sWord,
-                'description[~]' => $sWord,
-                'keywords[~]' => $sWord,
-                'url[~]' => $sWord,
-                'content[~]' => $sWord,
+        if($aOptions['mode']==='PHRASE'){
+            $aQuery['OR'] = array(
+                'title[~]' => $q,
+                'description[~]' =>$q,
+                'keywords[~]' => $q,
+                'url[~]' => $q,
+                'content[~]' => $q,
             );
+            $aOptions['mode']='AND';
+        } else {
+            foreach ($aSearchwords as $sWord) {
+                $aQuery['OR # query for ['.$sWord.']'] = array(
+                    'title[~]' => $sWord,
+                    'description[~]' => $sWord,
+                    'keywords[~]' => $sWord,
+                    'url[~]' => $sWord,
+                    'content[~]' => $sWord,
+                );
+            }
         }
+        // echo "DEBUG <pre>" . print_r($aQuery, 1) ."</pre><br>";
         // print_r($aOptions);echo "<hr>";
         $aSelect=array(
             'siteid' => $this->iSiteId,
@@ -461,6 +473,29 @@ class ahsearch extends crawler_base {
             }
             return $sReturn;
         }
+        
+    /**
+     * get html code to add site id (project) and frontend language
+     * @since v0.98
+     * @return string
+     */
+    public function renderHiddenfields(){
+        return '<input'
+            . $this->_addAttributes(array(
+                'type'=>'hidden',
+                'name'=>'siteid',
+                'value'=>$this->iSiteId,
+            ))
+            .'>'
+            . '<input'
+            . $this->_addAttributes(array(
+                'type'=>'hidden',
+                'name'=>'lang',
+                'value'=>$this->sLang,
+            ))
+            .'>'
+            ;
+    }
 
     /**
      * get html code for category selection label
@@ -536,6 +571,7 @@ class ahsearch extends crawler_base {
         return $this->_renderSelect(array(
             $this->lF('label.searchmode-and')=>'AND',
             $this->lF('label.searchmode-or')=>'OR',
+            $this->lF('label.searchmode-phrase')=>'PHRASE',
         ), 'mode', $aAttributes);
     }
 
@@ -566,6 +602,7 @@ class ahsearch extends crawler_base {
                 : '')
             ;
         $sReturn='<form method="GET" action="?">'
+                . $this->renderHiddenfields()
                 . $this->lF('label.searchhelp').'<br><br>'
                 . $this->renderLabelSearch().': '
                 . $this->renderInput(array('size'=>'50'))
@@ -601,6 +638,7 @@ class ahsearch extends crawler_base {
 
             $iHits = $this->getCountOfSearchresults($aData);
 
+            echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
             if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $client_ip = $_SERVER['REMOTE_ADDR'];
             } else {
@@ -608,17 +646,17 @@ class ahsearch extends crawler_base {
             }
             $aResult = $this->oDB->insert(
                     'searches', array(
-                'ts' => date("Y-m-d H:i:s"),
-                'siteid' => $this->iSiteId,
-                'searchset' => $aOptions,
-                'query' => $q,
-                'results' => $iHits,
-                'host' => $client_ip,
-                'ua' => $_SERVER['HTTP_USER_AGENT'],
-                'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '?',
+                        'ts' => date("Y-m-d H:i:s"),
+                        'siteid' => $this->iSiteId,
+                        'searchset' => $aOptions,
+                        'query' => $q,
+                        'results' => $iHits,
+                        'host' => $client_ip,
+                        'ua' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '-',
+                        'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '-',
                     )
             );
-            //echo "\n" . $this->oDB->last_query() . '<br>';
+            echo "\n" . $this->oDB->last() . '<br>'; 
 
             switch ($sOutputType) {
                 case 'html':

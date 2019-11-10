@@ -77,13 +77,17 @@ body{
 
 
 .pure-button {
+    /*
     border-radius: 4px;
     box-shadow:  0.1em 0.1em 0.1em #aaa; 
     border: 1px solid rgba(0, 0, 0, 0.1);
+    */
 }
 .pure-button:hover {
+    /*
     border: 1px solid rgba(0, 0, 0, 0.2);
     box-shadow:  0.05em 0.05em 0.1em #ccc; 
+    */
 }
 .button-success,
 .button-error,

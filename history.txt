@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2019-11-10: v0.98
+  * added: frontend search: added renderHiddenfields()
+  * added: frontend search: update to implement a search on another domain
+  * added: frontend search: added search for a phrase
+
 2019-10-12: v0.97
   * http header check: added tiles
   * http header check: warnings if there is no caching or no compression

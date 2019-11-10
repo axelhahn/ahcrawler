@@ -16,6 +16,7 @@
     "label.searchmode": "Suchmodus",
     "label.searchmode-and": "strikt: alle Suchbegriffe m&uuml;ssen gefunden werden (UND)",
     "label.searchmode-or": "mehr Ergebnisse zeigen: mind. einer der Suchbegriffe muss gefunden werden (ODER)",
+    "label.searchmode-phrase": "exakt: alle Worte als Phrase suchen",
     
     "searchout.results": "Suchergebnisse",
     "searchout.nohit": "Kein Treffer :-/",

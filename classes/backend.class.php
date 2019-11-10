@@ -67,6 +67,38 @@ class backend extends crawler_base {
             'update'=>array(), 
         )
     );
+    /*
+    private $_aMenu = array(
+        'home'=>array('hlp'=>'usage.htm#Category:Start'), 
+        'settings'=>array(
+            'setup'=>array('hlp'=>'usage.htm#Page:Setup'),
+            'profiles'=>array('hlp'=>'usage.htm#Page:Profiles'),
+            'vendor'=>array('hlp'=>'usage.htm#Page:Vendorlibs'), 
+        ),
+        'search'=>array(
+            'status'=>array('hlp'=>'usage.htm#Page:Status'), 
+            'searches'=>array('hlp'=>'usage.htm#Page:Searchterms'),
+        ),
+        'analysis'=>array(
+            'sslcheck'=>array('hlp'=>'usage.htm#Page:SSLCheck'), 
+            'httpheaderchecks'=>array('hlp'=>'usage.htm#Page:HttpHeadercheck'), 
+            'cookies'=>array('hlp'=>'usage.htm#Page:Cookies'), 
+            'htmlchecks'=>array('hlp'=>'usage.htm#Page:HTMLchecks'), 
+            'linkchecker'=>array('hlp'=>'usage.htm#Page:Linkchecker'), 
+            'ressources'=>array('hlp'=>'usage.htm#Page:Ressources'),
+            'checkurl'=>array(), 
+            'ressourcedetail'=>array(), 
+        ), 
+        'tools'=>array(
+            'httpstatuscode'=>array(), 
+            'langedit'=>array(), 
+        ),
+        'about'=>array(
+            'update'=>array(), 
+        )
+    );
+     * 
+     */
     private $_sPage = false;
     private $_sTab = false;
     
