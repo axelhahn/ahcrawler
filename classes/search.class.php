@@ -638,7 +638,7 @@ class ahsearch extends crawler_base {
 
             $iHits = $this->getCountOfSearchresults($aData);
 
-            echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
+            // echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
             if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 $client_ip = $_SERVER['REMOTE_ADDR'];
             } else {
@@ -656,7 +656,7 @@ class ahsearch extends crawler_base {
                         'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '-',
                     )
             );
-            echo "\n" . $this->oDB->last() . '<br>'; 
+            // echo "\n" . $this->oDB->last() . '<br>'; 
 
             switch ($sOutputType) {
                 case 'html':

@@ -73,12 +73,13 @@ echo $o->renderSearchForm(array(
     echo '<br>'
         . '<strong>'.$o->lF('label.searchoptions').'</strong>:<br>'
         . $o->renderLabelCategories() . ': ' . $o->renderSelectCategories(array('class'=>'form-control')).'<br>'
-        . $o->renderLabelMode()     . ': ' . $o->renderSelectMode(array('class'=>'form-control')). ' ' 
-        . $o->renderLabelLang()     . ': ' . $o->renderSelectLang(array('class'=>'form-control')) 
+        . $o->renderLabelMode()       . ': ' . $o->renderSelectMode(array('class'=>'form-control')). ' ' 
+        . $o->renderLabelLang()       . ': ' . $o->renderSelectLang(array('class'=>'form-control')) 
         ;
     ?>
 
 </form>
+<br>
 <?php
 
 echo $o->renderSearchresults();
