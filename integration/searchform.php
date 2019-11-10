@@ -1,6 +1,5 @@
 <?php
 /*
- *
  * Hi!
  * 
  * This file gives you a demonstration to implement a search form in your own website.
@@ -22,7 +21,7 @@ $sDefaultLang='en';
 // ----- check current params:
 
 $iSiteId=isset($_GET['siteid'])?(int)$_GET['siteid'] : $sDefaultSiteId;
-$sLang=isset($_GET['lang'])?(int)$_GET['lang'] : $sDefaultLang;
+$sLang=isset($_GET['lang'])?$_GET['lang'] : $sDefaultLang;
 
 // ----- (1) init with site id:
 $o = new ahsearch();
@@ -33,22 +32,6 @@ $o->setSiteId($iSiteId);
 
 // ----- (2) set the frontend language
 $o->setLangFrontend($sLang);
-
-/*
-// ----- (3) show form to enter search term
-// most simple way:
-// echo $o->renderSearchForm();
-
-// with additional options
-echo $o->renderSearchForm(array(
-    'categories'=>1,
-    'lang'=>1,
-    'mode'=>1,
-));
-// ------ (4) output of results
-// echo $o->renderSearchresults();
-
-*/
 
 ?>
 <form method="GET" action="?">
