@@ -1,4 +1,5 @@
 <?php
+
 /**
  * ____________________________________________________________________________
  *          __    ______                    __             
@@ -49,7 +50,7 @@ class httpheader {
             'Accept-Features' => array(),
             'Accept-Language' => array(),
             'Accept-Ranges' => array(),
-            'Age' => array('tags'=>array('cache')),
+            'Age' => array('tags' => array('cache')),
             'Allow' => array(),
             'Alternates' => array(),
             'Authentication-Info' => array(),
@@ -59,11 +60,11 @@ class httpheader {
             'C-Opt' => array(),
             'C-PEP' => array(),
             'C-PEP-Info' => array(),
-            'Cache-Control' => array('tags'=>array('cache')),
+            'Cache-Control' => array('tags' => array('cache')),
             'Connection' => array(),
             'Content-Base' => array(),
             'Content-Disposition' => array(),
-            'Content-Encoding' => array('tags'=>array('compression')),
+            'Content-Encoding' => array('tags' => array('compression')),
             'Content-ID' => array(),
             'Content-Language' => array(),
             'Content-Length' => array(),
@@ -85,9 +86,9 @@ class httpheader {
             'Destination' => array(),
             'Differential-ID' => array(),
             'Digest' => array(),
-            'ETag' => array('tags'=>array('cache')),
+            'ETag' => array('tags' => array('cache')),
             'Expect' => array(),
-            'Expires' => array('tags'=>array('cache')),
+            'Expires' => array('tags' => array('cache')),
             'Ext' => array(),
             'From' => array(),
             'GetProfile' => array(),
@@ -118,7 +119,7 @@ class httpheader {
             'PICS-Label' => array(),
             'Pep-Info' => array(),
             'Position' => array(),
-            'Pragma' => array('tags'=>array('cache')),
+            'Pragma' => array('tags' => array('cache')),
             'ProfileObject' => array(),
             'Protocol' => array(),
             'Protocol-Info' => array(),
@@ -167,7 +168,7 @@ class httpheader {
             'X-Content-Security-Policy' => array(),
             'X-Correlation-ID' => array(),
             'X-Pingback' => array(), // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
-            'X-Powered-By' => array('tags'=>array('unwanted')),
+            'X-Powered-By' => array('tags' => array('unwanted')),
             'X-Request-ID' => array(),
             'X-Robots-Tag' => array(),
             'X-UA-Compatible' => array(),
@@ -208,13 +209,13 @@ class httpheader {
      * @param  string  $sLine  single http response header line
      * @return array
      */
-    protected function _splitHeaderLine($sLine){
+    protected function _splitHeaderLine($sLine) {
         $aTmp = explode(":", $sLine, 2);
         $sVarname = count($aTmp) > 1 ? $aTmp[0] : '_status';
         $value = count($aTmp) > 1 ? $aTmp[1] : $sLine;
         return array($sVarname, trim($value));
     }
-    
+
     /**
      * set http response header to analyze
      * 
@@ -262,7 +263,7 @@ class httpheader {
     // ----------------------------------------------------------------------
     // Security Headers
     // ----------------------------------------------------------------------
-    
+
     /**
      * get an array with defined securtity headers and existance in the current
      * response header data
@@ -306,7 +307,7 @@ class httpheader {
     }
 
     // ----------------------------------------------------------------------
-    
+
     /**
      * helper: get an array of tags by given header var + value
      * 
@@ -314,27 +315,27 @@ class httpheader {
      * @param string  $val
      * @return array
      */
-    protected function _getTagsOfHeaderline($varname,$val){
-        $aTags=array();
+    protected function _getTagsOfHeaderline($varname, $val) {
+        $aTags = array();
         foreach ($this->_aHeaderVars as $sSection => $aSection) {
             foreach ($aSection as $sVar => $aChecks) {
-                
+
                 if (strtolower($varname) === strtolower($sVar)) {
                     $aTags[] = $sSection;
-                    if (isset($aChecks['tags'])){
-                        $aTags= array_merge($aTags, $aChecks['tags']);
+                    if (isset($aChecks['tags'])) {
+                        $aTags = array_merge($aTags, $aChecks['tags']);
                     }
                     if (isset($aChecks['badregex'])) {
                         preg_match('/(' . $sVar . '):\ (.*' . $aChecks['badregex'] . '.*)/i', "$varname: $val", $aMatches);
                         if (count($aMatches)) {
                             $aTags[] = 'unwanted';
-                        } 
-                    } 
+                        }
+                    }
                 }
             }
         }
-        if(!count($aTags)){
-            $aTags[]='unknown';
+        if (!count($aTags)) {
+            $aTags[] = 'unknown';
         }
         // echo "DEBUG: $varname: $val - ".print_r($aTags, 1).'<br>';
         return $aTags;
@@ -347,10 +348,10 @@ class httpheader {
      * @param string  $sTag   tag to search for
      * @return string
      */
-    protected function _hasTag($aItem, $sTag){
-        return array_search($sTag, $aItem['tags'])!==false;
+    protected function _hasTag($aItem, $sTag) {
+        return array_search($sTag, $aItem['tags']) !== false;
     }
-    
+
     /**
      * check if a header item tag contains a known header var;
      * if true it returns a string with the section
@@ -359,14 +360,21 @@ class httpheader {
      * @return boolean
      */
     protected function _isKnownHeader($aItem) {
-        foreach(array('httpv1','non-standard', 'security') as $sSection){
-            if($this->_hasTag($aItem, $sSection)){
+        foreach (array('httpv1', 'non-standard', 'security') as $sSection) {
+            if ($this->_hasTag($aItem, $sSection)) {
                 return $sSection;
             }
         }
         return false;
     }
 
+    /**
+     * get array of common but non-standard http response headers
+     * @return array
+     */
+    public function getNonStandardHeaders() {
+        return $this->getHeadersWithGivenTag('non-standard');
+    }
 
     /**
      * get array of unknown http response headers
@@ -387,15 +395,9 @@ class httpheader {
      * @return array
      */
     public function getUnwantedHeaders() {
-        $aReturn = array();
-        foreach ($this->parseHeaders() as $aData) {
-            if ($aData['bad']) {
-                $aReturn[] = array('var' => $aData['var'], 'value' => $aData['value'], 'line' => $aData['line']);
-                ;
-            }
-        }
-        return $aReturn;
+        return $this->getHeadersWithGivenTag('unwanted');
     }
+
     /**
      * get array of http headers with headers matching a given tag
      * @return array
@@ -403,13 +405,14 @@ class httpheader {
     public function getHeadersWithGivenTag($sTag) {
         $aReturn = array();
         foreach ($this->parseHeaders() as $aData) {
-            if (array_search($sTag, $aData['tags'])) {
+            if (array_search($sTag, $aData['tags']) !== false) {
                 $aReturn[] = array('var' => $aData['var'], 'value' => $aData['value'], 'line' => $aData['line']);
                 ;
             }
         }
         return $aReturn;
     }
+
     /**
      * get array all found tags and its count in http response header data
      * @return array
@@ -417,9 +420,9 @@ class httpheader {
     public function getExistingTags() {
         $aReturn = array();
         foreach ($this->parseHeaders() as $aData) {
-            if(isset($aData['tags']) && count($aData['tags'])){
-                foreach ($aData['tags'] as $sTag){
-                    $aReturn[$sTag]=isset($aReturn[$sTag]) ? $aReturn[$sTag]+1 : 1;
+            if (isset($aData['tags']) && count($aData['tags'])) {
+                foreach ($aData['tags'] as $sTag) {
+                    $aReturn[$sTag] = isset($aReturn[$sTag]) ? $aReturn[$sTag] + 1 : 1;
                 }
             }
         }
@@ -436,7 +439,7 @@ class httpheader {
     public function parseCookiefile($sFile) {
         $aReturn = array(
             'metainfos' => array(
-                'file'=>$sFile
+                'file' => $sFile
             ),
             'cookies' => array(),
         );
@@ -474,16 +477,17 @@ class httpheader {
                     $cookie['name'] = urldecode($tokens[5]);   // The name of the variable.
                     $cookie['value'] = urldecode($tokens[6]);  // The value of the variable.
                     // Convert date to a readable format
-                    $cookie['expiration'] = isset($tokens[4]) && $tokens[4]>"0" ? date('Y-m-d h:i:s', (int)$tokens[4]) : '-';
+                    $cookie['expiration'] = isset($tokens[4]) && $tokens[4] > "0" ? date('Y-m-d h:i:s', (int) $tokens[4]) : '-';
 
                     // Record the cookie.
-                    $aReturn['cookies'][$cookie['domain'].'/'.$cookie['name']] = $cookie;
+                    $aReturn['cookies'][$cookie['domain'] . '/' . $cookie['name']] = $cookie;
                 }
             }
         }
         ksort($aReturn['cookies']);
         return $aReturn;
     }
+
     /**
      * get an helper array with all header lines
      * @return array
@@ -498,17 +502,17 @@ class httpheader {
 
             // $aReturn[strtolower($varname)]=array(
             // $sFound = count($this->isKnownHeadervar($sVar, $val)) ? true : 'unknown';
-            $aTags=$this->_getTagsOfHeaderline($varname, $val);
+            $aTags = $this->_getTagsOfHeaderline($varname, $val);
             $aItem = array(
                 'var' => $varname,
                 'value' => $val,
                 'line' => $iLine,
                 'tags' => $aTags,
             );
-            $aItem['found']=$this->_isKnownHeader($aItem) ? $this->_isKnownHeader($aItem) : 'unknown';
-            $aItem['bad']=$this->_hasTag($aItem, 'unwanted');
+            $aItem['found'] = $this->_isKnownHeader($aItem) ? $this->_isKnownHeader($aItem) : 'unknown';
+            $aItem['bad'] = $this->_hasTag($aItem, 'unwanted');
             // $aItem['bad']=$this->_isKnownHeader($aItem);
-            $aReturn[]=$aItem;
+            $aReturn[] = $aItem;
         }
         // echo '<pre>'.print_r($aReturn, 1).'</pre>';
         return $aReturn;

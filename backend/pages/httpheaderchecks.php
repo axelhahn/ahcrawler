@@ -65,10 +65,12 @@ $aSecHeader=$oHttpheader->getSecurityHeaders();
 // tiles
 // ----------------------------------------------------------------------
 $aFoundTags=$oHttpheader->getExistingTags();
+// print_r($aFoundTags);
 $iTotalHeaders=count($oHttpheader->getHeaderAsArray());
 $iSecHeader=isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
 $iUnkKnown=isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted=isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
+$iNonStandard=isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
 $sTiles=''
     . $oRenderer->renderTile('', $this->lB('httpheader.header.total'), $iTotalHeaders, '')
         
@@ -76,25 +78,32 @@ $sTiles=''
         ? $oRenderer->renderTile(($aFoundTags['httpv1']+$iSecHeader===$iTotalHeaders ? 'ok' : '' ), $this->lB('httpheader.header.httpv1'), $aFoundTags['httpv1'], '', '')
         : $oRenderer->renderTile('warning', $this->lB('httpheader.header.httpv1'), 0, '', '')
       )
-    . ($iSecHeader
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.security'), $aFoundTags['security'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.security'), $oRenderer->renderShortInfo('miss'), '', '')
-      )
-    . (isset($aFoundTags['cache'])
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.cache'), $aFoundTags['cache'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '')
-      )
-    . (isset($aFoundTags['compression'])
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.compression'), $aFoundTags['compression'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '')
-      )
+
     . ($iUnkKnown
-        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unknown'), $aFoundTags['unknown'], (floor($aFoundTags['unknown']/$iTotalHeaders*1000)/10).'%', '')
+        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unknown'), $aFoundTags['unknown'], (floor($aFoundTags['unknown']/$iTotalHeaders*1000)/10).'%', '#warnunknown')
         : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unknown'), 0, '', '')
       )
     . ($iUnwanted
-        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unwanted'), $iUnwanted, '', '')
+        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unwanted'), $iUnwanted, (floor($iUnwanted/$iTotalHeaders*1000)/10).'%', '#warnunwanted')
         : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unwanted'), 0, '', '')
+      )
+    . ($iNonStandard
+        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.non-standard'), $iNonStandard, (floor($iNonStandard/$iTotalHeaders*1000)/10).'%', '#warnnonstandard')
+        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.non-standard'), 0, '', '')
+      )
+        
+    . (isset($aFoundTags['cache'])
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.cache'), $aFoundTags['cache'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '#warnnocache')
+      )
+    . (isset($aFoundTags['compression'])
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.compression'), $aFoundTags['compression'], '', '')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '#warnnocompression')
+      )
+
+    . ($iSecHeader
+        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.security'), $aFoundTags['security'], '', '#securityheaders')
+        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.security'), $oRenderer->renderShortInfo('miss'), '', '#securityheaders')
       )
     ;
         
@@ -109,8 +118,6 @@ $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . $oRenderer->renderToggledContent($this->lB('httpheader.plain'),'<pre>'.htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>', false)
         . '<br>'
         . $oRenderer->renderHttpheaderAsTable($oHttpheader->parseHeaders())
-        // . '<h3>' . $this->lB('httpheader.plain') . '</h3>'
-        // . '<pre>'. htmlentities(print_r($oHttpheader->getHeadersWithTag('cache'), 1)).'</pre>'
         ;
 
 // ----------------------------------------------------------------------
@@ -124,15 +131,13 @@ $sTiles='';
     $sLegendeWarn='';
 
     // --- unknown header vars
-    // $sReturn.= '<pre>'.print_r($oHttpheader->checkHeaders(),1).'</pre>';
     $aUnknownheader=$oHttpheader->getUnknowHeaders();
-    // $sReturn.= '<pre>'.print_r($aUnknownheader,1).'</pre>';
     if(is_array($aUnknownheader) && count($aUnknownheader)){
-        $iWarnings+=count($aUnknownheader);
+        $iWarnings+=$iUnkKnown;
 
-        $sWarnings.= '<p>'
-            . $this->lB('httpheader.unknown.description')
-            . '</p>'
+        $sWarnings.= ''
+                . '<h4 id="warnunknown">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')).'</h4>'
+                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.unknown.description'), 'warning')
                 ;
         foreach($aUnknownheader as $sKey=>$aHeaderitem){
             $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.varfound.unknown'), $aHeaderitem['var'], $aHeaderitem['value'])
@@ -150,66 +155,78 @@ $sTiles='';
     // --- unwanted header vars
     $aWarnheader=$oHttpheader->getUnwantedHeaders();
     if(is_array($aWarnheader) && count($aWarnheader)){
-        $iWarnings+=count($aWarnheader);
-        $sWarnings.= '<p>'
-            . $this->lB('httpheader.warnings.description')
-            . '</p>'
-                ;
+        // $iWarnings+=count($aWarnheader);
+        $iWarnings+=$iUnwanted;
+        $sWarnings.= ''
+                . '<h4 id="warnunwanted">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')).'</h4>'
+                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.description'), 'warning');
         foreach($aWarnheader as $sKey=>$aHeaderitem){
             $sWarnings .= $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
                     );
             $sLegendeWarn .='<li>'
-                    . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description').'<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
+                    . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description')
+                    . '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br>'
+                    . '</li>'
                     ;
         }
-        /*
-        foreach($aUnknownheader as $sKey=>$aHeaderitem){
-            $sReturn .= '<li><a href="#" onclick="return false;" class="tile" title="'.$this->lB('httpheader.unknown').'">' . $this->lB('httpheader.unknown').'<br><strong>'.$aHeaderitem['var'].'</strong></a></li>';
-            $sLegendeWarn .='<li>'
-                    . $this->lB('httpheader.'.$sKey.'.description').'<pre>'.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br></li>'
-                    ;
-        }
-         * 
-         */
         $sWarnings.= '</ul>'
             . '<div style="clear: both;"></div>'
             . '<ul>'.$sLegendeWarn.'</ul>'
             ;
     } 
+    // --- common but non-standard header vars
+    if ($iNonStandard){
+        $aNonStdHeader=$oHttpheader->getNonStandardHeaders();
+        $iWarnings+=$iNonStandard;
+        $sWarnings.= ''
+            . '<h4 id="warnnonstandard">'.$this->lB('httpheader.header.non-standard').'</h4>'
+            . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.non-standard'), 'warning')
+            . '<ul>'
+            ;
+        foreach($aNonStdHeader as $sKey=>$aHeaderitem){
+            /*
+             * TODO: add translation texts for all non-standard header variables
+            $sWarnings.='<li>'
+                    . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description')
+                    . '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br>'
+                    . '</li>'
+                    ;
+             */
+            $sWarnings.='<li><pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
+        }
+        $sWarnings.= '</ul><br>';
+    }
+
+    // --- no caching?
     if (!isset($aFoundTags['cache'])){
         $iWarnings++;
-        $sWarnings.=$oRenderer->renderTileBar(
+        
+        $sWarnings.= '<h4 id="warnnocache">'.str_replace('<br>', ' ', $this->lB('httpheader.header.cache')).'</h4>'
+                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.nocache'), 'warning').'<br>'
+                /*
+                . $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '')
-            )
-            . '<div style="clear: both;"></div>'
-            .'<p>'
-            . $this->lB('httpheader.warnings.nocache')
-            . '</p>'
-        ;
+                )
+                 */
+            . '<div style="clear: both;"></div>'              
+            ;
     }
     
+    // --- no compression?
     if (!isset($aFoundTags['compression'])){
         $iWarnings++;
-        $sWarnings.=$oRenderer->renderTileBar(
+        $sWarnings.= '<h4 id="warnnocompression">'.str_replace('<br>', ' ', $this->lB('httpheader.header.compression')).'</h4>'
+                . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.nocompression'), 'warning').'<br>'
+                /*
+                .$oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '')
             )
             . '<div style="clear: both;"></div>'
-            .'<p>'
-            . $this->lB('httpheader.warnings.nocompression')
-            . '</p>'
+            */
         ;
     }
-    $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h3>'
-        . ($iWarnings
-            ? $sWarnings
-            : '<ul class="tiles warnings">'
-                . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
-                . '</ul>'
-                . '<div style="clear: both;"></div>'
-        )
-        ;
-    // $sReturn.='<pre>'.print_r($aWarnheader, 1).'</pre>';
+    
 
 // ----------------------------------------------------------------------
 // security header
@@ -242,20 +259,34 @@ foreach($aSecHeader as $sVar=>$aData){
                 ;
     }
 }
-$sReturn.= '<h3>' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
-    . '<p>'
-        . $this->lB('httpheader.securityheaders.description').'<br>'
-    . '</p>'
-    . $this->_getHtmlchecksChart(count($aSecHeader), $oHttpheader->getCountBadSecurityHeaders())
-    . '<ul class="tiles warnings">'
-    . $sSecOk
-    . $sSecMiss
-    . '</ul>'
-    . '<div style="clear: both;"></div>'
-    . '<ul>' 
-        . $sLegendeSecOk
-        . $sLegendeSecMiss
-    . '</ul>'
+
+// ----------------------------------------------------------------------
+// output
+// ----------------------------------------------------------------------
+
+$sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h3>'
+    . ($iWarnings
+        ? $sWarnings
+        : '<ul class="tiles warnings">'
+            . '<li><a href="#" onclick="return false;" class="tile ok">' . $this->lB('httpheader.warnings.ok-label').'<br><strong>'.$this->lB('httpheader.warnings.ok').'</strong></a></li>'
+            . '</ul>'
+            . '<div style="clear: both;"></div>'
+    )
+
+    .'<h3 id="securityheaders">' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
+        . '<p>'
+            . $this->lB('httpheader.securityheaders.description').'<br>'
+        . '</p>'
+        . $this->_getHtmlchecksChart(count($aSecHeader), $oHttpheader->getCountBadSecurityHeaders())
+        . '<ul class="tiles warnings">'
+        . $sSecOk
+        . $sSecMiss
+        . '</ul>'
+        . '<div style="clear: both;"></div>'
+        . '<ul>' 
+            . $sLegendeSecOk
+            . $sLegendeSecMiss
+        . '</ul>'
     ;
 
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';

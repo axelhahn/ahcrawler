@@ -14,6 +14,17 @@
 
 ----------------------------------------------------------------------
 
+2020-01-04: v0.99
+  * UPDATE: font-awesome to 5.11.2
+  * UPDATE: jquery to 3.4.1
+  * UPDATE: Chart.js to 2.9.3
+  * UPDATE: medoo to 1.7.8
+  * UPDATE: ahcache class
+  * UPDATE: cli class
+  * FIX: ranking counter in search class: it did not detect a searchterm on text end
+  * UPDATE: improve details for ranking in backend searchindex search
+  * UPDATE: http response headers - added non-standard headers
+
 2019-11-10: v0.98
   * added: frontend search: added renderHiddenfields()
   * added: frontend search: update to implement a search on another domain

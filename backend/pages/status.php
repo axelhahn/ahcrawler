@@ -187,25 +187,25 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                         $iCounter ++;
                         $sResult = '';
                         foreach ($aItem['results'] as $sWord => $aMatchTypes) {
-                            // $sResult.='<strong>' . $sWord . '</strong><br>';
+                            $sResult.='<br>'.$this->_getIcon('button.search').'<strong>' . $sWord . '</strong> ...<br>';
                             foreach ($aMatchTypes as $sType => $aHits) {
                                 $sMatches = '';
                                 foreach ($aHits as $sWhere => $aValues) {
                                     if ($aValues[0]) {
-                                        $sMatches.='... ' . $sWhere . ': <strong>' . $aValues[0] . '</strong> (x'.$aValues[1].' = '.($aValues[0]*$aValues[1]).')<br>';
+                                        $sMatches.='<nobr style="text-align: right; display: block;">&nbsp;&nbsp;- <strong>' . $aValues[0] . '</strong> x ' . $sWhere . ' (' . $aValues[0] . 'x'.$aValues[1].'=<strong>'.($aValues[0]*$aValues[1]).'</strong>)</nobr>';
                                     }
                                 }
                                 if ($sMatches) {
-                                    $sResult.=($sResult ? '<br>' : '') . $sType . '<br>' . $sMatches;
+                                    $sResult.='<br>* '.$sType . ':<br>' . $sMatches;
                                 }
                             }
                         }
                         $aTable[] = array(
                             'id' => $iCounter,
-                            'summary' => 
-                                    $this->_getSimpleHtmlTable(array(
+                            'ranking' => '<strong>'.$iRanking . '</strong> ('.round($iRanking/$iMaxRanking*100).'%)<br>' . $sResult . '</span>',
+                            'summary' => $this->_getSimpleHtmlTable(array(
                                     array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
-                                    array('url', $aItem['url']),
+                                    array('url', str_ireplace('','',$aItem['url'])),
                                     array('lang', $aItem['lang']),
                                     array('description', $aItem['description']),
                                     array('keywords', $aItem['keywords']),
@@ -213,7 +213,6 @@ $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                                 ))
                             ,
                             // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
-                            'ranking' => '<strong>'.$iRanking . '</strong><br><br>' . $sResult . '</span>',
                             'actions' => $this->_getButton(array(
                                 'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$aItem['id'],
                                 'class' => 'button-secondary',

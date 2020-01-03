@@ -487,6 +487,7 @@
     "httpheader.header.unwanted": "Unwanted<br>data",
     "httpheader.header.unknown": "unknown<br>variables",
     "httpheader.header.security": "Security<br>header",
+    "httpheader.header.non-standard": "Non-Standard",
     
     "httpheader.thvariable": "Variable",
     "httpheader.thvalue": "Value",
@@ -511,6 +512,7 @@
     "httpheader.warnings.ok": "OK",
     "httpheader.warnings.nocompression": "No compression was detected - there is no header <em>Content-Encoding</em>.<br>Let your webserver compress text content like html, javascript, css, xml.<br>The load impact on your server in minimal and the page performance (especially on distant) users will increase.",
     "httpheader.warnings.nocache": "No caching information was detected. You should set explizit information if / how long a browser is allowed to cache your content.",
+    "httpheader.warnings.non-standard": "Header entries were detected, that are quite common - but non standard.",
     
     "httpheader.server.description": "Remove the details for version number and operating system on a productive system. Set the server header to a product name only.",
     "httpheader.x-powered-by.description": "On a productive system do not show the technology behind. Remove this header variable.",

@@ -21,7 +21,7 @@ define("CLIVALUE_NONE", 3);
  * - colored text
  * 
  * @package cli
- * @version 1.03
+ * @version 1.07
  * @author Axel Hahn (https://www.axel-hahn.de/)
  * @license GNU GPL v 3.0
  * @link https://github.com/axelhahn/ahcli
@@ -125,10 +125,16 @@ class cli {
 
         $aData = $this->_aConfig['params'][$sVar];
         if (array_key_exists('pattern', $aData)) {
-            if ($sValue === false || !preg_match($aData['pattern'], $sValue)) {
+            
+            // do not test optional params that exist but have no value
+            if($aData['value']===CLIVALUE_OPTIONAL && !$sValue ){
+                return true;
+            }
+            
+            if ($sValue === false || preg_match($aData['pattern'], $sValue)<1) {
                 $this->color('error', 
                     'ERROR: parameter "' . $sVar . '" (' . $aData['shortinfo'] . ') - it has a wrong value.' . "\n"
-                    . '"' . $sValue . '" does not match ' . $aData['pattern'] . '.' . "\n"
+                    . '"' . $sValue . '" does not match ' . $aData['pattern'] . ' ' . "\n"
                 );
                 return false;
             }
@@ -175,8 +181,10 @@ class cli {
                 }
             }
             $sDots = ''
-                    . ($aData['value'] === CLIVALUE_REQUIRED ? ':' : '')
-                    . ($aData['value'] === CLIVALUE_OPTIONAL ? '::' : '')
+                    . ($aData['value'] === CLIVALUE_REQUIRED 
+                        ? ':' 
+                        : ($aData['value'] === CLIVALUE_OPTIONAL ? '::' : '')
+                    )
             ;
             $sShort.=$aData['short'] . $sDots;
             $aOptions[] = $sParam . $sDots;
@@ -194,6 +202,19 @@ class cli {
     // ----------------------------------------------------------------------
 
     /**
+     * fore cli mode. The execution stops if php_sapi_name() does not return 
+     * 'cli'
+     * 
+     * @return boolean
+     */
+    public function forceCli(){
+            if (php_sapi_name() !== "cli") {
+            die("ERROR: This script is for command line usage only.");
+        }
+        return true;
+    }
+
+    /**
      * interactive action; read a value and stor as value; the variable must 
      * exist in config; if a pattern was given the input will be verified 
      * against it.
@@ -202,6 +223,7 @@ class cli {
      * @return string
      */
     public function read($sVar) {
+        $this->forceCli();
         if (!array_key_exists($sVar, $this->_aConfig['params'])) {
             die(__CLASS__ . ':: ERROR in cli config: missing key [params]->[' . $sVar . '] in [array].');
         }
@@ -279,16 +301,23 @@ class cli {
      * @return array
      */
     public function getopt() {
+        $this->forceCli();
         $aParamdef = $this->_getGetoptParams();
         $aOptions = getopt($aParamdef['short'], $aParamdef['long']);
 
+        // echo __METHOD__ . " DEBUG \$aOptions = " . print_r($aOptions, 1);
+        // echo __METHOD__ . " DEBUG \$aParamdef = " . print_r($aParamdef, 1);
         foreach ($aOptions as $sVar => $sValue) {
             foreach ($this->_aConfig['params'] as $sParam => $aData) {
                 if ($sParam == $sVar || $aData['short'] == $sVar) {
                     if (!$this->_checkPattern($sParam, $sValue)) {
                         die();
                     }
-                    $this->setValue($sParam, ($sValue === false && $aData['value'] !== CLIVALUE_REQUIRED) ? true : $sValue);
+                    $this->setValue($sParam, 
+                            ($sValue === false || $aData['value'] == CLIVALUE_NONE) 
+                                ? true 
+                                : $sValue
+                            );
                 }
             }
         }
@@ -303,12 +332,17 @@ class cli {
      */
     public function getvalue($sKey) {
         if (!array_key_exists($sKey, $this->_aConfig['params'])) {
-            die(__CLASS__ . ':: ERROR in cli config: a parameter variable [' . $sKey . '] was not defined.');
+            $this->color('error');
+            die(__CLASS__ . ':: ERROR in cli config: a parameter variable [' . $sKey . '] was not defined.'."\n");
         }
         if (array_key_exists($sKey, $this->_aValues)) {
             return $this->_aValues[$sKey];
         }
         return false;
+    }
+    
+    public function getAllValues(){
+        return $this->_aValues;
     }
 
     /**
@@ -323,12 +357,15 @@ class cli {
                 . "PARAMETERS:\n"
         ;
         foreach ($this->_aConfig['params'] as $sParam => $aData) {
-            $sReturn.='  --' . $sParam . ' (or -' . $aData['short'] . ') '
-                    . ($aData['value'] === CLIVALUE_REQUIRED ? '[value] (required)' : '')
-                    . ($aData['value'] === CLIVALUE_OPTIONAL ? '[value] (optional)' : '')
+            $sReturn.=(isset($aData['short']) && $aData['short'] ? '  -'.$aData['short']."\n" : "")
+                    .'  --' . $sParam
+                    . ($aData['value'] === CLIVALUE_REQUIRED ? ' [value] (value required)' : '')
+                    . ($aData['value'] === CLIVALUE_OPTIONAL ? ' [=value] (value is optional)' : '')
+                    . ($aData['value'] === CLIVALUE_NONE ? ' (without value)' : '')
                     . "\n"
                     . '    ' . $aData['shortinfo'] . "\n"
-                    . (array_key_exists('description', $aData) ? '    ' . $aData['description'] . "\n" : '')
+                    .(isset($aData['description']) && $aData['description'] ? '    '.$aData['description']."\n" : "")
+                    .(isset($aData['pattern']) && $aData['pattern'] ? '    If a value is given then it will be checked against regex ' . $aData['pattern']."\n" : "")
                     . "\n"
             ;
         }

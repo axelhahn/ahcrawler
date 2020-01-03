@@ -338,19 +338,40 @@ class ahsearch extends crawler_base {
      */
     private function _countHits($sNeedle, $sHaystack) {
 
+        $iMatchWord=0;
+        $iWordStart=0;
+        
+        // ----- matching word
+        
+        // detect a searchterm within the text
         preg_match_all('/\W' . $sNeedle . '\W/i', $sHaystack, $a1);
-        $iMatchWord = is_array($a1) ? count($a1[0]) : 0;
+        $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
+        
+        // detect a searchterm at the end of the text
+        preg_match_all('/\W' . $sNeedle . '$/i', $sHaystack, $a1);
+        $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
+
+        // detect a searchterm on start of the text
         preg_match_all('/^' . $sNeedle . '\W/i', $sHaystack, $a1);
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
+
+        // detect a searchterm as complete text
         preg_match_all('/^' . $sNeedle . '$/i', $sHaystack, $a1);
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
 
+        // ----- word start
+
+        // detect searchterm as word start 
         preg_match_all('/\W' . $sNeedle . '/i', $sHaystack, $a2);
-        $iWordStart = is_array($a2) ? count($a2[0]) : 0;
+        $iWordStart += is_array($a2) ? count($a2[0]) : 0;
+
+        // detect searchterm on start of text
         preg_match_all('/^' . $sNeedle . '\W/i', $sHaystack, $a1);
         $iWordStart += is_array($a1) ? count($a1[0]) : 0;
 
+        // ----- any hit
         preg_match_all('/' . $sNeedle . '/i', $sHaystack, $a3);
+
         return array(
             'matchWord' => $iMatchWord,
             'WordStart' => $iWordStart,

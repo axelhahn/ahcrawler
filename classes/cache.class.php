@@ -1,6 +1,15 @@
 <?php
 /** 
+ * --------------------------------------------------------------------------------<br>
+ *          __    ______           __       
+ *   ____ _/ /_  / ____/___ ______/ /_  ___ 
+ *  / __ `/ __ \/ /   / __ `/ ___/ __ \/ _ \
+ * / /_/ / / / / /___/ /_/ / /__/ / / /  __/
+ * \__,_/_/ /_/\____/\__,_/\___/_/ /_/\___/ 
+ *                                        
+ * --------------------------------------------------------------------------------<br>
  * AXELS CACHE CLASS<br>
+ * --------------------------------------------------------------------------------<br>
  * <br>
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
@@ -25,14 +34,15 @@
  *                  - _cleanup checks with file_exists<br>
  * 2014-03-31  2.3  - added _setup() that to includes custom settings<br>
  *                  - limit number of files in cache directory<br>
- * 
- * PRE ... NON PUBLIC RELEASE
- * 2019-09-01  2.4  - added getCachedItems() to get a filtered list of cache files<br>
+ * 2019-11-24  2.4  - added getCachedItems() to get a filtered list of cache files<br>
  *                  - added remove file to make complete cache of a module invalid<br>
+ *                  - rename var in cache.class_config.php to "$this->_sCacheDirDivider"<br>
+ * 2019-11-26  2.5  - added getModules() to get a list of existing modules that stored<br>
+ *                    a cached item<br>
  * --------------------------------------------------------------------------------<br>
- * @version 2.4-beta
+ * @version 2.5
  * @author Axel Hahn
- * @link http://www.axel-hahn.de/php_contentcache
+ * @link https://www.axel-hahn.de/docs/ahcache/index.htm
  * @license GPL
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @package Axels Cache
@@ -280,8 +290,10 @@ class AhCache {
         return true;
     }
 
+    // ----------------------------------------------------------------------
     /**
      * get an array with cached data elements
+     * @since 2.4
      *
      * @param string  $sDir     full path of cache dir; default: false (auto detect cache dir)
 	 * @param array   $aFilter  filter; valid keys are
@@ -360,12 +372,30 @@ class AhCache {
 
     // ----------------------------------------------------------------------
     /**
-     * public function delete - delete a single cachefile if it exist
+     * get a flat array of module names that saved a cache item already
+     * @since 2.5
+     * 
+     * @return array
+     */
+    public function getModules(){
+        $aReturn=array();
+        foreach(glob($this->_sCacheDir.'/*') as $sEntry){
+            if (is_dir($sEntry)){
+                $aReturn[]=basename($sEntry);
+            }
+        }
+        return $aReturn;
+    }
+
+    // ----------------------------------------------------------------------
+    /**
+     * public function delete - delete a single cache item if it exist
      * @return     boolean
      */
     public function delete() {
-        if (!file_exists($this->_sCacheFile))
+        if (!file_exists($this->_sCacheFile)){
             return false;
+        }
         if (unlink($this->_sCacheFile)) {
             $this->_aCacheInfos['data'] = false;
             $this->_aCacheInfos['stat'] = false;
@@ -381,18 +411,18 @@ class AhCache {
      */
     public function dump() {
         echo "
-                <hr>
-                <strong>cache->dump()<br></strong>
-                <strong>module: </strong>" . $this->sModule . "<br>
-                <strong>ID: </strong>" . $this->sCacheID . "<br>
-                <strong>filename: </strong>" . $this->_sCacheFile;
-        if (!file_exists($this->_sCacheFile))
-            echo " (does not exist yet)";
-        echo "<br>
-                <strong>age: </strong>" . $this->getAge() . " s<br>
-                <strong>ttl: </strong>" . $this->getTtl() . " s<br>
-                <strong>expires: </strong>" . $this->getExpire() . " (" . date("d.m.y - H:i:s", $this->getExpire()) . ")<br>
-                <pre>";
+            <hr>
+            <strong>".__METHOD__."()<br></strong>
+            <strong>module: </strong>" . $this->sModule . "<br>
+            <strong>ID: </strong>" . $this->sCacheID . "<br>
+            <strong>filename: </strong>" . $this->_sCacheFile
+        . (!file_exists($this->_sCacheFile) ? " (does not exist yet)" : "")
+        . "<br>
+            <strong>age: </strong>" . $this->getAge() . " s<br>
+            <strong>ttl: </strong>" . $this->getTtl() . " s<br>
+            <strong>expires: </strong>" . $this->getExpire() . " (" . date("d.m.y - H:i:s", $this->getExpire()) . ")<br>
+            <pre>"
+        ;
         print_r($this->_aCacheInfos);
         echo "</pre><hr>";
         return true;
@@ -461,8 +491,9 @@ class AhCache {
      * @return     int  expired time in seconds; negative if cache is not expired
      */
     public function iExpired() {
-        if (!$this->_tsExpire)
+        if (!$this->_tsExpire){
             return true;
+        }
         return date("U") - $this->_tsExpire;
     }
 
@@ -476,10 +507,12 @@ class AhCache {
      * @return  integer  time in sec how much the cache file is newer; negative if reference file is newer
      */
     public function isNewerThanFile($sRefFile) {
-        if (!file_exists($sRefFile))
+        if (!file_exists($sRefFile)){
             return false;
-        if (!isset($this->_aCacheInfos['stat']))
+        }
+        if (!isset($this->_aCacheInfos['stat'])){
             return false;
+        }
 
         $aTmp = stat($sRefFile);
         $iTimeRef = $aTmp['mtime'];
@@ -497,8 +530,9 @@ class AhCache {
         if (!isset($this->_aCacheInfos['data'])){
             $this->_getAllCacheData();
         }
-        if (!isset($this->_aCacheInfos['data']))
+        if (!isset($this->_aCacheInfos['data'])){
             return false;
+        }
         return $this->_aCacheInfos['data'];
     }
 
@@ -522,8 +556,8 @@ class AhCache {
      * Remark: You additionally need to call the write() method to store a new ttl value with 
      * data in the filesystem
      * @since 2.0
-     * @param type $iTtl  ttl value in seconds
-     * @return     int  get ttl of cache
+     * @param   int  $iTtl  ttl value in seconds
+     * @return  int  get ttl of cache
      */
     public function setTtl($iTtl) {
         return $this->_iTtl = $iTtl;
@@ -532,7 +566,7 @@ class AhCache {
     // ----------------------------------------------------------------------
     /**
      * public function touch() - touch cachefile if it exist
-     * For cachedata with a ttl a new expiration will be set
+     * For cached data a new expiration based on existing ttl will be set
      * @return boolean 
      */
     public function touch() {
@@ -540,10 +574,12 @@ class AhCache {
             return false;
 
         // touch der Datei reicht nicht mehr, weil tsExpire verloren ginge
-        if (!$this->_iTtl)
+        if (!$this->_iTtl){
             $bReturn = touch($this->_sCacheFile);
-        else
+        }
+        else{
             $bReturn = $this->write();
+        }
 
         $this->_getAllCacheData();
 
@@ -555,9 +591,9 @@ class AhCache {
      * Write data into a cache. 
      * - data can be any serializable type, like string, array or object
      * - set ttl in s (from now); optional parameter
-     * @param      various  $data  data to store in cache
-     * @param      int      $iTtl  time in s if content cache expires (min. 0)
-     * @return     bool     success of write action
+     * @param      various  $data    data to store in cache
+     * @param      int      $iTtl    time in s if content cache expires (min. 0)
+     * @return     bool     success  of write action
      */
     public function write($data = false, $iTtl = -1) {
         if (!$this->_sCacheFile)
