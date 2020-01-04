@@ -164,6 +164,26 @@ class ahsearch extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
+     * create a search phrase for WHERE clause
+     * This method replaces % with [%]
+     * 
+     * @param string   $sTerm  search term
+     * @param boolean  $bLike  surround % for search with like (for Medoo)
+     * @return type
+     */
+    private function _replaceSearchterm4Sql($sTerm, $bLike=true){
+        $sReturn=$sTerm;
+        if(strpos($sReturn, '%')!==false){
+            $sReturn=str_replace('%', '/%', $sTerm);
+            // for Medoo: if the search term contains a % then it
+            // does not surround the searchterm with % on using like
+            $sReturn=$bLike ? '%'.$sReturn.'%' : $sReturn;
+        }
+        
+        return $sReturn;
+    }
+    
+    /**
      * do search through pages
      * @param string  $q          search string
      * @param type $aOptions
@@ -217,28 +237,28 @@ class ahsearch extends crawler_base {
             // remove '%' ... it is added below in 'url[~]' => $aOptions['url'],
             $aOptions['url'] = str_replace('%', '', $aOptions['url']);
         }
-        $aSearchwords = explode(" ", $q);
+        $sPhrase=$this->_replaceSearchterm4Sql($q);
         if($aOptions['mode']==='PHRASE'){
             $aQuery['OR'] = array(
-                'title[~]' => $q,
-                'description[~]' =>$q,
-                'keywords[~]' => $q,
-                'url[~]' => $q,
-                'content[~]' => $q,
+                'title[~]' => $sPhrase,
+                'description[~]' =>$sPhrase,
+                'keywords[~]' => $sPhrase,
+                'url[~]' => $sPhrase,
+                'content[~]' => $sPhrase,
             );
             $aOptions['mode']='AND';
         } else {
-            foreach ($aSearchwords as $sWord) {
+            foreach (explode(" ", $q) as $sWord) {
+                $sPhrase=$this->_replaceSearchterm4Sql($sWord);
                 $aQuery['OR # query for ['.$sWord.']'] = array(
-                    'title[~]' => $sWord,
-                    'description[~]' => $sWord,
-                    'keywords[~]' => $sWord,
-                    'url[~]' => $sWord,
-                    'content[~]' => $sWord,
+                    'title[~]' => $sPhrase,
+                    'description[~]' => $sPhrase,
+                    'keywords[~]' => $sPhrase,
+                    'url[~]' => $sPhrase,
+                    'content[~]' => $sPhrase,
                 );
             }
         }
-        // echo "DEBUG <pre>" . print_r($aQuery, 1) ."</pre><br>";
         // print_r($aOptions);echo "<hr>";
         $aSelect=array(
             'siteid' => $this->iSiteId,
@@ -259,6 +279,7 @@ class ahsearch extends crawler_base {
                     'LIMIT' => 55
                 )
         );
+        // echo "DEBUG <pre>" . print_r($aQuery, 1) ."</pre><br>";
         // echo 'DEBUG: ' . $this->oDB->last() . '<br>';
         if (is_array($aResult) && count($aResult)) {
             $aResult = $this->_reorderByRanking($aResult, $q);
@@ -342,6 +363,7 @@ class ahsearch extends crawler_base {
         $iWordStart=0;
         
         // ----- matching word
+        $a1=array();
         
         // detect a searchterm within the text
         preg_match_all('/\W' . $sNeedle . '\W/i', $sHaystack, $a1);
@@ -360,6 +382,7 @@ class ahsearch extends crawler_base {
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
 
         // ----- word start
+        $a2=array();
 
         // detect searchterm as word start 
         preg_match_all('/\W' . $sNeedle . '/i', $sHaystack, $a2);
@@ -395,6 +418,8 @@ class ahsearch extends crawler_base {
         foreach ($aData as $aItem) {
             $iCount = 0;
             $sUrl = $aItem['url'];
+
+            // TODO: customize replacement
             $aItem['url'] = basename($aItem['url']);
             $aItem['url'] = str_replace('id_', '', $aItem['url']);
             $aItem['url'] = str_replace('.html', '', $aItem['url']);
@@ -403,11 +428,13 @@ class ahsearch extends crawler_base {
             $aResults = array();
             foreach ($aSearchwords as $sWord) {
 
+                $sWordRegex= preg_replace('/([^a-zA-Z0-9])/', '\\\$1', $sWord);
                 // in den einzelnen Spalten nach Anzahl Vorkommen des
                 // Wortes (Übereinstimmung, am Anfang, irgendwo) suchen und 
                 // deren Anzahl Treffer mit dem Ranking-Faktor multiplizieren 
                 foreach (array('title', 'description', 'keywords', 'url', 'content') as $sCol) {
-                    foreach ($this->_countHits($sWord, $aItem[$sCol]) as $sKey => $iHits) {
+                    // echo "DEBUG: $sWord ... $sWordRegex ... in ".$aItem[$sCol]."<br>";
+                    foreach ($this->_countHits($sWordRegex, $aItem[$sCol]) as $sKey => $iHits) {
                         $iCount+=$iHits * $this->_aRankCounter[$sKey][$sCol];
                         $aResults[$sWord][$sKey][$sCol] = array($iHits, $this->_aRankCounter[$sKey][$sCol]);
                     }
@@ -710,7 +737,7 @@ class ahsearch extends crawler_base {
                         $iMaxRanking = false;
                         foreach ($aData as $iRanking => $aDataItems) {
                             if (!$iMaxRanking) {
-                                $iMaxRanking = $iRanking;
+                                $iMaxRanking = $iRanking ? $iRanking : 1;
                             }
                             foreach ($aDataItems as $aItem) {
                                 $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);

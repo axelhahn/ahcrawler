@@ -30,8 +30,11 @@
     "nav.vendor.label": "Vendor-Bibliotheken",
     "nav.vendor.hint": "Verwende Bibliotheken in diesem Backend von lokal oder lade sie von einem CDN",
     
-    "nav.status.label": "Status des Suchindex",
-    "nav.status.hint": "&Uuml;berblick &uuml;ber die Daten im Suchindex",
+    "nav.searchindexstatus.label": "Status des Suchindex",
+    "nav.searchindexstatus.hint": "&Uuml;berblick &uuml;ber die Daten im Suchindex",
+    
+    "nav.searchindextester.label": "Test-Suche",
+    "nav.searchindextester.hint": "Teste deine Online-Suche mit dem derzeitigen Suchindex",
     
     "nav.searches.label": "Suchanfragen",
     "nav.searches.hint": "Liste der aktuellen Suchanfragen",

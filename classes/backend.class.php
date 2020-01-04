@@ -46,7 +46,8 @@ class backend extends crawler_base {
             'vendor'=>array(), 
         ),
         'search'=>array(
-            'status'=>array(), 
+            'searchindexstatus'=>array(), 
+            'searchindextester'=>array(), 
             'searches'=>array(),
         ),
         'analysis'=>array(
@@ -111,8 +112,9 @@ class backend extends crawler_base {
             'vendor'=>'fas fa-box-open', 
             'search'=>'fas fa-database', 
             'crawler'=>'fas fa-flag', 
-            'status'=>'fas fa-flag', 
-            'searches'=>'fas fa-search', 
+            'searchindexstatus'=>'fas fa-flag', 
+            'searchindextester'=>'fas fa-search', 
+            'searches'=>'fas fa-chart-pie', 
             // 'analysis'=>'fa fa-newspaper-o', 
             'analysis'=>'fas fa-chart-line', 
             'sslcheck'=>'fas fa-shield-alt', 

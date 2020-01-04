@@ -30,8 +30,11 @@
     "nav.vendor.label": "Vendor libs",
     "nav.vendor.hint": "Use vendor libs for this backend locally or load them from a CDN",
     
-    "nav.status.label": "Status",
-    "nav.status.hint": "Overview about data in the search index",
+    "nav.searchindexstatus.label": "Status",
+    "nav.searchindexstatus.hint": "Overview about data in the search index",
+    
+    "nav.searchindextester.label": "Search test",
+    "nav.searchindextester.hint": "Test your online search with the current search index",
     
     "nav.searches.label": "Search terms",
     "nav.searches.hint": "View users search requests on your website",

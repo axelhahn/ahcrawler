@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2020-01-05: v0.100
+  * UPDATE: search for % char in text
+  * ADDED: backend: page to test search index
+
 2020-01-04: v0.99
   * UPDATE: font-awesome to 5.11.2
   * UPDATE: jquery to 3.4.1

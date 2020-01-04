@@ -106,7 +106,7 @@ if(!$this->_configExists() ){
                             . $this->getLastTsRecord('pages', array('siteid'=>$iProfileId)).'<br>'
                             . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('pages', array('siteid'=>$iProfileId))))).'<br>'
                             . $this->_getButton(array(
-                                'href'=>'?page=status&siteid='.$iProfileId,
+                                'href'=>'?page=searchindexstatus&siteid='.$iProfileId,
                                 'popup'=>false,
                                 'class'=>'button-secondary',
                                 ))
