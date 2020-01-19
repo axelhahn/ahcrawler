@@ -734,10 +734,9 @@ class crawler extends crawler_base{
         
         // if it is NOT utf8 then utf8_decode()
         $sContent = (function_exists('mb_detect_encoding') && !mb_detect_encoding($aPage['body'], 'UTF-8, ISO-8859-1') === 'UTF-8')
-            ? utf8_decode($aPage['body'])
+            ? utf8_encode($aPage['body'])
             : $aPage['body']
         ;
-        
         
         $sRobots=$this->_getMetaHead($sContent, 'robots');
         
@@ -793,6 +792,8 @@ class crawler extends crawler_base{
         $sContent = strip_tags($sContent);
         $sContent = preg_replace("/&nbsp;/", " ", $sContent);
         $sContent = preg_replace('/\s+/', ' ', $sContent);
+        $sContent = html_entity_decode($sContent);
+        // echo "DEBUG content $sContent\n";
         // echo "DEBUG content strlen is finally ".strlen($sContent)." byte\n";
 
         $this->_addToSearchIndex(

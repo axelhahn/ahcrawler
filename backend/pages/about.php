@@ -29,7 +29,6 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                     array($this->lB('about.url.source'), '<a href="' . $this->aAbout['urlSource'] . '">' . $this->aAbout['urlSource'] . '</a>'),
                 )
         )
-        . $oRenderer->renderBookmarklet()
         . '<h3>' . $this->lB('about.thanks') . '</h3>'
         . '<p>' . $this->lB('about.thanks-text') . '</p>'
         . $this->_getSimpleHtmlTable(

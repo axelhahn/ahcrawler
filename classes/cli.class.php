@@ -21,7 +21,7 @@ define("CLIVALUE_NONE", 3);
  * - colored text
  * 
  * @package cli
- * @version 1.07
+ * @version 1.08
  * @author Axel Hahn (https://www.axel-hahn.de/)
  * @license GNU GPL v 3.0
  * @link https://github.com/axelhahn/ahcli
@@ -208,7 +208,7 @@ class cli {
      * @return boolean
      */
     public function forceCli(){
-            if (php_sapi_name() !== "cli") {
+            if (php_sapi_name() !== "cli" && php_sapi_name() !== "cgi-fcgi") {
             die("ERROR: This script is for command line usage only.");
         }
         return true;

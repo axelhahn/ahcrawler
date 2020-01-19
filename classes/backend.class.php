@@ -61,6 +61,7 @@ class backend extends crawler_base {
             'ressourcedetail'=>array(), 
         ), 
         'tools'=>array(
+            'bookmarklet'=>array(), 
             'httpstatuscode'=>array(), 
             'langedit'=>array(), 
         ),
@@ -120,12 +121,14 @@ class backend extends crawler_base {
             'sslcheck'=>'fas fa-shield-alt', 
             'ressources'=>'far fa-file-code', 
             'linkchecker'=>'fas fa-chart-pie', 
+            'linkchecker'=>'fas fa-link', 
             'htmlchecks'=>'fab fa-html5', 
             'httpheaderchecks'=>'far fa-flag', 
             'cookies'=>'fas fa-cookie-bite', 
             'checkurl'=>'fas fa-globe-americas', 
             'ressourcedetail'=>'fas fa-map-marked', 
             'tools'=>'fas fa-tools', 
+            'bookmarklet'=>'fas fa-bookmark', 
             'httpstatuscode'=>'fab fa-font-awesome', 
             'langedit'=>'far fa-comment', 
             'about'=>'fas fa-info-circle', 
@@ -135,6 +138,8 @@ class backend extends crawler_base {
             'logoff'=>'fas fa-power-off', 
         ),
         'cols'=>array(
+            '1'=>'far fa-comment', 
+            '2'=>'far fa-comment', 
             'id'=>'fas fa-hashtag', 
             'summary'=>'far fa-comment', 
             'ranking'=>'fas fa-chart-bar', 
@@ -718,9 +723,9 @@ class backend extends crawler_base {
             // $sReturn = '<table class="pure-table pure-table-horizontal pure-table-striped datatable">'
             $sReturn = '<table'.($sTableId ? ' id="'.$sTableId.'"' : '').' class="pure-table pure-table-horizontal datatable">'
                     . '<thead><tr>' . $sTh . '</tr></thead>'
-                    . '<tbody>' . $sReturn . ''
-                    . '</tbody>'
-                    . '</table>';
+                    . '<tbody>' . $sReturn . '</tbody>'
+                . '</table>'
+                ;
         }
         return $sReturn;
     }
@@ -731,25 +736,27 @@ class backend extends crawler_base {
      * @param array  $bFirstIsHeader   flag: first record is header line; default is false
      * @return string
      */
-    private function _getSimpleHtmlTable($aResult, $bFirstIsHeader=false) {
+    private function _getSimpleHtmlTable($aResult, $bFirstIsHeader=false, $sTableId=false) {
         $sReturn = '';
         $bIsFirst=true;
+        $sTHeader='';
         foreach ($aResult as $aRow) {
             $sReturn.='<tr>';
             foreach ($aRow as $sField) {
-                $sReturn.= $bFirstIsHeader && $bIsFirst
-                        ? '<th>' . $sField . '</th>'
-                        : '<td>' . $sField . '</td>'
-                        ;
+                if($bFirstIsHeader && $bIsFirst){
+                    $sTHeader.='<th>' . $sField . '</th>';
+                } else {
+                    $sReturn.= '<td>' . $sField . '</td>';
+                }
             }
             $sReturn.='</tr>';
             $bIsFirst=false;
         }
         if ($sReturn) {
-            $sReturn = '<table class="pure-table pure-table-horizontal"><thead></thead>'
-                    . '<tbody>' . $sReturn . ''
-                    . '</tbody>'
-                    . '</table>';
+            $sReturn = '<table'.($sTableId ? ' id="'.$sTableId.'"' : '').' class="pure-table pure-table-horizontal datatable">'
+                . '<thead>' . ($sTHeader ? '<tr>'.$sTHeader.'</tr>' : '' ). '</thead>'
+                . '<tbody>' . $sReturn  . '</tbody>'
+            . '</table>';
         }
         return $sReturn;
     }
@@ -816,7 +823,7 @@ class backend extends crawler_base {
      * @param string $sTableId         value of id attribute for the table
      * @return string
      */
-    private function _getSearchindexTable($aResult, $sLangTxtPrefix = '', $sTableId=false) {
+    private function _getSearchindexTable($aResult, $sLangTxtPrefix = '', $sTableId=false, $bShowLegend=true) {
         $aTable = array();
         foreach ($aResult as $aRow) {
             $sId = $aRow['id'];
@@ -839,7 +846,7 @@ class backend extends crawler_base {
             unset($aKeys[0]);
         }
         return $this->_getHtmlTable($aTable, $sLangTxtPrefix, $sTableId)
-                .$this->_getHtmlLegend($aKeys, $sLangTxtPrefix)
+                .($bShowLegend ? $this->_getHtmlLegend($aKeys, $sLangTxtPrefix) : '')
                 ;
     }
 

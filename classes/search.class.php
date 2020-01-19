@@ -271,19 +271,26 @@ class ahsearch extends crawler_base {
             $aSelect['lang']=$aOptions['lang'];
         }
         
-        $aResult = $this->oDB->select(
+        $aDbitems = $this->oDB->select(
                 'pages', 
                 array('id', 'url', 'lang', 'title', 'description', 'keywords', 'content', 'ts'), 
                 array(
                     'AND' => $aSelect,
-                    'LIMIT' => 55
+                    // LIMIT on db can miss best ranked items 
+                    // 'LIMIT' => 55
                 )
         );
         // echo "DEBUG <pre>" . print_r($aQuery, 1) ."</pre><br>";
         // echo 'DEBUG: ' . $this->oDB->last() . '<br>';
-        if (is_array($aResult) && count($aResult)) {
-            $aResult = $this->_reorderByRanking($aResult, $q);
+        if (is_array($aDbitems) && count($aDbitems)) {
+            $aResult = $this->_reorderByRanking($aDbitems, $q);
+            /*
+            while(count($aResult)>55){
+                array_pop($aResult);
+            } 
+            */
         }
+        // echo "DEBUG ".__METHOD__."() ".count($aResult)."<br>";
         return $aResult;
     }
 
@@ -685,6 +692,12 @@ class ahsearch extends crawler_base {
             $aData = $this->search($q, $aOptions);
 
             $iHits = $this->getCountOfSearchresults($aData);
+            
+            // LIMIT output ... maybe add a paging?
+            while(count($aData)>50){
+                array_pop($aData);
+            } 
+            
 
             // echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
             if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {

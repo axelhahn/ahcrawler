@@ -69,6 +69,9 @@
     "nav.tools.label": "Werkzeuge und Infos",
     "nav.tools.hint": "Werkzeuge",
 
+    "nav.bookmarklet.label": "Bookmarklet",
+    "nav.bookmarklet.hint": "Der Kleine Helfer in den Lesezeichen.",
+
     "nav.httpstatuscode.label": "Http Statuscodes",
     "nav.httpstatuscode.hint": "Liste der Http Statuscodes und deren Bedeutung",
 
@@ -185,10 +188,14 @@
     "db-ressources._size_download": "Gr&ouml;sse",
     "db-ressources._meta_total_time": "Transferdauer [s]",
     
-    "db-search.id": "Id",
+    "db-search.id": "ID",
     "db-search.summary": "Zusammenfassung",
     "db-search.ranking": "Ranking",
     "db-search.actions": "Aktionen",
+
+    "tblLangtexts.id" : "ID",
+    "tblLangtexts.1" : "Sprache 1",
+    "tblLangtexts.2" : "Sprache 2",
 
     "hr-size-byte":"Byte",
     "hr-size-kb":"kB",
@@ -513,9 +520,9 @@
     "httpheader.warnings.description": "Sie sollten nicht zu viel von Ihrem System im Http Response Header preisgeben. Auch wenn es Sniffer Werkzeuge gibt, die es analysieren können, sollten Sie verschiedene Informationen nicht einfach so auf dem Silbertablett präsentieren.",
     "httpheader.warnings.ok-label": "keine gefunden",
     "httpheader.warnings.ok": "OK",
-    "httpheader.warnings.nocompression": "Es wurde keine Kompression erkannt - es gibt keinen Header <em>Content-Encoding</em>.<br>Lassen Sie Ihern Webserver Textdateien, wie Html, JS, CSS, XML komprimieren.<br>Die Last am Server ist nur wenig h&ouml;her und der Seitenaufbau wird (insbesondere) bei entfernteren Benutern beschleunigt.",
+    "httpheader.warnings.nocompression": "Es wurde keine Kompression erkannt - es gibt keinen Header <em>Content-Encoding</em>.<br>Lassen Sie Ihern Webserver Textdateien, wie Html, JS, CSS, XML komprimieren.<br>Die Last am Server ist nur wenig h&ouml;her und der Seitenaufbau wird (insbesondere) bei entfernteren Benutzern beschleunigt.",
     "httpheader.warnings.nocache": "Es wurden keinerlei Caching Informationen gefunden. Setzen Sie explizite Informationen, ob und / oder wie lange ein Browser Ihren Inhalt cachen darf.",
-    "httpheader.warnings.non-standard": "Es wurden Informationen im Header gefunden, die gebr&auml;chlich - aber eben nicht standard-konform sind.",
+    "httpheader.warnings.non-standard": "Es wurden Informationen im Header gefunden, die gebr&auml;uchlich - aber eben nicht standard-konform sind.",
     "httpheader.server.description": "Dieser Server-Header scheint für die Software zu werben, die auf dem Server l&auml;uft. Sie können die Versionsnummer l&ouml;schen: setzen Sie den Server Header nur auf den Produktnamen oder aber entfernen Sie den Wert ganz.",
     "httpheader.x-powered-by.description": "Die dahinterliegende Technologie solte man auf produktiven Systemen verbergen. Entfernen Sie diese Headervariable.",
 
@@ -573,6 +580,17 @@
     "sslcheck.raw.hint": "Die Rohdaten geben mehr Details und Einzelheiten preis.",
     "sslcheck.raw.openclose": "Rohdaten zeigen/ verstecken",
     
+    "langedit.label": "Vergleich der Sprachtexte",
+    "langedit.settings": "Eintellungen",
+    "langedit.object": "Gruppe der Sprachtexte",
+    "langedit.lang1": "Sprache in Spalte 1",
+    "langedit.lang2": "Sprache in Spalte 2",
+    "langedit.data": "Daten",
+    "langedit.miss": "Key Fehlt: %s",
+    "langedit.equal-langs": "Hinweis: Dieselbe Sprache wurde 2 mal selektiert.",
+    "langedit.missing-keys": "Es gibt fehlende Text-Ids in den Sprach-Dateien.",
+    "langedit.keysok": "Die Anzahl der Text-IDs ist in beiden Sprach-Dateien gleich.",
+
     "linkchecker.check-links": "Verteilung der Statuscodes",
     "linkchecker.found-http-error": "Http-Fehler",
     "linkchecker.found-http-error-hint": "Gefundene Fehler in Links und Ressourcen. Diese sollte man in Ruhe einmal durchgehen.",

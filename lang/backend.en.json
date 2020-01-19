@@ -69,6 +69,9 @@
     "nav.tools.label": "Tools and information",
     "nav.tools.hint": "Tools",
 
+    "nav.bookmarklet.label": "Bookmarklet",
+    "nav.bookmarklet.hint": "A little helper in the bookmark toolbar.",
+
     "nav.httpstatuscode.label": "Http status codes",
     "nav.httpstatuscode.hint": "List of Http status codes and their description",
 
@@ -190,6 +193,10 @@
     "db-search.summary": "Summary",
     "db-search.ranking": "Ranking",
     "db-search.actions": "Actions",
+
+    "tblLangtexts.id" : "ID",
+    "tblLangtexts.1" : "Lang 1",
+    "tblLangtexts.2" : "Lang 2",
 
     "hr-size-byte":"byte",
     "hr-size-kb":"kB",
@@ -576,6 +583,17 @@
     "sslcheck.nonhttpscount": "No https<br>total",
     "sslcheck.nonhttpscountNolink": "No https<br>excluding links",
         
+    "langedit.label": "Compare language specific texts",
+    "langedit.settings": "Settings",
+    "langedit.object": "Select group of lang texts",
+    "langedit.lang1": "Select language in column 1",
+    "langedit.lang2": "Select language in column 2",
+    "langedit.data": "Data",
+    "langedit.miss": "Missing Key: %s",
+    "langedit.equal-langs": "Hint: The same language is selected twice.",
+    "langedit.missing-keys": "There are missing texts in language files.",
+    "langedit.keysok": "The count of text ids is equal in both language files.",
+
     "linkchecker.check-links": "Link check overview",
     "linkchecker.found-http-error": "Http errors",
     "linkchecker.found-http-error-hint": "Found errors in links and ressources. You should check all of them.",
