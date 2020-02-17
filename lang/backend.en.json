@@ -591,7 +591,7 @@
     "langedit.data": "Data",
     "langedit.miss": "Missing Key: %s",
     "langedit.equal-langs": "Hint: The same language is selected twice.",
-    "langedit.missing-keys": "There are missing texts in language files.",
+    "langedit.warnings": "Warnings: There are missing texts or specifiers in the language files.",
     "langedit.keysok": "The count of text ids is equal in both language files.",
 
     "linkchecker.check-links": "Link check overview",

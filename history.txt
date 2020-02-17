@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2020-02-xx: v0.102
+  * UPDATE: fix conditions for PHP 7.4
+  * UPDATE: print css
+  * UPDATE: langedit: add comparison of count of specifiers
+
 2020-01-19: v0.101
   * ADDED: backend: page for bookmarklet (moved from about page)
   * UPDATE: page for lang texts

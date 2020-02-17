@@ -154,24 +154,42 @@ $aTbl=array();
 $sTableId='tblLangtexts';
 $sTablePrefix='tblLangtexts.';
 
-$aMisses=array();
+$aWarnings=array();
 
 // foreach ($aTexts as $sKey=>$aAllLangTxt){
 foreach (array_keys($aTexts) as $sKey){
     $aTr=array();
-    $aTr['id']=$sKey;
+    $sDivId='key-'.md5($sKey);
+    $aTr['id']='<div id="'.$sDivId.'">'.$sKey.'</div>';
     $iLang=1;
+    
     foreach(array($sLang1, $sLang2) as $sLang){
         if(isset($aTexts[$sKey][$sLang])){
             $sLabel=htmlentities($aTexts[$sKey][$sLang]);
         } else {
-            $sDivId='key-'.md5($sKey);
-            $sLabel='<div id="'.$sDivId.'" class="message-error">'.sprintf($this->lB('langedit.miss'), $sKey).'</div>';
-            $aMisses[]=$sLang.': <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
+            $sLabel='<div class="message-error">'.sprintf($this->lB('langedit.miss'), $sKey).'</div>';
+            $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'</div>';
+            $aWarnings[]=$sLang.': <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
         }
         
         $aTr[$iLang++]=$sLabel;
     }
+
+    // check count of "%s"
+    $sLangTxt1=isset($aTexts[$sKey][$sLang1]) ? $aTexts[$sKey][$sLang1] : false;
+    $sLangTxt2=isset($aTexts[$sKey][$sLang2]) ? $aTexts[$sKey][$sLang2] : false;
+    if($sLangTxt1 && $sLangTxt1){
+        // count of specifiers - see https://www.php.net/manual/en/function.sprintf.php
+        foreach (str_split("bcdeEfFgGosuxX") as $sSpec){
+            $iCountLang1=substr_count($sLangTxt1, '%'.$sSpec);
+            $iCountLang2=substr_count($sLangTxt2, '%'.$sSpec);
+            if($iCountLang1!=$iCountLang2){
+                $aWarnings[]='[%'.$sSpec.'] ' . $sLang1.': '.$iCountLang1.'/ '.$sLang2.': '.$iCountLang2.' - <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
+                $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'</div>';
+            }
+        }
+    }
+
     $aTbl[]=$aTr;
 }
 
@@ -200,8 +218,8 @@ $sReturn .= ''
 
     // data
     . '<h4>'.$this->lB('langedit.data').'</h4>'
-    . (count($aMisses) 
-            ? '<div class="message message-error">'.$this->lB('langedit.missing-keys') . '<ol class="error"><li>'.implode('</li><li>', $aMisses).'</li></ol>'
+    . (count($aWarnings) 
+            ? '<div class="message message-error">'.$this->lB('langedit.warnings') . '<ol class="error"><li>'.implode('</li><li>', $aWarnings).'</li></ol>'
             : ($sLang1===$sLang2
                 ? '<div class="message message-warning">'.$this->lB('langedit.equal-langs')
                 : '<div class="message message-ok">'.$this->lB('langedit.keysok')

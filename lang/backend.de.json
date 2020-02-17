@@ -588,7 +588,7 @@
     "langedit.data": "Daten",
     "langedit.miss": "Key Fehlt: %s",
     "langedit.equal-langs": "Hinweis: Dieselbe Sprache wurde 2 mal selektiert.",
-    "langedit.missing-keys": "Es gibt fehlende Text-Ids in den Sprach-Dateien.",
+    "langedit.warnings": "Hinweise zu fehlenden Text-Ids oder Spezifikatoren in den Sprach-Dateien.",
     "langedit.keysok": "Die Anzahl der Text-IDs ist in beiden Sprach-Dateien gleich.",
 
     "linkchecker.check-links": "Verteilung der Statuscodes",
