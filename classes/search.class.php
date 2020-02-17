@@ -77,9 +77,10 @@ class ahsearch extends crawler_base {
     public function getQueryValue($sKey){
         $aSource=(isset($_POST) && is_array($_POST) && count($_POST))
                 ? $_POST
-                : (isset($_GET) && is_array($_GET) && count($_GET))
+                : ((isset($_GET) && is_array($_GET) && count($_GET))
                     ? $_GET
                     : false
+                )
                 ;
         if(!$aSource){
             return false;

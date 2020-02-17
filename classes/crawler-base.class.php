@@ -366,9 +366,10 @@ class crawler_base {
         // set it to POST or GET variable
         $return = isset($_POST[$sVarname]) && $_POST[$sVarname]
                 ? $_POST[$sVarname] 
-                : (isset($_GET[$sVarname]) && $_GET[$sVarname])
+                : ((isset($_GET[$sVarname]) && $_GET[$sVarname])
                     ? $_GET[$sVarname] 
                     : false
+                  )
             ;
         $this->logAdd(__METHOD__."($sVarname, $sRegexMatch, $sType) verify [".print_r($return, 1)."]");
         
