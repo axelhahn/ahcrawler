@@ -165,7 +165,9 @@ a.childitem{
     text-decoration: none;
     width: 18%;
 }
-a.childitem:hover{background: #f8c030; background: radial-gradient(#fce030, #f8c030); box-shadow: 0 0 1em #aaa;}
+a.childitem:hover{background: #f8c030; 
+      background: radial-gradient(#fce030, #f8c030); 
+      box-shadow: 0 0 1em #aaa;}
 a.childitem:hover *{color:#fff;text-shadow: 2px 2px 6px rgba(0,0,0,0.4);}
 a.childitem:focus{background: #f8c030; }
 a.childitem i{color: #789; font-size: 300%; min-height: 3em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
@@ -406,3 +408,20 @@ td div.tdcenter strong{font-size: 150%; color:#8ac;}
 /* --- form --- */
 form.pure-form label{min-width: 20em;}
 .pure-form select {height: auto;}
+
+
+
+
+
+ @media print{
+    body{font-size: 0.9em;}
+    h2{background: none; position: relative; padding: 0; margin: 1em 0;}
+    div.sidebar,
+    .pure-menu-link,
+    .noprint{
+        display:none;
+    }
+    .pure-menu-link .pure-menu-link-active{display: block;}
+    .maincontent{padding-left: 1em;}
+    div.sidebar .header{float: left;}
+  }

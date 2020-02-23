@@ -586,6 +586,7 @@
     "langedit.lang1": "Sprache in Spalte 1",
     "langedit.lang2": "Sprache in Spalte 2",
     "langedit.data": "Daten",
+    "langedit.count-specifiers": "Anzahl der Spezifikatoren <strong>% %s</strong> weicht ab: [ %s <strong>%s : %s</strong> %s ]",
     "langedit.miss": "Key Fehlt: %s",
     "langedit.equal-langs": "Hinweis: Dieselbe Sprache wurde 2 mal selektiert.",
     "langedit.warnings": "Hinweise zu fehlenden Text-Ids oder Spezifikatoren in den Sprach-Dateien.",

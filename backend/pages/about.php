@@ -16,12 +16,37 @@ $oUpdate=new ahwiupdatecheck(array(
 ));
 // echo "getUpdateInfos : </pre>" . print_r($oUpdate->getUpdateInfos(), 1).'</pre>';
 
+
+
 */
 $oRenderer=new ressourcesrenderer();
 $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
 
         // update info
         . '<p>' . $this->lB('about.info') . '</p>'
+        . $this->_getLinkAsBox(array(
+                'url'=>$this->aAbout['urlDocs'],
+                'hint'=>$this->aAbout['urlDocs'],
+                'icon'=>$this->_aIcons['res']['docs'],
+                'title'=>$this->lB('about.url.docs'),
+                'text'=>$this->aAbout['urlDocs'],
+            ))
+        . $this->_getLinkAsBox(array(
+                'url'=>$this->aAbout['urlHome'],
+                'hint'=>$this->aAbout['urlHome'],
+                'icon'=>$this->_aIcons['res']['url'],
+                'title'=>$this->lB('about.url.project'),
+                'text'=>$this->aAbout['urlHome'],
+            ))
+        . $this->_getLinkAsBox(array(
+                'url'=>$this->aAbout['urlSource'],
+                'hint'=>$this->aAbout['urlSource'],
+                'icon'=>$this->_aIcons['res']['source'],
+                'title'=>$this->lB('about.url.source'),
+                'text'=>$this->aAbout['urlSource'],
+            ))
+        .'<div style="clear: both"></div>'
+        /*
         . $this->_getSimpleHtmlTable(
                 array(
                     array($this->lB('about.url.project'), '<a href="' . $this->aAbout['urlHome'] . '">' . $this->aAbout['urlHome'] . '</a>'),
@@ -29,6 +54,7 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                     array($this->lB('about.url.source'), '<a href="' . $this->aAbout['urlSource'] . '">' . $this->aAbout['urlSource'] . '</a>'),
                 )
         )
+        */
         . '<h3>' . $this->lB('about.thanks') . '</h3>'
         . '<p>' . $this->lB('about.thanks-text') . '</p>'
         . $this->_getSimpleHtmlTable(

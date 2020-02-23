@@ -184,8 +184,9 @@ foreach (array_keys($aTexts) as $sKey){
             $iCountLang1=substr_count($sLangTxt1, '%'.$sSpec);
             $iCountLang2=substr_count($sLangTxt2, '%'.$sSpec);
             if($iCountLang1!=$iCountLang2){
-                $aWarnings[]='[%'.$sSpec.'] ' . $sLang1.': '.$iCountLang1.'/ '.$sLang2.': '.$iCountLang2.' - <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
-                $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'</div>';
+                $aWarnings[]=sprintf($this->lB('langedit.count-specifiers'), $sSpec, $sLang1, $iCountLang1, $iCountLang2, $sLang2)
+                        . ' - <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
+                $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'<br>'.sprintf($this->lB('langedit.count-specifiers'), $sSpec, $sLang1, $iCountLang1, $iCountLang2, $sLang2).'</div>';
             }
         }
     }

@@ -578,7 +578,7 @@
     "sslcheck.raw.hint": "The raw data show more details under the hood.",
     "sslcheck.raw.openclose": "show/ hide raw data",
     
-    "sslcheck.nonhttps": "Check non https ressources",
+    "sslcheck.nonhttps": "Check non https ressources (%s)",
     "sslcheck.nonhttps.hint": "If you have a website running with https then browsers can show a warning if you embed unencrypted ressources.",
     "sslcheck.nonhttpscount": "No https<br>total",
     "sslcheck.nonhttpscountNolink": "No https<br>excluding links",
@@ -589,6 +589,7 @@
     "langedit.lang1": "Select language in column 1",
     "langedit.lang2": "Select language in column 2",
     "langedit.data": "Data",
+    "langedit.count-specifiers": "Count of specifier <strong>% %s</strong> differs: [ %s <strong>%s : %s</strong> %s ]",
     "langedit.miss": "Missing Key: %s",
     "langedit.equal-langs": "Hint: The same language is selected twice.",
     "langedit.warnings": "Warnings: There are missing texts or specifiers in the language files.",

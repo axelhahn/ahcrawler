@@ -14,7 +14,7 @@
 
 ----------------------------------------------------------------------
 
-2020-02-xx: v0.102
+2020-02-23: v0.102
   * UPDATE: fix conditions for PHP 7.4
   * UPDATE: print css
   * UPDATE: langedit: add comparison of count of specifiers

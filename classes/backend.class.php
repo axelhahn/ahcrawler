@@ -210,6 +210,10 @@ class backend extends crawler_base {
              */
             
             'filter'=>'fas fa-filter',
+
+            'url'=>'fas fa-globe',
+            'docs'=>'fas fa-book',
+            'source'=>'fas fa-code',
             
             'ressources.showtable'=>'fas fa-table',
             'ressources.showreport'=>'far fa-file',
@@ -563,6 +567,30 @@ class backend extends crawler_base {
         }
         return $sReturn;
     }
+    /**
+     * get html code for a link in a box 
+     * used for child items
+     * 
+     * @param array  $aLink  array with link params
+     *                       url
+     *                       hint
+     *                       icon
+     *                       title
+     *                       text
+     * @return string
+     */
+    protected function _getLinkAsBox($aLink){
+        
+        return
+            '<a href="' . $aLink['url'] . '" class="childitem"'
+                . (isset($aLink['hint']) ? ' title="' . $aLink['hint'].'"' : '')
+                . '>'
+                . (isset($aLink['icon']) ? '<i class="'.$aLink['icon'].'"></i> ' : '')
+                . '<strong>'.$aLink['title'].'</strong><br>'
+                . (isset($aLink['text']) ? $aLink['text'] : '')
+            . '</a>'
+            ;
+    }
 
     /**
      * get html code for a message box 
@@ -597,13 +625,13 @@ class backend extends crawler_base {
                 ){
                     // hide item
                 } else {
-                    $sReturn.=
-                        '<a href="?page=' . $sItem . '" class="childitem"'
-                            . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
-                            . '><i class="'.$this->_aIcons['menu'][$sItem].'"></i> ' 
-                            . '<strong>'.$this->lB('nav.' . $sItem . '.label').'</strong><br>'
-                            .$this->lB('nav.' . $sItem . '.hint')
-                        . '</a>'
+                    $sReturn.=$this->_getLinkAsBox(array(
+                            'url'=>'?page=' . $sItem,
+                            'hint'=>$this->lB('nav.' . $sItem . '.hint'),
+                            'icon'=>$this->_aIcons['menu'][$sItem],
+                            'title'=>$this->lB('nav.' . $sItem . '.label'),
+                            'text'=>$this->lB('nav.' . $sItem . '.hint'),
+                        ))
                         ;
                 }
             }
