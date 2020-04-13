@@ -109,19 +109,45 @@ function changeView(sClass2Hide, sIdToShow){
     */
 }
 
-function showModal(sUrl){
-    var divOverlay=document.getElementById('overlay');
-    var sHtml='';
+// ----------------------------------------------------------------------
+// modal dialog
+// ----------------------------------------------------------------------
 
-    sHtml+='<iframe src="'+sUrl+'" style="width: 100%; border: 0; height: 800px;"></iframe>';
-    divOverlay.style.display='block';
-    var divContent=document.getElementById('dialogcontent');
-    divContent.innerHTML=sHtml;
+
+function modalDlg_setTitle(sTitle=''){
+    document.getElementById('dialogtitle').innerHTML=sTitle ? sTitle : '&nbsp;';
+}
+function modalDlg_setContent(sHtml=''){
+    document.getElementById('dialogcontent').innerHTML=sHtml;
+}
+
+function showModalUrl(sUrl, sTitle=''){
+    showModal('<iframe src="'+sUrl+'" style="width: 100%; border: 0; height: 800px;"></iframe>', sTitle);
+}
+function showModal(sHtml='', sTitle=''){
+    // dialogtitle
+    modalDlg_setTitle(sTitle);
+    modalDlg_setContent(sHtml)
+    showModalWindow(true);
+}
+function showModalWindow(bVisible=1){
+    var divOverlay=document.getElementById('overlay');
+    var oBody=document.getElementById('content');
+    var oNav=document.getElementById('navmain');
+    if (bVisible){
+        divOverlay.style.display='block';    
+        oBody.style.filter="blur(0.2em)";
+        oNav.style.filter="blur(0.2em)";
+    } else {
+        divOverlay.style.display='none';
+        oBody.style.filter="";
+        oNav.style.filter="";
+    }
+    return false;
 }
 function hideModal(){
-    var divOverlay=document.getElementById('overlay');
-    divOverlay.style.display='none';
-
+    showModalWindow(false);
+    return false;
 }
 /**
  * get css value by given property and selector

@@ -542,7 +542,9 @@ class ressourcesrenderer extends crawler_base {
             . $this->lB('bookmarklet.posthint')
             ;
     }
-    
+    public function renderMessagebox($sMessage, $sType=''){
+        return '<div class="message message-'.$sType.'">'.$sMessage.'</div>';
+    }
     /**
      * get html code for report item with redirects and and its references
      * 

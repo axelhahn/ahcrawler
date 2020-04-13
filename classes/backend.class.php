@@ -64,9 +64,9 @@ class backend extends crawler_base {
             'bookmarklet'=>array(), 
             'httpstatuscode'=>array(), 
             'langedit'=>array(), 
+            'update'=>array(), 
         ),
         'about'=>array(
-            'update'=>array(), 
         )
     );
     /*
@@ -227,6 +227,7 @@ class backend extends crawler_base {
             'button.continue' => 'fas fa-chevron-right',
             'button.create' => 'far fa-star',
             'button.delete' => 'fas fa-trash',
+            'button.down' => 'fas fa-arrow-down',
             'button.download'=>'fas fa-cloud-download-alt', 
             'button.edit' => 'fas fa-pencil-alt',
             'button.help' => 'fas fa-question-circle',

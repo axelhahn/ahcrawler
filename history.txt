@@ -14,6 +14,10 @@
 
 ----------------------------------------------------------------------
 
+2020-04-13: v0.103
+  * UPDATE: langedit saves changes
+  * UPDATE: colors
+
 2020-02-23: v0.102
   * UPDATE: fix conditions for PHP 7.4
   * UPDATE: print css

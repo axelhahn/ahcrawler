@@ -112,13 +112,17 @@ function getNewQs($aQueryParams = array()) {
     <body>
 
 
-        <div id="overlay" onclick="hideModal(); return false;">
-            <div class="divdialog" onclick="return false;">
+        <div id="overlay" __onclick="hideModal(); return false;">
+            <div class="divdialog" __onclick="return true;">
                 <button class="button-error pure-button"
-                   onclick="hideModal();return false;"
-                   style="right: -1em; top: -1em; position: absolute;"
+                   onclick="hideModal(); return false;"
+                   style="float: right"
                    > X </button>
-                <div id="dialogcontent"></div>
+                <div id="dialogtitle">
+                    TITLE
+                </div>
+                    
+                <div id="dialogcontent">CONTENT</div>
             </div>
         </div>
         
@@ -130,7 +134,7 @@ function getNewQs($aQueryParams = array()) {
             </div>
         </div>
 
-        <div class="sidebar pure-u-1 ">
+        <div id="navmain" class="sidebar pure-u-1 ">
             <div class="header">
                 <h1 class="brand-title"><a href="?">
                         <?php echo $oBackend->aAbout['product']; ?>

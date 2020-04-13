@@ -1,10 +1,8 @@
 {
     "id": "deutsch",
-    
-    "btn.search.label": "Suche",
+    "btn.search.label": "Suche1",
     "label.searchterm": "Begriff(e)",
     "label.searchoptions": "Erweiterte Optionen",
-    
     "input.search.title": "Suchbegriff (mind. 2 Zeichen)...",
     "input.search.placeholder": "Suchbegriff (mind. 2 Zeichen)...",
     "label.searchhelp": "Du kannst ein oder mehrere Worte - oder Teile eines Wortes - angeben, die in einer Seite (oder deren Titel, Beschreibung, Schl&uuml;sselworten) enthalten sein m&uuml;ssen. Mehrere Suchbegriffe werden mit dem angegeben Suchmodus verkn&uuml;pft.",
@@ -17,12 +15,10 @@
     "label.searchmode-and": "strikt: alle Suchbegriffe m&uuml;ssen gefunden werden (UND)",
     "label.searchmode-or": "mehr Ergebnisse zeigen: mind. einer der Suchbegriffe muss gefunden werden (ODER)",
     "label.searchmode-phrase": "exakt: alle Worte als Phrase suchen",
-    
     "searchout.results": "Suchergebnisse",
-    "searchout.nohit": "Kein Treffer :-/",
+    "searchout.nohit": "Kein Treffer :-\/",
     "searchout.too-many-hits": "Hinweis: Es kommen zu viele Treffer - ich denke, Du solltest einen weiteren Begriff in der Suche hinzuf&uuml;gen. Mehrere Suchbegriffe werden mit UND verkn&uuml;pft und reduzieren die Treffer.",
     "searchout.n-more-hits": "... %s weitere(r) Treffer im Text",
-    "searchout.hits": "Treffer: <strong>%s</strong>",
-    
+    "searchout.hits": "Treffer: <strong>%s<\/strong>",
     "about.infostring": "OpenSource Suchmaschine und Webseitenanalyse"
 }

@@ -51,6 +51,44 @@ foreach(glob(dirname(__DIR__).'/../lang/'.$sLangobject.'.*.json') as $sJsonfile)
     $aLangkeys[]=$sKey2;
 }
 
+// ----------------------------------------------------------------------
+// handle POST requests
+// ----------------------------------------------------------------------
+if(isset($_POST) && count($_POST) && isset($_POST['object']) && isset($_POST['key']) ){
+    
+    $sMyKey=$_POST['key'];
+    foreach($_POST['text'] as $sMyLang=>$sNewText){
+        $sJsonfile=$aLangfiles[$sMyLang];
+        $aLangData = json_decode(file_get_contents($sJsonfile), true);
+        
+        $sStatus='';
+        if(!isset($aLangData[$sMyKey])){
+            $sStatus=sprintf($this->lB('langedit.save.create'), $sMyKey, $sMyLang);
+        } else if($aLangData[$sMyKey]!=$sNewText){
+            $sStatus=sprintf($this->lB('langedit.save.update'), $sMyKey, $sMyLang);
+        }
+        if($sStatus){
+            $sMyVersion=$this->aAbout['version'];
+            $sBakfile= str_replace('.json', '.json._orig_'.$sMyVersion.'_.bak', $sJsonfile);
+            if(!file_exists($sBakfile)){
+                copy($sJsonfile, $sBakfile);
+            }
+            if(file_exists($sBakfile)){
+                $aLangData[$sMyKey]=$sNewText;
+                if (file_put_contents($sJsonfile, json_encode($aLangData, JSON_PRETTY_PRINT))){
+                    $sReturn.=$oRenderer->renderMessagebox($sStatus, 'ok');
+                } else {
+                    $sReturn.=$oRenderer->renderMessagebox($sStatus, 'error');
+                }
+            } else {
+                $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('langedit.save.no-bakfile'), $sBakfile), 'error');
+            }
+        } else {
+            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('langedit.save.skip'), $sMyKey, $sMyLang), 'warning');
+        }
+    }
+}
+
 // get lang 1 and lang 2 for columns to show
 $aData1=false;
 $aData2=false;
@@ -96,10 +134,6 @@ foreach($aLangkeys as $sMylang){
     $aLangOptions1[]=$aOptionfield1;
     $aLangOptions2[]=$aOptionfield2;
 }
-    
-// echo "DEBUG: lang1 = $sLang1 ".count($aData1)." ... lang2 = $sLang2 ".count($aData2)."<br>";
-// echo "DEBUG: ".print_r($aLangOptions1, 1)."<br>";
-// echo "DEBUG: ".print_r($aLangOptions2, 1)."<br>";
 
 if($sLang1){
     foreach(json_decode(file_get_contents($aLangfiles[$sLang1]), true) as $sKey=>$sText){
@@ -156,24 +190,29 @@ $sTablePrefix='tblLangtexts.';
 
 $aWarnings=array();
 
+$sJsData=array();
 // foreach ($aTexts as $sKey=>$aAllLangTxt){
 foreach (array_keys($aTexts) as $sKey){
     $aTr=array();
     $sDivId='key-'.md5($sKey);
-    $aTr['id']='<div id="'.$sDivId.'">'.$sKey.'</div>';
+    $aTr['id']='<div id="'.$sDivId.'" class="editrow" data-key="'.$sKey.'">'.$sKey.'</div>';
     $iLang=1;
     
     foreach(array($sLang1, $sLang2) as $sLang){
         if(isset($aTexts[$sKey][$sLang])){
             $sLabel=htmlentities($aTexts[$sKey][$sLang]);
+            $sJsData[$sKey][$sLang]=$aTexts[$sKey][$sLang];
         } else {
             $sLabel='<div class="message-error">'.sprintf($this->lB('langedit.miss'), $sKey).'</div>';
-            $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'</div>';
+            $sLabel=$oRenderer->renderMessagebox(sprintf($this->lB('langedit.miss'), $sKey), 'error');
+            // $aTr['id']='<div id="'.$sDivId.'" class="message-error" data-key="'.$sKey.'">'.$sKey.'</div>';
             $aWarnings[]=$sLang.': <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
+            $sJsData[$sKey][$sLang]='';
         }
         
         $aTr[$iLang++]=$sLabel;
     }
+    
 
     // check count of "%s"
     $sLangTxt1=isset($aTexts[$sKey][$sLang1]) ? $aTexts[$sKey][$sLang1] : false;
@@ -186,23 +225,68 @@ foreach (array_keys($aTexts) as $sKey){
             if($iCountLang1!=$iCountLang2){
                 $aWarnings[]=sprintf($this->lB('langedit.count-specifiers'), $sSpec, $sLang1, $iCountLang1, $iCountLang2, $sLang2)
                         . ' - <a class="scroll-link" href="#'.$sDivId.'">'.$sKey.'</a>';
-                $aTr['id']='<div id="'.$sDivId.'" class="message-error">'.$sKey.'<br>'.sprintf($this->lB('langedit.count-specifiers'), $sSpec, $sLang1, $iCountLang1, $iCountLang2, $sLang2).'</div>';
+                $aTr['id']='<div id="'.$sDivId.'"  class="editrow message-error" data-key="'.$sKey.'">'.$sKey.'<br>'.sprintf($this->lB('langedit.count-specifiers'), $sSpec, $sLang1, $iCountLang1, $iCountLang2, $sLang2).'</div>';
             }
         }
     }
 
     $aTbl[]=$aTr;
 }
+// echo '<pre>script var aLang='. htmlentities(json_encode($sJsData,JSON_PRETTY_PRINT)).';</pre>';
 
 // ----------------------------------------------------------------------
-// output
+// form
 // ----------------------------------------------------------------------
 
+$sForm='<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
+    . '<input type="hidden" name="object" value="'.$sLangobject.'">'
+    . '<input type="hidden" name="lang1" value="'.$sLang1.'">'
+    . '<input type="hidden" name="lang2" value="'.$sLang2.'">'
+    . '<input type="hidden" id="lang-key" name="key" value="[key]"><br>'
+    . '<div class="pure-control-group">'
+        . $oRenderer->oHtml->getTag('label', array('for'=>'text1', 'label'=>$sLang1, 'style'=>'min-width: 0; width: 4em;'))
+        . $oRenderer->oHtml->getTag('textarea', array(
+            'id'=>'lang-text1', 
+            'name'=>'text['.$sLang1.']',
+            'size'=>'120',
+            'cols'=>'120',
+            'rows'=>'3',
+            'value'=>''
+            ))
+        . '</div>'
+    . '<div class="pure-control-group">'
+        . $oRenderer->oHtml->getTag('label', array('for'=>'text2', 'label'=>$sLang2, 'style'=>'min-width: 0; width: 4em;'))
+        . $oRenderer->oHtml->getTag('textarea', array(
+            'id'=>'lang-text2', 
+            'name'=>'text['.$sLang2.']',
+            'size'=>'120',
+            'cols'=>'120',
+            'rows'=>'3',
+            'value'=>''
+            ))
+        . '</div>'
+    . '<br><hr>'
+    . '<div>'
+        . '<div style="float: right">'
+            . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.close') . $this->lB('button.close'), 'class'=>'pure-button button-default', 'onclick'=>'return hideModal();'))
+            . ' '
+            . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+        . '</div>'
+        . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.up'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return prevRow();'))
+        . ' '
+        . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.down'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return nextRow();'))
+    . '</div>'
+    . '</form>'
+;
+
+// ----------------------------------------------------------------------
+// page content
+// ----------------------------------------------------------------------
 
 // $sReturn .= $this->_getSimpleHtmlTable($aTbl, true)
 $sReturn .= ''
     . '<h3>'.$this->lB('langedit.label').'</h3>'
-    . '<h4>'.$this->lB('langedit.settings').'</h4>'
+    . '<p>'.$this->lB('langedit.intro').'</p><br>'
     . '<form class="pure-form pure-form-aligned" method="GET" action="?'.$_SERVER['QUERY_STRING'].'">'
         
         // default GET params
@@ -218,18 +302,82 @@ $sReturn .= ''
     . '</form>'
 
     // data
-    . '<h4>'.$this->lB('langedit.data').'</h4>'
     . (count($aWarnings) 
-            ? '<div class="message message-error">'.$this->lB('langedit.warnings') . '<ol class="error"><li>'.implode('</li><li>', $aWarnings).'</li></ol>'
+            ? $oRenderer->renderMessagebox('<ol class="error"><li>'.implode('</li><li>', $aWarnings).'</li></ol>', 'error')
             : ($sLang1===$sLang2
-                ? '<div class="message message-warning">'.$this->lB('langedit.equal-langs')
-                : '<div class="message message-ok">'.$this->lB('langedit.keysok')
+                ? $oRenderer->renderMessagebox($this->lB('langedit.equal-langs'), 'warning')
+                : $oRenderer->renderMessagebox($this->lB('langedit.keysok'), 'ok')
                )
       )
-    . '</div><br>'
+    . '<br>'
     . $this->_getHtmlTable($aTbl, $sTablePrefix, $sTableId)
     // . $this->_getSimpleHtmlTable($aTbl, true, $sTableId)
     . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(-1))))
+    // . $oRenderer->renderInitDatatable('#' . $sTableId)
+       
+    .'<div id="form2edittemplate">'
+    . '</div>'
+    . '
+        <script>
+            var jsData='.json_encode($sJsData).';
+            var sClassEdit="mark";
+            
+            var myid = false;
+            var oRow=false;
+
+            function trClean(){
+                $("tr").each( function(){
+                    $(this).removeClass(sClassEdit);
+                });
+            }
+
+            function nextRow(){
+                var oNext=$(oRow).next();
+                if(oNext){
+                    oNext.click();
+                }
+                return false;
+            }
+            function prevRow(){
+                var oNext=$(oRow).prev();
+                if(oNext){
+                    oNext.click();
+                }
+                return false;
+            }
+            function markByLabel(sLabel){
+                trClean();
+                $("div[data-key=\'"+sLabel+"\']").parent().parent().addClass(sClassEdit);
+            }
+            
+
+            $("#'.$sTableId.' tbody").on("click", "tr", function () {
+
+                oRow=$(this);
+                trClean();
+                $(oRow).addClass(sClassEdit);
+                myid = $(".editrow", this).attr("data-key");
+                var langTxt1=((jsData[myid] && jsData[myid].'.$sLang1.') ? jsData[myid].'.$sLang1.' : "");
+                var langTxt2=((jsData[myid] && jsData[myid].'.$sLang2.') ? jsData[myid].'.$sLang2.' : "");
+
+                // ensure that the form and ids exist
+                modalDlg_setContent(\''.$sForm.'\');
+                modalDlg_setTitle(myid);
+
+                $("#lang-key").val(myid);
+                $("#lang-text1").val(langTxt1);
+                $("#lang-text2").val(langTxt2);
+
+                showModalWindow();
+                return false;
+            });
+
+            '.(isset($_POST['key'])
+                ? 'markByLabel("'.$_POST['key'].'");'
+                : ''
+            ).'
+        </script>
+    '
 ;
 
 return $sReturn;

@@ -71,9 +71,6 @@ if ($sQuery){
             $sReturn.='<br><p>'.$this->lB('ressources.itemsnone').'</p>';                    
         }
     }
-} else {
-    
 }
-
-$sReturn.='<br><br>'.$oRenderer->renderBookmarklet();
+    
 return $sReturn;
