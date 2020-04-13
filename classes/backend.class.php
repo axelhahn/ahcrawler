@@ -344,6 +344,7 @@ class backend extends crawler_base {
     private function _getLoginForm() {
         $sReturn = '';
 
+        header('HTTP/1.0 401 Unauthorized');
         $aTable = array();
         $aTable[] = array(
             '<label for="euser">' . $this->lB('login.username') . '</label>',
@@ -426,7 +427,7 @@ class backend extends crawler_base {
         $sAll = $this->_getRequestParam('siteid', '/all/');
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
-            setcookie("tab", $this->_sTab, time() + 3600);
+            setcookie("tab", $this->_sTab, time() + 60*60*8);
         }
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
             // header('location: '.$_SERVER['REQUEST_URI'].'&siteid='.$_COOKIE['tab']);

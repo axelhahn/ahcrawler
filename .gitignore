@@ -1,5 +1,8 @@
+/backend/get.php
 /config/crawler.config.json
 /data/*.txt
 /data/*.db
+/lang/*.bak
 /tmp/*.tmp
-/backend/get.php
+/.vscode/
+/~cache/

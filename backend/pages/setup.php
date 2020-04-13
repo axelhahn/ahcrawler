@@ -29,6 +29,8 @@ $sBtnContinue='<hr><br>'
     'label' => $this->lB('button.continue'),
 ));
 
+$sPasswordDummy='12345678Dummy';
+    
 // ----------------------------------------------------------------------
 // handle POST DATA
 // ----------------------------------------------------------------------
@@ -123,6 +125,7 @@ if(isset($_POST['action'])){
             
             
             // prepare new config array
+            $aOptionsCurrent=$aOptions;
             $aOptions['options']=$_POST['options'];
             
             // ----- fix boolean options
@@ -166,6 +169,9 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             // check database access
             // --------------------------------------------------
+            if($aOptions['options']['database']['password']==$sPasswordDummy){
+                $aOptions['options']['database']['password']=$aOptionsCurrent['options']['database']['password'];
+            }
             try{
                 $oDbtest=new Medoo\Medoo($this->_getRealDbConfig($aOptions['options']['database']));
             } catch (Exception $ex) {
@@ -608,7 +614,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'id'=>$sIdPrefixDb.'password', 
                     'type'=>'password',
                     'name'=>'options[database][password]',
-                    'value'=>isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : '',
+                    // 'value'=>isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : '',
+                    'value'=>$sPasswordDummy,
                     ), false)
                 . '</div>'
         
