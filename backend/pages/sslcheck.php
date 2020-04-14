@@ -114,7 +114,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             // $sReturn.= $this->oDB->last().'<br>';
             $iChartWarnings = $bShowAll ? $iNonHttps : $iNonHttpsNoLink;
             
-            $sReturn.= '<h3 id="h3nonhttps">' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttpsNoLink) . '</h3>'
+            $sReturn.= '<h3 id="h3nonhttps'.($bShowAll ? 1 : 0).'">' . sprintf($this->lB('sslcheck.nonhttps'), $iNonHttpsNoLink) . '</h3>'
                 .'<p>'.$this->lB('sslcheck.nonhttps.hint').'</p>'
                 // .$this->_getHtmlchecksChart($iRessourcesCount, $iNonHttps)
                 . $oRenderer->renderTileBar(
@@ -125,14 +125,14 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
                             $this->lB('sslcheck.nonhttpscount'),
                             $iNonHttps,
                             $iNonHttps ? (floor($iNonHttps/$iRessourcesCount*1000)/10).'%' : '',
-                            $bShowAll ? '' : $this->_getQs(array('showall'=>1))
+                            $bShowAll ? '' : $this->_getQs(array('showall'=>1)).'#h3nonhttps1'
                     )
                     .$oRenderer->renderTile(
                             $iNonHttpsNoLink ? 'warning' : 'ok', 
                             $this->lB('sslcheck.nonhttpscountNolink'),
                             $iNonHttpsNoLink,
                             $iNonHttpsNoLink ? (floor($iNonHttpsNoLink/$iRessourcesCount*1000)/10).'%' : '',
-                            $bShowAll ? $this->_getQs(array('showall'=>0)) : ''
+                            $bShowAll ? $this->_getQs(array('showall'=>0)).'#h3nonhttps0' : ''
                     )
                 )
                 . '<div style="clear: both;"></div>'

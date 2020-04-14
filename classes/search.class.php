@@ -34,6 +34,7 @@ class ahsearch extends crawler_base {
     // ----------------------------------------------------------------------
     // searchresults
     // ----------------------------------------------------------------------
+    /*
     private $_aRankCounter = array(
         'matchWord' => array(
             'title' => 50,
@@ -57,6 +58,8 @@ class ahsearch extends crawler_base {
             'content' => 1,
         ),
     );
+     */
+    private $_aRankCounter = array();
     
     private $_aFormNames = array(
         'language'=>'lang',
@@ -69,6 +72,11 @@ class ahsearch extends crawler_base {
      * @param integer  $iSiteId  site-id of search index
      */
     public function __construct($iSiteId = false) {
+        
+        $aOptions=$this->getEffectiveOptions();
+        $this->_aRankCounter = $aOptions['searchindex']['rankingWeights'];
+        print_r($this->_aRankCounter);
+
         $this->setSiteId($iSiteId);
         $this->setLangFrontend();
         return true;

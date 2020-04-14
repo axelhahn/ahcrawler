@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.103',
-        'date' => '2020-04-13',
+        'version' => '0.104',
+        'date' => '2020-04-14',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -85,6 +85,29 @@ class crawler_base {
                 '<nav[^>]*>.*?</nav>',
                 '<script[^>]*>.*?</script>',
                 '<style[^>]*>.*?</style>',
+            ),
+            'rankingWeights' => array(
+                'matchWord' => array(
+                    'title' => 50,
+                    'keywords' => 50,
+                    'description' => 50,
+                    'url' => 500,
+                    'content' => 5,
+                ),
+                'WordStart' => array(
+                    'title' => 20,
+                    'keywords' => 20,
+                    'description' => 20,
+                    'url' => 30,
+                    'content' => 3,
+                ),
+                'any' => array(
+                    'title' => 2,
+                    'keywords' => 2,
+                    'description' => 2,
+                    'url' => 5,
+                    'content' => 1,
+                ),
             ),
         ),
         'analysis' => array(
@@ -982,9 +1005,9 @@ class crawler_base {
             $this->aOptions[$sKey1]=isset($this->aOptions[$sKey1]) ? $this->aOptions[$sKey1] : $data1;
             if (is_array($data1)){
                 foreach($data1 as $sKey2=>$data2){
-                    $this->aOptions[$sKey1][$sKey2]=isset($this->aOptions[$sKey1][$sKey2]) ? $this->aOptions[$sKey1][$sKey2] : $data2;
+                        $this->aOptions[$sKey1][$sKey2]=isset($this->aOptions[$sKey1][$sKey2]) ? $this->aOptions[$sKey1][$sKey2] : $data2;
+                    }
                 }
-            }
             
         }
         $this->aOptions['crawler']['memoryLimit']=isset($this->aOptions['crawler']['memoryLimit']) && $this->aOptions['crawler']['memoryLimit']
@@ -995,6 +1018,16 @@ class crawler_base {
             ? $this->aOptions['crawler']['userAgent']
             : $this->aDefaultOptions['crawler']['userAgent']
         ;
+        
+        foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
+            foreach(array('title', 'keywords', 'description', 'url', 'content') as $sMatchField){
+                $this->aOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]=isset($this->aOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]) && $this->aOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                        ? $this->aOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                        : $this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                        ;
+            }
+        }
+        
         /*
         echo '<pre>aDefaultOptions = '. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre><hr>';
         echo '<pre>aOptions = '. htmlentities(print_r($this->aOptions, 1)).'</pre>';

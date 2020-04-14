@@ -142,6 +142,13 @@ if(isset($_POST['action'])){
             $this->_configMakeInt($aOptions, 'options.analysis.MinKeywordsLength');
             $this->_configMakeInt($aOptions, 'options.analysis.MaxPagesize');
             $this->_configMakeInt($aOptions, 'options.analysis.MaxLoadtime');
+
+            foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
+                foreach(array('title', 'keywords', 'description', 'url', 'content') as $sMatchField){
+                    $this->_configMakeInt($aOptions, 'options.searchindex.rankingWeights.'.$sMatchSection.'.'.$sMatchField);
+                }
+            }
+
             if(isset($aOptions['options']['menu']) 
                     && $aOptions['options']['menu']
                     && json_decode($aOptions['options']['menu'])
@@ -423,7 +430,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 
                     'name'=>'options[crawler][searchindex][simultanousRequests]',
-                    'value'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] : 2,
+                    'placeholder'=>$this->aDefaultOptions['crawler']['searchindex']['simultanousRequests'],
+                    'value'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) 
+                        ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] 
+                        : $this->aDefaultOptions['options']['crawler']['searchindex']['simultanousRequests'],
                     ), false)
                 . '</div>'
         
@@ -432,7 +442,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 
                     'name'=>'options[crawler][ressources][simultanousRequests]',
-                    'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] : 3,
+                    'placeholder'=>$this->aDefaultOptions['crawler']['ressources']['simultanousRequests'],
+                    'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) 
+                        ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] 
+                        : $this->aDefaultOptions['crawler']['ressources']['simultanousRequests'],
                     ), false)
                 . '</div>'
 
@@ -487,9 +500,39 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '</div>'
 
             // ------------------------------------------------------------
+            // setup options - crawler
+            // ------------------------------------------------------------
+            
+            . '<h3>'
+                . ' '.$this->lB('setup.section.search')
+            .'</h3>'
+            . $this->lB('setup.section.search.hint').'<br><br>';
+
+            foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
+                $sReturn.='<p><strong>'.$this->lB('setup.section.search.section.'.$sMatchSection).'</strong></p>';
+                foreach(array('title', 'keywords', 'description', 'url', 'content') as $sMatchField){
+                    $sFieldId=$sIdPrefixSearchindex.'rw-'.$sMatchSection.'-title';
+                    $sValue=isset($aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]) 
+                                ? (int)$aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                                : $this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                        ;
+                    $sReturn.='<div class="pure-control-group">'
+                        . $oRenderer->oHtml->getTag('label', array('for'=>$sFieldId, 'label'=>$this->lB('setup.section.search.rw.'.$sMatchField)))
+                        . $oRenderer->oHtml->getTag('input', array(
+                            'id'=>$sFieldId, 
+                            'name'=>'options[searchindex][rankingWeights]['.$sMatchSection.']['.$sMatchField.']',
+                            'placeholder'=>$this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField],
+                            'value'=>$sValue,
+                            ), false)
+                        . '</div>'
+                        ;
+                }
+            }
+        
+            // ------------------------------------------------------------
             // setup options - analysis constants
             // ------------------------------------------------------------
-            . '<h3>'
+            $sReturn.='<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
@@ -500,7 +543,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixAnalyis.'MinTitleLength', 
                     'name'=>'options[analysis][MinTitleLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] : 20,
+                    'placeholder'=>$this->aDefaultOptions['analysis']['MinTitleLength'],
+                    'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) 
+                        && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] 
+                        : $this->aDefaultOptions['analysis']['MinTitleLength'],
                     ), false)
                 . '</div>'
         
@@ -509,7 +555,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixAnalyis.'MinDescriptionLength', 
                     'name'=>'options[analysis][MinDescriptionLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] ? $aOptions['options']['analysis']['MinDescriptionLength'] : 40,
+                    'placeholder'=>$this->aDefaultOptions['analysis']['MinDescriptionLength'],
+                    'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] 
+                        ? $aOptions['options']['analysis']['MinDescriptionLength'] 
+                        : $this->aDefaultOptions['analysis']['MinDescriptionLength'],
                     ), false)
                 . '</div>'
        
@@ -518,7 +567,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
                     'name'=>'options[analysis][MinKeywordsLength]',
-                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] ? $aOptions['options']['analysis']['MinKeywordsLength'] : 10,
+                    'placeholder'=>$this->aDefaultOptions['analysis']['MinKeywordsLength'],
+                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] 
+                        ? $aOptions['options']['analysis']['MinKeywordsLength'] 
+                        : $this->aDefaultOptions['analysis']['MinKeywordsLength'],
                     ), false)
                 . '</div>'
        
@@ -527,7 +579,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixAnalyis.'MaxPagesize', 
                     'name'=>'options[analysis][MaxPagesize]',
-                    'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] ? $aOptions['options']['analysis']['MaxPagesize'] : 150000,
+                    'placeholder'=>$this->aDefaultOptions['analysis']['MaxPagesize'],
+                    'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] 
+                        ? $aOptions['options']['analysis']['MaxPagesize'] 
+                        : $this->aDefaultOptions['analysis']['MaxPagesize'],
                     ), false)
                 . '</div>'
        
@@ -536,7 +591,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixAnalyis.'MaxLoadtime', 
                     'name'=>'options[analysis][MaxLoadtime]',
-                    'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] ? $aOptions['options']['analysis']['MaxLoadtime'] : 500,
+                    'placeholder'=>$this->aDefaultOptions['analysis']['MaxLoadtime'],
+                    'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] 
+                        ? $aOptions['options']['analysis']['MaxLoadtime'] 
+                        : $this->aDefaultOptions['analysis']['MaxLoadtime'],
                     ), false)
                 . '</div>'
        

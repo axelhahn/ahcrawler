@@ -14,10 +14,13 @@
 
 ----------------------------------------------------------------------
 
-2020-04-xx: v0.104
+2020-04-15: v0.104
+  * UPDATE: settings allow to edit ranking multipliers (hartcoded before)
+  * UPDATE: settings got more placeholders
   * UPDATE: settings page hides current database password with a dummy
   * UPDATE: showing login fom sends a 401 statuscode (instead of 200)
-  * UPDATE: selected tab will be stored for 8 h (instead of 1 h)
+  * UPDATE: selected profile tab will be stored for 8 h (instead of 1 h)
+  * UPDATE: ssl check for non https items jump to middle of the page (instead staying on top)
 
 2020-04-13: v0.103
   * UPDATE: langedit saves changes
