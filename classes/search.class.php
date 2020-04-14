@@ -75,7 +75,6 @@ class ahsearch extends crawler_base {
         
         $aOptions=$this->getEffectiveOptions();
         $this->_aRankCounter = $aOptions['searchindex']['rankingWeights'];
-        print_r($this->_aRankCounter);
 
         $this->setSiteId($iSiteId);
         $this->setLangFrontend();
