@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2020-04-17: v0.105
+  * UPDATE: resize overview tiles
+  * UPDATE: software update got back buttons
+  * UPDATE: software update in a single step
+  * UPDATE: login form
+
 2020-04-15: v0.104
   * UPDATE: settings allow to edit ranking multipliers (hartcoded before)
   * UPDATE: settings got more placeholders

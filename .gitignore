@@ -6,3 +6,4 @@
 /tmp/*.tmp
 /.vscode/
 /~cache/
+/tmp/__latest.zip

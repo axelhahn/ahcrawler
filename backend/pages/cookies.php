@@ -85,10 +85,10 @@ if (file_exists($this->sCcookieFilename)) {
                 . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(50, -1))))
         ;
     } else {
-        $sReturn .= $this->_getMessageBox($this->lB('cookies.nocookie'), 'ok');
+        $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.nocookie'), 'ok');
     }
 } else {
-    $sReturn .= $this->_getMessageBox($this->lB('cookies.nofile'), 'warning');
+    $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.nofile'), 'warning');
 }
 
 // ----------------------------------------------------------------------

@@ -33,22 +33,37 @@ $oInstaller=new ahwi(array(
 
 
 $sStepName=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
+$bAutoContinue=$this->_getRequestParam('docontinue') ? (int)$this->_getRequestParam('docontinue') : false;
 
 $iStep=array_search($sStepName, $aSteps);
 if($iStep===false){
     $sStepName=$aSteps[0];
     $iStep=0;
 }
+$sBackUrl=$iStep > 1
+        ? '?page=update&doinstall='.$aSteps[($iStep-1)]
+        : '?page=update'
+        ;
 $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
         : '?page=update'
         ;
+$sBtnBack=$this->_getButton(array(
+    'href' => $sBackUrl,
+    'class' => 'pure-button',
+    'label' => 'button.back',
+    'popup' => false
+)).' ';
 $sBtnNext=$this->_getButton(array(
     'href' => $sNextUrl,
     'class' => 'button-secondary',
     'label' => 'button.continue',
     'popup' => false
-));
+)).' ';
+$sScriptContinue=$bAutoContinue ? 
+        '<br><br>'.$this->lB("update.singlestepupdate"). '<script>location.href="'.$sNextUrl.'&docontinue=1";</script>' 
+        : ''
+    ;
 
 
 $sOutput='';
@@ -62,9 +77,13 @@ switch ($sStepName) {
         
         global $oCdn;
         $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+        $bHasUpdate=$this->oUpdate->hasUpdate();
         
+        $sCssBtnHome=$bHasUpdate ? 'pure-button' : 'button-secondary';
+        $sCssBtnContinue=!$bHasUpdate ? 'pure-button' : 'button-secondary';
+
         $sReturn .= '<p>'
-            .($this->oUpdate->hasUpdate() || 0
+            .($bHasUpdate || 0
                 ?  
                     $this->_getSimpleHtmlTable(
                         array(
@@ -74,9 +93,12 @@ switch ($sStepName) {
                     )
                     . '<br>' . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
                     . '<br>'
+                    . '<div>'
                 :  
                     $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
                     .'<br>'
+                    .'<br>'
+                
                     .($iCountUnused 
                         ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
                             .$oRenderer->oHtml->getTag('a', array(
@@ -84,19 +106,35 @@ switch ($sStepName) {
                                 'class' => 'pure-button',
                                 'title' => $this->lB('nav.vendor.hint'),
                                 'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
-                            )).'<br><br><br>'
+                            )).'<br><br><br><br><br>'
                         : ''
                     )
-                    .$this->_getButton(array(
-                        'href' => '?',
-                        'class' => 'button-secondary',
-                        'label' => 'button.home',
-                        'popup' => false
-                    ))
-                    . ' '
+                    . '<div>'
         
              )
-            . $sBtnNext
+            
+            // --- buttons 
+            . $this->_getButton(array(
+                'href' => '?',
+                'class' => $sCssBtnHome,
+                'label' => 'button.home',
+                'popup' => false
+            ))
+            . ' '
+            . $this->_getButton(array(
+                'href' => $sNextUrl,
+                'class' => $sCssBtnContinue,
+                'label' => 'button.continue',
+                'popup' => false
+            ))
+            . ' '
+            .$this->_getButton(array(
+                'href' => $sNextUrl.'&docontinue=1',
+                'class' => $sCssBtnContinue,
+                'label' => 'button.updatesinglestep',
+                'popup' => false
+            ))
+            . '</div>'
             . '</p>'
             ;
         break;
@@ -110,7 +148,7 @@ switch ($sStepName) {
                 . '<li>'.sprintf($this->lB('update.steps.extractto'), $sTargetPath) . '</li>'
             . '</ol>'
             .'<br>'
-            . $sBtnNext
+            . $sBtnBack.$sBtnNext.$sScriptContinue
             ;
         break;
     case 'download':
@@ -127,10 +165,10 @@ switch ($sStepName) {
                 $sReturn.='<br><strong>'.$this->lB('update.download.done').'</strong><br><br>'
                         . sprintf($this->lB('update.download.extractto'), $oInstaller->getInstalldir())
                         . '<br><br>'
-                        . $sBtnNext
+                        . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
             } else {
-                $sReturn.=$this->lB('update.download.failed');
+                $sReturn.=$sBtnBack.$this->lB('update.download.failed');
             }        
             ;
         break;
@@ -144,12 +182,10 @@ switch ($sStepName) {
             if ($bInstall){
                 $sReturn.=$this->lB('update.extract.ok')
                     . '<br><br>'
-                    . $sBtnNext
+                    . $sBtnBack.$sBtnNext.$sScriptContinue
                     ;
-                // force update check to refresh the locally cached version infos
-                // $this->oUpdate->getUpdateInfos(true);
             } else {
-                $sReturn.=$this->lB('update.extract.failed');
+                $sReturn.=$sBtnBack.$this->lB('update.extract.failed');
             }
             ;
         break;

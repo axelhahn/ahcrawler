@@ -126,7 +126,11 @@ class ressourcesrenderer extends crawler_base {
         'ico.httpv1' => 'fas fa-check',
         'ico.non-standard' => 'far fa-check-circle',
         'ico.security' => 'fas fa-lock',
+
+        'ico.error' => 'fas fa-bolt',
+        'ico.ok' => 'fas fa-check',
         'ico.warn' => 'fas fa-exclamation-triangle',
+        'ico.warning' => 'fas fa-exclamation-triangle',
         
         'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
         'ico.redirect' => 'fas fa-share',
@@ -543,7 +547,10 @@ class ressourcesrenderer extends crawler_base {
             ;
     }
     public function renderMessagebox($sMessage, $sType=''){
-        return '<div class="message message-'.$sType.'">'.$sMessage.'</div>';
+        return '<div class="message message-'.$sType.'">'
+                .$this->renderShortInfo($sType)
+                .$sMessage
+            .'</div>';
     }
     /**
      * get html code for report item with redirects and and its references

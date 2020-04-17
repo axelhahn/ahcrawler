@@ -112,8 +112,8 @@ function getNewQs($aQueryParams = array()) {
     <body>
 
 
-        <div id="overlay" __onclick="hideModal(); return false;">
-            <div class="divdialog" __onclick="return true;">
+        <div id="overlay">
+            <div class="divdialog" >
                 <button class="button-error pure-button"
                    onclick="hideModal(); return false;"
                    style="float: right"
@@ -140,17 +140,7 @@ function getNewQs($aQueryParams = array()) {
                         <?php echo $oBackend->aAbout['product']; ?>
                         <span><?php echo $oBackend->aAbout['version']; ?></span>
                     </a></h1>
-                <?php
-                    echo $oBackend->oUpdate->hasUpdate()
-                        // ?  '<div class="warning pure-menu"><a href="?page=update">' . sprintf($oBackend->lB('update.available-yes') , $oBackend->oUpdate->getLatestVersion()) .'</a></div><br>'
-                        ?  '<div class="warning pure-menu">' 
-                            . $oRenderer->renderShortInfo('warn') . sprintf($oBackend->lB('update.available-yes') , $oBackend->oUpdate->getLatestVersion()) 
-                            . '<br><a href="?page=update">'.$oBackend->lB('nav.update.label').'</a>'
-                            .'</div><br>'
-                        :  ''
-                    ;
-                ?>
-                    
+                <?php echo $oBackend->getUpdateInfobox(); ?>    
                         
                 <div class="pure-menu">
                     

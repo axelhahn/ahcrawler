@@ -106,6 +106,7 @@ class backend extends crawler_base {
     
     private $_aIcons= array(
         'menu'=>array(
+            'login'=>'fas fa-user-lock', 
             'home'=>'fas fa-home', 
             'settings'=>'fas fa-cogs', 
             'setup'=>'fas fa-sliders-h', 
@@ -239,6 +240,7 @@ class backend extends crawler_base {
             'button.search' => 'fas fa-search',
             'button.truncateindex' => 'fas fa-trash',
             'button.up' => 'fas fa-arrow-up',
+            'button.updatesinglestep' => 'fas fa-chevron-right',
             'button.view' => 'far fa-eye',
         ),
     );
@@ -357,23 +359,29 @@ class backend extends crawler_base {
 
         $sHref = '?' . str_replace('page=logoff', '', $_SERVER['QUERY_STRING']);
 
-        $sReturn = '<h3>' . $this->lB('login.title') . '</h3>'
-                . '<p>' . $this->lB('login.infotext') . '</p>'
-                . '<form method="POST" action="' . $sHref . '" class="pure-form pure-form-aligned">'
-                . '<div class="pure-control-group">'
-                    . '<label for="euser">' . $this->lB('login.username') . '</label>'
-                    . '<input type="text" id="euser" name="AUTH_USER" value="" required="required" placeholder="' . $this->lB('login.username') . '">'
+        $sReturn = ''
+                /*
+                . '<h3>' . $this->lB('login.title') . '</h3>'
+                 */
+                . '<div style="background:#fff; margin-top: 12em; padding: 1em;">'
+                    . '<p>' . $this->lB('login.infotext') . '</p>'
+                    . '<br>'
+                    . '<form method="POST" action="' . $sHref . '" class="pure-form pure-form-aligned">'
+                    . '<div class="pure-control-group">'
+                        . '<label for="euser">' . $this->lB('login.username') . '</label>'
+                        . '<input type="text" id="euser" name="AUTH_USER" value="" required="required" placeholder="' . $this->lB('login.username') . '">'
+                    . '</div>'
+                    . '<div class="pure-control-group">'
+                        . '<label for="epw">' . $this->lB('login.password') . '</label>'
+                        . '<input type="password" id="epw" name="AUTH_PW" value="" required="required" placeholder="' . $this->lB('login.password') . '">'
+                    . '</div>'
+                    . '<br>'
+                    . '<div class="pure-control-group">'
+                        . '<label>&nbsp;</label>'
+                        . '<button type="submit" class="pure-button button-secondary">' .$this->_getIcon('button.login'). $this->lB('button.login') . '</button>'
+                    . '</div>'
+                    . '</form>'
                 . '</div>'
-                . '<div class="pure-control-group">'
-                    . '<label for="epw">' . $this->lB('login.password') . '</label>'
-                    . '<input type="password" id="epw" name="AUTH_PW" value="" required="required" placeholder="' . $this->lB('login.password') . '">'
-                . '</div>'
-                . '<br>'
-                . '<div class="pure-control-group">'
-                    . '<label>&nbsp;</label>'
-                    . '<button type="submit" class="pure-button button-secondary">' .$this->_getIcon('button.login'). $this->lB('button.login') . '</button>'
-                . '</div>'
-                . '</form>'
         ;
         return $sReturn;
     }
@@ -596,6 +604,7 @@ class backend extends crawler_base {
 
     /**
      * get html code for a message box 
+     * @deprecated since 0.105 - use $oRenderer->renderMessagebox($sMessage, $sLevel)
      * @param type $sMessage  message text
      * @param type $sLevel    level ok|warning|error
      * @return string
@@ -649,12 +658,11 @@ class backend extends crawler_base {
     public function getHead() {
         $sReturn='';
         $this->logAdd(__METHOD__ . '() start; page = "' . $this->_sPage . '"');
+        if (!$this->_checkAuth()) {
+            $this->_sPage='login';
+        }
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
-        if (!$this->_checkAuth()) {
-            $sH2 = $this->lB('nav.login.label');
-            $sHint = $this->lB('nav.login.access-denied');
-        }
         
         $oStatus=new status();
         $aStatus=$oStatus->getStatus();
@@ -897,6 +905,23 @@ class backend extends crawler_base {
         }
         $sPagefile='pages/'.$this->_sPage.'.php';
         return include $sPagefile;
+    }
+    
+    /**
+     * wrapper function: get update infobox
+     * @return string
+     */
+    public function getUpdateInfobox() {
+        global $oRenderer;
+        return $this->_checkAuth() && $this->oUpdate->hasUpdate()
+            ? $this->_getMessageBox(
+                    sprintf($this->lB('update.available-yes') , $this->oUpdate->getLatestVersion()) 
+                    .' '
+                    . '<a href="?page=update">'.$this->lB('nav.update.label').'</a>'
+              , 
+                    'warning'
+              )
+            : '';
     }
 
 
@@ -1191,7 +1216,7 @@ class backend extends crawler_base {
      * wrapper function: get page content as html
      * @return string
      */
-    public function getOverlayContent() {
+    public function TOREMOVE__getOverlayContent() {
         if (!$this->_checkAuth()) {
             // TODO: go to login form
             // return $this->lB('nav.login.access-denied');
@@ -1209,7 +1234,7 @@ class backend extends crawler_base {
      * overlay: view a search index item
      * @return string
      */
-    private function _getOverlayContentviewindexitem() {
+    private function TOREMOVE___getOverlayContentviewindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.viewIndexItem') . '</h1>';
         $sId = $this->_getRequestParam('id', false, 'int');
         if (!$sId) {
@@ -1259,7 +1284,7 @@ class backend extends crawler_base {
      * overlay: delete a search index item
      * @return string
      */
-    private function _getOverlayContentdeleteindexitem() {
+    private function TOREMOVE___getOverlayContentdeleteindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.deleteIndexItem') . '</h1>';
         $sSiteId = $this->_getRequestParam('siteid', false, 'int');
         $sId = $this->_getRequestParam('id', false, 'int');
@@ -1280,7 +1305,7 @@ class backend extends crawler_base {
      * overlay: update a single url in search index
      * @return string
      */
-    private function _getOverlayContentupdateindexitem() {
+    private function TOREMOVE___getOverlayContentupdateindexitem() {
         $sReturn = '<h1>' . $this->lB('overlay.updateIndexItem') . '</h1>';
         $sSiteId = $this->_getRequestParam('siteid', false, 'int');
         $sUrl = $this->_getRequestParam('url');
@@ -1300,7 +1325,7 @@ class backend extends crawler_base {
         return $sReturn;
     }
 
-    private function _getOverlayContentcrawl() {
+    private function TOREMOVE___getOverlayContentcrawl() {
         $sReturn = '<h1>' . $this->lB('overlay.crawl') . '</h1>';
         $sSiteId = $this->_getRequestParam('siteid', false, 'int');
         $sReturn.='siteid=' . $sSiteId . '<br>';
@@ -1320,7 +1345,7 @@ class backend extends crawler_base {
         return $sReturn;
     }
 
-    private function _getOverlayContentsearch() {
+    private function TOREMOVE___getOverlayContentsearch() {
         $sSiteId = (int)$this->_getRequestParam('siteid', false, 'int');
         $sQuery = $this->_getRequestParam('query');
         $sSubdir = $this->_getRequestParam('subdir');

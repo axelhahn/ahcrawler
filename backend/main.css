@@ -140,6 +140,7 @@ h1{ background:#cde; margin:0 0 1em; border-top-left-radius: 0.5em;}
 h2{
     background:#f8f8f8; 
     background:linear-gradient(90deg,#fff, #f4f4f4);  
+    border-bottom: 1px dotted; 
     font-size: 3em; 
     padding: 0.2em 0em; 
     margin: 0 ; 
@@ -147,8 +148,10 @@ h2{
     position: fixed; 
     display: block; 
     width: 100%;
-box-shadow: 0 1em 1em #fff; z-index:100;
-border-bottom: 1px dotted; text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;}
+    box-shadow: 0 1em 1em #fff; 
+    z-index:100;
+    text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;
+}
 p.pageHint{
     background:rgba(0,0,0,0.03);
     _border-left: 10px solid rgba(0,0,0,0.05);
@@ -157,7 +160,7 @@ p.pageHint{
     padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 6em; 
 }
 p.pageHint:before{content: ':: ';}
-h3{ color: #79b; font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
+h3{ color:#679; font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
 h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 
@@ -192,7 +195,8 @@ a.childitem{
     margin: 0 1em 1em 0;
     padding: 1em;
     text-decoration: none;
-    width: 18%;
+    min-width: 14em;
+    width: 19%;
 }
 a.childitem:hover{
     background: var(--navi-bg-on-hover);
@@ -312,8 +316,8 @@ div.message-ok{background: #bdb; color:#383;}
 div.message-warning{background: #fdb; color:#975;}
 div.message-error{background: #ebb; color:#955;}
 
-.legendlabel{background:#e0e8f0; margin: 1em 1em 0;padding: 1em; display: inline-block;}
-.legend{background:#f8f8f8; border: 2px dashed #ccc;  padding: 1em; margin: 0 1em 1m;}
+.legendlabel{background:rgba(0,0,0,0.1); margin: 1em 1em 0;padding: 1em; display: inline-block;}
+.legend{background:rgba(0,0,0,0.02); border: 2px dashed #ccc;  padding: 1em; margin: 0 1em 1m;}
 .legend strong{color:#678; font-size: 110%;}
 /* 
 --------------------------------------------------------------------------------
@@ -353,6 +357,7 @@ div.message-error{background: #ebb; color:#955;}
 .ico-httpv1{color:#083;}
 .ico-unknown{color:#c8c;}
 .ico-warn{color:#fa2;}
+.ico-warning{color:#fa2;}
 .ico-non-standard{color:#083;}
 
 .ico-miss{color:#c42;}

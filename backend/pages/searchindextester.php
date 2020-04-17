@@ -23,8 +23,7 @@ $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=search')
 $oCrawler=new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();        
 if(!$iUrls){
-    $sReturn.= $oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
-            .'<br>'.$this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
+    $sReturn.= $this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     return $sReturn;
 }
 
