@@ -34,10 +34,11 @@ $oCdn=new axelhahn\cdnorlocal(array(
     'debug'=>0,
     ));
 $oCdn->setLibs(array(
-    "pure/1.0.1",
-    "datatables/1.10.19",
-    "font-awesome/5.11.2",
-    "jquery/3.4.1",
+    // "pure/1.0.1",
+    "pure/2.0.0",
+    "datatables/1.10.20",
+    "font-awesome/5.13.0",
+    "jquery/3.5.0",
     "Chart.js/2.9.3"
 ));
 

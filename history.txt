@@ -14,6 +14,15 @@
 
 ----------------------------------------------------------------------
 
+2020-05-06: v0.106
+  * NEW start page showing an project overview with errors and warnings shown 
+    in subpages before
+  * FIX: ressources page can show empty mime types
+  * UPDATE: pure to 2.0.0
+  * UPDATE: datatables to 1.10.20
+  * UPDATE: font-awesome to 5.13.0
+  * UPDATE: jquery to 3.5.0
+
 2020-04-17: v0.105
   * UPDATE: resize overview tiles
   * UPDATE: software update got back buttons

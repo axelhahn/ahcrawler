@@ -105,7 +105,7 @@ class sslinfo {
         
         $errno=''; 
         $errstr='';
-        $read = stream_socket_client("ssl://$this->_sHost:$this->_iPort", $errno, $errstr, $iTimeout, STREAM_CLIENT_CONNECT, $aStreamOptions);
+        $read = @stream_socket_client("ssl://$this->_sHost:$this->_iPort", $errno, $errstr, $iTimeout, STREAM_CLIENT_CONNECT, $aStreamOptions);
         if (!$read) {
             return array('_error' => "Error $errno: $errstr; cannot create stream_context to ssl://$this->_sHost:$this->_iPort");
         }
@@ -179,7 +179,7 @@ class sslinfo {
         if (strstr($sDNS, 'DNS:' . $sHost) === false) {
             $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
         } else {
-            $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate..";
+            $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate.";
         }
 
         /*
@@ -244,6 +244,9 @@ class sslinfo {
             $aInfos['DNS'] = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
 
             $aInfos['type'] = isset($certinfo['subject']['O']) ? 'Extended validation' : 'Business SSL';
+            $aInfos['type_ev'] = isset($certinfo['subject']['O']);
+            $aInfos['type_business_ssl'] = !$aInfos['type_ev'];
+
             $aInfos['subject'] = $certinfo['subject'];
             
             $aInfos['validfrom'] = date("Y-m-d H:i", $certinfo['validFrom_time_t']);

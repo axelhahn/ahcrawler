@@ -5,10 +5,14 @@
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-$iRessourcesCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));        
+
+$aCountByStatuscode=$this->_getStatusinfos(array('_global'));
+echo '<pre>'.print_r($aCountByStatuscode, 1).'</pre>';
+$iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
 if (!$iRessourcesCount) {
     return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
+
 $iResId=$this->_getRequestParam('id', false, 'int');
 $sUrl=$this->_getRequestParam('url');
 
@@ -51,7 +55,6 @@ if(!$iResId){
 }
 
 $oHttpheader=new httpheader();
-$oRenderer=new ressourcesrenderer($this->_sTab);
 
 $sInfos=$aPagedata[0]['header'];
 
@@ -72,6 +75,11 @@ $iUnkKnown=isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted=isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
 $iNonStandard=isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
 $sTiles=''
+    . $this->_getTilesOfAPage()
+    /*
+        
+    .'<div style="clear: both;"></div>'
+
     . $oRenderer->renderTile('', $this->lB('httpheader.header.total'), $iTotalHeaders, '')
         
     . (isset($aFoundTags['httpv1'])
@@ -105,6 +113,7 @@ $sTiles=''
         ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.security'), $aFoundTags['security'], '', '#securityheaders')
         : $oRenderer->renderTile('warning', $this->lB('httpheader.header.security'), $oRenderer->renderShortInfo('miss'), '', '#securityheaders')
       )
+     */
     ;
         
 // ----------------------------------------------------------------------

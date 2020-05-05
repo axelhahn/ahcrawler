@@ -29,6 +29,7 @@ if ($aFilterItems){
     }
 }
 // -- get list of all data
+$iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
 $iResCount = $oRessources->getCount($aWhere);
 
 // -- get list of filter data
@@ -79,6 +80,8 @@ if (is_array($aFilterItems) && is_array($aFilterValues)){
 $bShowReport=$this->_getRequestParam('showreport');
 $iReportCounter=0;
 $bIgnoreLimit=$this->_getRequestParam('ignorelimit');
+$sFilterArea='';
+$aTable = array();
 
 
 $bShowRessourcetable=($this->_getRequestParam('showtable') || !$bShowReport);
@@ -89,7 +92,6 @@ if ($iResCount>$this->iLimitRessourcelist && !$bIgnoreLimit){
 
 if ($iResCount) {
 
-    $aTable = array();
 
 
     if ($bShowReport || $bShowRessourcetable){
@@ -167,7 +169,6 @@ if ($iResCount) {
     }
      */
     
-    $sFilterArea='';
     
     foreach ($aFilter as $sKey){
         $sRessourcelabel=$this->_getIcon($sKey).$this->lB('db-ressources.'.$sKey);
@@ -176,12 +177,15 @@ if ($iResCount) {
         foreach ($aCounter2[$sKey] as $aCounterItem){
             $sCounter=$aCounterItem[$sKey];
             $iValue=$aCounterItem['count'];
+            $sLinkLabel=$oRenderer->renderValue($sKey, $sCounter);
+            $sLinkLabel=$sLinkLabel ? $sLinkLabel : '[ ]';
+            $sCounter=$sCounter ? $sCounter : ' ';
             $aTableF[]=array(
                 (count($aCounter2[$sKey])>1
-                    ? '<a href="'.$sSelfUrl.'&amp;filteritem[]='.$sKey.'&amp;filtervalue[]='.$sCounter.'">'
-                        .$oRenderer->renderValue($sKey, $sCounter)
+                    ? '<a href="'.$sSelfUrl.'&amp;filteritem[]='.$sKey.'&amp;filtervalue[]='.urlencode($sCounter).'">'
+                        .$sLinkLabel
                         .'</a>'
-                    : $oRenderer->renderValue($sKey, $sCounter)
+                    : $sLinkLabel
                 )
                 , 
                 $iValue
@@ -222,7 +226,7 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         ;
 
 
-if ($iResCount) {
+if ($iRessourcesCount) {
     $sReturn.=''
             // .$this->_getSimpleHtmlTable($aTableFilter)
             . '<div class="actionbox">'
@@ -231,28 +235,34 @@ if ($iResCount) {
                 . ($sFilter ? $sFilter : '<br><br>')
                 . $sFilterArea
             . '</div>'
-            . $this->_getHtmlLegend($aFilter, 'db-ressources.')
+            .($iResCount
+                ? $this->_getHtmlLegend($aFilter, 'db-ressources.')
+                : ':-/'
+             )
             
-            . '<h3 id="restable">' . $this->lB('ressources.list') . '</h3>'
+            
             ;
 
-    if ($bShowRessourcetable){
-        $sReturn.='<p>'
-                . $sBtnReport.'<br><br>'
-                . $this->lB('ressources.list.intro')
-                . '</p>'
-            . $this->_getHtmlTable($aTable, "db-ressources.")
-            . $this->_getHtmlLegend($aLegendKeys, "db-ressources.")
-            ;
-    } 
-    if ($bShowReport){
-        $sReturn.='<p>'
-                . $sBtnTable.'<br><br>'
-                . $this->lB('ressources.report.intro')
-                . '</p>'
-                . $sReport
+    if($iResCount){
+        $sReturn.='<h3 id="restable">' . $this->lB('ressources.list') . '</h3>';
+        if ($bShowRessourcetable){
+            $sReturn.='<p>'
+                    . $sBtnReport.'<br><br>'
+                    . $this->lB('ressources.list.intro')
+                    . '</p>'
+                . $this->_getHtmlTable($aTable, "db-ressources.")
+                . $this->_getHtmlLegend($aLegendKeys, "db-ressources.")
                 ;
-    } 
+        } 
+        if ($bShowReport){
+            $sReturn.='<p>'
+                    . $sBtnTable.'<br><br>'
+                    . $this->lB('ressources.report.intro')
+                    . '</p>'
+                    . $sReport
+                    ;
+        } 
+    }
     if($iResCount>$this->iLimitRessourcelist && !$bIgnoreLimit){
         $sReturn.='<p>'.$this->lB('ressources.hint-manyitems')
         . '<br><br>'

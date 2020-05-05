@@ -13,7 +13,9 @@ $iMaxPagesize=$aOptions['analysis']['MaxPagesize'];
 $iMaxLoadtime=$aOptions['analysis']['MaxLoadtime']; 
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-$iRessourcesCount=$this->oDB->count('pages',array('siteid'=>$this->_sTab));
+
+$aCountByStatuscode=$this->_getStatusinfos(array('_global','htmlchecks'));
+$iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
 if (!$iRessourcesCount) {
     return $sReturn.'<br>'.
         $this->_getMessageBox(
@@ -32,44 +34,16 @@ $sReturn.=''
         . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
         ;
 
-$iCountCrawlererrors=$oCrawler->getCount(array(
-    'AND' => array(
-        'siteid' => $this->_sTab,
-        'errorcount[>]' => 0,
-    )));
-
-$iCountShortTitles=$this->_getHtmlchecksCount('title', $iMinTitleLength);
-$iCountShortDescr=$this->_getHtmlchecksCount('description', $iMinDescriptionLength);
-$iCountShortKeywords=$this->_getHtmlchecksCount('keywords', $iMinKeywordsLength);
-$iCountLargePages=$this->_getHtmlchecksLarger('size', $iMaxPagesize);
-$iCountLongload=$this->_getHtmlchecksLarger('time', $iMaxLoadtime);
-
+$iCountCrawlererrors= $aCountByStatuscode['htmlchecks']['countCrawlerErrors']['value'];
+$iCountShortTitles=   $aCountByStatuscode['htmlchecks']['countShortTitles']['value'];
+$iCountShortDescr=    $aCountByStatuscode['htmlchecks']['countShortDescr']['value'];
+$iCountShortKeywords= $aCountByStatuscode['htmlchecks']['countShortKeywords']['value'];
+$iCountLargePages=    $aCountByStatuscode['htmlchecks']['countLongLoad']['value'];
+$iCountLongload=      $aCountByStatuscode['htmlchecks']['countLargePages']['value'];
+        
 $sTiles = ''
     . $oRenderer->renderTile('',            $this->lB('status.indexed_urls.label'), $iRessourcesCount, '', '')
-    . ($iCountCrawlererrors
-        ? $oRenderer->renderTile('error',   $this->lB('htmlchecks.tile-crawlererrors'), $iCountCrawlererrors, (floor($iCountCrawlererrors/$iRessourcesCount*1000)/10).'%', '#tblcrawlererrors')
-        : $oRenderer->renderTile('ok',      $this->lB('htmlchecks.tile-crawlererrors'), $iCountCrawlererrors, '', '')
-    )
-    . ($iCountShortTitles
-        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles, (floor($iCountShortTitles/$iRessourcesCount*1000)/10).'%', '#tblshorttitle')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles, '', '')
-    )
-    . ($iCountShortDescr
-        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr, (floor($iCountShortDescr/$iRessourcesCount*1000)/10).'%', '#tblshortdescription')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr, '', '')
-    )
-    . ($iCountShortKeywords
-        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords, (floor($iCountShortKeywords/$iRessourcesCount*1000)/10).'%', '#tblshortkeywords')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords, '', '')
-    )
-    . ($iCountLongload
-        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iRessourcesCount*1000)/10).'%', '#tblloadtimepages')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, '', '#tblloadtimepages')
-    )
-    . ($iCountLargePages
-        ? $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '#tbllargepages')
-        : $oRenderer->renderTile('ok',      sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, '', '#tbllargepages')
-    )
+    . $this->_getTilesOfAPage()
     ;
 
 $sReturn.=$oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>'

@@ -203,6 +203,7 @@ class ahsearch extends crawler_base {
      * @return array
      */
     public function search($q, $aOptions = array()) {
+        $aResult=array();
         if (!$this->iSiteId) {
             // echo "ABORT - keine this->iSiteId = ".$this->iSiteId."<br>";
             return false;

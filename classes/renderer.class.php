@@ -546,6 +546,16 @@ class ressourcesrenderer extends crawler_base {
             . $this->lB('bookmarklet.posthint')
             ;
     }
+    
+    public function renderLink2Page($sMenuItem, $sIcon='', $iSiteId=false){
+        return  $this->oHtml->getTag('a', array(
+                    'class'=>'pure-button',
+                    'href'=>'?page='.$sMenuItem.($iSiteId ? '&siteid='.$iSiteId : ''),
+                    'title'=>$this->lB('nav.'.$sMenuItem.'.hint'),
+                    'label'=>($sIcon ? $sIcon.' ' : '').$this->lB('nav.'.$sMenuItem.'.label') ,
+            ));
+    }
+    
     public function renderMessagebox($sMessage, $sType=''){
         return '<div class="message message-'.$sType.'">'
                 .$this->renderShortInfo($sType)
