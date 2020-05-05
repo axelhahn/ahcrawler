@@ -7,7 +7,6 @@ $sReturn = '';
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aCountByStatuscode=$this->_getStatusinfos(array('_global'));
-echo '<pre>'.print_r($aCountByStatuscode, 1).'</pre>';
 $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
 if (!$iRessourcesCount) {
     return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
