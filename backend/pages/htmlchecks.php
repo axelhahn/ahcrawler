@@ -38,8 +38,8 @@ $iCountCrawlererrors= $aCountByStatuscode['htmlchecks']['countCrawlerErrors']['v
 $iCountShortTitles=   $aCountByStatuscode['htmlchecks']['countShortTitles']['value'];
 $iCountShortDescr=    $aCountByStatuscode['htmlchecks']['countShortDescr']['value'];
 $iCountShortKeywords= $aCountByStatuscode['htmlchecks']['countShortKeywords']['value'];
-$iCountLargePages=    $aCountByStatuscode['htmlchecks']['countLongLoad']['value'];
-$iCountLongload=      $aCountByStatuscode['htmlchecks']['countLargePages']['value'];
+$iCountLongload=      $aCountByStatuscode['htmlchecks']['countLongLoad']['value'];
+$iCountLargePages=    $aCountByStatuscode['htmlchecks']['countLargePages']['value'];
         
 $sTiles = ''
     . $oRenderer->renderTile('',            $this->lB('status.indexed_urls.label'), $iRessourcesCount, '', '')
