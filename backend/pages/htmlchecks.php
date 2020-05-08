@@ -15,8 +15,8 @@ $iMaxLoadtime=$aOptions['analysis']['MaxLoadtime'];
 $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aCountByStatuscode=$this->_getStatusinfos(array('_global','htmlchecks'));
-$iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
-if (!$iRessourcesCount) {
+$iPagesTotalCount=$aCountByStatuscode['_global']['pages']['value'];
+if (!$iPagesTotalCount) {
     return $sReturn.'<br>'.
         $this->_getMessageBox(
             sprintf($this->lB('status.emptyindex'), $this->_sTab),
@@ -42,7 +42,7 @@ $iCountLongload=      $aCountByStatuscode['htmlchecks']['countLongLoad']['value'
 $iCountLargePages=    $aCountByStatuscode['htmlchecks']['countLargePages']['value'];
         
 $sTiles = ''
-    . $oRenderer->renderTile('',            $this->lB('status.indexed_urls.label'), $iRessourcesCount, '', '')
+    . $oRenderer->renderTile('',            $this->lB('status.indexed_urls.label'), $iPagesTotalCount, '', '')
     . $this->_getTilesOfAPage()
     ;
 
@@ -53,7 +53,7 @@ $sReturn.=$oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></di
 if ($iCountCrawlererrors) {
     $sReturn.= '<h3 id="tblcrawlererrors">' . sprintf($this->lB('htmlchecks.tableCrawlererrors'), $iCountCrawlererrors) . '</h3>'
         .'<p>'.$this->lB('htmlchecks.tableCrawlererrors.description').'</p>'
-        .$this->_getHtmlchecksChart($iRessourcesCount, $iCountCrawlererrors)    
+        .$this->_getHtmlchecksChart($iPagesTotalCount, $iCountCrawlererrors)    
         .$this->_getHtmlchecksTable('select title, length(title) as length, url
             from pages 
             where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
@@ -62,7 +62,7 @@ if ($iCountCrawlererrors) {
         );
 }
 // for the other charts: 
-$iRessourcesCount=$iRessourcesCount-$iCountCrawlererrors;
+$iPagesCount=$iPagesTotalCount-$iCountCrawlererrors;
 
 
 // ----------------------------------------------------------------------
@@ -72,22 +72,22 @@ if ($iCountShortTitles) {
     $iCountNoTitle=$this->_getHtmlchecksCount('title', 1);
     $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
         . '<div class="floatright">'
-            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortTitles-$iCountNoTitle, $iCountNoTitle)
+            .$this->_getHtmlchecksChart($iPagesCount, $iCountShortTitles-$iCountNoTitle, $iCountNoTitle)
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoTitle ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-title'), $iCountNoTitle,(floor($iCountNoTitle/$iRessourcesCount*1000)/10).'%', '') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-title'), $iCountNoTitle,(floor($iCountNoTitle/$iPagesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles-$iCountNoTitle, (floor(($iCountShortTitles-$iCountNoTitle)/$iRessourcesCount*1000)/10).'%', '')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles-$iCountNoTitle, (floor(($iCountShortTitles-$iCountNoTitle)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinTitleLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select title, length(title) as length, url
+        .$this->_getHtmlchecksTable('select title, length(title) as length, title_wc as words, url
             from pages 
-            where siteid='.$this->_sTab.' and errorcount=0 and length(title)<'.$iMinTitleLength.'
-            order by length(title), title',
+            where siteid='.$this->_sTab.' and errorcount=0 and length(title) < '.$iMinTitleLength.'
+            order by length, words, title',
             'tableShortTitles'
         )
         ;
@@ -100,22 +100,22 @@ if ($iCountShortDescr) {
     $iCountNoDescr=$this->_getHtmlchecksCount('description', 1);
     $sReturn.= '<h3 id="tblshortdescription">' . sprintf($this->lB('htmlchecks.tableShortDescription'), $iCountShortDescr) . '</h3>'
         . '<div class="floatright">'
-            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortDescr-$iCountNoDescr, $iCountNoDescr) 
+            .$this->_getHtmlchecksChart($iPagesCount, $iCountShortDescr-$iCountNoDescr, $iCountNoDescr) 
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoDescr ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-description'), $iCountNoDescr,(floor($iCountNoDescr/$iRessourcesCount*1000)/10).'%', '') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-description'), $iCountNoDescr,(floor($iCountNoDescr/$iPagesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr-$iCountNoDescr, (floor(($iCountShortDescr-$iCountNoDescr)/$iRessourcesCount*1000)/10).'%', '')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr-$iCountNoDescr, (floor(($iCountShortDescr-$iCountNoDescr)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinDescriptionLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select description, length(description) as length, title, url
+        .$this->_getHtmlchecksTable('select description, length(description) as length,  description_wc as words, title, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
-            order by length, description'                        
+            order by length, words, description'                        
             /*
             ,
             array(
@@ -144,22 +144,22 @@ if ($iCountShortKeywords) {
     $iCountNoKeywords=$this->_getHtmlchecksCount('keywords', 1);
     $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
         . '<div class="floatright">'
-            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountShortKeywords-$iCountNoKeywords, $iCountNoKeywords)    
+            .$this->_getHtmlchecksChart($iPagesCount, $iCountShortKeywords-$iCountNoKeywords, $iCountNoKeywords)    
         . '</div>'
         .$oRenderer->renderTileBar(
                 ($iCountNoKeywords ? 
-                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-keywords'), $iCountNoKeywords,(floor($iCountNoKeywords/$iRessourcesCount*1000)/10).'%', '') 
+                    $oRenderer->renderTile('error', $this->lB('htmlchecks.tile-check-no-keywords'), $iCountNoKeywords,(floor($iCountNoKeywords/$iPagesCount*1000)/10).'%', '') 
                     : '')
-                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords-$iCountNoKeywords, (floor(($iCountShortKeywords-$iCountNoKeywords)/$iRessourcesCount*1000)/10).'%', '')
+                .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords-$iCountNoKeywords, (floor(($iCountShortKeywords-$iCountNoKeywords)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinKeywordsLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, title, url
+        .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, keywords_wc as words, title, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
-            order by length, keywords',
+            order by length, words, keywords',
             'tableShortKeywords'
         )
         ;
@@ -174,10 +174,10 @@ if ($iCountShortKeywords) {
 $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoadtimePages'), $iCountLongload) . '</h3>'
     .($iCountLongload
         ? '<div class="floatright">'
-            .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLongload)
+            .$this->_getHtmlchecksChart($iPagesCount, $iCountLongload)
         . '</div>'
         .$oRenderer->renderTileBar(
-                $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iRessourcesCount*1000)/10).'%', '')
+                $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
         .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
@@ -219,10 +219,10 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
     $sReturn.= '<h3 id="tbllargepages">' . sprintf($this->lB('htmlchecks.tableLargePages'), $iCountLargePages) . '</h3>'
         .($iCountLargePages
             ? '<div class="floatright">'
-                .$this->_getHtmlchecksChart($iRessourcesCount, $iCountLargePages)
+                .$this->_getHtmlchecksChart($iPagesCount, $iCountLargePages)
             . '</div>'
             .$oRenderer->renderTileBar(
-                    $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iRessourcesCount*1000)/10).'%', '')
+                    $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iPagesCount*1000)/10).'%', '')
                     , '')
             .'<div style="clear: left;"></div>'
             .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'

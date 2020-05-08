@@ -8,6 +8,15 @@ $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
 $aCountByStatuscode=$this->_getStatusinfos(array('_global'));
 $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
+$iPagesCount=$aCountByStatuscode['_global']['pages']['value'];
+if (!$iPagesCount) {
+    return $sReturn.'<br>'.
+        $this->_getMessageBox(
+            sprintf($this->lB('status.emptyindex'), $this->_sTab),
+            'warning'
+        )
+        ;
+}
 if (!$iRessourcesCount) {
     return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
@@ -29,9 +38,6 @@ if(!$iResId){
             "LIMIT" => 1
         )
     );
-    if (count($aPagedata)===0){
-        return $sReturn;
-    }
 } else {
 
     // with get param id: get it from ressources (not pages!)

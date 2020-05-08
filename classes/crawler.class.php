@@ -259,7 +259,7 @@ class crawler extends crawler_base{
         $sUrl = str_replace(' ', '%20', $sUrl);
 
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            $this->cliprint('cli', $bDebug ? "... was added already: $sUrl\n" : "");
+            // $this->cliprint('cli', $bDebug ? "... was added already: $sUrl\n" : "");
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Skip)) {
@@ -550,7 +550,7 @@ class crawler extends crawler_base{
             . "Crawler has finished.\n\n"
             . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
             . $this->_iUrlsCrawled . " urls were crawled\n"
-            . "process needed $iTotal sec; ". number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec.\n"
+            . "process needed $iTotal sec; ". ($iTotal ? number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec." : '')."\n"
             . "$iUrls urls are in the search index now (table 'pages')\n"
         );
         
@@ -830,6 +830,14 @@ class crawler extends crawler_base{
         // return $this->iSiteId ? md5($sUrl . $this->iSiteId) : false;
     }
 
+    protected function _getWordCount($s){
+        $characterMap='À..ÿ'; // chars #192 .. #255
+        return count(str_word_count(
+                str_replace("'", '', $s),
+                2,
+                $characterMap
+        ));
+    }
     /**
      * add / update page data in search index
      * @param type $aData
@@ -870,8 +878,11 @@ class crawler extends crawler_base{
                 'url' => $aData['url'],
                 'siteid' => $this->iSiteId,
                 'title' => $aData['title'],
+                'title_wc' => $this->_getWordCount($aData['title']),
                 'description' => $aData['description'],
+                'description_wc' => $this->_getWordCount($aData['description']),
                 'keywords' => $aData['keywords'],
+                'keywords_wc' => $this->_getWordCount($aData['keywords']),
                 'content' => html_entity_decode($aData['content']),
                 'lang' => $aData['lang'],
                 'size' => $aData['size'],
@@ -901,8 +912,11 @@ class crawler extends crawler_base{
                         'url' => $aData['url'],
                         'siteid' => $this->iSiteId,
                         'title' => $aData['title'],
+                        'title_wc' => $this->_getWordCount($aData['title']),
                         'description' => $aData['description'],
+                        'description_wc' => $this->_getWordCount($aData['description']),
                         'keywords' => $aData['keywords'],
+                        'keywords_wc' => $this->_getWordCount($aData['keywords']),
                         'lang' => $aData['lang'],
                         'size' => $aData['size'],
                         'time' => $aData['time'],

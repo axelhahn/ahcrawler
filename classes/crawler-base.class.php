@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.107',
-        'date' => '2020-05-06',
+        'version' => '0.108-dev',
+        'date' => '2020-05-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -175,8 +175,11 @@ class crawler_base {
                     'url' => 'VARCHAR(1024)  NOT NULL',
                     'siteid' => 'INTEGER  NOT NULL',
                     'title' => 'VARCHAR(256)  NULL',
+                    'title_wc' => 'INTEGER NULL',
                     'description' => 'VARCHAR(1024)  NULL',
+                    'description_wc' => 'INTEGER NULL',
                     'keywords' => 'VARCHAR(1024)  NULL',
+                    'keywords_wc' => 'INTEGER NULL',
                     'lang' => 'VARCHAR(8) NULL',
                     'size' => 'INTEGER NULL',
                     'time' => 'INTEGER NULL',

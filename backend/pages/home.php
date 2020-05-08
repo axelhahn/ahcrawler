@@ -215,6 +215,7 @@ if(!$this->_configExists() ){
                 .'<h3>'.$this->aProfileSaved['label'].'</h3>'
                 .'<strong>'.$this->aProfileSaved['description'].'</strong>'
                 .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
+                .'<p>'.$this->lB('home.starturls').'</p>'
                 .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
                 . $this->_getButton(array(
                             'href'=>'?page=profiles&siteid='.$iProfileId,

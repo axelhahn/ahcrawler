@@ -14,6 +14,14 @@
 
 ----------------------------------------------------------------------
 
+2020-05-09: v0.108
+  * UPDATE: database table was changed 
+    execute "php bin/cli.php -a flush -d searchindex"
+    and then index your projects again
+  * UPDATE: show count of words in title, keywords, description
+  * UPDATE: remove PHP Deprecated: mb_strrpos() in analyzer.html.class.php (PHP 7.4)
+  * FIX: htmlchecks page: show number of pages (it was broken in 1.06)
+
 2020-05-06: v0.107
   * FIX: htmlchecks - missing tables for large/ long loading pages
 

@@ -255,10 +255,11 @@ class analyzerHtml {
         if ($path[0] == '/')
             $outPath = '/' . $outPath;
         // compare last multi-byte character against '/'
-        if ($outPath != '/' &&
-                (mb_strlen($path) - 1) == mb_strrpos($path, '/', 'UTF-8'))
+        if ($outPath != '/' 
+            && (mb_strlen($path) - 1) == mb_strrpos($path, '/', 0, 'UTF-8'))
+        {
             $outPath .= '/';
-
+        }
         return $outPath;
     }
 
