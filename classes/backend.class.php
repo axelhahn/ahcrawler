@@ -751,7 +751,10 @@ class backend extends crawler_base {
      * @return string
      */
     protected function _getPercent($floatValue){
-        return $floatValue ? sprintf("%01.2f", (100*$floatValue)).'%' : '';
+        return $floatValue ? 
+                (
+                    $floatValue==1 ? '100' : sprintf("%01.2f", (100*$floatValue))
+                ).'%' : '';
     }
     /**
      * get hash analyse data with rating and counter
@@ -825,9 +828,9 @@ class backend extends crawler_base {
                                 'errorcount[>]' => 0,
                             )));
 
-                        $aCounter['countShortTitles']   = $this->_getHtmlchecksCount('title_wc',       $aOptions['analysis']['MinTitleLength']);
-                        $aCounter['countShortDescr']    = $this->_getHtmlchecksCount('description_wc', $aOptions['analysis']['MinDescriptionLength']);
-                        $aCounter['countShortKeywords'] = $this->_getHtmlchecksCount('keywords_wc',    $aOptions['analysis']['MinKeywordsLength']);
+                        $aCounter['countShortTitles']   = $this->_getHtmlchecksCount('title',       $aOptions['analysis']['MinTitleLength']);
+                        $aCounter['countShortDescr']    = $this->_getHtmlchecksCount('description', $aOptions['analysis']['MinDescriptionLength']);
+                        $aCounter['countShortKeywords'] = $this->_getHtmlchecksCount('keywords',    $aOptions['analysis']['MinKeywordsLength']);
                         $aCounter['countLargePages']    = $this->_getHtmlchecksLarger('size',       $aOptions['analysis']['MaxPagesize']);
                         $aCounter['countLongLoad']      = $this->_getHtmlchecksLarger('time',       $aOptions['analysis']['MaxLoadtime']);
                         // (floor($iCountCrawlererrors/$iRessourcesCount*1000)/10).'%';
@@ -1617,6 +1620,7 @@ class backend extends crawler_base {
                     );
                 */
             }
+            // echo "<pre>$sQuery<br>".print_r($aTmp,1).'</pre>';
             if(!isset($aTmp[0])){
                 return '';
             }

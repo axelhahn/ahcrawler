@@ -14,6 +14,11 @@
 
 ----------------------------------------------------------------------
 
+2020-05-10: v0.109
+  * FIX: htmlchecks page: show short tiles/ description/ keywords (it was broken in 1.08)
+  * UPDATE: linkchecker page: links to ressources contain project id now
+  * UPDATE: a tile "100.00%" is shown as "100%"
+
 2020-05-09: v0.108
   * UPDATE: database table was changed 
     execute "php bin/cli.php -a flush -d searchindex"

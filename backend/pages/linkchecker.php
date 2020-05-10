@@ -100,7 +100,7 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
                         $this->lB('db-ressources.http_code').' '. $oRenderer->renderValue('http_code', $iHttp_code).'<br>',
                         $iCount,
                         (floor($iCount/$iRessourcesCount*1000)/10).'%',
-                        '?page=ressources&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable'
+                        '?page=ressources&siteid='.$this->_sTab.'&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.$iHttp_code.'#restable'
                     )
                     ;
 
