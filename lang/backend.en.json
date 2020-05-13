@@ -538,6 +538,7 @@
     "linkchecker.found-http-external-todo": "This is just a hint. Try to set the links to a real target url.",
     "linkchecker.ok-none-was-found": "Excellent, no entry was found!",
     "linkchecker.loop-detected": "Abort: A loop to this url was found:<br>%s",
+    "linkchecker.http-to-https": "Here the complete url just switches the protocol from http:// to http<strong>s</strong>://.",
     "http-status-group-todo": "Todo",
     "http-status-group-0-noConnect": "No connect",
     "http-status-group-0-noConnect-hint": "Keine Verbindung zum Zielserver.",

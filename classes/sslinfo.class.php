@@ -85,7 +85,7 @@ class sslinfo {
             return $this->_aCertInfos;
         }
         
-        $iTimeout = 1;
+        $iTimeout = 3;
         if (!$this->_sHost || !$this->_iPort) {
             // die(__METHOD__. "ERROR: I need host AND port\n");
             return array('_error' => 'ERROR: I need host AND port');

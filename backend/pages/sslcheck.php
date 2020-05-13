@@ -1,6 +1,7 @@
 <?php
 /**
  * page analysis :: Http header check
+ * TODO: use $this->_getStatusinfos(array('_global','sslcheck'));
  */
 
 // --- https certificate

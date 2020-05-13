@@ -35,7 +35,7 @@ $oCdn=new axelhahn\cdnorlocal(array(
     ));
 $oCdn->setLibs(array(
     // "pure/1.0.1",
-    "pure/2.0.0",
+    "pure/2.0.3",
     "datatables/1.10.20",
     "font-awesome/5.13.0",
     "jquery/3.5.0",
@@ -138,8 +138,17 @@ function getNewQs($aQueryParams = array()) {
         <div id="navmain" class="sidebar pure-u-1 ">
             <div class="header">
                 <h1 class="brand-title"><a href="?">
+                        AH
+                        <div id="pacman">
+                            <div>
+                                r a w l e r<br>
+                                <span>v<?php echo $oBackend->aAbout['version']; ?></span>
+                            </div>
+                            
+                        </div>
+                        <!--
                         <?php echo $oBackend->aAbout['product']; ?>
-                        <span><?php echo $oBackend->aAbout['version']; ?></span>
+                        -->
                     </a></h1>
                 <?php echo $oBackend->getUpdateInfobox(); ?>    
                         

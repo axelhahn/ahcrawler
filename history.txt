@@ -14,6 +14,12 @@
 
 ----------------------------------------------------------------------
 
+2020-05-13: v0.110
+  * ADDED: identify redirects that switch the protocol from http to https
+  * UPDATE: colors
+  * UPDATE: SSL check got an timeout of 2 sec (1 sec before)
+  * UPDATE: pure to 2.0.3
+
 2020-05-10: v0.109
   * FIX: htmlchecks page: show short tiles/ description/ keywords (it was broken in 1.08)
   * UPDATE: linkchecker page: links to ressources contain project id now

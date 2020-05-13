@@ -437,12 +437,13 @@ class ressourcesrenderer extends crawler_base {
      * @param integer  $iLevel          level
      * @return string
      */
-    private function _renderWithRedirects($aRessourceItem, $iLevel = 1) {
+    private function _renderWithRedirects($aRessourceItem, $iLevel = 1, $sLastUrl='') {
         $iIdRessource=$aRessourceItem['id'];
         static $aUrllist;
         if ($iLevel===1){
             $aUrllist=array();
         }
+        $sReturn='';
         /*
         $iIdRessource=array_key_exists('id_ressource', $aRessourceItem)
                 ? $aRessourceItem['id_ressource_to']
@@ -451,17 +452,21 @@ class ressourcesrenderer extends crawler_base {
          * 
          */
         if (array_key_exists($iIdRessource, $aUrllist)){
-            return $sReturn . ' <span class="error">'
+            return $sReturn .=' <span class="error">'
                 . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
                 . '</span>'
                 ;
         }
         $oStatus=new httpstatus($aRessourceItem['http_code']);
         $bIsRedirect=($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
-        $sReturn = ''
+        $sReturn .= ''
                 // . ' #'.$iIdRessource.' '.$iLevel.' '
                 . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
                     . ($iLevel>2 ? '<div class="redirects">' : '')
+                    .($aRessourceItem['url']==str_replace('http://', 'https://',  $sLastUrl)
+                        ? '<span class="warning">'. $this->lB("linkchecker.http-to-https").'</span><br>'
+                        : ''
+                    )
                     . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
                     . ($iLevel===2 ? '</div>' : '')
                 . ($iLevel>2 ? '</div>' : '')
@@ -475,7 +480,7 @@ class ressourcesrenderer extends crawler_base {
             if ($aOutItem && count($aOutItem)) {
                 $iLevel++;
                 // $sReturn .= str_repeat('&nbsp;&nbsp;&nbsp;', $iLevel++) . '&gt; ' . $this->_renderWithRedirects($aOutItem[0], $iLevel++);
-                $sReturn .= '<div class="redirects">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++) . '</div>';
+                $sReturn .= '<div class="redirects">' . $this->_renderWithRedirects($aOutItem[0], $iLevel++, $aRessourceItem['url']) . '</div>';
             }
         }
         return $sReturn;

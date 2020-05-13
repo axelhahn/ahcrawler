@@ -61,17 +61,18 @@ if(!$this->_configExists() ){
             ;
     }
     if ($bShowProject) {
-        $iPagesTotal=$this->getRecordCount('pages');
-        $iResTotal=$this->getRecordCount('ressources');
-        $iSearchesTotal=$this->getRecordCount('searches');
-
-        $sTiles.=''
-                . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), count($aProfiles), '', '')
-                . $oRenderer->renderTile('', $this->lB('nav.search.label'), $iPagesTotal, '', '')
-                . $oRenderer->renderTile('', $this->lB('nav.ressources.label'), $iResTotal, '', '')
-                . $oRenderer->renderTile('', $this->lB('nav.searches.label'), $iSearchesTotal, '', '')
-                ;
         if (array_search($iProfileId, $aProfiles)===false){
+            $iPagesTotal=$this->getRecordCount('pages');
+            $iResTotal=$this->getRecordCount('ressources');
+            $iSearchesTotal=$this->getRecordCount('searches');
+
+            $sTiles.=''
+                    . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), count($aProfiles), '', '')
+                    . $oRenderer->renderTile('', $this->lB('nav.search.label'), $iPagesTotal, '', '')
+                    . $oRenderer->renderTile('', $this->lB('nav.ressources.label'), $iResTotal, '', '')
+                    . $oRenderer->renderTile('', $this->lB('nav.searches.label'), $iSearchesTotal, '', '')
+                    ;
+            /*
             // ------------------------------------------------------------
             // OVERVIEW OVER ALL PROJECTS
             // ------------------------------------------------------------        
@@ -146,12 +147,12 @@ if(!$this->_configExists() ){
                         . $this->_getSimpleHtmlTable($aTable, true)
                         ;
             }
+            */
             $sHtml.=''
                     .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                     .$this->_getNavi2($this->_getProfiles(), false, '')
                     .$sTable
                     ;
-            
         } else if ($bShowProject) {
             // ------------------------------------------------------------
             // STATUS OF A SINGLE PROJECT

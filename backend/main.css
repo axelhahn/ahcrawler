@@ -49,16 +49,29 @@ body{
     padding-left: 18em;
     margin-bottom: 3em;
 }
-.brand-title,.brand-title a {color:#f8f8f8; text-decoration: none; border-radius: 0; text-shadow: 0 0 3px #000,0 0 1.5em #f00;}
-.brand-title{background: #f8c030; 
-             background: radial-gradient(#fce030, #f8c030); 
-             margin: 0 0 1em; padding: 0.5em;
-            box-shadow: 0 0 0.5em #888;
-            border: 0px solid;
-            border-bottom-right-radius: 0.3em;
-            text-align: center;
+
+.brand-title,.brand-title a {color:#678; text-decoration: none; }
+.brand-title{
+    background: rgba(140,160,200,0.1); 
+    border: 0px solid;
+    border-radius: 0;
+    border-bottom-right-radius: 0.3em;
+    box-shadow: 0 0 0.5em #aaa;
+    margin: 0 0 1em; padding: 0.2em;
 }
-.brand-title span{font-size: 0.5em;}
+    #pacman {
+      width: 0;
+      height: 0;
+      border: 1.2em solid #abc;
+      border-radius: 2em;
+      border-right-color: transparent;
+    }
+    #pacman div{
+        margin: -0.7em 0 0 0.7em;
+        position: absolute;
+    }
+    .brand-title span{font-size: 0.5em; font-weight: normal; position: absolute; right: 0.5em;}
+    .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */
 .pure-menu{margin-left: 1.0em; _background: rgba(255,255,255,0.5); width: 90%;}
@@ -144,7 +157,7 @@ h2{
     font-size: 3em; 
     padding: 0.2em 0em; 
     margin: 0 ; 
-    color: #679; 
+    color: #678; 
     position: fixed; 
     display: block; 
     width: 100%;

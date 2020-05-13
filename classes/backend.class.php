@@ -1029,20 +1029,23 @@ class backend extends crawler_base {
                                 'tfoot'=>$this->lB('sslcheck.httponly.hint'),
                             );
                         } else {
+                            // TODO: cache infos ... for 1 h
                             $oSsl=new sslinfo();
                             $aSslInfos=$oSsl->getSimpleInfosFromUrl($sFirstUrl);
-                            $sStatus=$oSsl->getStatus();
-                            $aSslInfosAll=$oSsl->getCertinfos($url=false);
-                            $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
-                            $aMsg['certstatus']=array(
-                                'counter'=>$iCounter++,
-                                'status'=>$sStatus, 
-                                'data'=>$aSslInfos, 
-                                'value'=>$aSslInfos['issuer'], 
-                                'message'=>$aSslInfos['issuer'].': '.$aSslInfos['CN'].'; '.$aSslInfos['validto'].' ('.$iDaysleft.' d)',
-                                'thead'=>$aSslInfos['CN'],
-                                'tfoot'=>$aSslInfos['validto'].' ('.$iDaysleft.' d)',
-                            );
+                            if(isset($aSslInfos['CN'])){
+                                $sStatus=$oSsl->getStatus();
+                                $aSslInfosAll=$oSsl->getCertinfos($url=false);
+                                $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
+                                $aMsg['certstatus']=array(
+                                    'counter'=>$iCounter++,
+                                    'status'=>$sStatus, 
+                                    'data'=>$aSslInfos, 
+                                    'value'=>$aSslInfos['issuer'], 
+                                    'message'=>$aSslInfos['issuer'].': '.$aSslInfos['CN'].'; '.$aSslInfos['validto'].' ('.$iDaysleft.' d)',
+                                    'thead'=>$aSslInfos['CN'],
+                                    'tfoot'=>$aSslInfos['validto'].' ('.$iDaysleft.' d)',
+                                );
+                            }
                         }
                         break;
                     case 'linkchecker':
