@@ -14,7 +14,7 @@
 
 ----------------------------------------------------------------------
 
-2020-05-13: v0.111
+2020-05-15: v0.111
   * UPDATE: reorder menu items: website related pages are all in the upper part
   * UPDATE: menu items got logic: can be disabled based on available data
   * UPDATE: installer creates the default config (one manual step less in the initial setup)
