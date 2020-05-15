@@ -171,11 +171,11 @@ if(isset($_POST['action'])){
 // MAIN
 // ----------------------------------------------------------------------
 
-$sReturn.=(!isset($_SERVER['HTTPS'])
+$sReturn.=$this->_getNavi2($this->_getProfiles(), true, '?page=home')
+        .(!isset($_SERVER['HTTPS'])
             ? $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
             : ''
         )
-            . $this->_getNavi2($this->_getProfiles(), true, '?page=settings')
             /*
             . ($this->_sTab==='add'
                 ? '<h3>'.$this->lB('profile.new.searchprofile') . '</h3>'

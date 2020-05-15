@@ -20,6 +20,10 @@ if(!$this->_configExists() ){
     die();
 
 } else {
+    /*
+     
+    v0.111 - default settings are saved in the installer now.
+
     if (!isset($aOptions['options']['searchindex'])){
         // ------------------------------------------------------------
         // INITIAL SETUP PART TWO
@@ -39,7 +43,7 @@ if(!$this->_configExists() ){
             .'<br><br><br>'
             ;
     } 
-
+    */
     $aProfiles=$this->getProfileIds();
     $iProfileId=$this->_getTab();
     if(!$aProfiles || !count($aProfiles)){
@@ -47,17 +51,17 @@ if(!$this->_configExists() ){
         // INITIAL SETUP PART THREE
         // setup a website profile
         // ------------------------------------------------------------
-        $sHtml.='<h3>' . $this->lB('home.welcome') . '</h3>';
+        $sHtml.=$sHtml ? '' : '<h3>' . $this->lB('home.welcome') . '</h3>' ;
         $bShowProject=false;
         $sHtml.=''
             // . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), 0, '', '')
             . $this->lB('home.noprojectyet').'<br><br>'
             . $oRenderer->oHtml->getTag('a',array(
-                'href'=>'?page=profiles&siteid=add',
-                'class'=>'pure-button button-secondary',
-                'title' => $this->lB('nav.profiles.hint'),
-                'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
-                ))
+                    'href'=>'?page=profiles&siteid=add',
+                    'class'=>'pure-button button-secondary',
+                    'title' => $this->lB('nav.profiles.hint'),
+                    'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
+                    ))    
             ;
     }
     if ($bShowProject) {

@@ -77,12 +77,17 @@ body{
 .pure-menu{margin-left: 1.0em; _background: rgba(255,255,255,0.5); width: 90%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{ _box-shadow: -1em 0 3em #ccd;}
-.header .pure-menu-link i{font-size: 130%; }
+.header .pure-menu-link i{font-size: 130%;}
 .header .pure-menu-link{color:var(--color-default); border-left: 6px solid #fafafa; padding: 0.6em; }
 .header .pure-menu-link:hover{background:var(--navi-bg-on-hover); border-color: var(--color-default); }
 .header .pure-menu-link:focus{border-color:var(--color-border-click); }
 .header .pure-menu-link-active, .header .pure-menu-link-active:hover{background:var(--color-default); color:#fff; border-color:var(--color-border-active); }
-.header .pure-menu-link-active i{color:#fff;}
+
+.pure-menu-link i{color:#808890;}
+.pure-menu-link-active i{color:#fff;}
+
+.pure-menu-disabled{cursor: not-allowed;}
+
 
 /* level 1 */
 .header .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px solid #eee; border-left: 0px solid #ddd; margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }

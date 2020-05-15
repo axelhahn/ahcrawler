@@ -8,7 +8,7 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 /**
  * @var array  full config with app settings without profiles
  */
-// $aOptions = $this->_loadConfigfile();
+$aOptionDefaults = $this->_loadConfigfile();
 // $aOptions = array('options'=>$this->aOptions);
 $aOptions = array('options'=>$this->getEffectiveOptions());
 $sReturn='';
@@ -282,7 +282,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 ), false)
 
 
-        
+            .(!isset($aOptionDefaults['options']['searchindex'])
+                ? $oRenderer->renderMessagebox($this->lB('setup.initial-save'), 'warning')
+                : ''
+            )
         
             // ------------------------------------------------------------
             // setup options - backend
@@ -702,7 +705,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // submit
             // ------------------------------------------------------------
             . '<br><hr><br>'
-            .($this->_configExists()
+            .(isset($aOptionDefaults['options']['searchindex'])
                 ? $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
                 : $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
             )

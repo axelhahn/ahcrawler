@@ -12,7 +12,7 @@ $aFields = array('ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer'
 // basic infos
 // ----------------------------------------------------------------------
 
-$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=search')
+$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home')
         . '<h3>' . $this->lB('searches.overview') . '</h3>'
 ;
 $iSearches = $this->oDB->count(
@@ -23,12 +23,11 @@ $iSearches = $this->oDB->count(
             ),
         )
 );
-$sTiles = $oRenderer->renderTile('', $this->lB('searches.total'), $iSearches, '', '');
 if (!$iSearches) {
-    $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></div>'
-            . '<br>' . $this->_getMessageBox($this->lB('searches.empty'), 'warning');
+    $sReturn .= $this->_getMessageBox($this->lB('searches.empty'), 'warning');
     return $sReturn;
 }
+$sTiles = $oRenderer->renderTile('', $this->lB('searches.total'), $iSearches, '', '');
 
 
 $sOldest = $this->oDB->min('searches', array('ts'), array(

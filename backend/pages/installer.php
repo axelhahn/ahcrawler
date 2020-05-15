@@ -46,7 +46,7 @@ $sIdPrefixAuth='options-auth-';
 if(isset($_POST) && is_array($_POST) && count($_POST)){
     // $sReturn.='DEBUG: <pre>POST '.print_r($_POST, 1).'</pre>';
     // $sReturn.='DEBUG: <pre>options '.print_r($aOptions, 1).'</pre>';
-    $aOptions['options']=$_POST['options'];
+    $aOptions['options']=array_merge($this->getEffectiveOptions(), $_POST['options']);
     $aOptions['options']['lang']=$sLanguage;
     $this->_configMakeInt($aOptions, 'options.database.port');
     

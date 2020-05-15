@@ -39,17 +39,53 @@ require_once 'status.class.php';
 class backend extends crawler_base {
 
     private $_aMenu = array(
-        'home'=>array(), 
-        'settings'=>array(
-            'setup'=>array(),
-            'profiles'=>array(),
-            'vendor'=>array(), 
+        'home'=>array(
+            'children'=>array(
+                'searchindexstatus'=>array('needs'=>array('pages')), 
+                'searchindextester'=>array('needs'=>array('pages')), 
+                'searches'=>array('needs'=>array('searches')),
+                'profiles'=>array(),
+            ),
+        ), 
+        // 'search'=>array(),
+        'analysis'=>array(
+            'children'=>array(
+                'sslcheck'=>array('needs'=>array('starturl')), 
+                'httpheaderchecks'=>array('needs'=>array('pages')), 
+                'cookies'=>array(), 
+                'htmlchecks'=>array('needs'=>array('pages')), 
+                'linkchecker'=>array('needs'=>array('ressources')), 
+                'ressources'=>array('needs'=>array('ressources')),
+                'checkurl'=>array('needs'=>array('ressources')), 
+                'ressourcedetail'=>array('needs'=>array('ressources')), 
+            ),
+        ), 
+        'tools'=>array(
+            'children'=>array(
+                'bookmarklet'=>array(), 
+                'httpstatuscode'=>array(), 
+                'langedit'=>array(), 
+                'update'=>array(), 
+            ),
         ),
-        'search'=>array(
+        'settings'=>array(
+            'children'=>array(
+                'setup'=>array(),
+                'vendor'=>array(), 
+            ),
+        ),
+        'about'=>array(
+        )
+    );
+    /*
+    private $_aMenu = array(
+        'home'=>array(
             'searchindexstatus'=>array(), 
             'searchindextester'=>array(), 
             'searches'=>array(),
-        ),
+            'profiles'=>array(),
+        ), 
+        // 'search'=>array(),
         'analysis'=>array(
             'sslcheck'=>array(), 
             'httpheaderchecks'=>array(), 
@@ -65,6 +101,10 @@ class backend extends crawler_base {
             'httpstatuscode'=>array(), 
             'langedit'=>array(), 
             'update'=>array(), 
+        ),
+        'settings'=>array(
+            'setup'=>array(),
+            'vendor'=>array(), 
         ),
         'about'=>array(
         )
@@ -264,8 +304,10 @@ class backend extends crawler_base {
         // for settings: create a default array with all available menu items
         foreach($this->_aMenu as $sKey=>$aItem){
             $this->aDefaultOptions['menu'][$sKey]=true;
-            foreach(array_keys($aItem) as $sKey2){
-                $this->aDefaultOptions['menu'][$sKey2]=true;
+            if (isset($aItem['children'])){
+                foreach(array_keys($aItem['children']) as $sKey2){
+                    $this->aDefaultOptions['menu'][$sKey2]=true;
+                }
             }
         }
         $this->setSiteId($iSiteId);
@@ -424,7 +466,7 @@ class backend extends crawler_base {
     }
 
     /**
-     * find the current tab from url param tab=... 
+     * find the current tab from url param siteid=... 
      * or take the first id of given array (of profiles)
      * It returns 0..N (id of profile) or a string (of allowed GET param)
      * 
@@ -450,30 +492,80 @@ class backend extends crawler_base {
         return $this->_sTab;
     }
 
+    /**
+     * helper for navigation: is a menu item hidden by user config?
+     * @param type $sItem
+     * @return boolean
+     */
+    protected function _getNavAttrIsHidden($sItem){
+        return array_key_exists('menu', $this->aOptions)
+                && array_key_exists($sItem, $this->aOptions['menu'])
+                && !$this->aOptions['menu'][$sItem]
+        ;
+        
+    }
+    protected function _getNavAttrIsEnabled($aItem){
+        if(!isset($aItem['needs']) || !is_array($aItem['needs']) || !count($aItem['needs']) ){
+            return true;
+        }
+        foreach($aItem['needs'] as $sTable){
+            if ($this->hasDataInDb($sTable)){
+                return true;
+            }
+            if($sTable=='starturl'){
+                /*
+                $sFirstUrl=isset($aProfile['searchindex']['urls2crawl'][0]) ? $aProfile['searchindex']['urls2crawl'][0] : false;
+                if($sFirstUrl){
+                    return true;
+                }
+                 * 
+                 */
+                return true;
+            }
+            /*
+            if($sTable=='profile'){
+                // ... 
+            }
+
+             */
+        }
+        return false;
+    }
+    
     private function _getNavItems($aNav){
         $sNavi = '';
         
-        $aProfiles=$this->getProfileIds();
-        $bHasProfile=($aProfiles && count($aProfiles));
+        // $aProfiles=$this->getProfileIds();
+        // $bHasProfile=($aProfiles && count($aProfiles));
         
         // for first runs after setup:
         // disable nav items if there no profile was set so far
+        /*
         $aDisabled=!$bHasProfile 
                 ? array('search','analysis')
                 : array()
                 ;
+        
+         * 
+         */
         // echo '<pre>'.print_r($aDisabled,1).'</pre>';
+        // echo '<pre>'.print_r($aNav,1).'</pre>'; die();
         foreach ($aNav as $sItem=>$aSubItems) {
             $sNaviNextLevel='';
-            if (count($aSubItems)){
-                $sNaviNextLevel.=$this->_getNavItems($aSubItems);
+            // echo $this->_sPage . '<pre>'.print_r($aNav, 1).'</pre>'; die();
+            if (isset($aSubItems['children']) && count($aSubItems['children'])){
+                $sNaviNextLevel.=$this->_getNavItems($aSubItems['children']);
             }
             // check options->menu: is this item hidden?
+            /*
             if(array_key_exists('menu', $this->aOptions)
                     && array_key_exists($sItem, $this->aOptions['menu'])
                     && !$this->aOptions['menu'][$sItem]
             ){
-                // hide menu 
+             */
+            if($this->_getNavAttrIsHidden($sItem)){
+                // do nothing means: hide menu item
+                
             } else {
                 $bHasActiveSubitem=strpos($sNaviNextLevel, 'pure-menu-link-active');
                 $bIsActive=$this->_sPage == $sItem || $bHasActiveSubitem;
@@ -482,12 +574,12 @@ class backend extends crawler_base {
                 if ($this->_sTab) {
                     $sUrl.='&amp;siteid=' . $this->_sTab;
                 }
-            
-                // echo "$sItem - ".array_search($sItem, $aDisabled)."<br>";
-                if(array_search($sItem, $aDisabled)!==false){
-                    $sClass = ' pure-menu-disabled';
+                
+                if (!$this->_getNavAttrIsEnabled($aSubItems)){
+                    $sClass .= ' pure-menu-disabled';
                     $sUrl='#';
                 }
+
                 // $sNavi.='<li class="pure-menu-item"><a href="?'.$sItem.'" class="pure-menu-link'.$sClass.'">'.$sItem.'</a></li>';
                 $sNavi.='<li class="pure-menu-item">'
                     . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'
@@ -521,21 +613,6 @@ class backend extends crawler_base {
         }
         
         $sNavi = $this->_getNavItems($this->_aMenu);
-        /*
-        foreach ($this->_aMenu as $sItem) {
-            $sClass = ($this->_sPage == $sItem) ? ' pure-menu-link-active' : '';
-            $sUrl = '?page=' . $sItem;
-            if (!$this->_sTab) {
-                $sUrl.='&amp;tab=' . $this->_sTab;
-            }
-            // $sNavi.='<li class="pure-menu-item"><a href="?'.$sItem.'" class="pure-menu-link'.$sClass.'">'.$sItem.'</a></li>';
-            $sNavi.='<li class="pure-menu-item">'
-                    . '<a href="?page=' . $sItem . '" class="pure-menu-link' . $sClass . '"'
-                    . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
-                    . '><i class="'.$this->_aIcons['menu'][$sItem].'"></i> ' . $this->lB('nav.' . $sItem . '.label') . '</a></li>';
-        }
-         * 
-         */
         return $sNavi;
     }
 
@@ -592,7 +669,10 @@ class backend extends crawler_base {
     protected function _getLinkAsBox($aLink){
         
         return
-            '<a href="' . $aLink['url'] . '" class="childitem"'
+            '<a href="' . $aLink['url'] . '" '
+                . 'class="childitem'
+                . (isset($aLink['class']) ? ' ' . $aLink['class'] : '')
+                . '"'
                 . (isset($aLink['hint']) ? ' title="' . $aLink['hint'].'"' : '')
                 . '>'
                 . (isset($aLink['icon']) ? '<i class="'.$aLink['icon'].'"></i> ' : '')
@@ -639,9 +719,10 @@ class backend extends crawler_base {
      */
     private function _renderChildItems($aNav){
         $sReturn='';
-        foreach ($aNav as $sItem=>$aSubItems) {
+        foreach ($aNav['children'] as $sItem=>$aSubItems) {
             if ($this->_sPage!==$sItem){
                 $sUrl = '?page=' . $sItem;
+                $sClass='';
                 if ($this->_sTab) {
                     $sUrl.='&amp;siteid=' . $this->_sTab;
                 }
@@ -652,8 +733,15 @@ class backend extends crawler_base {
                 ){
                     // hide item
                 } else {
+                    
+                    if (!$this->_getNavAttrIsEnabled($aSubItems)){
+                        $sClass .= ' pure-menu-disabled';
+                        $sUrl='#';
+                    }
+                    
                     $sReturn.=$this->_getLinkAsBox(array(
-                            'url'=>'?page=' . $sItem,
+                            'url'=>$sUrl,
+                            'class'=>$sClass,
                             'hint'=>$this->lB('nav.' . $sItem . '.hint'),
                             'icon'=>$this->_aIcons['menu'][$sItem],
                             'title'=>$this->lB('nav.' . $sItem . '.label'),
@@ -737,6 +825,7 @@ class backend extends crawler_base {
                 $aReturn[$sId] = $aData['label'];
             }
         }
+        asort($aReturn);
         return $aReturn;
     }
 
@@ -744,7 +833,13 @@ class backend extends crawler_base {
     // ANALYZE DATA
     // ----------------------------------------------------------------------
     
-
+    public function hasDataInDb($sTableitem){
+        $aData=$this->_getStatusinfos(array('_global'));
+        return isset($aData['_global'][$sTableitem]['value']) 
+            ? $aData['_global'][$sTableitem]['value']
+            : false
+            ;
+    }
     /**
      * get percent value with 2 digits after "."; it returns an empty string on zero
      * @param float $floatValue
