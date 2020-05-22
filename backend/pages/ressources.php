@@ -2,6 +2,7 @@
 /**
  * page analysis :: ressources
  */
+
 $sReturn = '';
 $aCounter = array();
 $aFilter=array('http_code', 'ressourcetype','type', 'content_type');
@@ -18,6 +19,35 @@ $aUrl=array();
 // $sSiteId = $this->_getRequestParam('siteid');
 $oRessources=new ressources();
 $oRenderer=new ressourcesrenderer($this->_sTab);
+
+// ----------------------------------------------------------------------
+// handle POST requests
+// ----------------------------------------------------------------------
+
+if(isset($_POST) && count($_POST) && isset($_POST['blacklistitem']) ){
+    $iProfileId=$this->_getTab();
+    $this->setSiteId($iProfileId);
+    $aOptions = $this->_loadConfigfile();
+
+    if(!isset($this->aProfileSaved['ressources']['blacklist'])){
+        $this->aProfileSaved['ressources']['blacklist']=array();
+    } 
+    if(!array_search($_POST['blacklistitem'] , $this->aProfileSaved['ressources']['blacklist'])===false){
+        $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-skip'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'warning');
+    } else {
+        $this->aProfileSaved['ressources']['blacklist'][]=$_POST['blacklistitem'];
+        $this->aProfileSaved['ressources']['blacklist'] = array_unique($this->aProfileSaved['ressources']['blacklist']);
+
+        $aOptions['profiles'][$iProfileId]=$this->aProfileSaved;
+        if ($this->_saveConfig($aOptions)){
+            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'ok');
+        } else {
+            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'error');
+        }
+    }
+}
+
+
 
 $aWhere=array('siteid' => $this->_sTab, 'isExternalRedirect'=>0);
 $aFilterItems=$this->_getRequestParam('filteritem');
@@ -255,11 +285,87 @@ if ($iRessourcesCount) {
                 ;
         } 
         if ($bShowReport){
+            $sForm='<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
+                        . '<p>'.$this->lB('ressources.blacklist.intro').'</p>'
+                        . '<div class="pure-control-group">'
+                            // . $oRenderer->oHtml->getTag('label', array('for'=>'input-url', 'label'=>'TODO', 'style'=>'min-width: 0; width: 4em;'))
+                            . $oRenderer->oHtml->getTag('input', array(
+                                'id'=>'input-url', 
+                                'name'=>'blacklistitem',
+                                'size'=>'100',
+                                'style'=>'width:100%',
+                                'value'=>''
+                                ))
+                            . '</div>'
+                        . '<ul>'
+                            . '<li>'.$this->lB('ressources.blacklist.hint-scan').'</li>'
+                            . '<li>'.$this->lB('ressources.blacklist.hint-start').'</li>'
+                            . '<li>'.$this->lB('ressources.blacklist.hint-protocol').'</li>'
+                            . '<li>'.$this->lB('ressources.blacklist.hint-end').'</li>'
+                            . '<li>'.$this->lB('ressources.blacklist.hint-profile').'</li>'
+                        . '</ul>'
+                        . '<hr>'
+                        . '<div>'
+                            . '<div style="float: right">'
+                                . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.close') . $this->lB('button.close'), 'class'=>'pure-button button-default', 'onclick'=>'return hideModal();'))
+                                . ' '
+                                . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+                            . '</div>'
+                            . $oRenderer->oHtml->getTag('button', array('label'=>'^http[s].*', 'id'=>'btnswitch', 'class'=>'pure-button', 'onclick'=>'return switchProto();'))
+                        . '</div><br><br>'
+                . '</form>'                    
+                ;
             $sReturn.='<p>'
                     . $sBtnTable.'<br><br>'
                     . $this->lB('ressources.report.intro')
                     . '</p>'
                     . $sReport
+                    . '<script>
+                        
+                        var sUrl = false;
+                        var sProto = false;
+                        var sBoth="http[s]*://";
+                        var sLabelButton = false;
+                        
+                        $(".divRessourceAsLine .blacklist").on("click", function () {
+
+                            sUrl = $(this).attr("data-url");
+                            sUrl = "^"+sUrl+"$";
+                            
+                            sProto=sUrl.indexOf("http\:\/\/")>=0
+                                ? "http" 
+                                : sUrl.indexOf("https\:\/\/")>=0 
+                                    ? "https"
+                                    : ""
+                            ;
+
+                            // ensure that the form and ids exist
+                            modalDlg_setContent(\''.$sForm.'\');
+                            modalDlg_setTitle("'.$this->lB('ressources.blacklist.title').'");
+
+                            $("#input-url").val(sUrl);
+                            $("#btnswitch").html(sProto + " >> " + sBoth);
+                            showModalWindow();
+                            return false;
+                        });
+                        function switchProto(){
+                            var sUrlInput = $("#input-url").val();
+                            var sUrlNew = false;
+                            var sLabelNew = false;
+                            
+                            if (sUrlInput.indexOf(sBoth)>=0){
+                                sUrlNew = sUrl.replace("#http[s]*://#", sProto);
+                                sLabelNew = sProto + " >> " + sBoth;
+                            } else {
+                                sUrlNew = sUrlInput.replace("https:\/\/", sBoth);
+                                sUrlNew = sUrlNew.replace("http:\/\/", sBoth);
+                                sLabelNew = sProto + " << " + sBoth;
+                            }
+                            $("#input-url").val(sUrlNew);
+                            $("#btnswitch").html(sLabelNew);
+                            return false;
+                        }
+                    </script>'
                     ;
         } 
     }
@@ -282,7 +388,7 @@ if ($iRessourcesCount) {
     }
 
 } else {
-    $sReturn.='<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+    $sReturn.='<br>'.$oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
 }
 
 $sReturn.= $oRenderer->renderInitDatatable('.datatable', array('lengthMenu'=>array(array(20, 50, 100, -1))));

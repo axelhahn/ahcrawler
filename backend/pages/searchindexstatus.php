@@ -15,9 +15,7 @@ $iCountEntries = 5;
 $aHeaderIndex = array('id', 'ts', 'url', 'title', 'errorcount', 'lasterror');
 
 
-$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home')
-        . '<h3>' . $this->lB('status.overview') . '</h3>'
-;
+$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
 
 // ----------------------------------------------------------------------
 // get deta for tiles
@@ -27,12 +25,13 @@ $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home')
 
 $oCrawler = new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();
-$sTiles = $oRenderer->renderTile('', $this->lB('status.indexed_urls.label'), $iUrls, $this->lB('status.indexed_urls.footer'), '');
 if (!$iUrls) {
-    $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></div>'
-            . '<br>' . $this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
+    $sReturn .= $this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     return $sReturn;
 }
+
+$sReturn .= '<h3>' . $this->lB('status.overview') . '</h3>';
+$sTiles = $oRenderer->renderTile('', $this->lB('status.indexed_urls.label'), $iUrls, $this->lB('status.indexed_urls.footer'), '');
 
 $sLast = $oCrawler->getLastRecord();
 $sOldest = $this->oDB->min('pages', array('ts'), array(

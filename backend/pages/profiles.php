@@ -108,12 +108,15 @@ if(isset($_POST['action'])){
             $aArrays=array(
                 'searchindex'=>array('urls2crawl','include', 'includepath', 'exclude', 'regexToRemove'),
                 'frontend'=>array('searchlang'),
+                'ressources'=>array('blacklist'),
             );
             
             foreach($aArrays as $sIndex1=>$aSubArrays){
-                foreach($aSubArrays as $sIndex2){
+                foreach($aSubArrays as $sIndex2){                    
                     if(isset($aNewProfile[$sIndex1][$sIndex2]) && $aNewProfile[$sIndex1][$sIndex2]){
-                        $aNewProfile[$sIndex1][$sIndex2]=explode("\n", str_replace("\r", '', $aNewProfile[$sIndex1][$sIndex2]));
+                        $sTaContent=$aNewProfile[$sIndex1][$sIndex2];
+                        $sTaContent.=strpos($sTaContent, "\r")===false ? "\r":'';
+                        $aNewProfile[$sIndex1][$sIndex2]=explode("\n", str_replace("\r", '', $sTaContent));
                     } else {
                         $aNewProfile[$sIndex1][$sIndex2]=array();
                     }
@@ -249,7 +252,7 @@ $sReturn.='
             .'</h3>'
         
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.searchindex.urls2crawl')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-urls2crawl', 'label'=>$this->lB('profile.searchindex.urls2crawl')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'searchindex-urls2crawl', 
                     'name'=>'searchindex[urls2crawl]',
@@ -259,7 +262,7 @@ $sReturn.='
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.searchindex.include')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-include', 'label'=>$this->lB('profile.searchindex.include')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'searchindex-include', 
                     'name'=>'searchindex[include]',
@@ -269,7 +272,7 @@ $sReturn.='
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.searchindex.includepath')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-includepath', 'label'=>$this->lB('profile.searchindex.includepath')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'searchindex-includepath', 
                     'name'=>'searchindex[includepath]',
@@ -280,7 +283,7 @@ $sReturn.='
                 . '</div>'
         
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.searchindex.exclude')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-exclude', 'label'=>$this->lB('profile.searchindex.exclude')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'searchindex-exclude', 
                     'name'=>'searchindex[exclude]',
@@ -291,7 +294,7 @@ $sReturn.='
                 . '</div>'
         
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex[iDepth]', 'label'=>$this->lB('profile.searchindex.iDepth')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iDepth', 'label'=>$this->lB('profile.searchindex.iDepth')))
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iDepth', 
                     'name'=>'searchindex[iDepth]',
@@ -300,7 +303,7 @@ $sReturn.='
                     ), false)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'label', 'label'=>$this->lB('profile.userpwd')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'userpwd', 
                     'name'=>'userpwd',
@@ -313,7 +316,7 @@ $sReturn.='
                 . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
             . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex[iMaxUrls]', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>'searchindex-iMaxUrls', 
                     'name'=>'searchindex[iMaxUrls]',
@@ -324,7 +327,7 @@ $sReturn.='
 
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array(
-                    'for'=>'searchindex[simultanousRequests]', 
+                    'for'=>'searchindex-simultanousRequests', 
                     'label'=>sprintf($this->lB('profile.searchindex.simultanousRequests'), $aOptions['options']['crawler']['searchindex']['simultanousRequests'])
                 ))
                 . $oRenderer->oHtml->getTag('input', array(
@@ -355,7 +358,7 @@ $sReturn.='
             .'</h3>'
         
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.frontend.searchcategories')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchcategories', 'label'=>$this->lB('profile.frontend.searchcategories')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'frontend-searchcategories', 
                     'name'=>'frontend[searchcategories]',
@@ -369,7 +372,7 @@ $sReturn.='
                     ), true)
                 . '</div>'
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'description', 'label'=>$this->lB('profile.frontend.searchlang')))
+                . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchlang', 'label'=>$this->lB('profile.frontend.searchlang')))
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>'frontend-searchlang', 
                     'name'=>'frontend[searchlang]',
@@ -393,7 +396,7 @@ $sReturn.='
             . '</div>'
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array(
-                    'for'=>'ressources[simultanousRequests]', 
+                    'for'=>'ressources-simultanousRequests', 
                     'label'=>sprintf($this->lB('profile.ressources.simultanousRequests'), $aOptions['options']['crawler']['ressources']['simultanousRequests'])
                 ))
                 . $oRenderer->oHtml->getTag('input', array(
@@ -403,7 +406,18 @@ $sReturn.='
                     'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
                     ), false)
                 . '</div>'
-        
+            // blacklist
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>'ressources-blacklist', 'label'=>$this->lB('profile.ressources.blacklist')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>'ressources-blacklist', 
+                    'name'=>'ressources[blacklist]',
+                    'cols'=>50,
+                    'rows'=>isset($this->aProfileSaved['ressources']['blacklist'])  && count($this->aProfileSaved['ressources']['blacklist'])  ? count($this->aProfileSaved['ressources']['blacklist'])+1      : 3 ,
+                    'label'=>isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist']) ? implode("\n", $this->aProfileSaved['ressources']['blacklist']) : '',
+                    ), true)
+                . '</div>'
+
             // ------------------------------------------------------------
             // submit
             // ------------------------------------------------------------

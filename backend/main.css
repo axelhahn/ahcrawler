@@ -86,7 +86,7 @@ body{
 .pure-menu-link i{color:#808890;}
 .pure-menu-link-active i{color:#fff;}
 
-.pure-menu-disabled{cursor: not-allowed;}
+.pure-menu-disabled{cursor: not-allowed; opacity: 0.3;}
 
 
 /* level 1 */

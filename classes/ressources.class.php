@@ -596,15 +596,36 @@ class ressources extends crawler_base {
      * @return boolean
      */
     private function _addUrl2Crawl($sUrl, $bDebug = false) {
-        $this->cliprint('cli', $bDebug ? __FUNCTION__ . "($sUrl)\n" : "");
+        // $this->cliprint('cli', $bDebug ? __FUNCTION__ . "($sUrl)\n" : "");
 
         // remove url hash
         $sUrl = preg_replace('/#.*/', '', $sUrl);
         // ... and spaces
         $sUrl = str_replace(' ', '%20', $sUrl);
 
+        // check blacklist
+        // profile settings if siteid N are in $this->aProfileSaved
+        if(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])){
+            foreach ($this->aProfileSaved['ressources']['blacklist'] as $sBlackitem){
+                try {
+                    if (strpos($sUrl, $sBlackitem)!==false){
+                        $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist string [$sBlackitem]\n" : "");
+                        return false;
+                    }
+                    $sMyRegex='#'.$sBlackitem.'#';
+                    if (@preg_match($sMyRegex, $sUrl)){
+                        $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist regex [$sMyRegex]\n" : "");
+                        sleep(3);
+                        return false;
+                    }
+                } catch (Exception $exc) {
+                    // nop
+                }
+            }
+        }        
+        
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
+            // $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         } else {
             $this->cliprint('cli', "... adding $sUrl\n");

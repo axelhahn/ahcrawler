@@ -12,9 +12,7 @@ $aFields = array('ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer'
 // basic infos
 // ----------------------------------------------------------------------
 
-$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home')
-        . '<h3>' . $this->lB('searches.overview') . '</h3>'
-;
+$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
 $iSearches = $this->oDB->count(
         'searches',
         array(
@@ -27,6 +25,7 @@ if (!$iSearches) {
     $sReturn .= $this->_getMessageBox($this->lB('searches.empty'), 'warning');
     return $sReturn;
 }
+$sReturn.='<h3>' . $this->lB('searches.overview') . '</h3>';
 $sTiles = $oRenderer->renderTile('', $this->lB('searches.total'), $iSearches, '', '');
 
 

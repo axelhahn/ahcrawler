@@ -31,6 +31,7 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                 'title'=>$this->lB('about.url.docs'),
                 'text'=>$this->aAbout['urlDocs'],
             ))
+        /*
         . $this->_getLinkAsBox(array(
                 'url'=>$this->aAbout['urlHome'],
                 'hint'=>$this->aAbout['urlHome'],
@@ -38,6 +39,7 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                 'title'=>$this->lB('about.url.project'),
                 'text'=>$this->aAbout['urlHome'],
             ))
+         */
         . $this->_getLinkAsBox(array(
                 'url'=>$this->aAbout['urlSource'],
                 'hint'=>$this->aAbout['urlSource'],

@@ -49,7 +49,7 @@ if(!$iUrls){
 
                     . $o->renderLabelSearch().' '. $o->renderInput(array('size'=>100))
                     . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $o->lF('btn.search.label') . '</button> '
-                    . ($sQuery ? '<a href="?page=status" class="pure-button button-error">' . $this->_getIcon('button.close') . '</a>' : '' )
+                    . ($sQuery ? '<a href="?page=searchindextester" class="pure-button button-error">' . $this->_getIcon('button.close') . '</a>' : '' )
                     . '<br><br><br>'
                     . '<div style="margin-left: 5em;">'
                         . '<strong>'.$this->lB('status.searchoptions').':</strong><br>'

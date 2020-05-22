@@ -14,6 +14,16 @@
 
 ----------------------------------------------------------------------
 
+2020-05-23: v0.112
+  * ADDED: blacklist - per profile you can add several search texts to ignore links
+  * ADDED: timeout for all http requests
+  * ADDED: home of project shows favicon
+  * FIX: label for attributes in the profile settings were not uniq
+  * UPDATE: disabled items got special cursor on hover
+  * UPDATE: search index test: reset [X] was fixed
+  * UPDATE: about does not show (German) project page anymore
+  * UPDATE: Medoo to 1.7.10
+
 2020-05-15: v0.111
   * UPDATE: reorder menu items: website related pages are all in the upper part
   * UPDATE: menu items got logic: can be disabled based on available data

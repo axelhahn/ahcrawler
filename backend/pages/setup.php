@@ -137,6 +137,7 @@ if(isset($_POST['action'])){
             $this->_configMakeInt($aOptions, 'options.database.port');
             $this->_configMakeInt($aOptions, 'options.crawler.searchindex.simultanousRequests');
             $this->_configMakeInt($aOptions, 'options.crawler.ressources.simultanousRequests');
+            $this->_configMakeInt($aOptions, 'options.crawler.timeout');
             $this->_configMakeInt($aOptions, 'options.analysis.MinTitleLength');
             $this->_configMakeInt($aOptions, 'options.analysis.MinDescriptionLength');
             $this->_configMakeInt($aOptions, 'options.analysis.MinKeywordsLength');
@@ -449,6 +450,16 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) 
                         ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] 
                         : $this->aDefaultOptions['crawler']['ressources']['simultanousRequests'],
+                    ), false)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'timeout', 'label'=>$this->lB('setup.section.crawler.timeout')))
+                . $oRenderer->oHtml->getTag('input', array(
+                    'id'=>$sIdPrefixCrawler.'timeout', 
+                    'name'=>'options[crawler][timeout]',
+                    'placeholder'=>$this->aDefaultOptions['crawler']['timeout'],
+                    'value'=>isset($aOptions['options']['crawler']['timeout']) ? $aOptions['options']['crawler']['timeout'] : $this->aDefaultOptions['crawler']['timeout'],
                     ), false)
                 . '</div>'
 

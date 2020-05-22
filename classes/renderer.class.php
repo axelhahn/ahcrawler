@@ -91,6 +91,7 @@ class ressourcesrenderer extends crawler_base {
         // content_type/ MIME
         //
         'link-to-url' => 'fas fa-external-link-alt',
+        'blacklist' => 'far fa-eye-slash',
 
         // http_code
         'http-code-' => 'far fa-hourglass',
@@ -652,7 +653,7 @@ class ressourcesrenderer extends crawler_base {
                 . '<div class="divRessourceHead">'
                     . '<span style="float: right;">'
                         . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
-                        . $this->_getIcon('link-to-url')
+                            . $this->_getIcon('link-to-url')
                         . '</a>'
                     . '</span>'
                     . $this->_renderArrayValue('type', $aRessourceItem)
@@ -730,12 +731,24 @@ class ressourcesrenderer extends crawler_base {
         if (!is_array($aResourceItem) || !count($aResourceItem) || !array_key_exists('ressourcetype', $aResourceItem)) {
             return false;
         }
+        $sButtons='';
+        if($bShowHttpstatus && (!$aResourceItem['http_code'] || $aResourceItem['http_code']>299)){
+            $sButtons.='<a href="#" class="pure-button blacklist" data-url="'.$aResourceItem['url'].'" title="'.$this->lB('ressources.blacklist.add').'">'
+                            . $this->_getIcon('blacklist')
+                        . '</a> '
+                    ;
+        }
         return '<div class="divRessourceAsLine'.($bUseLast ? ' last last-'.$this->_getCssClassesForHttpstatus($aResourceItem['http_code'], true) : '').'">'
-                . ' <span style="float: right; font-size: 70%;"><a href="' . $aResourceItem['url'] . '" class="pure-button" style="" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'.$this->_getIcon('link-to-url').'</a></span>'
+                . ' <span style="float: right; font-size: 70%;">'
+                        . $sButtons
+                        . '<a href="' . $aResourceItem['url'] . '" class="pure-button" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'
+                            . $this->_getIcon('link-to-url')
+                        . '</a>'
+                    . '</span>'
                 . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
-                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid='.$aResourceItem['siteid'].'" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
+                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid='.$aResourceItem['siteid'].'" class="url" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
                 /*
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 

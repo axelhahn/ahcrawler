@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../vendor/medoo/Medoo.php';
+require_once __DIR__ . '/../vendor/medoo/src/Medoo.php';
 require_once 'status.class.php';
 require_once 'logger.class.php';
 
@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.111',
-        'date' => '2020-05-15',
+        'version' => '0.112',
+        'date' => '2020-05-23',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -65,6 +65,7 @@ class crawler_base {
         'lang' => 'en',
         'menu' => array(),
         'crawler' => array(
+            'timeout' => 10,
             'userAgent' => false,
             'memoryLimit' => '512M',
             'searchindex' => array(
@@ -147,6 +148,7 @@ class crawler_base {
         ),
         'ressources' => array(
             'simultanousRequests' => false,
+            'blacklist' => array(),
         ),
     );
 
@@ -578,7 +580,7 @@ class crawler_base {
             // v0.22 cookies
             CURLOPT_COOKIEJAR => $this->sCcookieFilename,
             CURLOPT_COOKIEFILE => $this->sCcookieFilename,
-            CURLOPT_TIMEOUT => 10,
+            CURLOPT_TIMEOUT => $this->aOptions['crawler']['timeout'],
         );
         if($this->_getCurlCanHttp2()){
             $aReturn[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_2_0;

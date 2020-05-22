@@ -212,22 +212,19 @@ if(!$this->_configExists() ){
                             .'</li>';
                 }        
             }
+            $urlFavicon = preg_replace('#^(http.*//.*)/.*$#U', '$1', $this->aProfileSaved['searchindex']['urls2crawl'][0] ) . "/favicon.ico";
+
             $sHtml.=''
                 .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 .$this->_getNavi2($this->_getProfiles(), false, '')
 
                 // profile 
-                .'<h3>'.$this->aProfileSaved['label'].'</h3>'
+                .'<h3><img src="'.$urlFavicon .'" width="32" height="32"> '.$this->aProfileSaved['label'].'</h3>'
                 .'<strong>'.$this->aProfileSaved['description'].'</strong>'
                 .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
                 .'<p>'.$this->lB('home.starturls').'</p>'
                 .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
-                . $this->_getButton(array(
-                            'href'=>'?page=profiles&siteid='.$iProfileId,
-                            'popup'=>false,
-                            'class'=>'pure-button',
-                            'label'=>'button.edit',
-                            ))
+                . $this->_getLink2Navitem('profiles')
                 // . '<br><br>'
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'

@@ -413,8 +413,8 @@ class ahsearch extends crawler_base {
 
         return array(
             'matchWord' => $iMatchWord,
-            'WordStart' => $iWordStart,
-            'any' => is_array($a3) ? count($a3[0]) : 0,
+            'WordStart' => $iWordStart-$iMatchWord,
+            'any' => is_array($a3) ? count($a3[0]) - $iWordStart : 0,
         );
     }
 
