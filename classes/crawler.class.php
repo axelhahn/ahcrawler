@@ -227,8 +227,8 @@ class crawler extends crawler_base{
      * @param string  $sString     url or path
      * @return boolean
      */
-    private function _checkRegexArray($sOptionKey, $sString) {
-        $bFound = true;
+    private function _checkRegexArray($sOptionKey, $sString, $bDefault=true) {
+        $bFound = $bDefault;
         if (array_key_exists($sOptionKey, $this->aProfileEffective['searchindex']) && count($this->aProfileEffective['searchindex'][$sOptionKey])) {
             $bFound = false;
             foreach ($this->aProfileEffective['searchindex'][$sOptionKey] as $sRegex) {
@@ -279,7 +279,7 @@ class crawler extends crawler_base{
         $bFound = $this->_checkRegexArray('include', $sUrl);
         if ($bFound) {
             if ($this->_checkRegexArray('includepath', $sPath)){
-                if ($bFound && $this->_checkRegexArray('exclude', $sUrl)) {
+                if ($bFound && $this->_checkRegexArray('exclude', $sUrl, false)) {
                     $this->cliprint('cli', "... SKIP Found in exclude for $sUrl\n");
                     return false;
                 }
@@ -330,7 +330,7 @@ class crawler extends crawler_base{
                 $this->_aUrls2Skip[$sUrl] = true;
                 return false;
             }
-            $this->cliprint('info', "... adding #$iCount".($iMax ? ' of ' .$iMax : '').": $sUrl\n");
+            $this->cliprint('cli', "... adding #$iCount".($iMax ? ' of ' .$iMax : '').": $sUrl\n");
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;
@@ -483,6 +483,10 @@ class crawler extends crawler_base{
         
         // scan content and follow links
         $this->_bFollowLinks=true;
+        if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            return false;
+        }
         
         // ------------------------------------------------------------
         // get start urls ...
@@ -546,6 +550,7 @@ class crawler extends crawler_base{
             ),));
 
         $iTotal=date("U") - $this->iStartCrawl;
+        $this->disableLocking();
         $this->cliprint('info', "\n"
             . "Crawler has finished.\n\n"
             . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
@@ -573,10 +578,6 @@ class crawler extends crawler_base{
                     : "INFO: Nothing to do. No updatetable urls with errors were found to reindex them.\n"
             )
             ;
-            return false;
-        }
-        if (!$this->enableLocking(__CLASS__, ($bFollowLinks ? 'index':'update'), $this->iSiteId)){
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
         
@@ -630,7 +631,6 @@ class crawler extends crawler_base{
         
         $this->touchLocking('update index and keywords');
         $this->updateIndexAndKeywords();
-        $this->disableLocking();
         
     }
     
@@ -903,7 +903,7 @@ class crawler extends crawler_base{
             
             $this->cliprint('cli', ' ' . $aData['url'] . "\n");
         } else {
-            $this->cliprint('ok', 'INSERT data for ' . $aData['url'] . "\n");
+            $this->cliprint('info', 'INSERT data for ' . $aData['url'] . "\n");
             // echo "  title: " . $aData['title'] . "\n";
             $aResult = $this->oDB->insert(
                     'pages', 

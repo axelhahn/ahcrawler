@@ -35,7 +35,7 @@ if(!$iUrls){
 
     $sQuery = $this->_getRequestParam('q');
     $o = new ahsearch($this->_sTab);
-
+    
     $aResult = $o->search($sQuery);
 
     $sForm = '<h3>'.$this->lB('status.search').'</h3>'

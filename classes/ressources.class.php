@@ -94,6 +94,10 @@ class ressources extends crawler_base {
         if (!$this->iSiteId) {
             return false;
         }
+        if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            return false;
+        }
 
         $this->cliprint('info', "CLEANUP ressources_rel<br>\n");
         $this->oDB->delete('ressources_rel', array(
@@ -108,6 +112,7 @@ class ressources extends crawler_base {
             ),
         ));
         $this->_aRessourceIDs = array();
+        $this->disableLocking();
     }
 
     /*
@@ -365,7 +370,7 @@ class ressources extends crawler_base {
      * @param array  $aRelData  array of ressource items
      */
     public function addPageRelItems($aData, $aRelData) {
-
+        $this->touchLocking(__FUNCTION__."\n");
         // $sSourceId = $this->_getRessourceId($aData['_url']);
         $sSourceId = $this->_getRessourceId($aData['url']);
         $aGroups = array(
@@ -413,6 +418,10 @@ class ressources extends crawler_base {
      * @return boolean
      */
     public function addRessourcesFromPages() {
+        if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
+            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            return false;
+        }
         if (!$this->iSiteId) {
             return false;
         }
@@ -451,6 +460,7 @@ class ressources extends crawler_base {
                 $this->addRelRessourcesOfAPage($aData);
             }
         }
+        $this->disableLocking();
         $this->cliprint('cli', "<br>\n");
     }
 
@@ -590,6 +600,32 @@ class ressources extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
+     * get boolean (true|false) if the given url is blacklisted in the profile
+     * @param string  $sUrl  url to analyze
+     * @return boolean
+     */
+    protected function _isInBlacklist($sUrl){
+        // profile settings if siteid N are in $this->aProfileSaved
+        if(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])){
+            foreach ($this->aProfileSaved['ressources']['blacklist'] as $sBlackitem){
+                try {
+                    /*
+                    if (strpos($sUrl, $sBlackitem)!==false){
+                        return true;
+                    }
+                     */
+                    $sMyRegex='#'.$sBlackitem.'#';
+                    if (@preg_match($sMyRegex, $sUrl)){
+                        return true;
+                    }
+                } catch (Exception $exc) {
+                    // nop
+                }
+            }
+        }        
+        return false;
+    }
+    /**
      * mark an url to be crawled. It returns true if it was newly added to
      * the queue; it returns false if it was added or crawled already.
      * @param string $sUrl  url
@@ -604,31 +640,16 @@ class ressources extends crawler_base {
         $sUrl = str_replace(' ', '%20', $sUrl);
 
         // check blacklist
-        // profile settings if siteid N are in $this->aProfileSaved
-        if(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])){
-            foreach ($this->aProfileSaved['ressources']['blacklist'] as $sBlackitem){
-                try {
-                    if (strpos($sUrl, $sBlackitem)!==false){
-                        $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist string [$sBlackitem]\n" : "");
-                        return false;
-                    }
-                    $sMyRegex='#'.$sBlackitem.'#';
-                    if (@preg_match($sMyRegex, $sUrl)){
-                        $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist regex [$sMyRegex]\n" : "");
-                        sleep(3);
-                        return false;
-                    }
-                } catch (Exception $exc) {
-                    // nop
-                }
-            }
-        }        
-        
+        if($this->_isInBlacklist($sUrl)){
+            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist regex [$sMyRegex]\n" : "");
+            sleep(3);
+            return false;
+        }
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
             // $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         } else {
-            $this->cliprint('cli', "... adding $sUrl\n");
+            // $this->cliprint('cli', "... adding $sUrl\n");
             $this->_aUrls2Crawl[$sUrl] = true;
 
             return true;
@@ -698,7 +719,7 @@ class ressources extends crawler_base {
         $iId = $this->_getRessourceId($url);
 
         if ($oHttpstatus->isError()) {
-            $this->cliprint('error', "ERROR: fetching $url FAILED. Status: " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . ".\n");
+            $this->cliprint('error', "ERROR: " . $oHttpstatus->getHttpcode() . " $url.\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -713,7 +734,7 @@ class ressources extends crawler_base {
         }
         if ($oHttpstatus->isRedirect()) {
             $sNewUrl = $oHttpstatus->getRedirect();
-            $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " - " . $oHttpstatus->getStatus() . " -> " . $sNewUrl . ".\n");
+            $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " -> " . $sNewUrl . ".\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -740,7 +761,7 @@ class ressources extends crawler_base {
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
-            $this->cliprint('cli', "OK: http code " . $info['http_code'] . " $url \n");
+            $this->cliprint('ok', "OK: http code " . $info['http_code'] . " $url \n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -761,7 +782,9 @@ class ressources extends crawler_base {
         return true;
     }
 
-    // TODO
+    /*
+     * a main entry point: start crawling ressources
+     */
     public function crawlRessoures() {
         $this->_aUrls2Crawl = array();
         $this->_iUrlsCrawled = 0;

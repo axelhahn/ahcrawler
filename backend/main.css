@@ -23,8 +23,7 @@
     --status-color-ok:#694;
     --status-color-todo:#778;
     
-    --boxes-border:2px solid #fff;
-    --boxes-shadow:0.2em 0.2em 1em #ddd;
+    --boxes-border:2px solid rgba(0,0,0,0.05);
 }
 body{
 	color: var(--color-default);
@@ -183,7 +182,7 @@ h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 
 
-hr{border: 0; border-bottom: 3px dotted #eee;}
+hr{border: 0; border-bottom: 2px dotted #ddd;}
 pre{font-size: 80%; padding: 0.5em; background: #eee; color:var(--color-default);}
 
 
@@ -196,7 +195,7 @@ pre{font-size: 80%; padding: 0.5em; background: #eee; color:var(--color-default)
     left: 0.5em;bottom: 0.5em;
     position: fixed;
     z-index: 200;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 /* --- tiles --- */
@@ -225,7 +224,7 @@ a.childitem:hover{
 a.childitem:focus{box-shadow: none;}
 a.childitem i{color: #789; font-size: 300%; min-height: 3em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
 a.childitem:hover i{color: #fff;text-shadow: 2px 2px 6px rgba(0,0,0,0.4);}
-a.childitem strong{color: #567; font-size: 150%; }
+a.childitem strong{color: #567; font-size: 130%; }
 
 
 /* --- tiles --- */
@@ -329,7 +328,7 @@ span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#97
 
 div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
 
-div.message{border-radius: 0.5em; border: var(--boxes-border); padding: 1em; margin: 1em 0; box-shadow: var(--boxes-shadow)}
+div.message{border-radius: 0.5em; border: var(--boxes-border); padding: 0.2em 1em; margin: 0.5em 0;}
 div.message-ok{background: #bdb; color:#383;}
 div.message-warning{background: #fdb; color:#975;}
 div.message-error{background: #ebb; color:#955;}
@@ -495,3 +494,18 @@ form.pure-form label{min-width: 20em;}
     .maincontent{padding-left: 1em;}
     div.sidebar .header{float: left;}
   }
+
+/*
+  TODO
+
+  @media only screen and (max-width: 1200px) {
+      #navmain{
+          width: 5em;
+      }
+      .maincontent{padding-left: 7em;}
+      #pacman div{
+          display: none;
+      }
+      a.pure-menu-link span{display: none;}
+}
+*/

@@ -405,7 +405,7 @@ class ahsearch extends crawler_base {
         $iWordStart += is_array($a2) ? count($a2[0]) : 0;
 
         // detect searchterm on start of text
-        preg_match_all('/^' . $sNeedle . '\W/i', $sHaystack, $a1);
+        preg_match_all('/^' . $sNeedle . '/i', $sHaystack, $a1);
         $iWordStart += is_array($a1) ? count($a1[0]) : 0;
 
         // ----- any hit

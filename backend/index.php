@@ -160,11 +160,16 @@ function getNewQs($aQueryParams = array()) {
 
             </div>
         </div>
+        <div id="divStatus" style="display: none;"></div>
         <script>
             initPage();
+            updateStatus("<?php echo $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'] . preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI']) . 'get.php?action=getstatus'; ?>");
         </script>
         <div style="clear: both;"></div>
-        <?php echo $oBackend->logRender(); ?>
+        <?php 
+            echo $oBackend->logRender(); 
+            // echo '<pre>'.print_r($_SERVER, 1).'</pre>';
+        ?>
     </body></html><?php
 
     /*

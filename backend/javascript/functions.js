@@ -3,6 +3,13 @@
  * initial functions for a page
  ====================================================================== */
 
+/**
+ * helper function for initDrawH3list: get id of a given headline object
+ * or build one by its text
+ * @param {object} o
+ * @param {type} sPrefix
+ * @returns {String|@var;sPrefix}
+ */
 function _getId(o, sPrefix=''){
     return o.id ? o.id : sPrefix + o.innerHTML.replace(/\W/g, '');
 }
@@ -127,7 +134,7 @@ function showModalUrl(sUrl, sTitle=''){
 function showModal(sHtml='', sTitle=''){
     // dialogtitle
     modalDlg_setTitle(sTitle);
-    modalDlg_setContent(sHtml)
+    modalDlg_setContent(sHtml);
     showModalWindow(true);
 }
 function showModalWindow(bVisible=1){
@@ -149,6 +156,11 @@ function hideModal(){
     showModalWindow(false);
     return false;
 }
+
+// ----------------------------------------------------------------------
+// css rules
+// ----------------------------------------------------------------------
+
 /**
  * get css value by given property and selector
  * see https://stackoverflow.com/questions/16965515/how-to-get-a-style-attribute-from-a-css-class-by-javascript-jquery
@@ -178,6 +190,32 @@ function getStyleRuleValue(style, selector, sheet) {
     }
     return null;
 }
+
+// ----------------------------------------------------------------------
+// status
+// ----------------------------------------------------------------------
+
+/**
+ * 
+ * @param {type} sUrl
+ * @returns {undefined}
+ */
+function updateStatus(sUrl){
+    var oDiv=document.getElementById('divStatus');
+    fetch(sUrl, {})
+        .then(res => res.text())
+        .then(data => {
+            oDiv.innerHTML=data;
+            oDiv.style.display=data ? 'inline' : 'none';
+            var iTimer=data ? 1 : 10;
+            window.setTimeout('updateStatus("'+sUrl+'")', 1000*iTimer);
+        });
+
+    
+}
+// ----------------------------------------------------------------------
+// init
+// ----------------------------------------------------------------------
 
 /**
  * init page

@@ -203,15 +203,27 @@ if(!$this->_configExists() ){
                         )
                     )
                     ;
+
+            
+            // ----- by level
+            $sLastTarget='';
             foreach (array('error', 'warning') as $sMyKey) {
                 // foreach($aHints[$sMyKey] as $aMsg){
                 foreach($this->_getStatusInfoByLevel($sMyKey) as $aMsg) {
-                    $sMyLink=isset($aMsg['target']) && $aMsg['target'] && $aMsg['target']!='_global' ? '<span style="float: left; margin-top: -0.5em; display: inline-block; width: 15em;text-align: center;">'.$this->_getLink2Navitem($aMsg['target']).'</span>' : '';
-                    $sHints.='<li>'
-                            .$oRenderer->renderMessagebox($sMyLink.$aMsg['message'], $sMyKey)
-                            .'</li>';
+                    if(!$aMsg['target'] || $aMsg['target']==='_global' && $sMyKey=='warning'){
+                        continue;
+                    }
+                    if($aMsg['target']!==$sLastTarget){
+                        $sSpacer=($aMsg['target']==='_global') ? '0' : '5';
+                        $sHints.=($sHints ? '<br><hr>' : '') 
+                                . ($aMsg['target']==='_global' ? '' : $this->_getLink2Navitem($aMsg['target']).'<br>');
+                        $sLastTarget=$aMsg['target'];
+                    }
+                    $sHints.='<div style="margin-left: '.$sSpacer.'em;">'.$oRenderer->renderMessagebox($aMsg['message'], $sMyKey).'</div>';
                 }        
             }
+            
+            
             $urlFavicon = preg_replace('#^(http.*//.*)/.*$#U', '$1', $this->aProfileSaved['searchindex']['urls2crawl'][0] ) . "/favicon.ico";
 
             $sHtml.=''
@@ -233,7 +245,7 @@ if(!$this->_configExists() ){
                 .'<h3>'.$this->lB('home.hints').'</h3>'
                 
                 .($sHints
-                     ? '<ol>'.$sHints.'</ol>'
+                     ? $sHints
                      : $oRenderer->renderMessagebox($this->lB('home.hints.nothing-was-found'), 'ok')
                  )
                 ;

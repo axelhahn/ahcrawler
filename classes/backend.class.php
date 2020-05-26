@@ -584,8 +584,8 @@ class backend extends crawler_base {
                 $sNavi.='<li class="pure-menu-item">'
                     . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'
                         . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
-                        . '><i class="'.$this->_aIcons['menu'][$sItem].'"></i> ' 
-                        . $this->lB('nav.' . $sItem . '.label') 
+                        . '><i class="'.$this->_aIcons['menu'][$sItem].'"></i>'
+                        . '<span> ' . $this->lB('nav.' . $sItem . '.label') . '</span>' 
                     . '</a>'
                     . ($bIsActive ? $sNaviNextLevel : '')
                     ;
@@ -767,23 +767,7 @@ class backend extends crawler_base {
         }
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
-        
-        $oStatus=new status();
-        $aStatus=$oStatus->getStatus();
-        $sStatus='';
-        if ($aStatus && is_array($aStatus)){
-            $sStatus.=''
-                    . $this->_getIcon('updateisrunning')
-                    . 'Start: '.date("H:i:s", $aStatus['start'])
-                    . ' ('. ($aStatus['last']-$aStatus['start']).' s): '
-                    . $aStatus['action'] . ' - '
-                    . $aStatus['lastmessage'].' <br>'
-                    // .'<pre>'.print_r($aStatus, 1).'</pre>'
-                    ;
-        } else {
-            // $sStatus=$this->lB('status.no-action');
-        }
-        
+                
                 
         $this->logAdd(__METHOD__ . ' H2 = "'.$sH2.'"');
         return ''
@@ -804,9 +788,27 @@ class backend extends crawler_base {
                     : ''
                     )
                 . (isset($sH2) && $sH2 ? $sH2 . '</h2><p class="pageHint">' . $sHint . '</p>' : '')
-                
-                . ($sStatus ? '<div id="divStatus">'. $sStatus .'</div>' : '')
         ;
+    }
+    public function getStatus() {
+        $oStatus=new status();
+        $aStatus=$oStatus->getStatus();
+        $sStatus='';
+        if ($aStatus && is_array($aStatus)){
+            $sStatus.=''
+                    . $this->_getIcon('updateisrunning')
+                    . 'Start: '.date("H:i:s", $aStatus['start'])
+                    . ' ('. ($aStatus['last']-$aStatus['start']).' s): '
+                    . (isset($aStatus['action'])      ? $aStatus['action']      : '[unknown action]')
+                    . ' - '
+                    . (isset($aStatus['lastmessage']) ? $aStatus['lastmessage'] : '[unknown message]') 
+                    .'<br>'
+                    // .'<pre>'.print_r($aStatus, 1).'</pre>'
+                    ;
+        } else {
+            // $sStatus=$this->lB('status.no-action');
+        }
+        return $sStatus;
     }
 
     // ----------------------------------------------------------------------
