@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2020-05-28: v0.114
+  * UPDATE: updater: got 60s timeout to download
+  * UPDATE: updater: got a timestamp parameter if switching to startpage
+  * UPDATE: charts get back a white border
+
 2020-05-27: v0.113
   * FIX: search - detection on word start
   * UPDATE: show info about running crawler in the footer

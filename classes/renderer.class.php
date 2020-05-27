@@ -553,6 +553,13 @@ class ressourcesrenderer extends crawler_base {
             ;
     }
     
+    /**
+     * get html code for a button that points to a known page (anywhere) in the menu
+     * @param type $sMenuItem  target menu id (page=...)
+     * @param type $sIcon
+     * @param type $iSiteId
+     * @return string
+     */
     public function renderLink2Page($sMenuItem, $sIcon='', $iSiteId=false){
         return  $this->oHtml->getTag('a', array(
                     'class'=>'pure-button',
@@ -562,6 +569,12 @@ class ressourcesrenderer extends crawler_base {
             ));
     }
     
+    /**
+     * get html code for an infobox 
+     * @param string  $sMessage  message text
+     * @param string  $sType     one of ok|warning|error
+     * @return string
+     */
     public function renderMessagebox($sMessage, $sType=''){
         return '<div class="message message-'.$sType.'">'
                 .$this->renderShortInfo($sType)

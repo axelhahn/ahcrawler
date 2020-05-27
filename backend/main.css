@@ -24,6 +24,7 @@
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.05);
+    --chart-border:5px solid #fff;
 }
 body{
 	color: var(--color-default);
@@ -309,7 +310,7 @@ span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#97
 
 /* --- color for pie chart --- */
 
-.piechart{border: var(--boxes-border); border-radius: 0.5em; box-shadow: var(--boxes-shadow); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);}
+.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: var(--boxes-shadow); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);}
 .floatright{float: right; margin: 0 0 1em 2em;}
 .floatleft{float: left; margin: 0 2em 1em 0;}
 .chartcolor-error{color:#d88;}

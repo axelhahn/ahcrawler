@@ -46,7 +46,7 @@ $sBackUrl=$iStep > 1
         ;
 $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
-        : '?page=update'
+        : '?page=update&ts='.date('U')
         ;
 $sBtnBack=$this->_getButton(array(
     'href' => $sBackUrl,
@@ -61,7 +61,9 @@ $sBtnNext=$this->_getButton(array(
     'popup' => false
 )).' ';
 $sScriptContinue=$bAutoContinue ? 
-        '<br><br>'.$this->lB("update.singlestepupdate"). '<script>location.href="'.$sNextUrl.'&docontinue=1";</script>' 
+        '<br><br>'
+            .$oRenderer->renderMessagebox($this->lB("update.singlestepupdate"), 'warning')
+            . '<script>location.href="'.$sNextUrl.'&docontinue=1";</script>' 
         : ''
     ;
 
@@ -170,7 +172,6 @@ switch ($sStepName) {
             } else {
                 $sReturn.=$sBtnBack.$this->lB('update.download.failed');
             }        
-            ;
         break;
     case 'extract':
         // $aUpdateInfos=getUpdateInfos(true);
@@ -187,7 +188,6 @@ switch ($sStepName) {
             } else {
                 $sReturn.=$sBtnBack.$this->lB('update.extract.failed');
             }
-            ;
         break;
 
 
