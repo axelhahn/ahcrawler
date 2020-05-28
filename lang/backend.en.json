@@ -613,7 +613,7 @@
     "httpcode.-1.todo": "Please wait. If there is no progress in a few seonnds then the ressource index must be updated or reindexed (by cronjob)",
     "httpcode.0.label": "not reached",
     "httpcode.0.descr": "The target was not reached. This is not an official Http standard code - it is just an internal one.",
-    "httpcode.0.todo": "Check if the server name is valid. However, it can also have various other reasons: Network problems, server name not found in DNS, web service currently not working, port closed, problem with SSL,...",
+    "httpcode.0.todo": "No data were received. It can also have various reasons: web service is currently not working, port closed, problem with SSL,connection timed out, ...",
     "httpcode.100.label": "Information: Continue.",
     "httpcode.100.descr": "The current request to the server has not yet been rejected.",
     "httpcode.100.todo": "",
@@ -830,5 +830,8 @@
     "ressources.blacklist.save-skip": "Skip. The entry [%s] already exists in profile [%s].",
     "ressources.blacklist.hint-start": "The beginning ^ marks the search from the beginning of the url.",
     "ressources.blacklist.hint-protocol": "To allow just the given protocol leave ^http:\/\/ or ^https:\/\/. To allow both of them use ^http[s]*:\/\/ %s.",
-    "ressources.blacklist.hint-end": "The $ at the end means that a url must end there. You can remove it to include urls with additional characters too."
+    "ressources.blacklist.hint-end": "The $ at the end means that a url must end there. You can remove it to include urls with additional characters too.",
+    "httpcode.1.descr": "The target was not reached because the host does not exist (anymore). Maybe there is a problem with the internet connection or reaching a DNS server. This is not an official Http standard code - it is just an internal one.",
+    "httpcode.1.label": "Unknown host",
+    "httpcode.1.todo": "Check if the servername still exists. Maybe there were network problems, server name not found in DNS? If not then the hostname\/ domain was deleted and the link should be updated or removed."
 }

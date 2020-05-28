@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2020-05-29: v0.115
+  * FIX: error counter increases on failed ressources
+  * UPDATE: add dummy http code 1: hostname does not exist in DNS
+  * UPDATE: show protocol switch in the opposite view of references too.
+
 2020-05-28: v0.114
   * UPDATE: updater: got 60s timeout to download
   * UPDATE: updater: got a timestamp parameter if switching to startpage

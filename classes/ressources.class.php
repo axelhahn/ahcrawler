@@ -616,7 +616,7 @@ class ressources extends crawler_base {
                      */
                     $sMyRegex='#'.$sBlackitem.'#';
                     if (@preg_match($sMyRegex, $sUrl)){
-                        return true;
+                        return $sMyRegex;
                     }
                 } catch (Exception $exc) {
                     // nop
@@ -726,7 +726,7 @@ class ressources extends crawler_base {
                 'isEndpoint' => true,
                 // 'header' => json_encode($info),
                 // 'rescan' => 0,
-                'errorcount[+]' => 1,
+                // v0.115: remove to add later (see below) 'errorcount[+]' => 1,
                 'ts' => date("Y-m-d H:i:s"),
                 'tserror' => date("Y-m-d H:i:s"),
                 'lasterror' => json_encode($info),
@@ -776,7 +776,25 @@ class ressources extends crawler_base {
             );
         }
         $aRessource = $this->_sanitizeRessourceArray($aRelItem, true);
-        // print_r($aRessource);
+        
+        // v0.115 FIX error counter
+        if ($oHttpstatus->isError()) {
+            $aRessource['errorcount[+]']= 1;
+            
+            // detect reason for status no connection
+            if($oHttpstatus->getHttpcode()===0){
+                
+                // check: does the domain exist
+                $sTargetHost= parse_url($url, PHP_URL_HOST);
+                $sTargetIp= preg_match('/^[0-9\.\:a-f]*$/', $sTargetHost) ? $sTargetHost : false;
+                if(!$sTargetIp){
+                    $aRessource['http_code']=$sTargetIp ? 0 : 1;
+                    $this->cliprint('error', "... REMARK: domain [$sTargetHost] does not exist (anymore).\n");
+                }
+                // TODO: check port and set code 2
+            } 
+        }
+
         $this->updateRessource($aRessource);
 
         return true;

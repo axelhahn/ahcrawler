@@ -357,7 +357,7 @@ div.message-error{background: #ebb; color:#955;}
 .http-code--1 {background: #d0d0d8;}
 .http-code-2xx {background:#8b4;}
 .http-code-3xx{background:#ea5;}
-.http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {background:#e55;}
+.http-code-0xx,.http-code-301,.http-code-4xx, .http-code-9xx {background:#e55;}
 .http-code-5xx {background:#b6b;}
 
 .last-http-code-2xx {background:#dec;}

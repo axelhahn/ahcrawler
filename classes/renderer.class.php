@@ -95,7 +95,7 @@ class ressourcesrenderer extends crawler_base {
 
         // http_code
         'http-code-' => 'far fa-hourglass',
-        'http-code-0' => 'fas fa-plug',
+        'http-code-0xx' => 'fas fa-plug',
         'http-code-2xx' => 'far fa-thumbs-up',
         'http-code-3xx' => 'fas fa-share',
         'http-code-4xx' => 'fas fa-bolt',
@@ -465,7 +465,7 @@ class ressourcesrenderer extends crawler_base {
                 . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
                     . ($iLevel>2 ? '<div class="redirects">' : '')
                     .($aRessourceItem['url']==str_replace('http://', 'https://',  $sLastUrl)
-                        ? '<span class="warning">'. $this->lB("linkchecker.http-to-https").'</span><br>'
+                        ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
                         : ''
                     )
                     . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
@@ -513,7 +513,14 @@ class ressourcesrenderer extends crawler_base {
             $sReturn.='<div class="references">'
                 . '<div class="referenceslabel">'.sprintf($this->lB('ressources.referenced-in'), count($aResIn)).'</div>';
                 foreach ($aResIn as $aInItem){
-                    $sReturn.=$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external');
+                    $sReturn.=''
+                        // .$aRessourceItem['url'].'<br>'.print_r($aInItem,1)
+                        .($aInItem['url']==str_replace('https://', 'http://',  $aRessourceItem['url'])
+                            ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
+                            : ''
+                        )
+                        .$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external')
+                        ;
                     if ($aInItem['type']=='external'){
                         $sReturn.=$this->_renderIncomingWithRedirects($aInItem);
                     }

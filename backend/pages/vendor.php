@@ -7,6 +7,7 @@
     global $oCdn;
     require_once(__DIR__ . '/../../classes/cdnorlocal-admin.class.php');
     
+    $oRenderer=new ressourcesrenderer();
     
     /*
     // $sVendorUrl=(strpos($_SERVER['REQUEST_URI'], '/admin/?') ? '.' : '') . './vendor/';
@@ -67,7 +68,7 @@
                 ,
             $aLib['version']
             .( (isset($aLib['isunused']) && $aLib['isunused'] && $aLib['isunused']) 
-                ? '<br><span class="warning">'.$this->lB('vendor.unused').'</span>' 
+                ? $oRenderer->renderMessagebox($this->lB('vendor.unused'), 'warning')
                 : ''
             )
             ,
