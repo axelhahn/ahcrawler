@@ -94,6 +94,7 @@ class ressources extends crawler_base {
         if (!$this->iSiteId) {
             return false;
         }
+        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
@@ -418,6 +419,7 @@ class ressources extends crawler_base {
      * @return boolean
      */
     public function addRessourcesFromPages() {
+        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
@@ -719,7 +721,7 @@ class ressources extends crawler_base {
         $iId = $this->_getRessourceId($url);
 
         if ($oHttpstatus->isError()) {
-            $this->cliprint('error', "ERROR: " . $oHttpstatus->getHttpcode() . " $url.\n");
+            $this->cliprint('error', "ERROR: " . $oHttpstatus->getHttpcode() . " $url\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -734,7 +736,7 @@ class ressources extends crawler_base {
         }
         if ($oHttpstatus->isRedirect()) {
             $sNewUrl = $oHttpstatus->getRedirect();
-            $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " -> " . $sNewUrl . ".\n");
+            $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " -> " . $sNewUrl . "\n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -761,7 +763,7 @@ class ressources extends crawler_base {
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
-            $this->cliprint('ok', "OK: http code " . $info['http_code'] . " $url \n");
+            $this->cliprint('ok', "OK: " . $info['http_code'] . " $url \n");
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
@@ -786,10 +788,13 @@ class ressources extends crawler_base {
                 
                 // check: does the domain exist
                 $sTargetHost= parse_url($url, PHP_URL_HOST);
-                $sTargetIp= preg_match('/^[0-9\.\:a-f]*$/', $sTargetHost) ? $sTargetHost : false;
+                $sTargetIp= gethostbyname($sTargetHost);
+                $sTargetIp= preg_match('/^[0-9\.\:a-f]*$/', $sTargetIp) ? $sTargetIp : false;
                 if(!$sTargetIp){
-                    $aRessource['http_code']=$sTargetIp ? 0 : 1;
+                    $aRessource['http_code']=1;
                     $this->cliprint('error', "... REMARK: domain [$sTargetHost] does not exist (anymore).\n");
+                } else {
+                    $this->cliprint('error', "... REMARK: domain [$sTargetHost] exists ($sTargetIp).\n");
                 }
                 // TODO: check port and set code 2
             } 
@@ -809,6 +814,7 @@ class ressources extends crawler_base {
         $this->_aRessourceIDs = array();
         $this->iStartCrawl = date("U");
         $bPause = false;
+        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
         $sMsgId = 'ressources-profile-' . $this->iSiteId;
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");

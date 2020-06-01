@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.115',
-        'date' => '2020-05-29',
+        'version' => '0.116',
+        'date' => '2020-06-02',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -165,7 +165,10 @@ class crawler_base {
      *              0 - {string}  name of index (without prefix for table
      *              1 - {array}   list of columns
      *              2 - {string}  type; one of none or [UNIQUE | FULLTEXT | SPATIAL]
-     *
+     * 
+     * remark http response header can be several kB --> set to MEDIUMTEXT
+     * see https://stackoverflow.com/questions/686217/maximum-on-http-header-values
+     * 
      * @var array 
      */
     protected $_aDbSettings=array(
@@ -186,12 +189,12 @@ class crawler_base {
                     'size' => 'INTEGER NULL',
                     'time' => 'INTEGER NULL',
                     'content' => 'MEDIUMTEXT',
-                    'header' => 'VARCHAR(2048) NULL',
+                    'header' => 'MEDIUMTEXT',
                     'response' => 'MEDIUMTEXT',
                     'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
                     'tserror' => 'DATETIME NULL',
                     'errorcount' => 'INTEGER NULL',
-                    'lasterror' => 'VARCHAR(1024)  NULL',
+                    'lasterror' => 'MEDIUMTEXT',
                 ),
                 'indexes'=>array(
                     // PRIMARY KEY (`id`),
@@ -242,7 +245,7 @@ class crawler_base {
                     'url' => 'VARCHAR(1024) NOT NULL',
                     'ressourcetype' => 'VARCHAR(16) NOT NULL',
                     'type' => 'VARCHAR(16) NOT NULL',
-                    'header' => 'VARCHAR(2048) NULL',
+                    'header' => 'MEDIUMTEXT',
                     // header vars
                     'content_type' => 'VARCHAR(32) NULL',
                     'isSource' => 'BOOLEAN NULL',
@@ -258,7 +261,7 @@ class crawler_base {
                     'tsok' => 'DATETIME NULL',
                     'tserror' => 'DATETIME NULL',
                     'errorcount' => 'INTEGER NULL',
-                    'lasterror' => 'VARCHAR(1024)  NULL',
+                    'lasterror' => 'MEDIUMTEXT',
                 ),
                 'indexes'=>array(
                     array('siteid', array('siteid')),

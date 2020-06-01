@@ -269,14 +269,17 @@ ul.tiles a.tile:hover{
 }
 .div-toggle-head a{
     background: rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0);
     color:#789;
     display: block;
     font-weight: bold;
+    margin-bottom: 1px;
     padding: 1em;
     text-decoration: none;
     transition: all 1s;
 }
-.div-toggle-head a.open{
+.div-toggle-head a:hover{
+    border: 1px solid rgba(0,0,0,0.2);
     background: rgba(0,0,0,0.1);
 }
 .div-toggle-head a:after{
@@ -291,7 +294,7 @@ ul.tiles a.tile:hover{
 }
 .div-toggle{
     background: rgba(255,255,255,0.5);
-    border: 2px dotted rgba(0,0,0,0.1);
+    border: 1px dotted rgba(0,0,0,0.3);
     border-top: none;
     padding: 1em;
     margin-bottom: 2em;
@@ -373,10 +376,14 @@ div.message-error{background: #ebb; color:#955;}
 /* --- icons --- */
 .ico-security{color:#0c6;}
 .ico-httpv1{color:#083;}
-.ico-unknown{color:#c8c;}
+.ico-unknown{color:#aaa;}
 .ico-warn{color:#fa2;}
 .ico-warning{color:#fa2;}
+/* http header */
 .ico-non-standard{color:#083;}
+.ico-obsolete{color:#eaa;}
+.ico-deprecated{color:#aaa;}
+.ico-unwanted{color:#fa2;}
 
 .ico-miss{color:#c42;}
 .ico-found{color:#083;}
@@ -446,12 +453,12 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
 
 /* --- http response header tags ---  */
-.pure-table tr.cache{background: #e0e0f8;}
-.pure-table tr.compression{background: #f8e0f8;}
-.pure-table tr.non-standard{background: #fec;}
+.pure-table tr.cache{background: #e0e0f8; color:#44a;}
+.pure-table tr.compression{background: #f8e0f8; color:#848;}
+.pure-table tr.non-standard{background: #fdb; color:#975;}
 .pure-table tr.security{background: #ded; color: #171;}
-.pure-table tr.unknown{background: #fca;}
-.pure-table tr.unwanted{background: #fec;}
+.pure-table tr.unknown{color:#aaa;}
+.pure-table tr.unwanted{background: #fdb; color:#975;}
 
 td div.tdcenter{text-align: center;}
 td div.tdcenter:hover{background: rgba(0,40,80,0.1);}

@@ -123,10 +123,16 @@ class ressourcesrenderer extends crawler_base {
         'ico.found' => 'fas fa-check',
         'ico.miss' => 'fas fa-ban',
         
+        // http response header
         'ico.unknown' => 'fas fa-question-circle',
         'ico.httpv1' => 'fas fa-check',
         'ico.non-standard' => 'far fa-check-circle',
         'ico.security' => 'fas fa-lock',
+        'ico.obsolete' => 'fas fa-trash-alt',
+        'ico.deprecated' => 'fas fa-thumbs-down',
+        'ico.unwanted' => 'fas fa-exclamation-triangle',
+
+        'ico.tag'=>'fas fa-tag',
 
         'ico.error' => 'fas fa-bolt',
         'ico.ok' => 'fas fa-check',
@@ -234,6 +240,8 @@ class ressourcesrenderer extends crawler_base {
      *            [value] => Wed, 05 Sep 2018 19:24:03 GMT
      *            [found] => httpv1
      *            [bad] => 
+     *            [obsolete] => 
+     *            [deprecated] => 
      *        )
      *
      * @return string
@@ -244,16 +252,32 @@ class ressourcesrenderer extends crawler_base {
         }
         $sReturn='';
         foreach($aHeaderWithChecks as $aEntry){
+            $sIcon=$this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found'])
+                    /*
+                . ($aEntry['obsolete']   ? $this->_getIcon('ico.obsolete', false, 'ico-obsolete') : '')
+                . ($aEntry['deprecated'] ? $this->_getIcon('ico.deprecated', false, 'ico-deprecated') : '')
+                . ($aEntry['unwanted']   ? $this->_getIcon('ico.', false, 'ico-warn') : '')
+                . (array_search('security', $aEntry['tags'])!==false ? $this->_getIcon('ico.security', false, 'ico-security') : '')
+                     * 
+                     */
+                ;
+            foreach(array('security', 'unwanted', /*'unknown',*/ 'obsolete') as $sMyTag){
+                $sIcon.=(array_search($sMyTag, $aEntry['tags'])!==false ? $this->_getIcon('ico.'.$sMyTag, false, 'ico-'.$sMyTag) : '');
+            }
+            
+            $sComment='';
+            if(count($aEntry['tags'])){
+                foreach($aEntry['tags'] as $sTag){
+                    $sComment.=($sTag==='httpv1' ? '' : $this->_getIcon('ico.tag').$this->lB('httpheader.tag.'.$sTag).' ');
+                }
+            }
             $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'" '
                     . 'class="'.implode(' ', array_values($aEntry['tags'])).'"'
                     . '>'
                     . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
                     . '<td style="max-width: 30em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
-                    . '<td>'
-                        . $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found']) 
-                        . ($aEntry['bad'] ? $this->_getIcon('ico.warn', false, 'ico-warn') : '')
-                    .'</td>'
-                    . '<td>'. $this->lB('httpheader.varfound.'.$aEntry['found']) .'</td>'
+                    . '<td>' . $sIcon    .'</td>'
+                    . '<td>' . $sComment .'</td>'
                     // . '<td>'. print_r(array_values($aEntry['tags']),1) .'</td>'
                     . '</tr>'
                     ;
@@ -688,7 +712,7 @@ class ressourcesrenderer extends crawler_base {
         ;
 
         $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
-            'id',
+            // 'id',
             'http_code',
             'type',
             'ressourcetype',
@@ -699,6 +723,7 @@ class ressourcesrenderer extends crawler_base {
         ))
         ;
         
+        /*
         $aHeaderJson=json_decode($aRessourceItem['header'] ? $aRessourceItem['header'] : $aRessourceItem['lasterror'], 1);
         if($aHeaderJson && $aHeaderJson['_responseheader']){
             
@@ -711,7 +736,6 @@ class ressourcesrenderer extends crawler_base {
                     .$this->renderHttpheaderAsTable($oHttpheader->parseHeaders());
             
         }
-        /*
         $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
             '_meta_total_time', 
             '_meta_namelookup_time', 
@@ -1036,7 +1060,6 @@ class ressourcesrenderer extends crawler_base {
     public function renderRessourceItemFull($aItem) {
         $sReturn = '';
         $iId = $aItem['id'];
-        $aResponsemetadata= json_decode($aItem['header'], 1);
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
         
@@ -1079,6 +1102,8 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         // table on top
         // --------------------------------------------------
+        
+        
         $sReturn.=''
                 . '<table><tr>'
                     . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
@@ -1095,20 +1120,58 @@ class ressourcesrenderer extends crawler_base {
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 ;
+
+        // --------------------------------------------------
+        // http header
+        // --------------------------------------------------
+        $sHeader=$aItem['header'] ? $aItem['header'] : $aItem['lasterror'];
+        $aHeaderJson=json_decode($sHeader, 1);
+        if(!$aHeaderJson || !isset($aHeaderJson['_responseheader'])){
+            $sReturn.=$this->renderMessagebox(
+                    ($sHeader ? 'INVALID HEADER DATA' : 'NO HEADER DATA'), 
+                    'error'
+                );
+            
+        } else {
+            
+            $oHttpheader=new httpheader();
+            $oHttpheader->setHeaderAsString($aHeaderJson['_responseheader'][0]);
+            // $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
+            // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+            $sReturn.=$this->renderToggledContent(
+                    $this->lB('httpheader.data'),
+                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders()),
+                    false
+            );
+        }
         
 
         // --------------------------------------------------
         // wher it is linked
         // --------------------------------------------------
+        $sReturn.=$this->renderToggledContent(
+                sprintf($this->lB('ressources.references-h3-in'), count($aIn)),
+                $this->_renderRessourceListWithGroups($aIn,false, true),
+                false
+        );
+        /*
         $sReturn.='<h3 id="listIn">' . sprintf($this->lB('ressources.references-h3-in'), count($aIn)) . '</h3>'
                 . $this->_renderRessourceListWithGroups($aIn, false, false)
         ;
+         */
         // --------------------------------------------------
         // outgoing links / redirects
         // --------------------------------------------------
+        $sReturn.=$this->renderToggledContent(
+                sprintf($this->lB('ressources.references-h3-out'), count($aOut)),
+                $this->_renderRessourceListWithGroups($aOut,false, true),
+                false
+        );
+        /*
         $sReturn.='<h3 id="listOut">' . sprintf($this->lB('ressources.references-h3-out'), count($aOut)) . '</h3>'
                 . $this->_renderRessourceListWithGroups($aOut,false, true)
         ;
+         */
         return $sReturn;
     }
 

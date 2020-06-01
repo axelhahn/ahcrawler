@@ -483,6 +483,7 @@ class crawler extends crawler_base{
         
         // scan content and follow links
         $this->_bFollowLinks=true;
+        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;

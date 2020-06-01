@@ -236,7 +236,7 @@ class httpstatus {
      * @return boolean
      */
     public function isWrongRequest(){
-        return $this->_http_code===0;
+        return $this->_http_code>=0 && $this->_http_code<100;
     }
     
     /**
@@ -290,7 +290,7 @@ class httpstatus {
             return 'todo';
         }
         if($this->isWrongRequest()){
-            return '0-noConnect';
+            return '0xx-noConnect';
         }
         if($this->isProcessing()){
             return '1xx-processing';

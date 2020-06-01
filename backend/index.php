@@ -163,7 +163,7 @@ function getNewQs($aQueryParams = array()) {
         <div id="divStatus" style="display: none;"></div>
         <script>
             initPage();
-            updateStatus("<?php echo 'http'.($_SERVER['HTTPS'] ? 's' : '').'://'.$_SERVER['HTTP_HOST'] . preg_replace('/\?.*/', '', 	$_SERVER['REQUEST_URI']) . 'get.php?action=getstatus'; ?>");
+            updateStatus("<?php echo 'http'.(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 's' : '').'://'.$_SERVER['HTTP_HOST'] . preg_replace('/\?.*/', '', 	$_SERVER['REQUEST_URI']) . 'get.php?action=getstatus'; ?>");
         </script>
         <div style="clear: both;"></div>
         <?php 

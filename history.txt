@@ -10,6 +10,14 @@
 
 ----------------------------------------------------------------------
 
+2020-06-02: v0.116
+  * UPDATE: added more known http headers
+  * UPDATE: added deprecated flags in http headers
+  * UPDATE: ressource details use open / close areas
+  * UPDATE: on http status 0 (no connect) -> try to detect if host exists
+  * UPDATE: change size of http response header columns
+    execute "php bin/cli.php -a flush -d all"
+
 2020-05-29: v0.115
   * FIX: error counter increases on failed ressources
   * UPDATE: add dummy http code 1: hostname does not exist in DNS
