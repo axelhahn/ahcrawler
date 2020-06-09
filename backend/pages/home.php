@@ -234,7 +234,7 @@ if(!$this->_configExists() ){
                 .'<h3><img src="'.$urlFavicon .'" width="32" height="32"> '.$this->aProfileSaved['label'].'</h3>'
                 .'<strong>'.$this->aProfileSaved['description'].'</strong>'
                 .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
-                .'<p>'.$this->lB('home.starturls').'</p>'
+                .'<p>'.$this->_getIcon('checkurl'). $this->lB('home.starturls').'</p>'
                 .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
                 . $this->_getLink2Navitem('profiles')
                 // . '<br><br>'

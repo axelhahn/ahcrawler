@@ -3,70 +3,129 @@
  * page analysis :: Http header check
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
-$sReturn = '';
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
-$aCountByStatuscode=$this->_getStatusinfos(array('_global'));
-$iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
-$iPagesCount=$aCountByStatuscode['_global']['pages']['value'];
-if (!$iPagesCount) {
-    return $sReturn.'<br>'.
-        $this->_getMessageBox(
-            sprintf($this->lB('status.emptyindex'), $this->_sTab),
-            'warning'
-        )
-        ;
-}
-if (!$iRessourcesCount) {
-    return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
-}
-
-$iResId=$this->_getRequestParam('id', false, 'int');
-$sUrl=$this->_getRequestParam('url');
-
-if(!$iResId){
-    
-    // default: detect first url in pages table
-    $aPagedata = $this->oDB->select(
-        'pages', 
-        array('url', 'header'), 
-        array(
-            'AND' => array(
-                'siteid' => $this->_sTab,
-            ),
-            "ORDER" => array("id"=>"ASC"),
-            "LIMIT" => 1
-        )
-    );
-} else {
-
-    // with get param id: get it from ressources (not pages!)
-    $aPagedata = $this->oDB->select(
-        'ressources', 
-        array('url', 'header'), 
-        array(
-            'AND' => array(
-                'siteid' => $this->_sTab,
-                'id' => $iResId,
-            ),
-            "ORDER" => array("id"=>"ASC"),
-            "LIMIT" => 1
-        )
-    );
-    if (count($aPagedata)===0){
-        $sReturn.=$this->_getMessageBox(sprintf($this->lB('httpheader.nopage-with-id') , $iResId) .'<br>' . $this->oDB->last(), 'warning');
-        return $sReturn;
-    }
-}
-
 $oHttpheader=new httpheader();
 
-$sInfos=$aPagedata[0]['header'];
+$sReturn = '';
+$bShowResult=false;
 
-$aInfos=json_decode($sInfos,1);
-// _responseheader ?? --> see crawler.class - method processResponse()
-$oHttpheader->setHeaderAsString($aInfos['_responseheader']);
 
+// important base variables inm this fiile:
+    $sUrl='';           // requested url
+    $sResponse='';      // http response header
+    $bShowForm=false;   // flag: show input form?
+   
+
+if ($this->_bIsPublic){
+    // ----------------------------------------------------------------------
+    // public: make a request from url in form value
+    // ----------------------------------------------------------------------
+    $bShowForm=true;
+    $sUrl=( isset($_GET['url']) && $_GET['url'] ) ? $_GET['url'] : '';
+    $sReturn.='<h3>'.$this->lB('httpheader.enter-url').'</h3>
+    <p>'.$this->lB('httpheader.enter-url.hint').'</p>
+            <form class="pure-form pure-form-aligned" method="GET" action="?">
+                <input type="hidden" name="page" value="httpheaderchecks">
+                <input type="text" size="100" name="url" value="'.htmlentities($sUrl).'" placeholder="https:://example.com">'
+                .($sUrl
+                        ? $oRenderer->oHtml->getTag('a', array('label'=>$this->_getIcon('button.close'), 'class'=>'pure-button button-error', 'href'=>'?page=httpheaderchecks')).' '
+                        : ''
+                )
+                .'<button class="pure-button button-secondary">'.$this->_getIcon('button.save').'</button>'
+            .'
+            </form>'
+            ;
+    if($sUrl && preg_match('#^http.*#', $sUrl)){
+        
+        // ---------- request the url
+        $sResponse=$this->httpGet($sUrl, 1);
+        if($sResponse){
+            $bShowResult=true;
+
+            if(!preg_match('/^HTTP.*\ 200/', $sResponse)){
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.non-ok'), 'warning');
+            }
+
+        } else {
+            $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.no-response'), 'error');
+        }
+    }
+    
+} else {
+    // ----------------------------------------------------------------------
+    // backend: show header of starting page or by given id
+    // ----------------------------------------------------------------------
+
+    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
+
+    $aCountByStatuscode=$this->_getStatusinfos(array('_global'));
+    $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
+    $iPagesCount=$aCountByStatuscode['_global']['pages']['value'];
+    if (!$iPagesCount) {
+        return $sReturn.'<br>'.
+            $this->_getMessageBox(
+                sprintf($this->lB('status.emptyindex'), $this->_sTab),
+                'warning'
+            )
+            ;
+    }
+    if (!$iRessourcesCount) {
+        return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+    }
+
+    $iResId=$this->_getRequestParam('id', false, 'int');
+    $sUrl=$this->_getRequestParam('url');
+
+    if(!$iResId){
+
+        // default: detect first url in pages table
+        $aPagedata = $this->oDB->select(
+            'pages', 
+            array('url', 'header'), 
+            array(
+                'AND' => array(
+                    'siteid' => $this->_sTab,
+                ),
+                "ORDER" => array("id"=>"ASC"),
+                "LIMIT" => 1
+            )
+        );
+    } else {
+
+        // with get param id: get it from ressources (not pages!)
+        $aPagedata = $this->oDB->select(
+            'ressources', 
+            array('url', 'header'), 
+            array(
+                'AND' => array(
+                    'siteid' => $this->_sTab,
+                    'id' => $iResId,
+                ),
+                "ORDER" => array("id"=>"ASC"),
+                "LIMIT" => 1
+            )
+        );
+        if (count($aPagedata)===0){
+            $sReturn.=$this->_getMessageBox(sprintf($this->lB('httpheader.nopage-with-id') , $iResId) .'<br>' . $this->oDB->last(), 'warning');
+            return $sReturn;
+        }
+    }
+    
+    $sInfos=$aPagedata[0]['header'];
+
+    $aInfos=json_decode($sInfos,1);
+       
+    $sResponse=$aInfos['_responseheader'];
+    $sUrl=$aPagedata[0]['url'];
+    
+    // _responseheader ?? --> see crawler.class - method processResponse()
+}
+
+
+if(!$sResponse){
+    return $sReturn;
+}
+
+$oHttpheader->setHeaderAsString($sResponse);
 $aSecHeader=$oHttpheader->getSecurityHeaders();
 
 // ----------------------------------------------------------------------
@@ -79,57 +138,19 @@ $iSecHeader=isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
 $iUnkKnown=isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted=isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
 $iNonStandard=isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
-$sTiles=''
-    . $this->_getTilesOfAPage()
-    /*
-        
-    .'<div style="clear: both;"></div>'
 
-    . $oRenderer->renderTile('', $this->lB('httpheader.header.total'), $iTotalHeaders, '')
-        
-    . (isset($aFoundTags['httpv1'])
-        ? $oRenderer->renderTile(($aFoundTags['httpv1']+$iSecHeader===$iTotalHeaders ? 'ok' : '' ), $this->lB('httpheader.header.httpv1'), $aFoundTags['httpv1'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.httpv1'), 0, '', '')
-      )
-
-    . ($iUnkKnown
-        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unknown'), $aFoundTags['unknown'], (floor($aFoundTags['unknown']/$iTotalHeaders*1000)/10).'%', '#warnunknown')
-        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unknown'), 0, '', '')
-      )
-    . ($iUnwanted
-        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.unwanted'), $iUnwanted, (floor($iUnwanted/$iTotalHeaders*1000)/10).'%', '#warnunwanted')
-        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.unwanted'), 0, '', '')
-      )
-    . ($iNonStandard
-        ? $oRenderer->renderTile('warning', $this->lB('httpheader.header.non-standard'), $iNonStandard, (floor($iNonStandard/$iTotalHeaders*1000)/10).'%', '#warnnonstandard')
-        : $oRenderer->renderTile('ok',      $this->lB('httpheader.header.non-standard'), 0, '', '')
-      )
-        
-    . (isset($aFoundTags['cache'])
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.cache'), $aFoundTags['cache'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '#warnnocache')
-      )
-    . (isset($aFoundTags['compression'])
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.compression'), $aFoundTags['compression'], '', '')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '#warnnocompression')
-      )
-
-    . ($iSecHeader
-        ? $oRenderer->renderTile('ok',      $this->lB('httpheader.header.security'), $aFoundTags['security'], '', '#securityheaders')
-        : $oRenderer->renderTile('warning', $this->lB('httpheader.header.security'), $oRenderer->renderShortInfo('miss'), '', '#securityheaders')
-      )
-     */
-    ;
+$sTiles=$this->_getTilesOfAPage();
         
 // ----------------------------------------------------------------------
 // header dump
 // ----------------------------------------------------------------------
 $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
-        . sprintf($this->lB('httpheader.data.description'), $aPagedata[0]['url']).'<br><br>'
+        . $this->_getIcon('checkurl')
+        . sprintf($this->lB('httpheader.data.description'), $sUrl).'<br><br>'
         . '</p>'
         . $oRenderer->renderTileBar($sTiles, '').'<div style="clear: both;"></div>'
-        . $oRenderer->renderToggledContent($this->lB('httpheader.plain'),'<pre>'.htmlentities(print_r($aInfos['_responseheader'], 1)).'</pre>', false)
+        . $oRenderer->renderToggledContent($this->lB('httpheader.plain'),'<pre>'.htmlentities(print_r($sResponse, 1)).'</pre>', false)
         . '<br>'
         . $oRenderer->renderHttpheaderAsTable($oHttpheader->parseHeaders())
         ;
@@ -178,11 +199,18 @@ $sTiles='';
             $sWarnings .= $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
                     );
-            $sLegendeWarn .='<li>'
-                    . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description')
-                    . '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre><br>'
-                    . '</li>'
-                    ;
+                    $sLegendeWarn .='<li>'
+                            . $this->lB('httpheader.'.strtolower($aHeaderitem['var']).'.description')
+                            .(isset($aHeaderitem['regex']['unwantedregex'])
+                                ? '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '
+                                    . preg_replace('/('.$aHeaderitem['regex']['unwantedregex'].')/i', '<span class="error">$1</span>', $aHeaderitem['value'])
+                                    .'</pre>'
+                                    // .'<code>'.print_r($aHeaderitem['regex']['unwantedregex'], 1).'</code>'
+                                : '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre>'
+                            )
+                            .'<br>'
+                            . '</li>'
+                            ;
         }
         $sWarnings.= '</ul>'
             . '<div style="clear: both;"></div>'
@@ -246,33 +274,47 @@ $sTiles='';
 // security header
 // ----------------------------------------------------------------------
 
-$sSecOk='';
-$sSecMiss='';
-$sLegendeSecOk='';
-$sLegendeSecMiss='';
-$iFoundSecHeader=0;
-foreach($aSecHeader as $sVar=>$aData){
-    if($aData){
-        $iFoundSecHeader++;
-        // $sSecOk.='<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>';
-        $sSecOk.=$oRenderer->renderTile('ok',  $aData['var'].'<br>'.$aData['value'], $oRenderer->renderShortInfo('found'), '', '');
-        $sLegendeSecOk.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
-                . ' <strong>' . $sVar. '</strong><br>'
-                . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
-                . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
-                ;
+                // ----------------------------------------------------------------------
+                // security header
+                // ----------------------------------------------------------------------
+
+                $sLegendeSecOk='';
+                $sLegendeSecMiss='';
+                $iFoundSecHeader=0;
+                $iWarnSecHeader=0;
+                $iErrorSecHeader=0;
+                foreach($aSecHeader as $sVar=>$aData){
+                    if($aData){
+                        $iFoundSecHeader++;
+                        $bHasBadValue=in_array('badvalue', $aData['tags']);
+                        $iWarnSecHeader+=$bHasBadValue ? 1 : 0;
+                        // $sSecOk.='<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>';
+                        $sLegendeSecOk.=''
+                                . $oRenderer->renderMessagebox($sVar, $bHasBadValue ? 'warning':'ok')
+                                // . $oRenderer->renderShortInfo($aData ? 'found': 'miss') . ' <strong>' . $sVar. '</strong><br>'
+                                . $this->lB('httpheader.'.$sVar.'.description').'<br>'
+                                . ($bHasBadValue
+                                        ? '<pre>'
+                                            // . print_r($aData, 1)
+                                            . preg_replace('/([^\"\']*'.$aData['regex']['badvalueregex'].'[^\"\']*)/i', '<span class="error">$1</span>', $aData['value'])
+                                            .'</pre>'
+                                        :'<pre>[' . $aData['line'].'] '.$aData['var'] . ': '.$aData['value'] .'</pre>'
+                                    )
+                                . '<br>'
+                                ;
 
 
-    } else {
-        // $sSecMiss.='<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>';
-        $sSecMiss.=$oRenderer->renderTile('warning',  $sVar, $oRenderer->renderShortInfo('miss'), '', '');
-        $sLegendeSecMiss.='<li>'.$oRenderer->renderShortInfo($aData ? 'found': 'miss')
-                . ' <strong>' . $sVar. '</strong><br>'
-                . ($aData ? '<pre>' . $aData['var'] . ': '.  $aData['value'].'</pre>' : '' )
-                . $this->lB('httpheader.'.$sVar.'.description').'<br><br><br></li>'
-                ;
-    }
-}
+                    } else {
+                        // $sSecMiss.='<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>';
+                        $iErrorSecHeader++;
+                        $sLegendeSecMiss.=''
+                                . $oRenderer->renderMessagebox($sVar, 'error')
+                                // .$oRenderer->renderShortInfo($aData ? 'found': 'miss'). ' <strong>' . $sVar. '</strong><br>'
+                                . $this->lB('httpheader.'.$sVar.'.description').'<br><br>'
+                                ;
+                    }
+                }
+                
 
 // ----------------------------------------------------------------------
 // output
@@ -288,19 +330,13 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h
     )
 
     .'<h3 id="securityheaders">' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
-        . '<p>'
-            . $this->lB('httpheader.securityheaders.description').'<br>'
-        . '</p>'
-        . $this->_getHtmlchecksChart(count($aSecHeader), $oHttpheader->getCountBadSecurityHeaders())
-        . '<ul class="tiles warnings">'
-        . $sSecOk
-        . $sSecMiss
-        . '</ul>'
-        . '<div style="clear: both;"></div>'
-        . '<ul>' 
-            . $sLegendeSecOk
-            . $sLegendeSecMiss
-        . '</ul>'
+                    . '<p>'
+                        . $this->lB('httpheader.securityheaders.description').'<br>'
+                    . '</p>'
+                    . $this->_getHtmlchecksChart(count($aSecHeader), $iWarnSecHeader, $iErrorSecHeader)
+                    . '<div style="clear: both;"></div>'
+                        . ($sLegendeSecOk ? '<h4>'.$this->lB('httpheader.securityheaders.found').'</h4>'.$sLegendeSecOk : '')
+                        . ($sLegendeSecMiss ? '<h4>'.$this->lB('httpheader.securityheaders.notfound').'</h4>'.$sLegendeSecMiss : '')
     ;
 
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';

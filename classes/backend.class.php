@@ -77,71 +77,14 @@ class backend extends crawler_base {
         'about'=>array(
         )
     );
-    /*
-    private $_aMenu = array(
-        'home'=>array(
-            'searchindexstatus'=>array(), 
-            'searchindextester'=>array(), 
-            'searches'=>array(),
-            'profiles'=>array(),
-        ), 
-        // 'search'=>array(),
-        'analysis'=>array(
-            'sslcheck'=>array(), 
-            'httpheaderchecks'=>array(), 
-            'cookies'=>array(), 
-            'htmlchecks'=>array(), 
-            'linkchecker'=>array(), 
-            'ressources'=>array(),
-            'checkurl'=>array(), 
-            'ressourcedetail'=>array(), 
-        ), 
-        'tools'=>array(
-            'bookmarklet'=>array(), 
-            'httpstatuscode'=>array(), 
-            'langedit'=>array(), 
-            'update'=>array(), 
-        ),
-        'settings'=>array(
-            'setup'=>array(),
-            'vendor'=>array(), 
-        ),
-        'about'=>array(
-        )
+    private $_aMenuPublic = array(
+        'home'=>array(),
+        'httpheaderchecks'=>array(),
     );
-    /*
-    private $_aMenu = array(
-        'home'=>array('hlp'=>'usage.htm#Category:Start'), 
-        'settings'=>array(
-            'setup'=>array('hlp'=>'usage.htm#Page:Setup'),
-            'profiles'=>array('hlp'=>'usage.htm#Page:Profiles'),
-            'vendor'=>array('hlp'=>'usage.htm#Page:Vendorlibs'), 
-        ),
-        'search'=>array(
-            'status'=>array('hlp'=>'usage.htm#Page:Status'), 
-            'searches'=>array('hlp'=>'usage.htm#Page:Searchterms'),
-        ),
-        'analysis'=>array(
-            'sslcheck'=>array('hlp'=>'usage.htm#Page:SSLCheck'), 
-            'httpheaderchecks'=>array('hlp'=>'usage.htm#Page:HttpHeadercheck'), 
-            'cookies'=>array('hlp'=>'usage.htm#Page:Cookies'), 
-            'htmlchecks'=>array('hlp'=>'usage.htm#Page:HTMLchecks'), 
-            'linkchecker'=>array('hlp'=>'usage.htm#Page:Linkchecker'), 
-            'ressources'=>array('hlp'=>'usage.htm#Page:Ressources'),
-            'checkurl'=>array(), 
-            'ressourcedetail'=>array(), 
-        ), 
-        'tools'=>array(
-            'httpstatuscode'=>array(), 
-            'langedit'=>array(), 
-        ),
-        'about'=>array(
-            'update'=>array(), 
-        )
-    );
-     * 
-     */
+    
+    private $_bIsPublic = false;
     private $_sPage = false;
+    private $_sPageFile = false;
     private $_sTab = false;
     
     private $_aIcons= array(
@@ -295,43 +238,60 @@ class backend extends crawler_base {
      * new crawler
      * @param integer  $iSiteId  site-id of search index
      */
-    public function __construct($iSiteId = false) {
+    public function __construct($iSiteId = false, $bIsPublic=false) {
         $this->_oLog=new logger();
+        if($bIsPublic){
+            $this->_bIsPublic=true;
+            $this->_aMenu=$this->_aMenuPublic;
+        }
         if (!isset($_SESSION)) {
             session_start();
         }
         
-        // for settings: create a default array with all available menu items
-        foreach($this->_aMenu as $sKey=>$aItem){
-            $this->aDefaultOptions['menu'][$sKey]=true;
-            if (isset($aItem['children'])){
-                foreach(array_keys($aItem['children']) as $sKey2){
-                    $this->aDefaultOptions['menu'][$sKey2]=true;
+        
+        if($bIsPublic){
+            $this->setSiteId(false);
+            $this->aOptions['menu']=$this->aOptions['menu-public'];
+            $this->setLangPublic();
+            $this->logAdd(__METHOD__.' public lang was set');
+        } else {
+
+            // for settings: create a default array with all available menu items
+            foreach($this->_aMenu as $sKey=>$aItem){
+                $this->aDefaultOptions['menu'][$sKey]=true;
+                if (isset($aItem['children'])){
+                    foreach(array_keys($aItem['children']) as $sKey2){
+                        $this->aDefaultOptions['menu'][$sKey2]=true;
+                    }
                 }
             }
+            // for settings: create a default array with all available menu items
+            foreach($this->_aMenuPublic as $sKey=>$aItem){
+                $this->aDefaultOptions['menu-public'][$sKey]=false;
+            }
+            
+            $this->setSiteId($iSiteId);
+            $this->logAdd(__METHOD__.' site id was set');
+            $this->setLangBackend();
+            $this->logAdd(__METHOD__.' backend lang was set');
+            /*
+             * 
+             */
+            $this->oUpdate=new ahwiupdatecheck(array(
+                    'product'=>$this->aAbout['product'],
+                    'version'=>$this->aAbout['version'],
+                    'baseurl'=>$this->aOptions['updater']['baseurl'],
+                    'tmpdir'=>($this->aOptions['updater']['tmpdir'] ? $this->aOptions['updater']['tmpdir'] : __DIR__.'/../tmp/'),
+                    'ttl'=>$this->aOptions['updater']['ttl'],
+            ));
+            // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
         }
-        $this->setSiteId($iSiteId);
-        $this->logAdd(__METHOD__.' site id was set');
-        $this->setLangBackend();
-        $this->logAdd(__METHOD__.' backend lang was set');
+        
         $this->_getPage();
         $this->logAdd(__METHOD__.' getPage was finished');
-        /*
-         * 
-         */
-        $this->oUpdate=new ahwiupdatecheck(array(
-                'product'=>$this->aAbout['product'],
-                'version'=>$this->aAbout['version'],
-                'baseurl'=>$this->aOptions['updater']['baseurl'],
-                'tmpdir'=>($this->aOptions['updater']['tmpdir'] ? $this->aOptions['updater']['tmpdir'] : __DIR__.'/../tmp/'),
-                'ttl'=>$this->aOptions['updater']['ttl'],
-        ));
-        // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
-        $this->logAdd(__METHOD__.' Done');
         
         return true;
     }
-
     // ----------------------------------------------------------------------
     // LOGIN
     // ----------------------------------------------------------------------
@@ -457,11 +417,15 @@ class backend extends crawler_base {
             $aKeys=array_keys($this->_aMenu);
             $sPage = $aKeys[0];
         }
-        if(!file_exists('pages/'.$sPage.'.php')){
+        $sFilename=dirname(__DIR__).'/backend/pages/'.($this->_bIsPublic ? 'public_' : '').$sPage.'.php';
+        if(!file_exists($sFilename)){
             $sPage='error404';
+            $sFilename=dirname(__DIR__).'/backend/pages/'.$sPage.'.php';
             header("HTTP/1.0 404 Not Found");
         }
         $this->_sPage=$sPage;
+        $this->_sPageFile=$sFilename;
+
         return $this->_sPage;
     }
 
@@ -477,11 +441,27 @@ class backend extends crawler_base {
         $sAll = $this->_getRequestParam('siteid', '/all/');
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
-            setcookie("tab", $this->_sTab, time() + 60*60*8);
+            /*
+            setcookie(
+                "tab", 
+                $this->_sTab, 
+                array(
+                    'expires'=>time() + 60*60*8,
+                    'path'=>'/',
+                    'domain'=>$_SERVER["HTTP_HOST"],
+                    'secure'=>isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] ? true : false,
+                    'httponly'=>true,
+                    'samesite'=>'Strict',
+                )
+            );
+             * 
+             */
+            $_SESSION['siteid']=$this->_sTab;
         }
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
             // header('location: '.$_SERVER['REQUEST_URI'].'&siteid='.$_COOKIE['tab']);
-            $this->_sTab = $_COOKIE['tab'];
+            // $this->_sTab = $_COOKIE['tab'];
+            $this->_sTab = $_SESSION['siteid'];
         }
 
         if (!$this->_sTab) {
@@ -497,7 +477,10 @@ class backend extends crawler_base {
      * @param type $sItem
      * @return boolean
      */
-    protected function _getNavAttrIsHidden($sItem){
+    public function isNavitemHidden($sItem=false){
+        if(!$sItem){
+            $sItem=$this->_sPage;
+        }
         return array_key_exists('menu', $this->aOptions)
                 && array_key_exists($sItem, $this->aOptions['menu'])
                 && !$this->aOptions['menu'][$sItem]
@@ -563,7 +546,7 @@ class backend extends crawler_base {
                     && !$this->aOptions['menu'][$sItem]
             ){
              */
-            if($this->_getNavAttrIsHidden($sItem)){
+            if($this->isNavitemHidden($sItem)){
                 // do nothing means: hide menu item
                 
             } else {
@@ -660,6 +643,7 @@ class backend extends crawler_base {
      * 
      * @param array  $aLink  array with link params
      *                       url
+     *                       class  optional css class - "pure-menu-disabled"
      *                       hint
      *                       icon
      *                       title
@@ -719,6 +703,9 @@ class backend extends crawler_base {
      */
     private function _renderChildItems($aNav){
         $sReturn='';
+        if(!isset($aNav['children']) || !is_array($aNav['children']) ||!count($aNav['children'])){
+            return '';
+        }
         foreach ($aNav['children'] as $sItem=>$aSubItems) {
             if ($this->_sPage!==$sItem){
                 $sUrl = '?page=' . $sItem;
@@ -872,7 +859,6 @@ class backend extends crawler_base {
         
         $aOptions = $this->getEffectiveOptions();
         $iCounter=0;
-        
         $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->_sTab));
         $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
         $iSearchesCount=$this->getRecordCount('searches', array('siteid'=>$this->_sTab));
@@ -1014,7 +1000,7 @@ class backend extends crawler_base {
                             $aFoundTags=$oHttpheader->getExistingTags();
 
                             $iTotalHeaders=count($oHttpheader->getHeaderAsArray());
-                            $iKnown=$aFoundTags['httpv1'];
+                            $iKnown=$aFoundTags['http'];
                             $iUnkKnown=         isset($aFoundTags['unknown'])      ? $aFoundTags['unknown']      : 0;
                             $iUnwanted=         isset($aFoundTags['unwanted'])     ? $aFoundTags['unwanted']     : 0;
                             $iNonStandard=      isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
@@ -1033,12 +1019,12 @@ class backend extends crawler_base {
                                 'thead'=>$this->lB('httpheader.header.total'),
                                 'tfoot'=>'',
                             );
-                            $aMsg['httpv1']=array(
+                            $aMsg['http']=array(
                                 'counter'=>$iCounter++,
                                 'status'=>($iKnown+$iSecHeader===$iTotalHeaders ? 'ok' : ($iKnown > 0 ? 'info' : 'error') ),
                                 'value'=>$iKnown, 
                                 'message'=>false,
-                                'thead'=>$this->lB('httpheader.header.httpv1'),
+                                'thead'=>$this->lB('httpheader.header.http'),
                                 'tfoot'=>'',
                                 'thash'=>'',
                             );
@@ -1451,7 +1437,14 @@ class backend extends crawler_base {
         if (!$this->_checkAuth()) {
             return $this->_getLoginForm();
         }
-        $sPagefile='pages/'.$this->_sPage.'.php';
+        return include $this->_sPageFile;
+    }
+    /**
+     * wrapper function: get page content as html
+     * @return string
+     */
+    public function getPublicContent() {
+        $sPagefile='backend/pages/public_'.$this->_sPage.'.php';
         return include $sPagefile;
     }
     
@@ -1461,6 +1454,9 @@ class backend extends crawler_base {
      */
     public function getUpdateInfobox() {
         global $oRenderer;
+        if($this->_bIsPublic){
+            return '';
+        }
         return $this->_checkAuth() && $this->oUpdate->hasUpdate()
             ? $this->_getMessageBox(
                     sprintf($this->lB('update.available-yes') , $this->oUpdate->getLatestVersion()) 

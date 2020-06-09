@@ -1,0 +1,13 @@
+{
+    "id": "english",
+    "nav.home.label": "Start",
+    "nav.home.hint": "Homepage of the public services",
+    "httpheader.enter-url": "Enter url",
+    "httpheader.enter-url.hint": "Enter url to analyze its http response header. The given url will be requested with an Http HEAD.",
+    "httpheader.result": "Result",
+    "httpheader.result.non-ok": "Hint: The given url did not send a 200 OK. Maybe the url is wrong.",
+    "httpheader.result.no-response": "No response from given url. Maybe the url is wrong or is not reachable at the moment.",
+    "error.403.message": "Access denied. This page is not activated.",
+    "error.403.title": "403 Access denied.",
+    "home.no-pages": "Here is nothing to see. The administrator didn't enable services yet."
+}

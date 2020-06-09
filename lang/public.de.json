@@ -1,0 +1,13 @@
+{
+    "id": "deutsch",
+    "nav.home.label": "Startseite",
+    "nav.home.hint": "Startseite mit Diensten",
+    "error.403.title": "403 Zugriff verweigert.",
+    "error.403.message": "Zugriff verweigert. Diese Seite ist nicht freigeschaltet.",
+    "home.no-pages": "Hier gibt es nichts zu sehen. Der Adminstrator hat noch keine Dienste freigeschaltet.",
+    "httpheader.enter-url": "URL eingeben",
+    "httpheader.enter-url.hint": "Gib eine Webadresse an, deren Http Response Header analysiert werden soll. Die angegebene URL wird dazu mit einem Http HEAD Request aufgerufen.",
+    "httpheader.result": "Ergebnis",
+    "httpheader.result.no-response": "Kein Response von der angegebenen URL. Ggf. ist die URL falsch oder gerade nicht erreichbar.",
+    "httpheader.result.non-ok": "Hinweis: die angegebene URL sendete kein 200 OK. Ggf. ist die URL falsch."
+}

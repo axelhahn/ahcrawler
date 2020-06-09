@@ -14,8 +14,9 @@ $aLangkeys=array();
 // ----------------------------------------------------------------------
 
 $aObjects=array(
-    'frontend',
     'backend',
+    'frontend',
+    'public',
 );
 $sLangobject=$this->_getRequestParam('object') ? $this->_getRequestParam('object') : $aObjects[0];
 if (array_search($sLangobject, $aObjects)===false){

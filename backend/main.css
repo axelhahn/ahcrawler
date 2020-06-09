@@ -13,9 +13,10 @@
     --tile-bg:radial-gradient(#fff,#c0d0d8);
     --tile-color:#789;
     
-    --status-bg-error:radial-gradient(#f8e0e0,#e99);
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
+    --status-bg-error-flat:#eaa;
     --status-bg-warning:radial-gradient(#fff,#eb8);
+    --status-bg-warning-flat:#eb8;
     --status-bg-ok:radial-gradient(#fff,#ac8);
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
     --status-color-error:#855;
@@ -103,10 +104,11 @@ body{
     text-shadow: none;
 }
 /* level 2 */
+.header .pure-menu-link{display: block; white-space:normal; overflow-wrap: break-word; }
 .header .pure-menu-list .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px solid #ddd; }
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link{border-color: none; }
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link,
-.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:focus{color:#567; text-decoration: none; display: block; white-space:normal; overflow-wrap: break-word; padding: 0.2em;}
+.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:focus{color:#567; text-decoration: none; padding: 0.2em;}
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:hover{text-decoration: underline; background: none;}
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link-active{
     background: var(--navi-bg-on-hover);
@@ -184,7 +186,7 @@ h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 
 
 
 hr{border: 0; border-bottom: 2px dotted #ddd;}
-pre{font-size: 80%; padding: 0.5em; background: #eee; color:var(--color-default);}
+pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 
 
 
@@ -199,6 +201,7 @@ pre{font-size: 80%; padding: 0.5em; background: #eee; color:var(--color-default)
     opacity: 0.8;
 }
 
+footer{position: fixed; background: rgba(0,0,0,0.05); bottom: 0; padding: 0.5em 1em; right: 0;}
 /* --- tiles --- */
 
 a.childitem{
@@ -309,6 +312,9 @@ ul.tiles a.tile:hover{
 div.message-ok, .bar .bar-ok,       ul.tiles li a.ok,      ul.ok      a.tile, span.ok{      background:var(--status-bg-ok); color:var(--status-color-ok);}
 .bar .bar-todo,     ul.todo  a.tile,                          span.todo{    background:var(--status-bg-todo); color:var(--status-color-todo);}
 
+span.error{   background:var(--status-bg-error-flat);}
+span.warning{   background:var(--status-bg-warning-flat);}
+
 span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
 
 /* --- color for pie chart --- */
@@ -375,7 +381,7 @@ div.message-error{background: #ebb; color:#955;}
 
 /* --- icons --- */
 .ico-security{color:#0c6;}
-.ico-httpv1{color:#083;}
+.ico-http{color:#083;}
 .ico-unknown{color:#aaa;}
 .ico-warn{color:#fa2;}
 .ico-warning{color:#fa2;}
@@ -384,6 +390,7 @@ div.message-error{background: #ebb; color:#955;}
 .ico-obsolete{color:#eaa;}
 .ico-deprecated{color:#aaa;}
 .ico-unwanted{color:#fa2;}
+.ico-badvalue{color:#fa2;}
 
 .ico-miss{color:#c42;}
 .ico-found{color:#083;}

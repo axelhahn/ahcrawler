@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.116',
-        'date' => '2020-06-02',
+        'version' => '0.117',
+        'date' => '2020-06-09',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -63,7 +63,11 @@ class crawler_base {
         ),
         'debug' => false,
         'lang' => 'en',
+        
+        // see backend.class
         'menu' => array(),
+        'menu-public' => array(),
+        
         'crawler' => array(
             'timeout' => 10,
             'userAgent' => false,
@@ -572,9 +576,14 @@ class crawler_base {
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->aOptions['crawler']['userAgent'],
-            CURLOPT_USERPWD => array_key_exists('userpwd', $this->aProfileEffective) ? $this->aProfileEffective['userpwd']:false,
+            CURLOPT_USERPWD => isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false,
             CURLOPT_VERBOSE => false,
-            CURLOPT_ENCODING => '',  // to fetch encoding
+            CURLOPT_ENCODING => 'gzip, deflate, br',  // to fetch encoding
+            CURLOPT_HTTPHEADER => array(
+                'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language: en',
+                'DNT: 1',
+            ),
 
             // TODO: this is unsafe .. better: let the user configure it
             CURLOPT_SSL_VERIFYHOST => false,
@@ -592,22 +601,23 @@ class crawler_base {
     }
     
     /**
-     * make an http GET request
-     * @param string $sUrl  any url
-     * @return array
+     * make a single http(s) get request and return the response body
+     * @param string   $url          url to fetch
+     * @param boolean  $bHeaderOnly  optional: true=make HEAD request; default: false (=GET)
+     * @return string
      */
-    private function _getSingleCurlrequest($sUrl) {
-        // $this->cliprint('info', "INFO: respect the ROBOTS.TXT: reading $urlRobots\n");
-        $rollingCurl = new \RollingCurl\RollingCurl();
-        $self = $this;
-        $rollingCurl->setOptions($this->_getCurlOptions())
-            ->get($sUrl)
-            ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
-                $self->addExcludesFromRobotsTxt($request->getResponseText());
-            })
-            ->execute()    
-            ;
-        return true;
+    public function httpGet($url, $bHeaderOnly = false) {
+        $ch = curl_init($url);
+        foreach ($this->_getCurlOptions() as $sCurlOption=>$sCurlValue){
+            curl_setopt($ch, $sCurlOption, $sCurlValue);
+        }
+        if ($bHeaderOnly) {
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch, CURLOPT_NOBODY, 1);
+        }
+        $res = curl_exec($ch);
+        curl_close($ch);
+        return ($res);
     }
 
     /**
@@ -1169,6 +1179,17 @@ class crawler_base {
      */
     public function setLangFrontend($sLang = false) {
         return $this->_getLangData('frontend', $sLang);
+    }
+    /**
+     * load texts for backend
+     * @param string  $sLang   language (i.e. "de")
+     * @return array
+     */
+    public function setLangPublic($sLang = false) {
+        $this->_getLangData('backend', $sLang);
+        $this->_getLangData('public', $sLang);
+        $this->aLang['backend'] = array_merge($this->aLang['backend'], $this->aLang['public']);
+        return true;
     }
 
     /**

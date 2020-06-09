@@ -10,6 +10,15 @@
 
 ----------------------------------------------------------------------
 
+2020-06-09: v0.117
+  * ADDED: handle public pages outside the backend
+  * UPDATE: httpheader class - restructure config data: all known http header variables are handled by tags
+  * UPDATE: http security header fetch the line number
+  * UPDATE: remove inline javascript
+  * UPDATE: request headers for http request were updated
+  * UPDATE: a set cookie was removed (and replaced by a session variable)
+  * UPDATE: jquery to 3.5.1
+
 2020-06-02: v0.116
   * UPDATE: added more known http headers
   * UPDATE: added deprecated flags in http headers

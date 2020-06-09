@@ -21,7 +21,8 @@ function _getId(o, sPrefix=''){
 function initDrawH3list() {
     var sHtml = '';
     // var sMenuid = '.sidebar-menu>li.active>span.submenu';
-    var sMenuid = 'ul ul .pure-menu-item .pure-menu-link-active';
+    // var sMenuid = 'ul ul .pure-menu-item .pure-menu-link-active';
+    var sMenuid = 'ul .pure-menu-link-active';
     var sH3id = false;
     var sMyId = 'ulh3list';
     var sActiveClass = 'pure-menu-link-active';
@@ -46,9 +47,9 @@ function initDrawH3list() {
         }
 
     });
-    // console.log(sHtml);
+    console.log(sHtml);
     // console.log($(sMenuid));
-    if (i < 2) {
+    if (i < 3) {
         sHtml = '';
         // $(sMenuid).hide();
     } else {
@@ -65,7 +66,7 @@ function initDrawH3list() {
             });
         });    
         // $(sMenuid).append('<ul class="pure-menu-list" style="display: none;">' + sHtml + '</ul>');
-        $('<ul class="pure-menu-list" id="'+sMyId+'" style="display: none;">' + sHtml + '</ul>').insertAfter($(sMenuid));
+        $('<ul class="pure-menu-list" id="'+sMyId+'" style="display: none;">' + sHtml + '</ul>').insertAfter($(sMenuid).last());
         $('#'+sMyId).slideDown(200);
     
 
@@ -210,35 +211,24 @@ function updateStatus(sUrl){
             var iTimer=data ? 1 : 10;
             window.setTimeout('updateStatus("'+sUrl+'")', 1000*iTimer);
         });
-
-    
 }
 // ----------------------------------------------------------------------
 // init
 // ----------------------------------------------------------------------
 
-/**
- * init page
- * @returns {undefined}
- */
-function initPage() {
+window.addEventListener('load', function() {
+
     initDrawH3list();
     initSoftscroll();
-}
 
-
-/**
- * handle tabs of a 2nd tab row
- * @param {type} id
- * @returns {Boolean}
- */
-function showTab(id) {
-    mydiv = '.subh2 ';
-    $(mydiv + ' > h3').hide();
-    $(mydiv + ' > .subh3').hide();
-    $(mydiv + ' > ' + id).show();
-    $(mydiv + ' > ' + id + ' + div.subh3').show();
-    $(mydiv + ' li a').blur();
-    return false;
-}
-
+    // detect public frontend or backend
+    var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');
+    if(sMyPath.indexOf('/backend/') > sMyPath.length-10){
+        // console.log('OK - backend');
+        var sUrl=document.location.href.replace(/\?.*$/, '').replace(/(.*\/)[a-z0-0\.]*$/, '$1');
+        sUrl+='/get.php?action=getstatus';
+        updateStatus(sUrl);
+    } else {
+        // console.log('NO - backend');
+    }
+});

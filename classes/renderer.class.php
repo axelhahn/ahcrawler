@@ -125,12 +125,13 @@ class ressourcesrenderer extends crawler_base {
         
         // http response header
         'ico.unknown' => 'fas fa-question-circle',
-        'ico.httpv1' => 'fas fa-check',
+        'ico.http' => 'fas fa-check',
         'ico.non-standard' => 'far fa-check-circle',
         'ico.security' => 'fas fa-lock',
         'ico.obsolete' => 'fas fa-trash-alt',
         'ico.deprecated' => 'fas fa-thumbs-down',
         'ico.unwanted' => 'fas fa-exclamation-triangle',
+        'ico.badvalue' => 'fas fa-exclamation-triangle',
 
         'ico.tag'=>'fas fa-tag',
 
@@ -238,7 +239,7 @@ class ressourcesrenderer extends crawler_base {
      *        (
      *            [var] => expires
      *            [value] => Wed, 05 Sep 2018 19:24:03 GMT
-     *            [found] => httpv1
+     *            [found] => http
      *            [bad] => 
      *            [obsolete] => 
      *            [deprecated] => 
@@ -252,6 +253,7 @@ class ressourcesrenderer extends crawler_base {
         }
         $sReturn='';
         foreach($aHeaderWithChecks as $aEntry){
+            $sIcon='';
             $sIcon=$this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found'])
                     /*
                 . ($aEntry['obsolete']   ? $this->_getIcon('ico.obsolete', false, 'ico-obsolete') : '')
@@ -261,14 +263,14 @@ class ressourcesrenderer extends crawler_base {
                      * 
                      */
                 ;
-            foreach(array('security', 'unwanted', /*'unknown',*/ 'obsolete') as $sMyTag){
+            foreach(array('unwanted', 'badvalue', /*'unknown',*/ 'obsolete') as $sMyTag){
                 $sIcon.=(array_search($sMyTag, $aEntry['tags'])!==false ? $this->_getIcon('ico.'.$sMyTag, false, 'ico-'.$sMyTag) : '');
             }
             
             $sComment='';
             if(count($aEntry['tags'])){
                 foreach($aEntry['tags'] as $sTag){
-                    $sComment.=($sTag==='httpv1' ? '' : $this->_getIcon('ico.tag').$this->lB('httpheader.tag.'.$sTag).' ');
+                    $sComment.=($sTag==='http' ? '' : $this->_getIcon('ico.tag').$this->lB('httpheader.tag.'.$sTag).' ');
                 }
             }
             $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'" '

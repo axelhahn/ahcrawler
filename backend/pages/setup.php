@@ -150,13 +150,15 @@ if(isset($_POST['action'])){
                 }
             }
 
-            if(isset($aOptions['options']['menu']) 
-                    && $aOptions['options']['menu']
-                    && json_decode($aOptions['options']['menu'])
-            ){
-                $aOptions['options']['menu'] = json_decode($aOptions['options']['menu']);
-            } else {
-                $aOptions['options']['menu'] = array();
+            foreach (array('menu', 'menu-public') as $sMenuKey){
+                if(isset($aOptions['options'][$sMenuKey]) 
+                        && $aOptions['options'][$sMenuKey]
+                        && json_decode($aOptions['options'][$sMenuKey])
+                ){
+                    $aOptions['options'][$sMenuKey] = json_decode($aOptions['options'][$sMenuKey]);
+                } else {
+                    $aOptions['options'][$sMenuKey] = array();
+                }
             }
 
             // ----- fix array values
@@ -514,7 +516,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '</div>'
 
             // ------------------------------------------------------------
-            // setup options - crawler
+            // setup options - search result weights
             // ------------------------------------------------------------
             
             . '<h3>'
@@ -611,7 +613,28 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         : $this->aDefaultOptions['analysis']['MaxLoadtime'],
                     ), false)
                 . '</div>'
-       
+
+            // ------------------------------------------------------------
+            // setup options - public services without login
+            // ------------------------------------------------------------
+            .'<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                . ' '.$this->lB('setup.section.public-services')
+            .'</h3>'
+            . $this->lB('setup.section.public-services.hint').'<br><br>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu-public', 'label'=>$this->lB('setup.section.public-services.menu-public')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>$sIdPrefixOther.'menu-public', 
+                    'name'=>'options[menu-public]',
+                    'cols'=>50,
+                    'rows'=>isset($aOptions['options']['menu-public']) && is_array($aOptions['options']['menu-public']) && count($aOptions['options']['menu-public']) ? count($aOptions['options']['menu-public'])+3 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> json_encode($aOptions['options']['menu-public'], JSON_PRETTY_PRINT),
+                    ), true)
+                . '</div>'
+        
+
             // ------------------------------------------------------------
             // setup options - database
             // ------------------------------------------------------------

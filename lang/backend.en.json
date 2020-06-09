@@ -266,6 +266,9 @@
     "setup.section.analysis.MinKeywordsLength": "Minimum count of chars in the keywords",
     "setup.section.analysis.MaxPagesize": "Limit to show as large page (byte)",
     "setup.section.analysis.MaxLoadtime": "Limit to show as long loading page (ms)",
+    "setup.section.public-services": "Public services",
+    "setup.section.public-services.hint": "Enabled services will be visisble for a public, anonymous visitor without logging in into the backend.",
+    "setup.section.public-services.menu-public": "Visibility of menu items (JSON)",
     "setup.project.save.ok": "OK, the project settings of %s were saved.",
     "setup.project.save.error": "ERROR: the project setings of %s could not be saved.",
     "profile.section.metadata": "General data",
@@ -436,7 +439,7 @@
     "httpheader.server.description": "Remove the details for version number and operating system on a productive system. Set the server header to a product name only.",
     "httpheader.no-value": "kein Wert",
     "httpheader.header.total": "total",
-    "httpheader.header.httpv1": "valid<br>Http variables",
+    "httpheader.header.http": "valid<br>Http variables",
     "httpheader.header.cache": "Caching information",
     "httpheader.header.compression": "Compression",
     "httpheader.header.unwanted": "Unwanted<br>data",
@@ -462,6 +465,8 @@
     "httpheader.x-powered-by.description": "On a productive system do not show the technology behind. Remove this header variable.",
     "httpheader.securityheaders": "Check of existing security headers (%s\/ %s)",
     "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
+    "httpheader.securityheaders.found": "Found",
+    "httpheader.securityheaders.notfound": "Not found",
     "cookies.headline": "Saved Cookies (%s)",
     "cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.<br>Remark: Cookies that are set by javascript are not in this list.",
     "cookies.nofile": "Remark: No cookie file was created yet. Wait for the next craling process, please.",
@@ -839,5 +844,6 @@
     "httpheader.tag.security": "security",
     "httpheader.tag.obsolete": "obsolete",
     "httpheader.tag.unwanted": "unwanted",
-    "httpheader.tag.unknown": "unknown"
+    "httpheader.tag.unknown": "unknown",
+    "httpheader.tag.badvalue": "unwanted value"
 }
