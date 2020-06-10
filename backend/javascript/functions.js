@@ -47,8 +47,6 @@ function initDrawH3list() {
         }
 
     });
-    console.log(sHtml);
-    // console.log($(sMenuid));
     if (i < 3) {
         sHtml = '';
         // $(sMenuid).hide();
@@ -223,7 +221,7 @@ window.addEventListener('load', function() {
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');
-    if(sMyPath.indexOf('/backend/') > sMyPath.length-10){
+    if(sMyPath.indexOf('/backend/')>=0 && sMyPath.indexOf('/backend/') > sMyPath.length-10){
         // console.log('OK - backend');
         var sUrl=document.location.href.replace(/\?.*$/, '').replace(/(.*\/)[a-z0-0\.]*$/, '$1');
         sUrl+='/get.php?action=getstatus';

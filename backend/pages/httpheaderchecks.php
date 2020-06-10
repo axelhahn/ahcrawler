@@ -25,7 +25,7 @@ if ($this->_bIsPublic){
     <p>'.$this->lB('httpheader.enter-url.hint').'</p>
             <form class="pure-form pure-form-aligned" method="GET" action="?">
                 <input type="hidden" name="page" value="httpheaderchecks">
-                <input type="text" size="100" name="url" value="'.htmlentities($sUrl).'" placeholder="https:://example.com">'
+                <input type="text" size="100" name="url" value="'.htmlentities($sUrl).'" placeholder="https://example.com">'
                 .($sUrl
                         ? $oRenderer->oHtml->getTag('a', array('label'=>$this->_getIcon('button.close'), 'class'=>'pure-button button-error', 'href'=>'?page=httpheaderchecks')).' '
                         : ''

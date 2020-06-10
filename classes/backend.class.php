@@ -248,6 +248,10 @@ class backend extends crawler_base {
             session_start();
         }
         
+        // for settings: create a default array with all available menu items
+        foreach($this->_aMenuPublic as $sKey=>$aItem){
+            $this->aDefaultOptions['menu-public'][$sKey]=false;
+        }
         
         if($bIsPublic){
             $this->setSiteId(false);
@@ -264,10 +268,6 @@ class backend extends crawler_base {
                         $this->aDefaultOptions['menu'][$sKey2]=true;
                     }
                 }
-            }
-            // for settings: create a default array with all available menu items
-            foreach($this->_aMenuPublic as $sKey=>$aItem){
-                $this->aDefaultOptions['menu-public'][$sKey]=false;
             }
             
             $this->setSiteId($iSiteId);
