@@ -711,54 +711,33 @@ class ressourcesrenderer extends crawler_base {
                 . '<div class="divRessourceContent">'
                 . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
                 
-        ;
+                ;
 
-        $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
-            // 'id',
-            'http_code',
-            'type',
-            'ressourcetype',
-            'content_type',
-            '_size_download',
-            'ts',
-            '_meta_total_time', 
-        ))
-        ;
-        
+                $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
+                    // 'id',
+                    'http_code',
+                    'type',
+                    'ressourcetype',
+                    'content_type',
+                    '_size_download',
+                    'ts',
+                    '_meta_total_time', 
+                    // 'errorcount', 
+                ))
+                ;
+
         /*
-        $aHeaderJson=json_decode($aRessourceItem['header'] ? $aRessourceItem['header'] : $aRessourceItem['lasterror'], 1);
-        if($aHeaderJson && $aHeaderJson['_responseheader']){
-            
-            $oHttpheader=new httpheader();
-            $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
-            // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
-            $sReturn.='<br>'
-                    . '<br>'
-                    . '<strong>'.$this->lB('httpheader.data').'</strong><br><br>'
-                    .$this->renderHttpheaderAsTable($oHttpheader->parseHeaders());
-            
-        }
-        $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
-            '_meta_total_time', 
-            '_meta_namelookup_time', 
-            '_meta_connect_time', 
-            '_meta_pretransfer_time', 
-            '_meta_starttransfer_time', 
-            '_meta_redirect_time', 
-                // '_dlspeed'
-        ));
-         */
-                
-
         if ($aRessourceItem['errorcount']) {
             $aJson = json_decode($aRessourceItem['lasterror'], true);
             $sReturn.=$this->lB('error')
                     . '<pre>' . print_r($aJson, 1) . '</pre>'
                     ;
         }
+        */
 
         $sReturn.='</div>'
-                . '</div>';
+            . '</div>'
+            ;
 
         // $sReturn.='<pre>ressource id #'.$aRessourceItem['id'].'<br>'.print_r($aRessourceItem, 1).'</pre>';
 
@@ -1149,7 +1128,7 @@ class ressourcesrenderer extends crawler_base {
         
 
         // --------------------------------------------------
-        // wher it is linked
+        // where it is linked
         // --------------------------------------------------
         $sReturn.=$this->renderToggledContent(
                 sprintf($this->lB('ressources.references-h3-in'), count($aIn)),

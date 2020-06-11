@@ -25,14 +25,12 @@ if ($this->_bIsPublic){
     <p>'.$this->lB('httpheader.enter-url.hint').'</p>
             <form class="pure-form pure-form-aligned" method="GET" action="?">
                 <input type="hidden" name="page" value="httpheaderchecks">
-                <input type="text" size="100" name="url" value="'.htmlentities($sUrl).'" placeholder="https://example.com">'
+                <input type="text" size="100" id="e_url" name="url" value="'.htmlentities($sUrl).'" placeholder="https://example.com" pattern="^http[s]*://.*">'
                 .($sUrl
                         ? $oRenderer->oHtml->getTag('a', array('label'=>$this->_getIcon('button.close'), 'class'=>'pure-button button-error', 'href'=>'?page=httpheaderchecks')).' '
                         : ''
                 )
                 .'<button class="pure-button button-secondary">'.$this->_getIcon('button.save').'</button>'
-            .'
-            </form>'
             ;
     if($sUrl && preg_match('#^http.*#', $sUrl)){
         
@@ -42,13 +40,21 @@ if ($this->_bIsPublic){
             $bShowResult=true;
 
             if(!preg_match('/^HTTP.*\ 200/', $sResponse)){
-                $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.non-ok'), 'warning');
+                preg_match("#location:(.*)\\r#i", $sResponse, $aLocation);
+                if(isset($aLocation[1])){
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.redirect'), 'warning');
+                    $sTarget=trim($aLocation[1]);
+                    $sReturn.='<button class="pure-button" onclick="document.getElementById(\'e_url\').value=\''.$sTarget.'\'; return true;">'.$sTarget.'</button>';
+                } else {
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.non-ok'), 'warning');
+                }
             }
 
         } else {
             $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.no-response'), 'error');
         }
     }
+    $sReturn.='</form>';
     
 } else {
     // ----------------------------------------------------------------------

@@ -243,9 +243,11 @@ class sslinfo {
             $aInfos['CN'] = $certinfo['subject']['CN'];
             $aInfos['DNS'] = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
 
-            $aInfos['type'] = isset($certinfo['subject']['O']) ? 'Extended validation' : 'Business SSL';
             $aInfos['type_ev'] = isset($certinfo['subject']['O']);
-            $aInfos['type_business_ssl'] = !$aInfos['type_ev'];
+            $aInfos['type_business_ssl'] = isset($certinfo['issuer']['O']) && !$aInfos['type_ev'];
+            $aInfos['type_seldsigned'] = !isset($certinfo['issuer']['O']);
+            $aInfos['type'] = $aInfos['type_ev'] ? 'Extended validation' 
+                    : $aInfos['type_business_ssl'] ? 'Business SSL' : 'selfsigned';
 
             $aInfos['subject'] = $certinfo['subject'];
             

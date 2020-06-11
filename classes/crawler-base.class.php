@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.118',
-        'date' => '2020-06-10',
+        'version' => '0.119',
+        'date' => '2020-06-12',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -894,7 +894,7 @@ class crawler_base {
                 
                 $sql = (int)$iSiteId 
                         ? "DELETE FROM <".$sTable."> WHERE siteid=".(int)$iSiteId .";"
-                        : "DROP TABLE IF EXISTS <".$sTable.">;"
+                        : "DROP TABLE IF EXISTS <${sTable}>;"
                         ;
                 // for CLI output
                 echo "DEBUG: $sql\n";

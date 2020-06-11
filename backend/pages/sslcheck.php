@@ -61,7 +61,7 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
         $aTbl[]=array($this->lB('sslcheck.validleft'), $iDaysleft);
 
         $sReturn.= $oRenderer->renderTileBar(
-                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'], $aSslInfos['validto'].' ('.$iDaysleft.' d)')
+                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'] ? $aSslInfos['issuer'] : $this->lB('sslcheck.selfsigned'), $aSslInfos['validto'].' ('.$iDaysleft.' d)')
         )
         . '</ul><div style="clear: both;"></div>'
         . $this->_getSimpleHtmlTable($aTbl, 1)

@@ -10,6 +10,10 @@
 
 ----------------------------------------------------------------------
 
+2020-06-12: v0.119
+  * UPDATE: ssl infos: detect self signed cert
+  * UPDATE: public http header check makes redirects comfortable to follow
+
 2020-06-10: v0.118
   * FIX: handle public pages outside the backend
 

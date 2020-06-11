@@ -512,6 +512,7 @@
     "sslcheck.nonhttps.hint": "If you have a website running with https then browsers can show a warning if you embed unencrypted ressources.",
     "sslcheck.nonhttpscount": "No https<br>total",
     "sslcheck.nonhttpscountNolink": "No https<br>excluding links",
+    "sslcheck.selfsigned": "(self signed)",
     "langedit.label": "Language specific texts",
     "langedit.object": "Select group of lang texts",
     "langedit.lang1": "Select language in column 1",

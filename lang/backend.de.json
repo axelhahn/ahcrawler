@@ -535,6 +535,7 @@
     "sslcheck.validfrom": "g&uuml;ltig von",
     "sslcheck.validto": "g&uuml;ltig bis",
     "sslcheck.validleft": "noch g&uuml;ltig (in Tagen)",
+    "sslcheck.selfsigned": "(selbst signiert)",
     "sslcheck.raw": "Rohdaten",
     "sslcheck.raw.hint": "Die Rohdaten geben mehr Details und Einzelheiten preis.",
     "sslcheck.raw.openclose": "Rohdaten zeigen\/ verstecken",
