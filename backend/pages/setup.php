@@ -276,6 +276,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             : ''
         ).'
         <br>
+        '.$oRenderer->renderExtendedView().'
         <form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
             '
             . $oRenderer->oHtml->getTag('input', array(
@@ -308,40 +309,26 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ), $aLangOptions)
             . '</div>'
 
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>$sIdPrefixOther.'menu', 
-                    'name'=>'options[menu]',
-                    'cols'=>50,
-                    'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
-                    // 'label'=>$sValueSearchCategories,
-                    'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
-                    ), true)
-                . '</div>'
-            /*
-            . '<div class="pure-control-group">'
-                // . '<label> </label>'
-                . '<label class="pure-checkbox" for="'.$sIdPrefixother.'debug">'
-                . $oRenderer->oHtml->getTag('input', array(
-                        'id'=>$sIdPrefixother.'debug', 
-                        'type'=>'checkbox',
-                        'name'=>'options[debug]',
-                        'value'=>'true',
-                        'checked'=>isset($aOptions['options']['debug']) && $aOptions['options']['debug'] ? 'checked' : '',
-                        ))
-                        .' '.$this->lB('setup.section.backend.debug')
-                . '</label>'
-                . '</div>'
-             * 
-             */
-            . '<div class="pure-control-group">'
-                // . '<label> </label>'
-                . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
-                . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
-                        .' '.$this->lB('setup.section.backend.debug')
-                . '</label>'
-                . '</div>'
+            .'<div class="extended">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>$sIdPrefixOther.'menu', 
+                        'name'=>'options[menu]',
+                        'cols'=>50,
+                        'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
+                        // 'label'=>$sValueSearchCategories,
+                        'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
+                        ), true)
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    // . '<label> </label>'
+                    . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
+                    . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
+                            .' '.$this->lB('setup.section.backend.debug')
+                    . '</label>'
+                    . '</div>'
+            .'</div>'
             // ------------------------------------------------------------
             // setup options - auth
             // ------------------------------------------------------------
@@ -519,36 +506,40 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - search result weights
             // ------------------------------------------------------------
             
-            . '<h3>'
-                . ' '.$this->lB('setup.section.search')
-            .'</h3>'
-            . $this->lB('setup.section.search.hint').'<br><br>';
+            .'<div class="extended">'
+                . '<h3>'
+                    . ' '.$this->lB('setup.section.search')
+                .'</h3>'
+                . $this->lB('setup.section.search.hint').'<br><br>';
 
-            foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
-                $sReturn.='<p><strong>'.$this->lB('setup.section.search.section.'.$sMatchSection).'</strong></p>';
-                foreach(array('title', 'keywords', 'description', 'url', 'content') as $sMatchField){
-                    $sFieldId=$sIdPrefixSearchindex.'rw-'.$sMatchSection.'-title';
-                    $sValue=isset($aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]) 
-                                ? (int)$aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
-                                : $this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
-                        ;
-                    $sReturn.='<div class="pure-control-group">'
-                        . $oRenderer->oHtml->getTag('label', array('for'=>$sFieldId, 'label'=>$this->lB('setup.section.search.rw.'.$sMatchField)))
-                        . $oRenderer->oHtml->getTag('input', array(
-                            'id'=>$sFieldId, 
-                            'name'=>'options[searchindex][rankingWeights]['.$sMatchSection.']['.$sMatchField.']',
-                            'placeholder'=>$this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField],
-                            'value'=>$sValue,
-                            ), false)
-                        . '</div>'
-                        ;
+                foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
+                    $sReturn.='<p><strong>'.$this->lB('setup.section.search.section.'.$sMatchSection).'</strong></p>';
+                    foreach(array('title', 'keywords', 'description', 'url', 'content') as $sMatchField){
+                        $sFieldId=$sIdPrefixSearchindex.'rw-'.$sMatchSection.'-title';
+                        $sValue=isset($aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]) 
+                                    ? (int)$aOptions['options']['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                                    : $this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField]
+                            ;
+                        $sReturn.='<div class="pure-control-group">'
+                            . $oRenderer->oHtml->getTag('label', array('for'=>$sFieldId, 'label'=>$this->lB('setup.section.search.rw.'.$sMatchField)))
+                            . $oRenderer->oHtml->getTag('input', array(
+                                'id'=>$sFieldId, 
+                                'name'=>'options[searchindex][rankingWeights]['.$sMatchSection.']['.$sMatchField.']',
+                                'placeholder'=>$this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField],
+                                'value'=>$sValue,
+                                ), false)
+                            . '</div>'
+                            ;
+                    }
                 }
-            }
+            $sReturn.='</div>';
         
             // ------------------------------------------------------------
             // setup options - analysis constants
             // ------------------------------------------------------------
-            $sReturn.='<h3>'
+            $sReturn.=''
+                    . '<div class="extended">'
+                    . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
@@ -613,117 +604,122 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         : $this->aDefaultOptions['analysis']['MaxLoadtime'],
                     ), false)
                 . '</div>'
+            . '</div>'
 
             // ------------------------------------------------------------
             // setup options - public services without login
             // ------------------------------------------------------------
-            .'<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
-                . ' '.$this->lB('setup.section.public-services')
-            .'</h3>'
-            . $this->lB('setup.section.public-services.hint').'<br><br>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu-public', 'label'=>$this->lB('setup.section.public-services.menu-public')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>$sIdPrefixOther.'menu-public', 
-                    'name'=>'options[menu-public]',
-                    'cols'=>50,
-                    'rows'=>isset($aOptions['options']['menu-public']) && is_array($aOptions['options']['menu-public']) && count($aOptions['options']['menu-public']) ? count($aOptions['options']['menu-public'])+3 : 3 ,
-                    // 'label'=>$sValueSearchCategories,
-                    'label'=> json_encode($aOptions['options']['menu-public'], JSON_PRETTY_PRINT),
-                    ), true)
-                . '</div>'
+            . '<div class="extended">'
+                .'<h3>'
+                    // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                    . ' '.$this->lB('setup.section.public-services')
+                .'</h3>'
+                . $this->lB('setup.section.public-services.hint').'<br><br>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu-public', 'label'=>$this->lB('setup.section.public-services.menu-public')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>$sIdPrefixOther.'menu-public', 
+                        'name'=>'options[menu-public]',
+                        'cols'=>50,
+                        'rows'=>isset($aOptions['options']['menu-public']) && is_array($aOptions['options']['menu-public']) && count($aOptions['options']['menu-public']) ? count($aOptions['options']['menu-public'])+3 : 3 ,
+                        // 'label'=>$sValueSearchCategories,
+                        'label'=> json_encode($aOptions['options']['menu-public'], JSON_PRETTY_PRINT),
+                        ), true)
+                    . '</div>'
+            . '</div>'
         
 
             // ------------------------------------------------------------
             // setup options - database
             // ------------------------------------------------------------
         
-            . '<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
-                . ' '.$this->lB('setup.section.database')
-            .'</h3>'
-            . $this->lB('setup.section.database.hint').'<br><br>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'type', 'label'=>$this->lB('setup.section.database.type')))
-                . $oRenderer->oHtml->getFormSelect(array(
-                    'id'=>$sIdPrefixDb.'type', 
-                    'name'=>'options[database][database_type]',
-                    'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
-                    ), $aDbOptions)
-            . '</div>'
+            . '<div class="extended">'
+                . '<h3>'
+                    // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
+                    . ' '.$this->lB('setup.section.database')
+                .'</h3>'
+                . $this->lB('setup.section.database.hint').'<br><br>'
 
-            . '<div id="params-dbtype-sqlite" class="params-dbtype">'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'file', 'label'=>$this->lB('setup.section.database.file')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'type', 
-                    'name'=>'options[database][database_file]', 
-                    'size'=>50, 
-                    'value'=>isset($aOptions['options']['database']['database_file']) ? $aOptions['options']['database']['database_file'] : '__DIR__/data/ahcrawl.db',
-                    ), false)
-            . '</div>'
-            . '</div>'
-        
-            . '<div id="params-dbtype-mysql" class="params-dbtype">'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'server', 'label'=>$this->lB('setup.section.database.server')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'name', 
-                    'name'=>'options[database][server]',
-                    'value'=>isset($aOptions['options']['database']['server']) ? $aOptions['options']['database']['server'] : '',
-                    ), false)
-                . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'port', 'label'=>$this->lB('setup.section.database.port')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'port', 
-                    'name'=>'options[database][port]',
-                    'value'=>isset($aOptions['options']['database']['port']) ? $aOptions['options']['database']['port'] : '',
-                    ), false)
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'type', 'label'=>$this->lB('setup.section.database.type')))
+                    . $oRenderer->oHtml->getFormSelect(array(
+                        'id'=>$sIdPrefixDb.'type', 
+                        'name'=>'options[database][database_type]',
+                        'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
+                        ), $aDbOptions)
                 . '</div>'
 
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'name', 'label'=>$this->lB('setup.section.database.name')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'name', 
-                    'name'=>'options[database][database_name]',
-                    'value'=>isset($aOptions['options']['database']['database_name']) ? $aOptions['options']['database']['database_name'] : '',
-                    ), false)
+                . '<div id="params-dbtype-sqlite" class="params-dbtype">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'file', 'label'=>$this->lB('setup.section.database.file')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'type', 
+                        'name'=>'options[database][database_file]', 
+                        'size'=>50, 
+                        'value'=>isset($aOptions['options']['database']['database_file']) ? $aOptions['options']['database']['database_file'] : '__DIR__/data/ahcrawl.db',
+                        ), false)
                 . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'username', 'label'=>$this->lB('setup.section.database.username')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'username', 
-                    'name'=>'options[database][username]',
-                    'value'=>isset($aOptions['options']['database']['username']) ? $aOptions['options']['database']['username'] : '',
-                    ), false)
                 . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'password', 'label'=>$this->lB('setup.section.database.password')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'password', 
-                    'type'=>'password',
-                    'name'=>'options[database][password]',
-                    // 'value'=>isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : '',
-                    'value'=>$sPasswordDummy,
-                    ), false)
-                . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'charset', 'label'=>$this->lB('setup.section.database.charset')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>$sIdPrefixDb.'charset', 
-                    'name'=>'options[database][charset]',
-                    'value'=>isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8',
-                    ), false)
+
+                . '<div id="params-dbtype-mysql" class="params-dbtype">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'server', 'label'=>$this->lB('setup.section.database.server')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'name', 
+                        'name'=>'options[database][server]',
+                        'value'=>isset($aOptions['options']['database']['server']) ? $aOptions['options']['database']['server'] : '',
+                        ), false)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'port', 'label'=>$this->lB('setup.section.database.port')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'port', 
+                        'name'=>'options[database][port]',
+                        'value'=>isset($aOptions['options']['database']['port']) ? $aOptions['options']['database']['port'] : '',
+                        ), false)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'name', 'label'=>$this->lB('setup.section.database.name')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'name', 
+                        'name'=>'options[database][database_name]',
+                        'value'=>isset($aOptions['options']['database']['database_name']) ? $aOptions['options']['database']['database_name'] : '',
+                        ), false)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'username', 'label'=>$this->lB('setup.section.database.username')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'username', 
+                        'name'=>'options[database][username]',
+                        'value'=>isset($aOptions['options']['database']['username']) ? $aOptions['options']['database']['username'] : '',
+                        ), false)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'password', 'label'=>$this->lB('setup.section.database.password')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'password', 
+                        'type'=>'password',
+                        'name'=>'options[database][password]',
+                        // 'value'=>isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : '',
+                        'value'=>$sPasswordDummy,
+                        ), false)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'charset', 'label'=>$this->lB('setup.section.database.charset')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>$sIdPrefixDb.'charset', 
+                        'name'=>'options[database][charset]',
+                        'value'=>isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8',
+                        ), false)
+                    . '</div>'
                 . '</div>'
             . '</div>'
-        
+
 
         . '<br>'
         

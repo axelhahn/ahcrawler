@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-06-15: v0.120
+  * ADDED: context boxes for more information/ links
+  * ADDED: links in the context box in ssl check and http security header
+  * ADDED: extended view in profiles and settings
+  * UPDATE: added about in public area
+  * UPDATE: lang texts
+
 2020-06-12: v0.119
   * UPDATE: ssl infos: detect self signed cert
   * UPDATE: public http header check makes redirects comfortable to follow

@@ -218,6 +218,7 @@ $sReturn.='
             // metadata
             // ------------------------------------------------------------
             
+            .$oRenderer->renderExtendedView()
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('profile.section.metadata')
@@ -261,38 +262,40 @@ $sReturn.='
                     'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
                     ), true)
                 . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-include', 'label'=>$this->lB('profile.searchindex.include')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'searchindex-include', 
-                    'name'=>'searchindex[include]',
-                    'cols'=>50,
-                    'rows'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? count($this->aProfileSaved['searchindex']['include'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? implode("\n", $this->aProfileSaved['searchindex']['include']) : '',
-                    ), true)
-                . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-includepath', 'label'=>$this->lB('profile.searchindex.includepath')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'searchindex-includepath', 
-                    'name'=>'searchindex[includepath]',
-                    'cols'=>50,
-                    'rows'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? count($this->aProfileSaved['searchindex']['includepath'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? implode("\n", $this->aProfileSaved['searchindex']['includepath']) : '',
-                    ), true)
-                . '</div>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-exclude', 'label'=>$this->lB('profile.searchindex.exclude')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'searchindex-exclude', 
-                    'name'=>'searchindex[exclude]',
-                    'cols'=>50,
-                    'rows'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? count($this->aProfileSaved['searchindex']['exclude'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? implode("\n", $this->aProfileSaved['searchindex']['exclude']) : '',
-                    ), true)
-                . '</div>'
-        
+            . '<div class="extended">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-include', 'label'=>$this->lB('profile.searchindex.include')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'searchindex-include', 
+                        'name'=>'searchindex[include]',
+                        'cols'=>50,
+                        'rows'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? count($this->aProfileSaved['searchindex']['include'])+1 : 3 ,
+                        'label'=>isset($this->aProfileSaved['searchindex']['include']) && count($this->aProfileSaved['searchindex']['include']) ? implode("\n", $this->aProfileSaved['searchindex']['include']) : '',
+                        ), true)
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-includepath', 'label'=>$this->lB('profile.searchindex.includepath')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'searchindex-includepath', 
+                        'name'=>'searchindex[includepath]',
+                        'cols'=>50,
+                        'rows'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? count($this->aProfileSaved['searchindex']['includepath'])+1 : 3 ,
+                        'label'=>isset($this->aProfileSaved['searchindex']['includepath']) && count($this->aProfileSaved['searchindex']['includepath']) ? implode("\n", $this->aProfileSaved['searchindex']['includepath']) : '',
+                        ), true)
+                    . '</div>'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-exclude', 'label'=>$this->lB('profile.searchindex.exclude')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'searchindex-exclude', 
+                        'name'=>'searchindex[exclude]',
+                        'cols'=>50,
+                        'rows'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? count($this->aProfileSaved['searchindex']['exclude'])+1 : 3 ,
+                        'label'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? implode("\n", $this->aProfileSaved['searchindex']['exclude']) : '',
+                        ), true)
+                    . '</div>'
+            . '</div>'
+
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iDepth', 'label'=>$this->lB('profile.searchindex.iDepth')))
                 . $oRenderer->oHtml->getTag('input', array(
@@ -312,42 +315,44 @@ $sReturn.='
                     ), false)
                 . '</div>'
 
-            . '<div class="pure-control-group">'
-                . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
-            . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>'searchindex-iMaxUrls', 
-                    'name'=>'searchindex[iMaxUrls]',
-                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
-                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
-                    ), false)
+            . '<div class="extended">'
+                . '<div class="pure-control-group">'
+                    . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
                 . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>'searchindex-iMaxUrls', 
+                        'name'=>'searchindex[iMaxUrls]',
+                        'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
+                        'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
+                        ), false)
+                    . '</div>'
 
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array(
-                    'for'=>'searchindex-simultanousRequests', 
-                    'label'=>sprintf($this->lB('profile.searchindex.simultanousRequests'), $aOptions['options']['crawler']['searchindex']['simultanousRequests'])
-                ))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>'searchindex-simultanousRequests', 
-                    'name'=>'searchindex[simultanousRequests]',
-                    'placeholder'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? $aOptions['options']['crawler']['searchindex']['simultanousRequests'] : '',
-                    'value'=>isset($this->aProfileSaved['searchindex']['simultanousRequests']) ? $this->aProfileSaved['searchindex']['simultanousRequests'] : '',
-                    ), false)
-                . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-regexToRemove', 'label'=>$this->lB('profile.searchindex.regexToRemove')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'searchindex-regexToRemove', 
-                    'name'=>'searchindex[regexToRemove]',
-                    'cols'=>50,
-                    'placeholder'=>implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
-                    'rows'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? count($this->aProfileSaved['searchindex']['regexToRemove'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? implode("\n", $this->aProfileSaved['searchindex']['regexToRemove']) : '',
-                    ), true)
-                . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array(
+                        'for'=>'searchindex-simultanousRequests', 
+                        'label'=>sprintf($this->lB('profile.searchindex.simultanousRequests'), $aOptions['options']['crawler']['searchindex']['simultanousRequests'])
+                    ))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>'searchindex-simultanousRequests', 
+                        'name'=>'searchindex[simultanousRequests]',
+                        'placeholder'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) ? $aOptions['options']['crawler']['searchindex']['simultanousRequests'] : '',
+                        'value'=>isset($this->aProfileSaved['searchindex']['simultanousRequests']) ? $this->aProfileSaved['searchindex']['simultanousRequests'] : '',
+                        ), false)
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-regexToRemove', 'label'=>$this->lB('profile.searchindex.regexToRemove')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'searchindex-regexToRemove', 
+                        'name'=>'searchindex[regexToRemove]',
+                        'cols'=>50,
+                        'placeholder'=>implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
+                        'rows'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? count($this->aProfileSaved['searchindex']['regexToRemove'])+1 : 3 ,
+                        'label'=>isset($this->aProfileSaved['searchindex']['regexToRemove']) && count($this->aProfileSaved['searchindex']['regexToRemove']) ? implode("\n", $this->aProfileSaved['searchindex']['regexToRemove']) : '',
+                        ), true)
+                    . '</div>'
+            . '</div>'
             // ------------------------------------------------------------
             // search frontend
             // ------------------------------------------------------------
@@ -386,37 +391,39 @@ $sReturn.='
             // ressources scan
             // ------------------------------------------------------------
             
-            . '<h3>'
-                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
-                . ' '.$this->lB('profile.section.ressources')
-            .'</h3>'
-        
-            . '<div class="pure-control-group">'
-                . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
+            . '<div class="extended">'
+                . '<h3>'
+                    // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
+                    . ' '.$this->lB('profile.section.ressources')
+                .'</h3>'
+
+                . '<div class="pure-control-group">'
+                    . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
+                . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array(
+                        'for'=>'ressources-simultanousRequests', 
+                        'label'=>sprintf($this->lB('profile.ressources.simultanousRequests'), $aOptions['options']['crawler']['ressources']['simultanousRequests'])
+                    ))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'id'=>'ressources-simultanousRequests', 
+                        'name'=>'ressources[simultanousRequests]',
+                        'placeholder'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? $aOptions['options']['crawler']['ressources']['simultanousRequests'] : '',
+                        'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
+                        ), false)
+                    . '</div>'
+                // blacklist
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'ressources-blacklist', 'label'=>$this->lB('profile.ressources.blacklist')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'ressources-blacklist', 
+                        'name'=>'ressources[blacklist]',
+                        'cols'=>50,
+                        'rows'=>isset($this->aProfileSaved['ressources']['blacklist'])  && count($this->aProfileSaved['ressources']['blacklist'])  ? count($this->aProfileSaved['ressources']['blacklist'])+1      : 3 ,
+                        'label'=>isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist']) ? implode("\n", $this->aProfileSaved['ressources']['blacklist']) : '',
+                        ), true)
+                    . '</div>'
             . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array(
-                    'for'=>'ressources-simultanousRequests', 
-                    'label'=>sprintf($this->lB('profile.ressources.simultanousRequests'), $aOptions['options']['crawler']['ressources']['simultanousRequests'])
-                ))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'id'=>'ressources-simultanousRequests', 
-                    'name'=>'ressources[simultanousRequests]',
-                    'placeholder'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? $aOptions['options']['crawler']['ressources']['simultanousRequests'] : '',
-                    'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
-                    ), false)
-                . '</div>'
-            // blacklist
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'ressources-blacklist', 'label'=>$this->lB('profile.ressources.blacklist')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'ressources-blacklist', 
-                    'name'=>'ressources[blacklist]',
-                    'cols'=>50,
-                    'rows'=>isset($this->aProfileSaved['ressources']['blacklist'])  && count($this->aProfileSaved['ressources']['blacklist'])  ? count($this->aProfileSaved['ressources']['blacklist'])+1      : 3 ,
-                    'label'=>isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist']) ? implode("\n", $this->aProfileSaved['ressources']['blacklist']) : '',
-                    ), true)
-                . '</div>'
 
             // ------------------------------------------------------------
             // submit

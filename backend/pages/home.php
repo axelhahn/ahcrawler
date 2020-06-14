@@ -227,17 +227,34 @@ if(!$this->_configExists() ){
             $urlFavicon = preg_replace('#^(http.*//.*)/.*$#U', '$1', $this->aProfileSaved['searchindex']['urls2crawl'][0] ) . "/favicon.ico";
 
             $sHtml.=''
-                .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
+                // .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 .$this->_getNavi2($this->_getProfiles(), false, '')
 
                 // profile 
+                .$oRenderer->renderContextbox(
+                        ($this->aProfileSaved['description'] ? '<strong>'.$this->aProfileSaved['description'].'</strong><hr>' : '')
+                    
+                        // start urls
+                        .'<p>'.$this->_getIcon('checkurl'). $this->lB('home.starturls').'</p>'
+                        .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
+                        
+                        // count of blacklisted items
+                        .(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])
+                            ? '<hr>'.sprintf($this->lB('home.blacklisted'), '<strong>'. count($this->aProfileSaved['ressources']['blacklist']).'</strong>') . '<br><br>'
+                            : ''
+                        )
+                        . $this->_getLink2Navitem('profiles')
+                        ,
+                    
+                        $this->lB('context.infos')
+                        )
                 .'<h3><img src="'.$urlFavicon .'" width="32" height="32"> '.$this->aProfileSaved['label'].'</h3>'
-                .'<strong>'.$this->aProfileSaved['description'].'</strong>'
-                .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
-                .'<p>'.$this->_getIcon('checkurl'). $this->lB('home.starturls').'</p>'
-                .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
-                . $this->_getLink2Navitem('profiles')
+                
+
+                    
+                    
                 // . '<br><br>'
+                .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'
                 // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'

@@ -114,6 +114,23 @@ function changeView(sClass2Hide, sIdToShow){
     }
     */
 }
+function initExtendedView(){
+    var bShow=localStorage.getItem('crawler_showExtended');
+    $('.btn-extend').hide();
+    if(bShow==1){
+        $('#btn-extend-on').show();
+        $('.extended').slideDown();
+    } else {
+        $('.extended').hide();
+        $('#btn-extend-off').show();
+    }
+}
+function toggleExtendedView(){
+    var bShow=localStorage.getItem('crawler_showExtended');
+    bShow=bShow/1 ? 0 : 1;
+    localStorage.setItem('crawler_showExtended', bShow);
+    initExtendedView();
+}
 
 // ----------------------------------------------------------------------
 // modal dialog
@@ -218,6 +235,7 @@ window.addEventListener('load', function() {
 
     initDrawH3list();
     initSoftscroll();
+    initExtendedView();
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

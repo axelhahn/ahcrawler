@@ -150,6 +150,7 @@ $sTiles=$this->_getTilesOfAPage();
 // ----------------------------------------------------------------------
 // header dump
 // ----------------------------------------------------------------------
+$sMyDomain= parse_url($sUrl,  PHP_URL_HOST);
 $sReturn.= '<h3>' . $this->lB('httpheader.data') . '</h3>'
         . '<p>'
         . $this->_getIcon('checkurl')
@@ -335,14 +336,22 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h
             . '<div style="clear: both;"></div>'
     )
 
-    .'<h3 id="securityheaders">' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
-                    . '<p>'
-                        . $this->lB('httpheader.securityheaders.description').'<br>'
-                    . '</p>'
-                    . $this->_getHtmlchecksChart(count($aSecHeader), $iWarnSecHeader, $iErrorSecHeader)
-                    . '<div style="clear: both;"></div>'
-                        . ($sLegendeSecOk ? '<h4>'.$this->lB('httpheader.securityheaders.found').'</h4>'.$sLegendeSecOk : '')
-                        . ($sLegendeSecMiss ? '<h4>'.$this->lB('httpheader.securityheaders.notfound').'</h4>'.$sLegendeSecMiss : '')
+        .'<h3 id="securityheaders">' . sprintf($this->lB('httpheader.securityheaders'), $iFoundSecHeader, count($aSecHeader)) . '</h3>'
+        . $oRenderer->renderContextbox(
+                '<p>'.$this->lB('httpheader.context.securityheaders-links').'</p>'
+                . '<ul>'
+                    .'<li><a href="https://observatory.mozilla.org/analyze/'.$sMyDomain.'?third-party=false" target="_blank">observatory.mozilla.org</a></li>'
+                    .'<li><a href="https://securityheaders.com/?q='.$sMyDomain.'&hide=on" target="_blank">securityheaders.com</a></li>'
+                .'</ul>'
+                , $this->lB('context.links')
+            )
+            . '<p>'
+                . $this->lB('httpheader.securityheaders.description').'<br>'
+            . '</p>'
+            . $this->_getHtmlchecksChart(count($aSecHeader), $iWarnSecHeader, $iErrorSecHeader)
+            . '<div style="clear: both;"></div>'
+                . ($sLegendeSecOk ? '<h4>'.$this->lB('httpheader.securityheaders.found').'</h4>'.$sLegendeSecOk : '')
+                . ($sLegendeSecMiss ? '<h4>'.$this->lB('httpheader.securityheaders.notfound').'</h4>'.$sLegendeSecMiss : '')
     ;
 
 // $sStartUrl=$this->aProfile['searchindex']['urls2crawl'][$sUrl][0];^$sReturn.=$sStartUrl.'<br>';

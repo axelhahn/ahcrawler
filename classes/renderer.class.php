@@ -143,6 +143,9 @@ class ressourcesrenderer extends crawler_base {
         'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
         'ico.redirect' => 'fas fa-share',
         'ico.filter'=>'fas fa-filter',
+
+        'ico.toggle-off'=>'fas fa-toggle-off',
+        'ico.toggle-on'=>'fas fa-toggle-on',
     );
     public $oHtml=false;
 
@@ -585,6 +588,43 @@ class ressourcesrenderer extends crawler_base {
             . $this->lB('bookmarklet.posthint')
             ;
     }
+    
+    /**
+     * get html code for a context box on the side
+     * @param string  $sContent  content of the box
+     * @param strng   $sTitle    optional title
+     * @return string
+     */
+    public function renderContextbox($sContent, $sTitle=''){
+        return '<div class="contextbox">'
+                    . ($sTitle ? '<div class="head">'.$sTitle.'</div>' : '')
+                    . '<div class="content">'.$sContent.'</div>'
+                .'</div>';
+    }
+
+    /**
+     * get html code for a context box on the side
+     * @param string  $sContent  content of the box
+     * @param strng   $sTitle    optional title
+     * @return string
+     */
+    public function renderExtendedView(){
+        return $this->oHtml->getTag('a',array(
+            'href'=>'#',
+            'id'=>'btn-extend-on',
+            'class'=>'pure-button btn-extend',
+            'onclick'=>'toggleExtendedView(); return false',
+            'label'=>$this->_getIcon('ico.toggle-on').$this->lB('button.extended-on'),
+        ))
+        .$this->oHtml->getTag('a',array(
+            'href'=>'#',
+            'id'=>'btn-extend-off',
+            'class'=>'pure-button btn-extend',
+            'onclick'=>'toggleExtendedView(); return false',
+            'label'=>$this->_getIcon('ico.toggle-off').$this->lB('button.extended-off'),
+        ));
+    }
+    
     
     /**
      * get html code for a button that points to a known page (anywhere) in the menu

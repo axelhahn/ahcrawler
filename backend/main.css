@@ -7,6 +7,7 @@
     --color-default:#345;
     --color-border-active:#89a;
     --color-border-click:#fc2;
+    --color-border-click:#cde;
     --navi-bg-on-hover:#c0d0dc;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
@@ -24,7 +25,7 @@
     --status-color-ok:#694;
     --status-color-todo:#778;
     
-    --boxes-border:2px solid rgba(0,0,0,0.05);
+    --boxes-border:2px solid rgba(0,0,0,0.02);
     --chart-border:5px solid #fff;
 }
 body{
@@ -150,6 +151,7 @@ body{
 .button-secondary {background: rgb(66, 184, 221); /* this is a light blue */}
 
 a{color:#35a;}
+a:hover{color: #579;}
 
 a.hoverinfos{text-decoration: none; border-bottom: 1px dashed;}
 a.hoverinfos span{position: absolute; margin-left: -5em; margin-top: 1em; display: none; background:#fda; border: 1px solid #ddd; padding: 0.5em;}
@@ -189,6 +191,19 @@ hr{border: 0; border-bottom: 2px dotted #ddd;}
 pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 
 
+/* --- context box --- */
+div.contextbox{
+    position: relative;
+    float: right;
+    margin: 0 0 2em 2em;
+    box-shadow: 0 0 1em #ddd;
+    margin-top: 1em;
+    width: 30%;
+}
+div.contextbox .head{background: var(--tile-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
+div.contextbox .content{margin: 1em;}
+
+.extended{background:rgba(0,0,0,0.05); }
 
 /* --- status for running actions --- */
 

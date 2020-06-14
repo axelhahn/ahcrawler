@@ -34,6 +34,15 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             . '<div style="clear: both;"></div>'
         ;
     } else {
+        $sMyDomain = parse_url($sFirstUrl,  PHP_URL_HOST);
+        // https://www.ssllabs.com/ssltest/analyze.html?viaform=on&d=www.srf.ch&hideResults=on
+        $sReturn.= $oRenderer->renderContextbox(
+                '<p>'.$this->lB('sslcheck.context.links').'</p>'
+                . '<ul>'
+                    .'<li><a href="https://www.ssllabs.com/ssltest/analyze.html?viaform=on&d='.$sMyDomain.'&hideResults=on" target="_blank">ssllabs.com</a></li>'
+                .'</ul>'
+                , $this->lB('context.links')
+            );
 
         $oSsl=new sslinfo();
         $aSslInfos=$oSsl->getSimpleInfosFromUrl($sFirstUrl);
