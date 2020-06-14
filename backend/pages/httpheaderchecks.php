@@ -341,7 +341,7 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h
                 '<p>'.$this->lB('httpheader.context.securityheaders-links').'</p>'
                 . '<ul>'
                     .'<li><a href="https://observatory.mozilla.org/analyze/'.$sMyDomain.'?third-party=false" target="_blank">observatory.mozilla.org</a></li>'
-                    .'<li><a href="https://securityheaders.com/?q='.$sMyDomain.'&hide=on" target="_blank">securityheaders.com</a></li>'
+                    .'<li><a href="https://securityheaders.com/?q='.$sUrl.'&hide=on" target="_blank">securityheaders.com</a></li>'
                 .'</ul>'
                 , $this->lB('context.links')
             )
