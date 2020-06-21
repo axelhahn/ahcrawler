@@ -371,6 +371,7 @@
     "ressources.total": "total",
     "ressources.itemstotal": "Count of ressources total",
     "ressources.ressourceitemfull": "Details of a ressource",
+    "ressources.httpheader-live": "Live-Check of Http response header",
     "ressources.status": "Status",
     "ressources.filter": "Filter",
     "ressources.filter-httpgroups": "Links with shown status were found. Click on a group to hide and show all corresponding links.",
@@ -434,7 +435,7 @@
     "httpheader.Content-Security-Policy.description": "Content Security Policy is an effective measure to protect your site from XSS attacks. By whitelisting sources of approved content, you can prevent the browser from loading malicious assets.",
     "httpheader.Expect-CT.description": "Expect-CT allows a site to determine if they are ready for the upcoming Chrome requirements and\/or enforce their CT policy.",
     "httpheader.Feature-Policy.description": "Feature Policy is a new header that allows a site to control which features and APIs can be used in the browser.",
-    "httpheader.Public-Key-Pins.description": "HTTP Public Key Pinning (HPKP) is a security mechanism which allows HTTPS websites to resist impersonation by attackers using mis-issued or otherwise fraudulent certificates.",
+    "httpheader.Public-Key-Pins.description": "DEPRECATED. Remove it in the next few time. HTTP Public Key Pinning (HPKP) is a security mechanism which allows HTTPS websites to resist impersonation by attackers using mis-issued or otherwise fraudulent certificates.",
     "httpheader.Referrer-Policy.description": "Referrer Policy is a new header that allows a site to control how much information the browser includes with navigations away from a document and should be set by all sites.",
     "httpheader.Strict-Transport-Security.description": "HTTP Strict Transport Security is an excellent feature to support on your site and strengthens your implementation of TLS by getting the User Agent to enforce the use of HTTPS.",
     "httpheader.X-Content-Type-Options.description": "The X-Content-Type-Options is a marker used by the server to indicate that the MIME types advertised in the Content-Type headers should not be changed and be followed.",
@@ -853,5 +854,6 @@
     "httpheader.tag.unknown": "unknown",
     "httpheader.tag.badvalue": "unwanted value",
     "httpheader.context.securityheaders-links": "Additional links to scan the header of the domain.",
-    "sslcheck.context.links": "Additional links to scan the domain."
+    "sslcheck.context.links": "Additional links to scan the domain.",
+    "httpheader.result.redirect": "Hint: a redirect was found. You can follow the redirect or inspect the current response header below."
 }

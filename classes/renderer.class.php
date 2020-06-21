@@ -628,15 +628,16 @@ class ressourcesrenderer extends crawler_base {
     
     /**
      * get html code for a button that points to a known page (anywhere) in the menu
-     * @param type $sMenuItem  target menu id (page=...)
-     * @param type $sIcon
-     * @param type $iSiteId
+     * @param string $sMenuItem         target menu id (page=...)
+     * @param string $sIcon             optional: icon to show (html code)
+     * @param string $iSiteId           optional: site id
+     * @param string $sMoreUrlParams    optional: more url params for href target
      * @return string
      */
-    public function renderLink2Page($sMenuItem, $sIcon='', $iSiteId=false){
+    public function renderLink2Page($sMenuItem, $sIcon='', $iSiteId=false, $sMoreUrlParams=false){
         return  $this->oHtml->getTag('a', array(
                     'class'=>'pure-button',
-                    'href'=>'?page='.$sMenuItem.($iSiteId ? '&siteid='.$iSiteId : ''),
+                    'href'=>'?page='.$sMenuItem.($iSiteId ? '&siteid='.$iSiteId : '').($sMoreUrlParams ? $sMoreUrlParams : ''),
                     'title'=>$this->lB('nav.'.$sMenuItem.'.hint'),
                     'label'=>($sIcon ? $sIcon.' ' : '').$this->lB('nav.'.$sMenuItem.'.label') ,
             ));
@@ -1147,21 +1148,31 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         $sHeader=$aItem['header'] ? $aItem['header'] : $aItem['lasterror'];
         $aHeaderJson=json_decode($sHeader, 1);
-        if(!$aHeaderJson || !isset($aHeaderJson['_responseheader'])){
+        if(!isset($aHeaderJson['_responseheader'])){
             $sReturn.=$this->renderMessagebox(
                     ($sHeader ? 'INVALID HEADER DATA' : 'NO HEADER DATA'), 
                     'error'
                 );
             
         } else {
+            $sReposneHeaderAsString= strlen($aHeaderJson['_responseheader'][0])!=1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
             
             $oHttpheader=new httpheader();
-            $oHttpheader->setHeaderAsString($aHeaderJson['_responseheader'][0]);
+            $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
             // $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
             // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
-            $sReturn.=$this->renderToggledContent(
+            
+            $sReturn.=''
+                    .$this->renderToggledContent(
                     $this->lB('httpheader.data'),
-                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders()),
+                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
+                        .(isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
+                            ? '<br><a href="../?page=httpheaderchecks&url='.$aItem['url'].'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
+                            : ''
+                         )
+                        
+                    ,
+                    
                     false
             );
         }

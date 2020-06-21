@@ -15,7 +15,7 @@ $bShowResult=false;
     $bShowForm=false;   // flag: show input form?
    
 
-if ($this->_bIsPublic){
+if ($this->_bIsPublic || isset($_GET['url'])){
     // ----------------------------------------------------------------------
     // public: make a request from url in form value
     // ----------------------------------------------------------------------
@@ -120,7 +120,7 @@ if ($this->_bIsPublic){
 
     $aInfos=json_decode($sInfos,1);
        
-    $sResponse=$aInfos['_responseheader'];
+    $sResponse=strlen($aInfos['_responseheader'][0])!=1 ? $aInfos['_responseheader'][0] : $aInfos['_responseheader'];
     $sUrl=$aPagedata[0]['url'];
     
     // _responseheader ?? --> see crawler.class - method processResponse()
@@ -303,7 +303,7 @@ $sTiles='';
                                 . ($bHasBadValue
                                         ? '<pre>'
                                             // . print_r($aData, 1)
-                                            . preg_replace('/([^\"\']*'.$aData['regex']['badvalueregex'].'[^\"\']*)/i', '<span class="error">$1</span>', $aData['value'])
+                                            . preg_replace('/('.$aData['regex']['badvalueregex'].'[a-z0-9]*)/i', '<span class="error">$1</span>', $aData['value'])
                                             .'</pre>'
                                         :'<pre>[' . $aData['line'].'] '.$aData['var'] . ': '.$aData['value'] .'</pre>'
                                     )

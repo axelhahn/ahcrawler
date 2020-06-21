@@ -259,11 +259,11 @@ class httpheader {
             'Content-Security-Policy' =>           array('response'=>true, 'tags' => array('security'), 'badvalueregex' => 'unsafe\-'),
             'Expect-CT' =>                         array('response'=>true, 'tags' => array('security')),
             'Feature-Policy' =>                    array('response'=>true, 'tags' => array('feature', 'security')),
-            'Public-Key-Pins' =>                   array('response'=>true, 'tags' => array('security')),
+            'Public-Key-Pins' =>                   array('response'=>true, 'tags' => array('security', 'deprecated')),
             'Referrer-Policy' =>                   array('response'=>true, 'tags' => array('security')),
             'Strict-Transport-Security' =>         array('response'=>true, 'tags' => array('security')),
             'X-Content-Type-Options' =>            array('response'=>true, 'tags' => array('security')),
-            'X-Frame-Options' =>                   array('response'=>true, 'tags' => array('security')),
+            'X-Frame-Options' =>                   array('response'=>true, 'tags' => array('security'), 'badvalueregex' => 'ALLOW-FROM'),
             'X-Permitted-Cross-Domain-Policies' => array('response'=>true, 'tags' => array('security')),
             'X-XSS-Protection' =>                  array('response'=>true, 'tags' => array('security')),
         ),
@@ -305,6 +305,9 @@ class httpheader {
     public function setHeaderAsString($sHeader) {
         $this->_aHeader = array();
         $this->_sHeader = '';
+        if(!$sHeader){
+            return false;
+        }
         $aTmp = explode("\r\n", $sHeader);
         // echo "DEBUG: " . $sHeader."<br>";
         if ($aTmp && is_array($aTmp) && count($aTmp)) {

@@ -10,6 +10,12 @@
 
 ----------------------------------------------------------------------
 
+2020-06-21: v0.121
+  * UPDATE: header "Public-Key-Pins" is marked as deprecated
+  * UPDATE: header "X-Frame-Options" marks ALLOW-FROM as warning
+  * UPDATE: css - boxes in overview pages
+  * UPDATE: header in ressource details links to live http header check (public page must be enabled)
+
 2020-06-15: v0.120
   * ADDED: context boxes for more information/ links
   * ADDED: links in the context box in ssl check and http security header

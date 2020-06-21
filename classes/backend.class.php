@@ -661,7 +661,7 @@ class backend extends crawler_base {
                 . (isset($aLink['hint']) ? ' title="' . $aLink['hint'].'"' : '')
                 . '>'
                 . (isset($aLink['icon']) ? '<i class="'.$aLink['icon'].'"></i> ' : '')
-                . '<strong>'.$aLink['title'].'</strong><br>'
+                . '<strong>'.$aLink['title'].'</strong>'
                 . (isset($aLink['text']) ? $aLink['text'] : '')
             . '</a>'
             ;

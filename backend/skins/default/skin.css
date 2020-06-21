@@ -1,0 +1,5 @@
+/* nothing here */
+body{
+	color: var(--color-default);
+        background: url('bg_main.png') fixed;
+}

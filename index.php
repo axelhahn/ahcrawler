@@ -93,6 +93,9 @@
 
             // Chart.js
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/Chart.min.js") . "\n"
+            .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
+            .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
+            .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/default/skin.css">'
 
             ;
     
@@ -129,8 +132,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="robots" content="noindex,nofollow">
         <?php echo $sHtmlHead; ?>
-        <script src="<?php echo $sBackendRel; ?>/javascript/functions.js"></script>      
-        <link rel="stylesheet" href="<?php echo $sBackendRel; ?>/main.css">
     </head>
 
     <body>
