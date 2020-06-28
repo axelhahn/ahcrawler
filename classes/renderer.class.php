@@ -562,30 +562,41 @@ class ressourcesrenderer extends crawler_base {
         return $sReturn;
     }
 
-    public function renderBookmarklet(){
+    public function renderBookmarklet($sId){
+        $aItems=array(
+            'details'=>array(
+                'query'=>"backend/?page=checkurl&siteid=all&redirect=1&query='+encodeURI(document.location.href);"
+                ),
+            'httpheaderchecks'=>array(
+                // 'query'=>"?page=httpheaderchecks&url='+encodeURI(document.location.href);"
+                'query'=>"?page=httpheaderchecks&urlbase64='+btoa(document.location.href);"
+                ),
+        );
+        if(!isset($aItems[$sId])){
+            return 'INTERNAL ERROR: this page integrated bookmarklet of non existing id ['.$sId.']<br>';
+        }
+        $sBaseUrl= preg_replace('/(\/backend|\?.*)/', '', $_SERVER["REQUEST_URI"]);
         $sMyUrl = 'http'
                 . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? 's' : '')
                 . '://'
                 . $_SERVER["HTTP_HOST"]
                 . ':' . $_SERVER["SERVER_PORT"]
-                . $_SERVER["SCRIPT_NAME"]
-                    // tab=all + siteid=all
-                    // TODO to switch to siteid later
-                . '?page=checkurl&siteid=all&redirect=1&query='
+                . $sBaseUrl
+                . $aItems[$sId]['query']
+                // . (isset($_GET['lang']) ? '&lang='.$_GET['lang'] : '')
                 ;
-        return 
-            '<h3>'.$this->lB('bookmarklet.head').'</h3>'
-            . $this->lB('bookmarklet.hint').':<br><br>'
+        $sMyUrl=isset($_GET['lang']) ? str_replace('?', '?lang='.$_GET['lang'].'&amp;', $sMyUrl) : $sMyUrl;
+        return $this->lB('bookmarklet.hint').':<br><br>'
             . $this->oHtml->getTag('a', array(
                     'class'=>'pure-button',
-                    'href'=>'javascript:document.location.href=\''.$sMyUrl.'\'+encodeURI(document.location.href);',
+                    'href'=>'javascript:document.location.href=\''.$sMyUrl,
                     'onclick'=>'alert(\''.$this->lB('bookmarklet.hint').'\'); return false;',
                     'title'=>$this->lB('bookmarklet.hint'),
-                    'label'=>$this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.label'),
+                    'label'=>$this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.'.$sId.'.label'),
               ))
             
             . '<br><br>'
-            . $this->lB('bookmarklet.posthint')
+            . $this->lB('bookmarklet.'.$sId.'.posthint')
             ;
     }
     

@@ -6,9 +6,12 @@
 
     require_once(__DIR__ . "/classes/backend.class.php");
     
-    $sBackendRel=BACKEND===true ? '.' : 'backend';
+    $bIsBackend = preg_match('#\/backend\/#', $_SERVER["REQUEST_URI"]);
+    $sBaseUrl= preg_replace('/(\/backend\/|\?.*)/', '', $_SERVER["REQUEST_URI"]);
     
-    if(BACKEND===true){
+    $sBackendRel=$bIsBackend ? '.' : './backend';
+    
+    if($bIsBackend){
         // echo "DEBUG: backend<br>";
         $oBackend = new backend();
     } else {
@@ -111,6 +114,9 @@
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Feature-Policy: sync-xhr \'self\'');
 
+    // ----------------------------------------------------------------------
+    // GET CONTENT
+    // ----------------------------------------------------------------------
     if($oBackend->isNavitemHidden()){
         header('HTTP/1.0 403 Forbidden');
         $sHtmlContent = $oBackend->getHead()
@@ -121,7 +127,13 @@
         $sHtmlContent = $oBackend->getHead().$oBackend->getContent(); 
     }
     
-    $sHtmlNaviLeft=$oBackend->installationWasDone() ? $oBackend->getNavi() : '';
+    // ----------------------------------------------------------------------
+    // GET LEFT NAVIGATION
+    // ----------------------------------------------------------------------
+    $sHtmlNaviLeft=$oBackend->installationWasDone() 
+            ? $oBackend->getNavi() . ($bIsBackend ? '' : $oBackend->getLangNavi() )
+            : ''
+        ;
     
     
     

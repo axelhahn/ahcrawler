@@ -231,11 +231,30 @@ function updateStatus(sUrl){
 // init
 // ----------------------------------------------------------------------
 
+/**
+ * write value of one input to another as base64 encoded string
+ * @param {type} sIdInput
+ * @param {type} sIdOutput
+ * @returns {undefined}
+ */
+function initBase64Input(sIdInput, sIdOutput){
+    var oIn=document.getElementById(sIdInput);
+    var oOut=document.getElementById(sIdOutput);
+    if (oIn && oOut){
+        oIn=document.getElementById(sIdInput);
+        oIn.onchange = function() {
+          oOut.value=btoa(oIn.value);
+          console.log("IN: " + oIn.value + " | OUT: "+ oOut.value);
+        };
+    }
+}
+    
 window.addEventListener('load', function() {
 
     initDrawH3list();
     initSoftscroll();
     initExtendedView();
+    initBase64Input('e_url', 'urlbase64');
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

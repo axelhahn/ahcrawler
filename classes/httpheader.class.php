@@ -247,8 +247,7 @@ class httpheader {
             'X-Forwarded-Host' => array('response'=>true, 'tags' => array('non-standard')),
             'X-Forwarded-Proto' => array('response'=>true, 'tags' => array('non-standard')),
             'X-Pingback' => array('response'=>true, 'tags' => array('non-standard')), // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
-            'X-Powered-By' => array('response'=>true, 'tags' => array('non-standard', 'unwanted')),
-            'X-Request-ID' => array('response'=>true, 'tags' => array('non-standard')),
+            'X-Powered-By' => array('response'=>true, 'tags' => array('non-standard', 'unwanted'), 'unwantedregex' => '[0-9]*\.[0-9\.]*'),
             'X-Request-ID' => array('response'=>true, 'tags' => array('non-standard')),
             'X-Robots-Tag' => array('response'=>true, 'tags' => array('non-standard')),
             'X-UA-Compatible' => array('response'=>true, 'tags' => array('non-standard')),

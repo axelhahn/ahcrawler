@@ -17,10 +17,12 @@ unset($aPages['home']);
 // render boxes for "large" navigation
 // ----------------------------------------------------------------------
 if(count($aPages)){
+    $sReturn.='<h3>'.$this->lB('home.welcome').'</h3>'
+            . '<p>'.$this->lB('home.intro').'</p>';
     foreach($aPages as $sPagename=>$bActive){
         
         $sReturn.=$bActive ? $this->_getLinkAsBox(array(
-                    'url'=>'?page=' . $sPagename,
+                    'url'=>'?page=' . $sPagename.'&amp;lang='.$this->sLang,
                     'hint'=>$this->lB('nav.' . $sPagename . '.hint'),
                     'icon'=>$this->_aIcons['menu'][$sPagename],
                     'title'=>$this->lB('nav.' . $sPagename . '.label'),

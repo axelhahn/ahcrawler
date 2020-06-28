@@ -61,10 +61,13 @@
     "var.int": "Integer",
     "var.string": "String",
     "var.array": "Array",
-    "bookmarklet.head": "Bookmarklet",
     "bookmarklet.hint": "Drag and drop the button into the bookmarks toolbar",
-    "bookmarklet.posthint": "What does the bookmarklet do?<br>If you are on any page that was indexed by ahCrawler - then click the bookmark - and you get the detail page with incoming and outgoing links.",
-    "bookmarklet.label": "ahCrawler: details",
+    "bookmarklet.details.head": "Bookmarklet details page",
+    "bookmarklet.details.label": "ahCrawler: Details",
+    "bookmarklet.details.posthint": "If you are on any website that was indexed by ahCrawler - then click the bookmark - and you get the detail page inthe backend with incoming and outgoing links.",
+    "bookmarklet.httpheaderchecks.head": "Bookmarklet Http response header check",
+    "bookmarklet.httpheaderchecks.posthint": "If you opened any website in your browser then with one click you open the Http response header.",
+    "bookmarklet.httpheaderchecks.label": "ahCrawler: Http header",
     "button.add": "Add",
     "button.add.hint": "",
     "button.back": "Back",
@@ -460,6 +463,7 @@
     "httpheader.data.description": "This is the response header of<br><em>%s<\/em>",
     "httpheader.nopage-with-id": "There is no url with id %s in the database.",
     "httpheader.warnings": "Warnings for Http headers (%s)",
+    "httpheader.unknown.tile": "Unknown header",
     "httpheader.unknown.description": "Unknown header variables were found in the http response.",
     "httpheader.unknown.todo": "The unknown header variables are nothing that is visible in the browser. But check if these are necesessary to send and try to eliminate them.",
     "httpheader.warnings.description": "You should not show too many details of your system in the http header. Even if sniffer tools can analyze several details.",
@@ -855,5 +859,5 @@
     "httpheader.tag.badvalue": "unwanted value",
     "httpheader.context.securityheaders-links": "Additional links to scan the header of the domain.",
     "sslcheck.context.links": "Additional links to scan the domain.",
-    "httpheader.result.redirect": "Hint: a redirect was found. You can follow the redirect or inspect the current response header below."
+    "bookmarklet.httpheaderchecks.posthint2": "Remark: you need to enable the http header check in the frontend."
 }

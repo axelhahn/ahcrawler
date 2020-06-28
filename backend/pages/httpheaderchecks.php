@@ -20,17 +20,28 @@ if ($this->_bIsPublic || isset($_GET['url'])){
     // public: make a request from url in form value
     // ----------------------------------------------------------------------
     $bShowForm=true;
-    $sUrl=( isset($_GET['url']) && $_GET['url'] ) ? $_GET['url'] : '';
-    $sReturn.='<h3>'.$this->lB('httpheader.enter-url').'</h3>
-    <p>'.$this->lB('httpheader.enter-url.hint').'</p>
+    // $sUrl=( isset($_GET['url']) && $_GET['url'] ) ? $_GET['url'] : '';
+    $sUrl=( isset($_GET['urlbase64']) && $_GET['urlbase64'] ) ? base64_decode($_GET['urlbase64']) : '';
+    $sReturn.=''
+        . $oRenderer->renderContextbox(
+                $oRenderer->renderBookmarklet('httpheaderchecks')
+                , $this->lB('bookmarklet.httpheaderchecks.head')
+            )
+            . '<h3>'.$this->lB('httpheader.enter-url').'</h3>'
+            .'<p>'.$this->lB('httpheader.enter-url.hint').'</p>
             <form class="pure-form pure-form-aligned" method="GET" action="?">
                 <input type="hidden" name="page" value="httpheaderchecks">
-                <input type="text" size="100" id="e_url" name="url" value="'.htmlentities($sUrl).'" placeholder="https://example.com" pattern="^http[s]*://.*">'
+                <input type="hidden" name="lang" value="'.$this->sLang.'">
+                <input type="hidden" name="urlbase64" id="urlbase64" value="">
+                <nobr>
+                <input type="text" size="100" id="e_url" value="'.htmlentities($sUrl).'" placeholder="https://example.com" pattern="^http[s]*://.*">'
                 .($sUrl
-                        ? $oRenderer->oHtml->getTag('a', array('label'=>$this->_getIcon('button.close'), 'class'=>'pure-button button-error', 'href'=>'?page=httpheaderchecks')).' '
+                        ? $oRenderer->oHtml->getTag('a', array('label'=>$this->_getIcon('button.close'), 'class'=>'pure-button button-error', 'href'=>'?page=httpheaderchecks&lang='.$this->sLang)).' '
                         : ''
                 )
                 .'<button class="pure-button button-secondary">'.$this->_getIcon('button.save').'</button>'
+                .'</nobr>'
+                . '<div style="clear: both;"></div>'
             ;
     if($sUrl && preg_match('#^http.*#', $sUrl)){
         
@@ -182,7 +193,7 @@ $sTiles='';
                 .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.unknown.description'), 'warning')
                 ;
         foreach($aUnknownheader as $sKey=>$aHeaderitem){
-            $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.varfound.unknown'), $aHeaderitem['var'], $aHeaderitem['value'])
+            $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.unknown.tile'), $aHeaderitem['var'], $aHeaderitem['value'])
                     // .'<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>'
                     ;
             $sLegendeUnknown .='<li>'. '<pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';

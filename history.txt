@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-06-28: v0.122
+  * FIX: missing language text
+  * ADDED: favicon
+  * ADDED: bookmarklet for http header check
+  * ADDED: language select in frontend
+  * UPDATE: http header check now uses base64 encoded url as param
+
 2020-06-21: v0.121
   * UPDATE: header "Public-Key-Pins" is marked as deprecated
   * UPDATE: header "X-Frame-Options" marks ALLOW-FROM as warning

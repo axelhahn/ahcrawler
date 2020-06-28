@@ -554,7 +554,7 @@ class backend extends crawler_base {
                 $bHasActiveSubitem=strpos($sNaviNextLevel, 'pure-menu-link-active');
                 $bIsActive=$this->_sPage == $sItem || $bHasActiveSubitem;
                 $sClass = $bIsActive ? ' pure-menu-link-active' : '';
-                $sUrl = '?page=' . $sItem;
+                $sUrl = '?page=' . $sItem.($this->_bIsPublic ? '&amp;lang='.$this->sLang : '');
                 if ($this->_sTab) {
                     $sUrl.='&amp;siteid=' . $this->_sTab;
                 }
@@ -599,7 +599,69 @@ class backend extends crawler_base {
         $sNavi = $this->_getNavItems($this->_aMenu);
         return $sNavi;
     }
+    
+    /**
+     * get languages
+     * @param string $sLangobject
+     * @return type
+     */
+    public function getLangs($sLangobject=false) {
+        $aLangfiles=array();
+        $aLangkeys=array();
+        
+        // automatic set of object if not given
+        $sLangobject=$sLangobject 
+                ? $sLangobject 
+                : ($this->_bIsPublic ? 'frontend' : 'backend')
+                ;
+        foreach(glob(dirname(__DIR__).'/lang/'.$sLangobject.'.*.json') as $sJsonfile){
+            $sKey2=str_replace($sLangobject.'.','',basename($sJsonfile));
+            $sKey2=str_replace('.json','',$sKey2);
 
+            $aLangfiles[$sKey2]=$sJsonfile;
+            $aLangkeys[]=$sKey2;
+        }
+        
+        return count($aLangkeys) 
+            ? array(
+                'keys'=>$aLangkeys,
+                'files'=>$aLangfiles,
+            )
+            : false;
+    }
+
+    public function getLangNavi(){
+        global $oRenderer;
+        $sReturn='';
+        $aLangs=$this->getLangs();
+        if(!$aLangs){
+            return false;
+        }
+        $aLangOptions=array();
+        foreach($aLangs['keys'] as $sLang){
+            $sClass='pure-menu-link' . ($sLang == $this->sLang ? ' pure-menu-link-active' : '');
+            $sReturn.='<li class="'.$sClass.'">'.$sLang.'</li>';
+            $aOption=array(
+                'label'=>$sLang,
+            );
+            if($sLang == $this->sLang) {
+                $aOption['selected']='selected';
+            }
+            $aLangOptions[]=$aOption;
+        }
+        return '<div class="langnav">'
+            . '<form class="pure-form pure-form-aligned" method="GET" action="?">'
+                . '<input type="hidden" name="page" value="'.(isset($_GET['page']) ? $_GET['page'] : '').'">'
+                .$oRenderer->oHtml->getFormSelect(array(
+                'id'=>'sellang', 
+                'name'=>'lang',
+                'onchange'=>'submit();',
+                ), $aLangOptions
+            ).'</form>'
+        . '</div>';
+
+        return '<ul class="pure-menu-list">'.$sReturn.'</ul><br>';
+    }
     /**
      * get html code for horizontal navigation
      * 

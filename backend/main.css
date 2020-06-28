@@ -72,6 +72,7 @@
     .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */
+.header .langnav{position: fixed; top: 1em; right: 2em;}
 .pure-menu{margin-left: 1.0em; _background: rgba(255,255,255,0.5); width: 90%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{ _box-shadow: -1em 0 3em #ccd;}

@@ -4,6 +4,8 @@
     "nav.home.hint": "Startseite mit Diensten",
     "error.403.title": "403 Zugriff verweigert.",
     "error.403.message": "Zugriff verweigert. Diese Seite ist nicht freigeschaltet.",
+    "home.welcome": "Willkommen!",
+    "home.intro": "Hier sind die frei zug&auml;nglichen Werkzeuge des ahCrawlers, die der Administrator freigeschalten hat.<br>\r\nHinweis: Um alle Werkzeuge zu benutzen, k&ouml;nnen Sie eine eigene Instanz auf Ihrem Server betreiben - der ahCrawler ist Freie Software und Open Source.",
     "home.no-pages": "Hier gibt es nichts zu sehen. Der Adminstrator hat noch keine Dienste freigeschaltet.",
     "httpheader.enter-url": "URL eingeben",
     "httpheader.enter-url.hint": "Gib eine Webadresse an, deren Http Response Header analysiert werden soll. Die angegebene URL wird dazu mit einem Http HEAD Request aufgerufen.",

@@ -1,5 +1,5 @@
 /* nothing here */
 body{
 	color: var(--color-default);
-        background: url('bg_main.png') fixed;
+        background: #f8f8f8 url('bg_main.png') fixed;
 }
