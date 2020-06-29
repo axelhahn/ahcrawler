@@ -33,7 +33,7 @@ if(isset($_POST['action'])){
     
     switch($_POST['action']){
         case 'deleteprofile':
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.confirm'), $aNewProfile['label']), 'warning')
+                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.confirm'), htmlentities($aNewProfile['label'])), 'warning')
                         .'<br><form class="" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
                         . $oRenderer->oHtml->getTag('input', array(
                             'type'=>'hidden',
@@ -43,7 +43,7 @@ if(isset($_POST['action'])){
                         . $oRenderer->oHtml->getTag('input', array(
                             'type'=>'hidden',
                             'name'=>'label',
-                            'value'=>$aNewProfile['label'],
+                            'value'=> htmlentities($aNewProfile['label']),
                             ), false)
                         .$sBtnBack
                         .' '
@@ -152,7 +152,7 @@ if(isset($_POST['action'])){
             break;
             ;;
         default: 
-            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.$_POST['action'].'] :-/ skipping ... just in case', 'warning');
+            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
     }
     
     $sNextUrl=$_SERVER['QUERY_STRING'];

@@ -15,7 +15,7 @@ $sReturn.= '<h3>' . $this->lB('ressources.searchurl-head') . '</h3>'
             . '<input type="hidden" name="page" value="checkurl">'
             . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
             . '<label>' . $this->lB('ressources.searchurl') . '</label> '
-            . '<input type="text" name="query" value="' . $sQuery . '" required="required" size="80" placeholder="">'
+            . '<input type="text" name="query" value="' . htmlentities($sQuery) . '" required="required" size="80" placeholder="">'
             . ' '
             // . $sSelect
             . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $this->lB('button.search') . '</button>'

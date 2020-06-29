@@ -206,7 +206,7 @@ if(isset($_POST['action'])){
             break;
             ;;
         default: 
-            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.$_POST['action'].'] :-/ skipping ... just in case', 'warning');
+            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
     }
     
     $sReturn.=$sBtnContinue;

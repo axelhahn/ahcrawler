@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.122',
-        'date' => '2020-06-28',
+        'version' => '0.123-dev',
+        'date' => '2020-06-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -943,8 +943,9 @@ class crawler_base {
      * 
      * @param integer $iSiteId
      */
-    public function setSiteId($iSiteId = false) {
-        $this->logAdd(__METHOD__.'('.$iSiteId.') start');
+    public function setSiteId($iSiteId = false) {        
+        $iSiteId= preg_replace('/[^a-z0-9]/', '', $iSiteId);
+        $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') start');
 
         $this->iSiteId = false;
         $this->aProfileSaved = array();
@@ -1153,6 +1154,8 @@ class crawler_base {
             // $this->setSiteId(false);
             $sLang = $this->sLang;
         }
+        $sPlace= preg_replace('/[^a-z]/', '', $sPlace);
+        $sLang= preg_replace('/[^a-z\-\_]/', '', $sLang);
         $sJsonfile = '/lang/' . $sPlace . '.' . $sLang . '.json';
         $aLang = json_decode(file_get_contents(dirname(__DIR__) . $sJsonfile), true);
         if (!$aLang || !is_array($aLang) || !count($aLang)) {

@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2020-06-29: v0.123
+  * UPDATE: harden against XSS attacks - IMPORTANT UPDATE
+
 2020-06-28: v0.122
   * FIX: missing language text
   * ADDED: favicon

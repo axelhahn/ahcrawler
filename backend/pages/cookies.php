@@ -16,7 +16,7 @@ $this->setSiteId($this->_sTab);
 // ----------------------------------------------------------------------
 
 if (isset($_POST['action'])) {
-    echo '<pre>' . print_r($_POST, 1) . '</pre>';
+    // echo '<pre>' . print_r($_POST, 1) . '</pre>';
     if (
             isset($_POST['action']) && $_POST['action'] === "deletecookie" && isset($_POST['profile']) && $_POST['profile'] == $this->_sTab && $this->sCcookieFilename && file_exists($this->sCcookieFilename)
     ) {

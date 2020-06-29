@@ -24,7 +24,7 @@ class logger {
      * @return boolean
      */
     public function __construct($sInitMessage = "Logger was initialized.") {
-		$this->_iMemStart=memory_get_usage();
+        $this->_iMemStart=memory_get_usage();
         $this->add($sInitMessage);
         return true;
     }
@@ -39,7 +39,7 @@ class logger {
         $this->aMessages[] = array(
             'time' => microtime(true),
             'message' => $sMessage,
-            'level' => $sLevel
+            'level' => preg_replace('/[^a-z0-9\-\_]/', '', $sLevel)
         );
 
         return true;
@@ -84,7 +84,7 @@ class logger {
                     '<td>' . sprintf("%01.3f", $aLogentry["time"] - $sStarttime) . '</td>' .
                     '<td>' . sprintf("%01.3f", $iDelta) . '</td>' .
                     '<td>' . $aLogentry["level"] . '</td>' .
-                    '<td>' . $aLogentry["message"] . '</td>' .
+                    '<td>' . htmlentities($aLogentry["message"]) . '</td>' .
                     '</tr>';
             $iLasttime = $aLogentry["time"];
         }
