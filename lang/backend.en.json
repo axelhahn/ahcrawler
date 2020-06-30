@@ -203,6 +203,7 @@
     "installer.done.hint": "The most basic steps were done. A few more are needed ... but let's go to the backend the first time.",
     "context.infos": "Information",
     "context.links": "Helpful links",
+    "hint.extended": "...",
     "home.welcome": "Welcome to the ahCrawler!",
     "home.cfg.unprotected": "WARNING:<br>The backend seems to be unprotected!<br>Go to the program settings and a &quot;user&quot; and &quot;password&quot;.",
     "home.noprojectyet": "There is no project yet. Let's create a profile to crawl and analyze a website.<br>This text disappears if you created the first profile.",

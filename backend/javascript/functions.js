@@ -119,9 +119,11 @@ function initExtendedView(){
     $('.btn-extend').hide();
     if(bShow==1){
         $('#btn-extend-on').show();
+        $('.hintextended').hide();
         $('.extended').slideDown();
     } else {
         $('.extended').hide();
+        $('.hintextended').show();
         $('#btn-extend-off').show();
     }
 }

@@ -309,7 +309,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ), $aLangOptions)
             . '</div>'
 
-            .'<div class="extended">'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
+            . '<div class="extended">'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
                     . $oRenderer->oHtml->getTag('textarea', array(
@@ -506,11 +507,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - search result weights
             // ------------------------------------------------------------
             
-            .'<div class="extended">'
-                . '<h3>'
-                    . ' '.$this->lB('setup.section.search')
-                .'</h3>'
-                . $this->lB('setup.section.search.hint').'<br><br>';
+            . '<h3>'
+                . ' '.$this->lB('setup.section.search')
+            .'</h3>'
+            . $this->lB('setup.section.search.hint').'<br><br>'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
+            . '<div class="extended">';
 
                 foreach(array('matchWord', 'WordStart', 'any') as $sMatchSection){
                     $sReturn.='<p><strong>'.$this->lB('setup.section.search.section.'.$sMatchSection).'</strong></p>';
@@ -538,12 +540,14 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - analysis constants
             // ------------------------------------------------------------
             $sReturn.=''
-                    . '<div class="extended">'
                     . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
             . $this->lB('setup.section.analysis.hint').'<br><br>'
+
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
+            . '<div class="extended">'
         
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
@@ -609,12 +613,14 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             // setup options - public services without login
             // ------------------------------------------------------------
+            .'<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
+                . ' '.$this->lB('setup.section.public-services')
+            .'</h3>'
+            . $this->lB('setup.section.public-services.hint').'<br><br>'
+
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
-                .'<h3>'
-                    // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
-                    . ' '.$this->lB('setup.section.public-services')
-                .'</h3>'
-                . $this->lB('setup.section.public-services.hint').'<br><br>'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu-public', 'label'=>$this->lB('setup.section.public-services.menu-public')))
                     . $oRenderer->oHtml->getTag('textarea', array(
@@ -633,12 +639,13 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - database
             // ------------------------------------------------------------
         
+            . '<h3>'
+                // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
+                . ' '.$this->lB('setup.section.database')
+            .'</h3>'
+            . $this->lB('setup.section.database.hint').'<br><br>'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
-                . '<h3>'
-                    // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
-                    . ' '.$this->lB('setup.section.database')
-                .'</h3>'
-                . $this->lB('setup.section.database.hint').'<br><br>'
 
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'type', 'label'=>$this->lB('setup.section.database.type')))

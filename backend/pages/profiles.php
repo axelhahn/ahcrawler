@@ -262,6 +262,7 @@ $sReturn.='
                     'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
                     ), true)
                 . '</div>'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-include', 'label'=>$this->lB('profile.searchindex.include')))
@@ -315,6 +316,7 @@ $sReturn.='
                     ), false)
                 . '</div>'
 
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
                     . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
@@ -391,11 +393,12 @@ $sReturn.='
             // ressources scan
             // ------------------------------------------------------------
             
-            . '<div class="extended">'
                 . '<h3>'
                     // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                     . ' '.$this->lB('profile.section.ressources')
                 .'</h3>'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
+            . '<div class="extended">'
 
                 . '<div class="pure-control-group">'
                     . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'

@@ -16,7 +16,12 @@ $aData=$oRessources->getRessourceDetails($iRessourceId);
 // echo '<pre>'.print_r($aData, 1).'</pre>' . count($aData);
 if (count($aData)){
     foreach($aData as $aItem){
-        $sReturn.='<h3>'.$this->lB('ressources.ressourceitemfull').'</h3>'
+        $sReturn.=''
+            . $oRenderer->renderContextbox(
+                    $oRenderer->renderBookmarklet('details')
+                    , $this->lB('bookmarklet.details.head')
+                )
+                . '<h3>'.$this->lB('ressources.ressourceitemfull').'</h3>'
             .$oRenderer->renderRessourceItemFull($aItem);
         /*
         if ((int)$aItem['http_code']===200 && strpos($aItem['content_type'], 'html')>0){

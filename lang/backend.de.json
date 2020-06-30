@@ -207,6 +207,7 @@
     "installer.done.hint": "Die ersten rudiment&auml;ren Schritte sind getan. Einige weitere werden folgen ... aber gehen wir einmal ins Backend.",
     "context.infos": "Infos",
     "context.links": "Hilfreiche Links",
+    "hint.extended": "...",
     "home.welcome": "Willkommen!",
     "home.cfg.unprotected": "WARNUNG:<br>Der Zugang zum Backend ist derzeit ungesch&uuml;tzt!<br>Setzen Sie in der Konfiguration unterhalb &quot;auth&quot; die Werte &quot;user&quot; und &quot;password&quot;.",
     "home.noprojectyet": "Es gibt noch kein Projekt. Bitte lege ein Profil zum Crawlen und Analysieren einer Website an.<br>Diese Meldung verschwindet, sobald das erste Projekt angelegt wurde.",

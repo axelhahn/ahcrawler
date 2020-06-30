@@ -55,7 +55,12 @@ if ($this->_bIsPublic || isset($_GET['url'])){
                 if(isset($aLocation[1])){
                     $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.redirect'), 'warning');
                     $sTarget=trim($aLocation[1]);
-                    $sReturn.='<button class="pure-button" onclick="document.getElementById(\'e_url\').value=\''.$sTarget.'\'; return true;">'.$sTarget.'</button>';
+                    // add protocol and domain name on a relative loction url
+                    if (!preg_match('#^http[s]*://#', $sTarget)){
+                      $sTarget=preg_replace('#^(http.*//.*)/.*$#U', '$1', $sUrl).$sTarget;
+                    }
+                    // $sReturn.='<button class="pure-button" onclick="document.getElementById(\'e_url\').value=\''.$sTarget.'\'; return true;">'.$sTarget.'</button>';
+                    $sReturn.='<button class="pure-button" onclick="document.getElementById(\'e_url\').value=\''.$sTarget.'\'; document.getElementById(\'urlbase64\').value=\''.base64_encode($sTarget).'\'; return true;">'.$sTarget.'</button>';
                 } else {
                     $sReturn.=$oRenderer->renderMessagebox($this->lB('httpheader.result.non-ok'), 'warning');
                 }

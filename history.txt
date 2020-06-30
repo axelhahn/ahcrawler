@@ -10,6 +10,12 @@
 
 ----------------------------------------------------------------------
 
+2020-06-30: v0.124
+  * FIX: http header: fix redirect and create urlbase64
+  * FIX: http header: fix redirect with relative url
+  * UPDATE: detail page shows bookmarklet
+  * UPDATE: profile and settings: mark hidden (extended) ranges
+
 2020-06-29: v0.123
   * UPDATE: harden against XSS attacks - IMPORTANT UPDATE
 
