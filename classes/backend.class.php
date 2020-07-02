@@ -821,7 +821,7 @@ class backend extends crawler_base {
                 
         $this->logAdd(__METHOD__ . ' H2 = "'.$sH2.'"');
         return ''
-                . ($this->_checkAuth() && $this->_getUser()
+                . (!$this->_bIsPublic && $this->_checkAuth() && $this->_getUser()
                     ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'
                         . $this->_getButton(array(
                             'href' => './?page=logoff',

@@ -63,18 +63,52 @@ $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>'
             'validfrom',
             'validto',
         ) as $sKey){
-            $aTbl[]=array($this->lB('sslcheck.'.$sKey), $aSslInfos[$sKey]);
+            $aTbl[]=array(
+                $this->lB('sslcheck.'.$sKey), 
+                
+                ($sKey=='type' 
+                        ? '<strong>'.$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
+                            . $this->lB('sslcheck.type.usage').':<br>'
+                            . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
+                        : $aSslInfos[$sKey]
+                    )
+            );
         }
 
         $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
         $aTbl[]=array($this->lB('sslcheck.validleft'), $iDaysleft);
+        
+        $aTblLevel=array();
+        $aTblLevel[]=array('',$this->lB('sslcheck.type'), $this->lB('sslcheck.type.description'), $this->lB('sslcheck.type.usage'));
+        foreach(array(
+            'EV', 
+            'Business SSL',
+            'selfsigned',
+            'none',
+        ) as $sKey){
+            // $bActive=$aSslInfos['type']==$this->lB('sslcheck.type.'.$sKey);
+            $bActive=$aSslInfos['type']==$sKey;
+            $aTblLevel[]=array(
+                ($bActive ? ' >> ' : ''),
+                ($bActive ? '<strong>'.$this->lB('sslcheck.type.'.$sKey).'</strong>' : $this->lB('sslcheck.type.'.$sKey)), 
+                $this->lB('sslcheck.type.'.$sKey.'.description'),
+                $this->lB('sslcheck.type.'.$sKey.'.usage')
+            );
+        }
 
         $sReturn.= $oRenderer->renderTileBar(
-                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'] ? $aSslInfos['issuer'] : $this->lB('sslcheck.selfsigned'), $aSslInfos['validto'].' ('.$iDaysleft.' d)')
+                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'] ? $aSslInfos['issuer'] : $this->lB('sslcheck.type.selfsigned'), $aSslInfos['validto'].' ('.$iDaysleft.' d)')
         )
         . '</ul><div style="clear: both;"></div>'
+                
         . $this->_getSimpleHtmlTable($aTbl, 1)
-               
+                
+
+        . '<h3>'.$this->lB('sslcheck.type.levels').'</h3>'
+        . '<p>'.sprintf($this->lB('sslcheck.type.intro'), $this->lB('sslcheck.type.'.$aSslInfos['type'])).'</p>'
+        . $this->_getSimpleHtmlTable($aTblLevel, 1)
+
+
         . '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
         . '<p>'.$this->lB('sslcheck.raw.hint').'</p>'
         . $oRenderer->renderToggledContent($this->lB('sslcheck.raw.openclose'),'<pre>'.json_encode($aSslInfosAll, JSON_PRETTY_PRINT).'</pre>', false)

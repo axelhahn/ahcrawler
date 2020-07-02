@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2020-06-30: v0.125
+  * FIX: detail page links to http header check with base64 encoding
+  * FIX: remove logout button on public page
+  * UPDATE: ssl check has more infos about type of certificate
+
 2020-06-30: v0.124
   * FIX: http header: fix redirect and create urlbase64
   * FIX: http header: fix redirect with relative url

@@ -1178,7 +1178,7 @@ class ressourcesrenderer extends crawler_base {
                     $this->lB('httpheader.data'),
                     $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
                         .(isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
-                            ? '<br><a href="../?page=httpheaderchecks&url='.$aItem['url'].'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
+                            ? '<br><a href="../?page=httpheaderchecks&urlbase64='.base64_encode($aItem['url']).'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
                             : ''
                          )
                         
