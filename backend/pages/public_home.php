@@ -18,7 +18,7 @@ unset($aPages['home']);
 // ----------------------------------------------------------------------
 if(count($aPages)){
     $sReturn.='<h3>'.$this->lB('home.welcome').'</h3>'
-            . '<p>'.$this->lB('home.intro').'</p>';
+            . '<p>'.$this->lB('home.intro').'</p><br>';
     foreach($aPages as $sPagename=>$bActive){
         
         $sReturn.=$bActive ? $this->_getLinkAsBox(array(

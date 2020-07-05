@@ -489,6 +489,7 @@ tr.mark{background: #cde !important;}
 form.pure-form label{min-width: 20em;}
 .pure-form select {height: auto;}
 
+#e_url{width: 58%;}
 /* --- overlay --- */
 #overlay{
     position: fixed; width: 100%; height: 100%; top: 0; left: 0;

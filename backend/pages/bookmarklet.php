@@ -13,6 +13,11 @@ $sReturn.=''
             .$oRenderer->renderBookmarklet('httpheaderchecks')
             .'<br><br>'
             .$this->lB('bookmarklet.httpheaderchecks.posthint2')
+
+        .'<h3>'.$this->lB('bookmarklet.sslcheck.head').'</h3>'
+            .$oRenderer->renderBookmarklet('sslcheck')
+            .'<br><br>'
+            .$this->lB('bookmarklet.sslcheck.posthint2')
         ;
 
 return $sReturn;

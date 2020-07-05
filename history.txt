@@ -10,10 +10,13 @@
 
 ----------------------------------------------------------------------
 
-2020-06-30: v0.125
+2020-07-05: v0.125
   * FIX: detail page links to http header check with base64 encoding
   * FIX: remove logout button on public page
+  * FIX: ssl check can handle wildcard dns entries
   * UPDATE: ssl check has more infos about type of certificate
+  * UPDATE: ssl check is ready for public page: enter host + port, error handling
+  * ADDED: bookmarklet for ssl check
 
 2020-06-30: v0.124
   * FIX: http header: fix redirect and create urlbase64

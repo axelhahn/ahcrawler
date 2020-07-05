@@ -80,6 +80,7 @@ class backend extends crawler_base {
     private $_aMenuPublic = array(
         'home'=>array(),
         'httpheaderchecks'=>array(),
+        'sslcheck'=>array(),
         'about'=>array(),
     );
     

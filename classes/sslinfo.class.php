@@ -174,12 +174,27 @@ class sslinfo {
         }
 
         // ----- current domain is part of dns names?
+        $bInDnsList=false;
         $sHost = $this->_sHost;
         $sDNS = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
-        if (strstr($sDNS, 'DNS:' . $sHost) === false) {
-            $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
-        } else {
+        
+        $sDNS= str_replace('DNS:', '', $sDNS);
+        foreach (explode(',',$sDNS) as $sEntry){
+            if(strstr($sEntry, '*.')){
+                if(preg_match('/.'.trim($sEntry).'/', $sHost)){
+                    $bInDnsList=true;
+                }
+            } else {
+                if(trim($sEntry)===$sHost){
+                    $bInDnsList=true;
+                }
+            }
+        }
+        
+        if ($bInDnsList) {
             $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate.";
+        } else {
+            $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
         }
 
         /*
@@ -207,6 +222,7 @@ class sslinfo {
 
         // ----- get return status
         $aReturn['status'] = count($aReturn['errors']) ? 'error' : (count($aReturn['warnings']) ? 'warning' : 'ok');
+        // echo '<pre>'.print_r($aReturn, 1).'</pre>'; die();
 
         return $aReturn;
     }
@@ -243,30 +259,48 @@ class sslinfo {
             $aInfos['CN'] = $certinfo['subject']['CN'];
             $aInfos['DNS'] = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
 
-            $aInfos['type_ev'] = isset($certinfo['subject']['O']);
-            $aInfos['type_business_ssl'] = isset($certinfo['issuer']['O']) && !$aInfos['type_ev'];
-            $aInfos['type_seldsigned'] = !isset($certinfo['issuer']['O']);
-            $aInfos['type'] = $aInfos['type_ev'] ? 'Extended validation' 
-                    : $aInfos['type_business_ssl'] ? 'Business SSL' : 'selfsigned';
-
+            $aInfos['type'] = $this->getCertType();
             $aInfos['subject'] = $certinfo['subject'];
             
             $aInfos['validfrom'] = date("Y-m-d H:i", $certinfo['validFrom_time_t']);
             $aInfos['validto'] = date("Y-m-d H:i", $certinfo['validTo_time_t']);
-
+            $aInfos['signatureTypeSN'] = $certinfo['signatureTypeSN'];
         } else {
             $aInfos['_error'] = 'Certificate is not readable.';
         }
+        // echo 'DEBUG'.__FILE__.'<pre>';print_r($aInfos);print_r($certinfo); die();
         return $aInfos;
     }
 
+    /**
+     * get type of ssl certificate; it returns one of
+     *  - false
+     *  - "EV"
+     *  - "Business SSL"
+     *  - "selfsigned"
+     * @return string
+     */
+    public function getCertType(){
+        $certinfo = $this->getCertinfos();
+        if (isset($certinfo['_error']) && $certinfo['_error']) {
+            return false;
+        }
+        $sReturn = 'selfsigned';
+        if(isset($certinfo['subject']['O'])){
+            $sReturn = 'EV';
+        } else if (isset($certinfo['issuer']['O'])){
+            $sReturn = 'Business SSL';
+        }
+        return $sReturn;
+    }
+    
     # ----------------------------------------------------------------------
     # PUBLIC :: SETTER
     # ----------------------------------------------------------------------
 
     /**
      * set an url to memorize it for getter functions
-     * @param type $sUrl
+     * @param string  $sUrl  url, i.e. ssl://[hostname]:[port]
      * @return boolean
      */
     public function setUrl($sUrl) {

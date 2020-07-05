@@ -571,6 +571,9 @@ class ressourcesrenderer extends crawler_base {
                 // 'query'=>"?page=httpheaderchecks&url='+encodeURI(document.location.href);"
                 'query'=>"?page=httpheaderchecks&urlbase64='+btoa(document.location.href);"
                 ),
+            'sslcheck'=>array(
+                'query'=>"?page=sslcheck&host='+(document.location.hostname)+'&port='+(document.location.port ? document.location.port : (document.location.protocol==='http:' ? 80 : (document.location.protocol==='https:' ? 443 : 0 )));"
+                ),
         );
         if(!isset($aItems[$sId])){
             return 'INTERNAL ERROR: this page integrated bookmarklet of non existing id ['.$sId.']<br>';
@@ -585,7 +588,7 @@ class ressourcesrenderer extends crawler_base {
                 . $aItems[$sId]['query']
                 // . (isset($_GET['lang']) ? '&lang='.$_GET['lang'] : '')
                 ;
-        $sMyUrl=isset($_GET['lang']) ? str_replace('?', '?lang='.$_GET['lang'].'&amp;', $sMyUrl) : $sMyUrl;
+        $sMyUrl=isset($_GET['lang']) ? str_replace('?page=', '?lang='.$_GET['lang'].'&amp;page=', $sMyUrl) : $sMyUrl;
         return $this->lB('bookmarklet.hint').':<br><br>'
             . $this->oHtml->getTag('a', array(
                     'class'=>'pure-button',
