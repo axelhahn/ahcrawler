@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2020-07-07: v0.126
+  * FIX: ssl check Business SSL was detected as EV sometimes
+
 2020-07-05: v0.125
   * FIX: detail page links to http header check with base64 encoding
   * FIX: remove logout button on public page

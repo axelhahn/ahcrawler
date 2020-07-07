@@ -527,6 +527,7 @@
     "sslcheck.type.EV": "Extended Validation",
     "sslcheck.type.EV.description": "Certificate with meta data of the website owner (for guarantee); highest certificate level",
     "sslcheck.type.EV.usage": "Websites with entry of private data, logins with username and password, credit card data, web shops, banking websites.",
+    "sslcheck.domainowner": "Information about domain owner",
     "sslcheck.issuer": "Issuer",
     "sslcheck.CA": "CA",
     "sslcheck.DNS": "DNS names",

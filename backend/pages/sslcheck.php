@@ -146,13 +146,14 @@ if ($this->_bIsPublic){
         // for RAW DATA
         $aSslInfosAll=$oSsl->getCertinfos($url=false);
         
-        $sEvInfos='';
-        if($aSslInfos['type']==='EV'){
-            $aTblEV=array();
+        $sOwnerInfos='';
+        // if($aSslInfos['type']==='EV'){
+        if(count($aSslInfos['subject'])){
+            $aTblOwner=array();
             foreach($aSslInfos['subject'] as $sKey=>$value){
-                $aTblEV[]=array($sKey, $value);
+                $aTblOwner[]=array($sKey, $value);
             }
-            $sEvInfos='<br><br>'.$this->_getSimpleHtmlTable($aTblEV, false);
+            $sOwnerInfos=$this->_getSimpleHtmlTable($aTblOwner, false);
         }
         $aTbl=array();
         $aTbl[]=array(
@@ -163,6 +164,7 @@ if ($this->_bIsPublic){
             'CN', 
             'signatureTypeSN',
             'type',
+            'domainowner',
             'issuer',
             'CA',
             'DNS',
@@ -176,8 +178,10 @@ if ($this->_bIsPublic){
                         ? '<strong>'.$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
                             . $this->lB('sslcheck.type.usage').':<br>'
                             . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
-                            . $sEvInfos
-                        : $aSslInfos[$sKey]
+                        : ($sKey=='domainowner' 
+                            ? $sOwnerInfos
+                            : $aSslInfos[$sKey]
+                          )
                     )
             );
         }

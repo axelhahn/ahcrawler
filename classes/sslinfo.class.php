@@ -286,7 +286,7 @@ class sslinfo {
             return false;
         }
         $sReturn = 'selfsigned';
-        if(isset($certinfo['subject']['O'])){
+        if(isset($certinfo['subject']['jurisdictionC'])){
             $sReturn = 'EV';
         } else if (isset($certinfo['issuer']['O'])){
             $sReturn = 'Business SSL';

@@ -566,6 +566,7 @@
     "sslcheck.type.EV": "Extended Validation",
     "sslcheck.type.EV.description": "Zertifikat mit Metadaten zum Aussteller (zur Garantie des Webseitenbesitzers); der h\u00f6chstm\u00f6gliche Standard",
     "sslcheck.type.EV.usage": "Webseiten mit Erfassung von Personendaten, Logins mit User und Passwort, Kreditkarten-Angaben, Internet-Shops, Bankgesch\u00e4fte.",
+    "sslcheck.domainowner": "Angaben zum Besitzer der Domain",
     "sslcheck.issuer": "Aussteller",
     "sslcheck.CA": "CA",
     "sslcheck.DNS": "DNS-Namen",
