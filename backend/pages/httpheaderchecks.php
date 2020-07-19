@@ -83,15 +83,13 @@ if ($this->_bIsPublic || isset($_GET['url'])){
     $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
     $iPagesCount=$aCountByStatuscode['_global']['pages']['value'];
     if (!$iPagesCount) {
-        return $sReturn.'<br>'.
-            $this->_getMessageBox(
+        return $sReturn
+            .'<h3>'.$this->lB("error.not-enough-data").'</h3>'
+            .$this->_getMessageBox(
                 sprintf($this->lB('status.emptyindex'), $this->_sTab),
                 'warning'
             )
             ;
-    }
-    if (!$iRessourcesCount) {
-        return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
     }
 
     $iResId=$this->_getRequestParam('id', false, 'int');
@@ -112,6 +110,11 @@ if ($this->_bIsPublic || isset($_GET['url'])){
             )
         );
     } else {
+        if (!$iRessourcesCount) {
+            return $sReturn
+                .'<h3>'.$this->lB("error.not-enough-data").'</h3>'
+                .$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+        }
 
         // with get param id: get it from ressources (not pages!)
         $aPagedata = $this->oDB->select(

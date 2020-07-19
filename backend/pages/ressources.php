@@ -59,7 +59,13 @@ if ($aFilterItems){
     }
 }
 // -- get list of all data
+// total count
 $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
+if(!$iRessourcesCount){
+    return $sReturn.='<h3>'.$this->lB("error.not-enough-data").'</h3>'.$oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+}
+
+// count with applying the filter
 $iResCount = $oRessources->getCount($aWhere);
 
 // -- get list of filter data
@@ -256,7 +262,6 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         ;
 
 
-if ($iRessourcesCount) {
     $sReturn.=''
             // .$this->_getSimpleHtmlTable($aTableFilter)
             . '<div class="actionbox">'
@@ -387,9 +392,6 @@ if ($iRessourcesCount) {
         $sReturn.= $sBtnTable. ' '. $sBtnReport;
     }
 
-} else {
-    $sReturn.='<br>'.$oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
-}
 
 $sReturn.= $oRenderer->renderInitDatatable('.datatable', array('lengthMenu'=>array(array(20, 50, 100, -1))));
 

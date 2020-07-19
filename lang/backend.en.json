@@ -885,5 +885,7 @@
     "bookmarklet.sslcheck.label": "ahCrawler: SSL check",
     "bookmarklet.sslcheck.posthint": "If you opened any website in your browser then with one click you get details of its ssl certificate.",
     "bookmarklet.sslcheck.posthint2": "Remark: you need to enable the ssl check in the frontend.",
-    "sslcheck.nosslurl": "No SSL connection: maybe there was no response at all or it was no SSL. Check host and port number."
+    "sslcheck.nosslurl": "No SSL connection: maybe there was no response at all or it was no SSL. Check host and port number.",
+    "ressources.crawler-not-finished-yet": "The job to index the ressources was started but is not finished yet. Please wait...<br>Or maybe restart the crawler??<pre>php [appdir]\/bin\/cli.php -a index -d ressources -p %s<\/pre>",
+    "error.not-enough-data": "Not enough data :-\/"
 }

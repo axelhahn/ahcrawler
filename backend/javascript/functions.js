@@ -93,27 +93,15 @@ function initSoftscroll() {
         });
     });
 }
-function changeView(sClass2Hide, sIdToShow){
-    
+function changeView(sClass2Hide, sIdToShow){    
     $("."+sClass2Hide).hide();
     $("#"+sIdToShow).show();
-    /*
-    var oHide = document.querySelector("."+sClass2Hide); 
-    var oShow = document.querySelector("#"+sIdToShow); 
-    console.log('--- hide');
-    console.log(oHide);
-    console.log('--- show');
-    console.log(oShow);
-    if(oShow){
-        if (oHide && oHide.length) {
-            for (var i=0; i<oHide.length; i++){
-                oHide[i].style.display="none";
-            }
-        }
-        oShow.style.display="block";
-    }
-    */
 }
+
+/**
+ * toggle extended options in settings and in profile
+ * @returns {undefined}
+ */
 function initExtendedView(){
     var bShow=localStorage.getItem('crawler_showExtended');
     $('.btn-extend').hide();
@@ -134,6 +122,69 @@ function toggleExtendedView(){
     initExtendedView();
 }
 
+function initToggleAreas(){
+    $('.div-toggle-head').each(function () {
+        
+        var id = $(this).attr('id');
+        var link = $(this.children[0]);
+        var target = $(this.nextSibling);
+        var varname='crawler_toggle-'+id+location.search;
+        
+        var bIsOpen=localStorage.getItem(varname);
+
+        if(bIsOpen==0){
+            $(link).removeClass('open');
+            $(target).hide();
+        } 
+        if(bIsOpen==1){
+            $(link).addClass('open');
+            $(target).show();
+        } 
+
+        // add onclick event
+        $(this).click(function () {
+            return toggleAreas(this);
+        });
+    });
+}
+function toggleAreas(oDiv){
+
+    var id = $(oDiv).attr('id');
+    var varname='crawler_toggle-'+id+location.search;
+    var link = $(oDiv.children[0]);
+    var target = $(oDiv.nextSibling);
+
+    var bIsOpen=$(link).hasClass('open');
+    bIsOpen=bIsOpen/1 ? 0 : 1;
+    if(bIsOpen==1){
+        $(link).addClass('open');
+        $(target).slideDown();
+    } else {
+        $(link).removeClass('open');
+        $(target).slideUp();
+    }
+        
+    localStorage.setItem(varname, bIsOpen);
+    return false;
+}
+
+/**
+ * write value of one input to another as base64 encoded string
+ * @param {type} sIdInput
+ * @param {type} sIdOutput
+ * @returns {undefined}
+ */
+function initBase64Input(sIdInput, sIdOutput){
+    var oIn=document.getElementById(sIdInput);
+    var oOut=document.getElementById(sIdOutput);
+    if (oIn && oOut){
+        oIn=document.getElementById(sIdInput);
+        oIn.onchange = function() {
+          oOut.value=btoa(oIn.value);
+          // console.log("IN: " + oIn.value + " | OUT: "+ oOut.value);
+        };
+    }
+}
 // ----------------------------------------------------------------------
 // modal dialog
 // ----------------------------------------------------------------------
@@ -233,30 +284,15 @@ function updateStatus(sUrl){
 // init
 // ----------------------------------------------------------------------
 
-/**
- * write value of one input to another as base64 encoded string
- * @param {type} sIdInput
- * @param {type} sIdOutput
- * @returns {undefined}
- */
-function initBase64Input(sIdInput, sIdOutput){
-    var oIn=document.getElementById(sIdInput);
-    var oOut=document.getElementById(sIdOutput);
-    if (oIn && oOut){
-        oIn=document.getElementById(sIdInput);
-        oIn.onchange = function() {
-          oOut.value=btoa(oIn.value);
-          console.log("IN: " + oIn.value + " | OUT: "+ oOut.value);
-        };
-    }
-}
-    
+
+
 window.addEventListener('load', function() {
 
     initDrawH3list();
     initSoftscroll();
     initExtendedView();
     initBase64Input('e_url', 'urlbase64');
+    initToggleAreas();
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

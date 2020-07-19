@@ -1301,13 +1301,14 @@ class ressourcesrenderer extends crawler_base {
             $iToggleCounter=0;
         }
         $iToggleCounter++;
+        $sDivIdHead='div-toggle-head-'.$iToggleCounter;
         $sDivId='div-toggle-'.$iToggleCounter;
         return ''
-            . '<div class="div-toggle-head">'
+            . '<div class="div-toggle-head" id="'.$sDivIdHead.'">'
                 . $this->oHtml->getTag('a', array(
                     'href'=>'#',
                     'class'=>($bIsOpen ? 'open' : ''),
-                    'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
+                    // 'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
                     'label'=>$sHeader,
                 ))
             . '</div>'

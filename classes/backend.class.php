@@ -1798,6 +1798,7 @@ class backend extends crawler_base {
          * @return string
          */
         private function _getHtmlLegend($Content, $sPrefix=''){
+            global $oRenderer;
             $sLegend='';
             if(is_array($Content)){
                 foreach ($Content as $sKey) {
@@ -1809,13 +1810,16 @@ class backend extends crawler_base {
             } else {
                 $sLegend=$Content;
             }
-            
+            return $oRenderer->renderToggledContent($this->lB('label.legend'),$sLegend, true);
+            /*
             return ''
-            . '<div class="legendlabel"><strong>'.$this->lB('label.legend').':</strong></div>'
+            . '<div class="legendlabel div-toggle-head"><strong>'.$this->lB('label.legend').':</strong></div>'
             . '<div class="legend">'
                 .$sLegend
             .'</div>'
             ;
+             * 
+             */
         }
 
     // ----------------------------------------------------------------------

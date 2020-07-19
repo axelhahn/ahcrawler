@@ -189,30 +189,37 @@ if ($this->_bIsPublic){
         $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
         $aTbl[]=array($this->lB('sslcheck.validleft'), $iDaysleft);
         
-        $aTblLevel=array();
-        $aTblLevel[]=array('',$this->lB('sslcheck.type'), $this->lB('sslcheck.type.description'), $this->lB('sslcheck.type.usage'));
+        $sTblLevel='<thead><tr>'
+                . '<th>'.$this->lB('sslcheck.type').'</th>'
+                . '<th>'.$this->lB('sslcheck.type.description').'</th>'
+                . '<th>'.$this->lB('sslcheck.type.usage').'</th>'
+                . '</tr></thead><tbody>';
         foreach(array(
-            'EV', 
-            'Business SSL',
-            'selfsigned',
-            'none',
-        ) as $sKey){
-            // $bActive=$aSslInfos['type']==$this->lB('sslcheck.type.'.$sKey);
+            'EV'=>'ok', 
+            'Business SSL'=>'ok',
+            'selfsigned'=>'warning',
+            'none'=>'error',
+        ) as $sKey=>$sClass){
             $bActive=$aSslInfos['type']==$sKey;
-            $aTblLevel[]=array(
-                ($bActive ? ' >> ' : ''),
-                ($bActive ? '<strong>'.$this->lB('sslcheck.type.'.$sKey).'</strong>' : $this->lB('sslcheck.type.'.$sKey)), 
-                $this->lB('sslcheck.type.'.$sKey.'.description'),
-                $this->lB('sslcheck.type.'.$sKey.'.usage')
-            );
+            
+            // $sTblLevel.='<tr'.($bActive ? ' class="'.$sClass.'"' : '') .'>'
+            $sTblLevel.='<tr '.($bActive ? ' class="'.$sClass.'"' : '') .'>'
+                    . '<td class="'.$sClass.'">'.($bActive ? '<strong>'.$this->lB('sslcheck.type.'.$sKey).'</strong>' : $this->lB('sslcheck.type.'.$sKey)).'</td>'
+                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.description').'</td>'
+                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.usage').'</td>'
+                    . '</tr>';
         }
+        $sTblLevel.='</tbody>';
 
         $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>';
+        /*
         $sReturn.= (!$this->_bIsPublic) ? $oRenderer->renderContextbox(
                 $oRenderer->renderBookmarklet('sslcheck')
                 , $this->lB('bookmarklet.sslcheck.head')
             ) : ''
             . '<div style="clear: left;"></div>';
+         * 
+         */
         $sReturn.= $oRenderer->renderContextbox(
                 '<p>'.$this->lB('sslcheck.context.links').'</p>'
                 . '<ul>'
@@ -235,7 +242,7 @@ if ($this->_bIsPublic){
 
         . '<h3>'.$this->lB('sslcheck.type.levels').'</h3>'
         . '<p>'.sprintf($this->lB('sslcheck.type.intro'), $this->lB('sslcheck.type.'.$aSslInfos['type'])).'</p>'
-        . $this->_getSimpleHtmlTable($aTblLevel, 1)
+        .'<table class="pure-table pure-table-horizontal datatable">'.$sTblLevel.'</table>'
 
 
         . '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
@@ -355,10 +362,7 @@ if ($this->_bIsPublic){
                 }
             } else {
                 $sReturn.='<br>'
-                .$oRenderer->renderMessagebox(
-                    sprintf($this->lB('status.emptyindex'), $this->_sTab),
-                    'warning'
-                )
+                .$oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning')
                 ;
             }
         } // if (!$this->_bIsPublic) 

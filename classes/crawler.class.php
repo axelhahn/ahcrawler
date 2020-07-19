@@ -599,6 +599,7 @@ class crawler extends crawler_base{
         
         // print_r($this->aOptions); $oStatus->finishAction($sMsgId);die();
         $self = $this;
+        $rollingCurl = new \RollingCurl\RollingCurl();
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
@@ -608,7 +609,6 @@ class crawler extends crawler_base{
             $bPause = true;
             $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()). ' ... ');
             
-            $rollingCurl = new \RollingCurl\RollingCurl();
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }

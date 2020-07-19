@@ -17,10 +17,18 @@ $aCountByStatuscode=$this->_getStatusinfos(array('_global','linkchecker'));
 $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
 if (!$iRessourcesCount) {
     $iPagesCount=$aCountByStatuscode['_global']['pages']['value'];
+    $sReturn.='<h3>'.$this->lB("error.not-enough-data").'</h3>';
     if (!$iPagesCount) {
-        $sReturn.='<br>'.$this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
+        $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     }
-    return $sReturn.'<br>'.$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+    return $sReturn.$oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+}
+
+// crawling of ressources is in progress?
+if(!isset($aCountByStatuscode['linkchecker'])){
+    return $sReturn
+        .'<h3>'.$this->lB("error.not-enough-data").'</h3>'
+        .$oRenderer->renderMessagebox(sprintf($this->lB('ressources.crawler-not-finished-yet'), $this->_sTab), 'warning');
 }
 
 $iExternal=$this->oDB->count('ressources',array('siteid'=>$this->_sTab,'isExternalRedirect'=>'1'));

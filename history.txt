@@ -10,6 +10,12 @@
 
 ----------------------------------------------------------------------
 
+2020-07-19: v0.127
+  * UPDATE: speed up crawler/ indexer
+  * UPDATE: ssl check colored table for certificate types
+  * UPDATE: legends can be toggled now. status of toggled elements will be saved in localstorage
+  * UPDATE: http header is shown i backend if no ressources were crawled yet
+
 2020-07-07: v0.126
   * FIX: ssl check Business SSL was detected as EV sometimes
 

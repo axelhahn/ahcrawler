@@ -856,6 +856,7 @@ class ressources extends crawler_base {
         }
 
         $this->cliprint('info', "\n\n----- start http requests<br>\n");
+        $rollingCurl = new \RollingCurl\RollingCurl();
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
@@ -865,7 +866,6 @@ class ressources extends crawler_base {
             $bPause = true;
             $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()) . ' ... ');
             $self = $this;
-            $rollingCurl = new \RollingCurl\RollingCurl();
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
             }

@@ -15,14 +15,15 @@
     --tile-color:#789;
     
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
-    --status-bg-error-flat:#eaa;
-    --status-bg-warning:radial-gradient(#fff,#eb8);
-    --status-bg-warning-flat:#eb8;
+    --status-bg-error-flat:#ebb;
     --status-bg-ok:radial-gradient(#fff,#ac8);
+    --status-bg-ok-flat:#cdb;
+    --status-bg-warning:radial-gradient(#fff,#eb8);
+    --status-bg-warning-flat:#fdb;
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
     --status-color-error:#855;
+    --status-color-ok:#585;
     --status-color-warning:#975;
-    --status-color-ok:#694;
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
@@ -320,15 +321,22 @@ ul.tiles a.tile:hover{
 .bar{width: 100%; border:none;}
 .bar div{border-right: 1px solid rgba(0,0,0,0.1); text-align:center; padding: 1em 0;}
 
-.bar .bar-errors,   ul.tiles li a.error,   ul.error   a.tile, span.error{   background:var(--status-bg-error); color:var(--status-color-error);}
-.bar .bar-warnings, ul.tiles li a.warning, ul.warning a.tile, span.warning{ background:var(--status-bg-warning); color:var(--status-color-warning);}
-div.message-ok, .bar .bar-ok,       ul.tiles li a.ok,      ul.ok      a.tile, span.ok{      background:var(--status-bg-ok); color:var(--status-color-ok);}
-.bar .bar-todo,     ul.todo  a.tile,                          span.todo{    background:var(--status-bg-todo); color:var(--status-color-todo);}
+.bar .bar-errors,   ul.tiles li a.error,   ul.error   a.tile, span.error,   tr.error, td.error{ background:var(--status-bg-error); color:var(--status-color-error);}
+.bar .bar-warnings, ul.tiles li a.warning, ul.warning a.tile, span.warning, tr.warning, td.warning{ background:var(--status-bg-warning); color:var(--status-color-warning);}
+.bar .bar-ok,       ul.tiles li a.ok,      ul.ok a.tile,      span.ok,      tr.ok     , td.ok{ background:var(--status-bg-ok); color:var(--status-color-ok);}
+.bar .bar-todo,     ul.todo a.tile,                           span.todo{    background:var(--status-bg-todo); color:var(--status-color-todo);}
 
-span.error{   background:var(--status-bg-error-flat);}
-span.warning{   background:var(--status-bg-warning-flat);}
+span.error,   tr.error,   td1.error{   background:var(--status-bg-error-flat);}
+span.warning, tr.warning, td1.warning{ background:var(--status-bg-warning-flat);}
 
 span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
+
+div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
+div.message{border-radius: 0.5em; border: var(--boxes-border); padding: 0.2em 1em; margin: 0.5em 0;}
+
+div.message-ok,      span.ok,      tr.ok,      td1.ok      { background:var(--status-bg-ok-flat);      color:var(--status-color-ok);}
+div.message-warning, span.warning, tr.warning, td1.warning { background:var(--status-bg-warning-flat); color:var(--status-color-warning);}
+div.message-error,   span.error,   tr.error,   td1.error   { background:var(--status-bg-error-flat);   color:var(--status-color-error);}
 
 /* --- color for pie chart --- */
 
@@ -349,16 +357,6 @@ span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#97
 
 .more:before{content: ' (...)'; color: #f00; background: #fee;}
 
-div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
-
-div.message{border-radius: 0.5em; border: var(--boxes-border); padding: 0.2em 1em; margin: 0.5em 0;}
-div.message-ok{background: #bdb; color:#383;}
-div.message-warning{background: #fdb; color:#975;}
-div.message-error{background: #ebb; color:#955;}
-
-.legendlabel{background:rgba(0,0,0,0.1); margin: 1em 1em 0;padding: 1em; display: inline-block;}
-.legend{background:rgba(0,0,0,0.02); border: 2px dashed #ccc;  padding: 1em; margin: 0 1em 1m;}
-.legend strong{color:#678; font-size: 110%;}
 /* 
 --------------------------------------------------------------------------------
     action box
@@ -471,6 +469,8 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .pure-table td .key2{color:#995599;font-style: italic;}
 .pure-table td .value{color:#0066cc;}
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
+
+/* --- ssl checks ---  */
 
 /* --- http response header tags ---  */
 .pure-table tr.cache{background: #e0e0f8; color:#44a;}
