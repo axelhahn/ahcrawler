@@ -117,6 +117,7 @@ if ($this->_bIsPublic){
 // ------------------------------------------------------------
 
     // --- http only?
+    $aSslInfos=array('type'=>'none');
     if(!$sMyUrl){
         if (!$this->_bIsPublic){
             $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>';
@@ -126,7 +127,7 @@ if ($this->_bIsPublic){
     } else if(strstr($sMyUrl, 'http://')){
         $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>';
         $sReturn.= $oRenderer->renderTileBar(
-                $oRenderer->renderTile('error', $this->lB('sslcheck.httponly'), $this->lB('sslcheck.httponly.description'), $this->lB('sslcheck.httponly.hint')) 
+                $oRenderer->renderTile('error', $this->_getIcon('ssl.type-none').$this->lB('sslcheck.httponly'), $this->lB('sslcheck.httponly.description'), $this->lB('sslcheck.httponly.hint')) 
             )
             . '<div style="clear: both;"></div>'
         ;
@@ -155,61 +156,43 @@ if ($this->_bIsPublic){
             }
             $sOwnerInfos=$this->_getSimpleHtmlTable($aTblOwner, false);
         }
-        $aTbl=array();
-        $aTbl[]=array(
-            $this->lB('sslcheck.thlabel'), 
-            $this->lB('sslcheck.thvalue'), 
-        );
+        $aCData=$oSsl->checkCertdata();
+        $sTbl='<thead><tr>'
+                . '<th>'.$this->lB('sslcheck.thlabel').'</th>'
+                . '<th>'.$this->lB('sslcheck.thvalue').'</th>'
+                . '</tr></thead><tbody>';
+        
         foreach(array(
             'CN', 
-            'signatureTypeSN',
             'type',
             'domainowner',
             'issuer',
             'CA',
             'DNS',
+            'signatureTypeSN',
             'validfrom',
             'validto',
         ) as $sKey){
-            $aTbl[]=array(
-                $this->lB('sslcheck.'.$sKey), 
-                
-                ($sKey=='type' 
-                        ? '<strong>'.$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
-                            . $this->lB('sslcheck.type.usage').':<br>'
-                            . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
-                        : ($sKey=='domainowner' 
-                            ? $sOwnerInfos
-                            : $aSslInfos[$sKey]
-                          )
-                    )
-            );
+            $sTbl.='<tr '.(isset($aCData['keys'][$sKey]) && $aCData['keys'][$sKey]!=='ok' ? ' class="'.$aCData['keys'][$sKey].'"' : '') .'>'
+                    . '<td>'.$this->lB('sslcheck.'.$sKey).'</td>'
+                    . '<td>'
+                        .($sKey=='type' 
+                                ? '<strong>'.$this->_getIcon('ssl.type-'.$aSslInfos['type']).$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
+                                    . $this->lB('sslcheck.type.usage').':<br>'
+                                    . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
+                                : ($sKey=='domainowner' 
+                                    ? $sOwnerInfos
+                                    : $aSslInfos[$sKey]
+                                )
+                        )
+                    
+                    .'</td>'
+                . '</tr>';
         }
 
         $iDaysleft = round((date("U", strtotime($aSslInfos['validto'])) - date('U')) / 60 / 60 / 24);
         $aTbl[]=array($this->lB('sslcheck.validleft'), $iDaysleft);
         
-        $sTblLevel='<thead><tr>'
-                . '<th>'.$this->lB('sslcheck.type').'</th>'
-                . '<th>'.$this->lB('sslcheck.type.description').'</th>'
-                . '<th>'.$this->lB('sslcheck.type.usage').'</th>'
-                . '</tr></thead><tbody>';
-        foreach(array(
-            'EV'=>'ok', 
-            'Business SSL'=>'ok',
-            'selfsigned'=>'warning',
-            'none'=>'error',
-        ) as $sKey=>$sClass){
-            $bActive=$aSslInfos['type']==$sKey;
-            
-            // $sTblLevel.='<tr'.($bActive ? ' class="'.$sClass.'"' : '') .'>'
-            $sTblLevel.='<tr '.($bActive ? ' class="'.$sClass.'"' : '') .'>'
-                    . '<td class="'.$sClass.'">'.($bActive ? '<strong>'.$this->lB('sslcheck.type.'.$sKey).'</strong>' : $this->lB('sslcheck.type.'.$sKey)).'</td>'
-                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.description').'</td>'
-                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.usage').'</td>'
-                    . '</tr>';
-        }
-        $sTblLevel.='</tbody>';
 
         $sReturn.= '<h3>' . $this->lB('sslcheck.label') . '</h3>';
         /*
@@ -233,25 +216,54 @@ if ($this->_bIsPublic){
             . '</p>'
 
             .$oRenderer->renderTileBar(
-                $oRenderer->renderTile($sStatus, $aSslInfos['CN'], $aSslInfos['issuer'] ? $aSslInfos['issuer'] : $this->lB('sslcheck.type.selfsigned'), $aSslInfos['validto'].' ('.$iDaysleft.' d)')
+                $oRenderer->renderTile($sStatus, $this->_getIcon('ssl.type-'.$aSslInfos['type']).$aSslInfos['CN'], $aSslInfos['issuer'] ? $aSslInfos['issuer'] : $this->lB('sslcheck.type.selfsigned'), $aSslInfos['validto'].' ('.$iDaysleft.' d)')
             )
         . '<div style="clear: both;"></div>'
                 
-        . $this->_getSimpleHtmlTable($aTbl, 1)
-                
+        .'<table class="pure-table pure-table-horizontal datatable">'.$sTbl.'</table>'
+        // . $this->_getSimpleHtmlTable($aTbl, 1)
+        ;
+    }
+        $sTblLevel='<thead><tr>'
+                . '<th>'.$this->lB('sslcheck.type').'</th>'
+                . '<th>'.$this->lB('sslcheck.type.description').'</th>'
+                . '<th>'.$this->lB('sslcheck.type.usage').'</th>'
+                . '</tr></thead><tbody>';
+        foreach(array(
+            'EV'=>'ok', 
+            'Business SSL'=>'ok',
+            'selfsigned'=>'warning',
+            'none'=>'error',
+        ) as $sKey=>$sClass){
+            $bActive=isset($aSslInfos['type']) && $aSslInfos['type']==$sKey;
+            
+            // $sTblLevel.='<tr'.($bActive ? ' class="'.$sClass.'"' : '') .'>'
+            $sTblLevel.='<tr '.($bActive ? ' class="'.$sClass.'"' : '') .'>'
+                    . '<td class="'.$sClass.'">'
+                        . $this->_getIcon('ssl.type-'.$sKey)
+                        .($bActive ? '<strong>'.$this->lB('sslcheck.type.'.$sKey).'</strong>' : $this->lB('sslcheck.type.'.$sKey))
+                    .'</td>'
+                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.description').'</td>'
+                    . '<td>'.$this->lB('sslcheck.type.'.$sKey.'.usage').'</td>'
+                    . '</tr>';
+        }
+        $sTblLevel.='</tbody>';
+    
 
-        . '<h3>'.$this->lB('sslcheck.type.levels').'</h3>'
-        . '<p>'.sprintf($this->lB('sslcheck.type.intro'), $this->lB('sslcheck.type.'.$aSslInfos['type'])).'</p>'
-        .'<table class="pure-table pure-table-horizontal datatable">'.$sTblLevel.'</table>'
+        $sReturn.= '<h3>'.$this->lB('sslcheck.type.levels').'</h3>'
+            . '<p>'.sprintf($this->lB('sslcheck.type.intro'), $this->lB('sslcheck.type.'.$aSslInfos['type'])).'</p>'
+            .'<table class="pure-table pure-table-horizontal datatable">'.$sTblLevel.'</table>'
+        ;
 
-
-        . '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
-        . '<p>'.$this->lB('sslcheck.raw.hint').'</p>'
-        . $oRenderer->renderToggledContent(
+        if(isset($aSslInfosAll)){
+            $sReturn.= '<h3>' . $this->lB('sslcheck.raw') . '</h3>'
+            . '<p>'.$this->lB('sslcheck.raw.hint').'</p>'
+            . $oRenderer->renderToggledContent(
                 $this->lB('sslcheck.raw.openclose'),
                 '<pre>'.str_replace(array('\n"', '\n'), array('"', '<br>'), json_encode($aSslInfosAll, JSON_PRETTY_PRINT)).'</pre>', false
                 )
-        ;
+            ;
+        }
 
         // ------------------------------------------------------------
         // scan http ressources
@@ -366,5 +378,4 @@ if ($this->_bIsPublic){
                 ;
             }
         } // if (!$this->_bIsPublic) 
-}
 return $sReturn;

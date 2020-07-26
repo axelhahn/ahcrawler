@@ -205,6 +205,11 @@ class backend extends crawler_base {
             'ressources.showtable'=>'fas fa-table',
             'ressources.showreport'=>'far fa-file',
             'ressources.ignorelimit'=>'fas fa-unlock',
+
+            'ssl.type-none'=>'fas fa-unlock',
+            'ssl.type-selfsigned'=>'fas fa-user-lock',
+            'ssl.type-Business SSL'=>'fas fa-lock',
+            'ssl.type-EV'=>'fas fa-shield-alt',
             
         ),
         'button'=>array(

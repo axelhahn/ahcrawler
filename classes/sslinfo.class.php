@@ -139,6 +139,7 @@ class sslinfo {
             'errors' => [],
             'warnings' => [],
             'ok' => [],
+            'keys' => [],
             'status' => false,
         ];
         if($url){
@@ -167,10 +168,13 @@ class sslinfo {
 
         if ($iDaysleft > $this->_iWarnBeforeExpiration) {
             $aReturn['ok'][] = "Certificate is still valid for $iDaysleft more days.";
+            $aReturn['keys']['validto']='ok';
         } elseif ($iDaysleft > 0) {
             $aReturn['warnings'][] = "Certificate expires in $iDaysleft days.";
+            $aReturn['keys']['validto']='warning';
         } else {
             $aReturn['errors'][] = "Certificate is invalid for " . (-$iDaysleft) . " days.";
+            $aReturn['keys']['validto']='error';
         }
 
         // ----- current domain is part of dns names?
@@ -193,8 +197,10 @@ class sslinfo {
         
         if ($bInDnsList) {
             $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate.";
+            $aReturn['keys']['DNS']='ok';
         } else {
             $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
+            $aReturn['keys']['DNS']='error';
         }
 
         /*
@@ -288,7 +294,7 @@ class sslinfo {
         $sReturn = 'selfsigned';
         if(isset($certinfo['subject']['jurisdictionC'])){
             $sReturn = 'EV';
-        } else if (isset($certinfo['issuer']['O'])){
+        } else if (isset($certinfo['extensions']['authorityInfoAccess'])){
             $sReturn = 'Business SSL';
         }
         return $sReturn;
