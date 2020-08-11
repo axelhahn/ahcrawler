@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2020-08-11: v0.129
+  * UPDATE: settings - searchindex: do not remove header tag as default option
+  * UPDATE: Show hint of low importance for SEO
+  * UPDATE: setup keyword length: allow 0 to "disable" keyword check
+
 2020-07-26: v0.128
   * FIX: ssl check self signed with org metadata was detected as Business SSL
   * FIX: ssl check higlghts warning or error

@@ -17,11 +17,8 @@ $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $aCountByStatuscode=$this->_getStatusinfos(array('_global','htmlchecks'));
 $iPagesTotalCount=$aCountByStatuscode['_global']['pages']['value'];
 if (!$iPagesTotalCount) {
-    return $sReturn.'<br>'.
-        $this->_getMessageBox(
-            sprintf($this->lB('status.emptyindex'), $this->_sTab),
-            'warning'
-        )
+    return $sReturn.'<br>'
+        .$oRenderer->renderMessagebox(sprintf($this->lB('status.emptyindex'), $this->_sTab),'warning')
         ;
 }
 $oCrawler=new crawler($this->_sTab);
@@ -143,6 +140,7 @@ if ($iCountShortDescr) {
 if ($iCountShortKeywords) {
     $iCountNoKeywords=$this->_getHtmlchecksCount('keywords', 1);
     $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
+        .$oRenderer->renderMessagebox($this->lB('htmlchecks.keywords-seo'),'warning')
         . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iPagesCount, $iCountShortKeywords-$iCountNoKeywords, $iCountNoKeywords)    
         . '</div>'

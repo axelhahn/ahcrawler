@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.128',
-        'date' => '2020-07-26',
+        'version' => '0.129',
+        'date' => '2020-08-11',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -86,7 +86,8 @@ class crawler_base {
                 // '<!--.*?-->',
                 // '<link rel[^<>]*>',
                 '<footer[^>]*>.*?</footer>',
-                '<header[^>]*>.*?</header>',
+                // The <header> element represents a container for introductory content or a set of navigational links.
+                // '<header[^>]*>.*?</header>',
                 '<nav[^>]*>.*?</nav>',
                 '<script[^>]*>.*?</script>',
                 '<style[^>]*>.*?</style>',

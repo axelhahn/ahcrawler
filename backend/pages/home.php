@@ -224,12 +224,13 @@ if(!$this->_configExists() ){
             }
             
             
-            $urlFavicon = preg_replace('#^(http.*//.*)/.*$#U', '$1', $this->aProfileSaved['searchindex']['urls2crawl'][0] ) . "/favicon.ico";
+            // $urlImage = '../image-'.$iProfileId.'.jpg';
+            $urlImage = false;
 
             $sHtml.=''
                 // .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 .$this->_getNavi2($this->_getProfiles(), false, '')
-
+                    
                 // profile 
                 .$oRenderer->renderContextbox(
                         ($this->aProfileSaved['description'] ? '<strong>'.$this->aProfileSaved['description'].'</strong><hr>' : '')
@@ -248,13 +249,15 @@ if(!$this->_configExists() ){
                     
                         $this->lB('context.infos')
                         )
-                .'<h3><img src="'.$urlFavicon .'" width="32" height="32"> '.$this->aProfileSaved['label'].'</h3>'
+                .'<h3>'.$this->aProfileSaved['label'].'</h3>'
                 
 
                     
                     
                 // . '<br><br>'
-                .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
+                . ($sTiles2 ? $oRenderer->renderTileBar($sTiles2) : '')
+                . ($urlImage ? '<img src="'.$urlImage.'" class="websnapshot">' : '')
+                .'<div style="clear: both;"></div>'
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'
                 // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'

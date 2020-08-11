@@ -280,6 +280,12 @@ ul.tiles a.tile:hover{
     box-shadow: 0 0 5px #fff, 0 0 1em #aaa;
 }
 
+img.websnapshot{
+    border: 0.1em solid #fff;
+    box-shadow: 0 0 1em #ccc;
+    border-radius: 0.5em;
+    max-width: 50%;
+}
 
 .div-toggle-head{
     padding: 0em;
@@ -394,6 +400,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .ico-security{color:#0c6;}
 .ico-http{color:#083;}
 .ico-unknown{color:#aaa;}
+.ico-error{color:#c42;}
 .ico-warn{color:#fa2;}
 .ico-warning{color:#fa2;}
 /* http header */

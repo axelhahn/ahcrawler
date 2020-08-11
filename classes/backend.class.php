@@ -206,7 +206,7 @@ class backend extends crawler_base {
             'ressources.showreport'=>'far fa-file',
             'ressources.ignorelimit'=>'fas fa-unlock',
 
-            'ssl.type-none'=>'fas fa-unlock',
+            'ssl.type-none'=>'fas fa-lock-open',
             'ssl.type-selfsigned'=>'fas fa-user-lock',
             'ssl.type-Business SSL'=>'fas fa-lock',
             'ssl.type-EV'=>'fas fa-shield-alt',

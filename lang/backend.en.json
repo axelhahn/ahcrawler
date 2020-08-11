@@ -424,6 +424,7 @@
     "htmlchecks.tableShortTitles.description": "Here is a list with pages having a title less than <em>%s<\/em> characters. Enter a slightly longer phrase describing the page title (max. 100 characters)",
     "htmlchecks.tableShortDescription": "Too short description in meta tags (%s)",
     "htmlchecks.tableShortDescription.description": "Here is a list with pages having a description less than <em>%s<\/em> characters. Search engines display the description text next to the title in the results. Write in one sentence what the visitor can find on the page",
+    "htmlchecks.keywords-seo": "Meta keywords are NOT used by internet search engines. So they have no importance for SEO optimization.",
     "htmlchecks.tableShortKeywords": "Not enough keywords in the meta tags (%s)",
     "htmlchecks.tableShortKeywords.description": "Here is a list with pages having a keyword list less than <em>%s<\/em> characters. Use max 20 keywords, separated by commas. The most important keywords should be mentioned first.",
     "htmlchecks.tableLoadtimePages": "Long loading pages (%s)",

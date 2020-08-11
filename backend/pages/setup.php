@@ -579,7 +579,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
                     'name'=>'options[analysis][MinKeywordsLength]',
                     'placeholder'=>$this->aDefaultOptions['analysis']['MinKeywordsLength'],
-                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && $aOptions['options']['analysis']['MinKeywordsLength'] 
+                    'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && (int)$aOptions['options']['analysis']['MinKeywordsLength'] >= 0
                         ? $aOptions['options']['analysis']['MinKeywordsLength'] 
                         : $this->aDefaultOptions['analysis']['MinKeywordsLength'],
                     ), false)
