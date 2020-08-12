@@ -26,7 +26,7 @@ $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
 $oCrawler = new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();
 if (!$iUrls) {
-    $sReturn .= $this->_getMessageBox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
+    $sReturn .= $oRenderer->renderMessagebox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     return $sReturn;
 }
 

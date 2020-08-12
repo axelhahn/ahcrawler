@@ -85,7 +85,7 @@ if ($this->_bIsPublic || isset($_GET['url'])){
     if (!$iPagesCount) {
         return $sReturn
             .'<h3>'.$this->lB("error.not-enough-data").'</h3>'
-            .$this->_getMessageBox(
+            . $oRenderer->renderMessagebox(
                 sprintf($this->lB('status.emptyindex'), $this->_sTab),
                 'warning'
             )
@@ -113,7 +113,7 @@ if ($this->_bIsPublic || isset($_GET['url'])){
         if (!$iRessourcesCount) {
             return $sReturn
                 .'<h3>'.$this->lB("error.not-enough-data").'</h3>'
-                .$this->_getMessageBox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
+                . $oRenderer->renderMessagebox(sprintf($this->lB('ressources.empty'), $this->_sTab), 'warning');
         }
 
         // with get param id: get it from ressources (not pages!)
@@ -130,7 +130,7 @@ if ($this->_bIsPublic || isset($_GET['url'])){
             )
         );
         if (count($aPagedata)===0){
-            $sReturn.=$this->_getMessageBox(sprintf($this->lB('httpheader.nopage-with-id') , $iResId) .'<br>' . $this->oDB->last(), 'warning');
+            $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('httpheader.nopage-with-id') , $iResId) .'<br>' . $this->oDB->last(), 'warning');
             return $sReturn;
         }
     }
@@ -198,7 +198,7 @@ $sTiles='';
 
         $sWarnings.= ''
                 . '<h4 id="warnunknown">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')).'</h4>'
-                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.unknown.description'), 'warning')
+                . $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning')
                 ;
         foreach($aUnknownheader as $sKey=>$aHeaderitem){
             $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.unknown.tile'), $aHeaderitem['var'], $aHeaderitem['value'])
@@ -220,7 +220,7 @@ $sTiles='';
         $iWarnings+=$iUnwanted;
         $sWarnings.= ''
                 . '<h4 id="warnunwanted">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')).'</h4>'
-                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.description'), 'warning');
+                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.description'), 'warning');
         foreach($aWarnheader as $sKey=>$aHeaderitem){
             $sWarnings .= $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
@@ -249,7 +249,7 @@ $sTiles='';
         $iWarnings+=$iNonStandard;
         $sWarnings.= ''
             . '<h4 id="warnnonstandard">'.$this->lB('httpheader.header.non-standard').'</h4>'
-            . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.non-standard'), 'warning')
+            . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.non-standard'), 'warning')
             . '<ul>'
             ;
         foreach($aNonStdHeader as $sKey=>$aHeaderitem){
@@ -271,7 +271,7 @@ $sTiles='';
         $iWarnings++;
         
         $sWarnings.= '<h4 id="warnnocache">'.str_replace('<br>', ' ', $this->lB('httpheader.header.cache')).'</h4>'
-                .$this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.nocache'), 'warning').'<br>'
+                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocache'), 'warning').'<br>'
                 /*
                 . $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $this->lB('httpheader.header.cache'), $oRenderer->renderShortInfo('miss'), '', '')
@@ -285,7 +285,7 @@ $sTiles='';
     if (!isset($aFoundTags['compression'])){
         $iWarnings++;
         $sWarnings.= '<h4 id="warnnocompression">'.str_replace('<br>', ' ', $this->lB('httpheader.header.compression')).'</h4>'
-                . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('httpheader.warnings.nocompression'), 'warning').'<br>'
+                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocompression'), 'warning').'<br>'
                 /*
                 .$oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $this->lB('httpheader.header.compression'), $oRenderer->renderShortInfo('miss'), '', '')

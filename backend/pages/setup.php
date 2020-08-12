@@ -78,7 +78,7 @@ if(isset($_POST['action'])){
                 } else {
                     // $sReturn.='DEBUG: '.$_POST['currentpassword'] . ' - md5: ' . md5($_POST['currentpassword']).'<br>';
                     // $sReturn.='DEBUG: vs current '.$aOptions['options']['auth']['password'].'<br>';
-                    $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error.wrong-current-pw'), 'error')
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error.wrong-current-pw'), 'error')
                         .$sBtnBack
                         ;
                     return $sReturn;
@@ -101,7 +101,7 @@ if(isset($_POST['action'])){
                     $_POST['options']['auth']['password']=md5($_POST['pw1']);
                     $this->_setUser('');
                 } else {
-                    $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error.new-password'), 'error')
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error.new-password'), 'error')
                         .$sBtnBack
                         ;
                     return $sReturn;
@@ -111,7 +111,7 @@ if(isset($_POST['action'])){
             
             // check: if a user was set then a password must exist
             if($_POST['options']['auth']['user'] && !isset($_POST['options']['auth']['password'])) {
-                $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error.user-needs-a-password'), 'error')
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error.user-needs-a-password'), 'error')
                     .$sBtnBack
                     ;
                 return $sReturn;
@@ -185,7 +185,7 @@ if(isset($_POST['action'])){
             try{
                 $oDbtest=new Medoo\Medoo($this->_getRealDbConfig($aOptions['options']['database']));
             } catch (Exception $ex) {
-                $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error.wrong-dbsettings'), 'error')
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error.wrong-dbsettings'), 'error')
                     .(isset($oDbtest) ? print_r($oDbtest->error(), 1) : '')
                     .$sBtnBack
                     ;
@@ -199,14 +199,14 @@ if(isset($_POST['action'])){
            
             // $sReturn.='<pre>new options: '. htmlentities(print_r($aOptions['options'], 1)).'</pre>'; die($sReturn);
             if ($this->_saveConfig($aOptions)){
-                $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.ok'), 'ok');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.ok'), 'ok');
             } else {
-                $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error'), 'error');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error'), 'error');
             }
             break;
             ;;
         default: 
-            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
+            $sReturn.=$oRenderer->renderMessagebox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
     }
     
     $sReturn.=$sBtnContinue;
@@ -272,7 +272,7 @@ if (isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
 }
 
 $sReturn.=(!isset($_SERVER['HTTPS'])
-            ? $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('setup.error-no-ssl'), 'warning')
+            ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning')
             : ''
         ).'
         <br>

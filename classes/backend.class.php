@@ -761,6 +761,7 @@ class backend extends crawler_base {
     protected function _getMessageBox($sMessage, $sLevel='warning'){
         
         return '<div class="message message-'.$sLevel.'">'
+                . 'DEPRECATED $oBackend->_getMessageBox()!!!<br>'
                 // . $oRenderer->renderShortInfo($sLevel)
                 . $sMessage
                 . '</div>'
@@ -1527,7 +1528,7 @@ class backend extends crawler_base {
             return '';
         }
         return $this->_checkAuth() && $this->oUpdate->hasUpdate()
-            ? $this->_getMessageBox(
+            ? $oRenderer->renderMessagebox(
                     sprintf($this->lB('update.available-yes') , $this->oUpdate->getLatestVersion()) 
                     .' '
                     . '<a href="?page=update">'.$this->lB('nav.update.label').'</a>'

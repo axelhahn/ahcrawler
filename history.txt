@@ -12,6 +12,7 @@
 
 2020-08-xx: v0.130
   * UPDATE: move datatable initialisation into file to remove inline scripts
+  * INTERNAL: replace message box $oRenderer->renderMessagebox()
 
 2020-08-11: v0.129
   * UPDATE: settings - searchindex: do not remove header tag as default option

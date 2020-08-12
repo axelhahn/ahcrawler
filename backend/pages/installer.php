@@ -60,7 +60,7 @@ if(isset($_POST) && is_array($_POST) && count($_POST)){
         }
         
     } catch (Exception $ex) {
-        $sReturn.=$this->_getMessageBox($this->lB('setup.program.save.error.wrong-dbsettings'), 'error')
+        $sReturn.= $oRenderer->renderMessagebox($this->lB('setup.program.save.error.wrong-dbsettings'), 'error')
             .(isset($oDbtest) ? print_r($oDbtest->error(), 1) : '')
         ;
     }
@@ -184,7 +184,7 @@ switch ($iStep) {
             'charset'=>(isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8'),
         );
         $sReturn.= (!isset($_SERVER['HTTPS'])
-                ? $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
+                ?  $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
                 : ''
             )
             .'<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'

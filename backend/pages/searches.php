@@ -22,7 +22,7 @@ $iSearches = $this->oDB->count(
         )
 );
 if (!$iSearches) {
-    $sReturn .= $this->_getMessageBox($this->lB('searches.empty'), 'warning');
+    $sReturn .= $oRenderer->renderMessagebox($this->lB('searches.empty'), 'warning');
     return $sReturn;
 }
 $sReturn.='<h3>' . $this->lB('searches.overview') . '</h3>';

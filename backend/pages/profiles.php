@@ -33,7 +33,7 @@ if(isset($_POST['action'])){
     
     switch($_POST['action']){
         case 'deleteprofile':
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.confirm'), htmlentities($aNewProfile['label'])), 'warning')
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.delete.confirm'), htmlentities($aNewProfile['label'])), 'warning')
                         .'<br><form class="" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
                         . $oRenderer->oHtml->getTag('input', array(
                             'type'=>'hidden',
@@ -62,7 +62,7 @@ if(isset($_POST['action'])){
             
         case 'deleteprofileconfirmed':
             if(!isset($aOptions['profiles'][$iProfileId])){
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.warning.wrongprofile'), $iProfileId), 'error')
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.warning.wrongprofile'), $iProfileId), 'error')
                         .$sBtnBack;
                 return $sReturn;
             }
@@ -80,10 +80,10 @@ if(isset($_POST['action'])){
             unset($aOptions['profiles'][$iProfileId]);
             // $sReturn.='<pre>new options: '.print_r($aOptions, 1).'</pre>';
             if ($this->_saveConfig($aOptions)){
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.ok'), $aNewProfile['label']), 'ok');
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.delete.ok'), $aNewProfile['label']), 'ok');
                 $iProfileId=false;
             } else {
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.delete.error'), $aNewProfile['label']), 'error');
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.delete.error'), $aNewProfile['label']), 'error');
             }
             break;;
         // set all aoptions
@@ -93,7 +93,7 @@ if(isset($_POST['action'])){
             // checks
             // --------------------------------------------------
             if(!$aNewProfile['label']){
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.warning.nolabel'), $iProfileId), 'error')
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.warning.nolabel'), $iProfileId), 'error')
                         .$sBtnBack;
                 return $sReturn;
             }
@@ -144,15 +144,15 @@ if(isset($_POST['action'])){
            
             $aOptions['profiles'][$iProfileId]=$aNewProfile;
             if ($this->_saveConfig($aOptions)){
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.save.ok'), $aNewProfile['label']), 'ok');
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.save.ok'), $aNewProfile['label']), 'ok');
                 
             } else {
-                $sReturn.=$this->_getMessageBox(sprintf($this->lB('profile.save.error'), $aNewProfile['label']), 'error');
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.save.error'), $aNewProfile['label']), 'error');
             }
             break;
             ;;
         default: 
-            $sReturn.=$this->_getMessageBox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
+            $sReturn.= $oRenderer->renderMessagebox('ERRROR: unknown action ['.htmlentities($_POST['action']).'] :-/ skipping ... just in case', 'warning');
     }
     
     $sNextUrl=$_SERVER['QUERY_STRING'];
@@ -176,7 +176,7 @@ if(isset($_POST['action'])){
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), true, '?page=home')
         .(!isset($_SERVER['HTTPS'])
-            ? $this->_getMessageBox($oRenderer->renderShortInfo('warn') . $this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
+            ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
             : ''
         )
             /*

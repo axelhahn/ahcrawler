@@ -93,11 +93,11 @@ switch ($sStepName) {
                             array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
                         )
                     )
-                    . '<br>' . $this->_getMessageBox($oRenderer->renderShortInfo('warn') . sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
+                    . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
                     . '<br>'
                     . '<div>'
                 :  
-                    $this->_getMessageBox($oRenderer->renderShortInfo('found'). $this->lB('update.welcome.available-no'), 'ok')
+                    $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
                     .'<br>'
                     .'<br>'
                 
