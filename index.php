@@ -19,7 +19,7 @@
         $oBackend = new backend(false, 'public');
     }
     
-    if(!$oBackend->installationWasDone()){
+    if(!$oBackend->installationWasDone() && !$bIsBackend){
         header('Location: '.$sBackendRel.'/?page=installer');
         die();
     }
