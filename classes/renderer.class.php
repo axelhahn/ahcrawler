@@ -193,34 +193,6 @@ class ressourcesrenderer extends crawler_base {
     }
 
     /**
-     * get html code as script with $(document).ready() to init a datatable 
-     * 
-     * @example
-     * <code>echo $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(50, -1))))</code>
-     * 
-     * @param string  $sSelector   css selector as class or id
-     * @param array   $aOptions    options
-     * @return string
-     */
-    public function renderInitDatatable($sSelector='.datatable', $aOptions=array()){
-        $aLength=array(10,25,50,100,-1);
-        // echo __METHOD__ . '() DEBUG <pre>'.print_r($aOptions, 1).'</pre>';
-        if(!isset($aOptions['lengthMenu'][0]) || !is_array($aOptions['lengthMenu'][0])){
-            $aOptions['lengthMenu']=array($aLength);
-        }
-        if(!isset($aOptions['lengthMenu'][1])){
-            $aOptions['lengthMenu'][1]=$aOptions['lengthMenu'][0];
-            $iAll=array_search(-1, $aOptions['lengthMenu'][1]);
-            if($iAll!==false){
-                $aOptions['lengthMenu'][1][$iAll]='...';
-            }
-        }
-        return "<script>"
-        . "$(document).ready( "
-            . "function () {\$('$sSelector').DataTable( ". json_encode($aOptions)." );} );"
-        . "</script>";
-    }
-    /**
      * render a ressource value and add css class with given array key and
      * the array
      * 

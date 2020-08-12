@@ -277,7 +277,7 @@ if ($this->_bIsPublic){
                 $bShowAll=$this->_getRequestParam('showall');
                 $bShowReport=$this->_getRequestParam('showreport');
 
-                $sTableId='tbl-nonhttpsitems';
+                $sTableId='tableNonhttpsitems';
                 $oRessources=new ressources();
                 $aFields = array('id', 'siteid', 'url', 'http_code', 'ressourcetype', 'type', 'content_type');
                 $aWhere=array('siteid' => $this->_sTab, 'url[~]'=>'http:%');
@@ -366,7 +366,6 @@ if ($this->_bIsPublic){
                     }
                     $sReturn.=(count($aTable) 
                             ? $this->_getHtmlTable($aTable, "db-ressources.", $sTableId)
-                                . $oRenderer->renderInitDatatable('#' . $sTableId)
                                 . $this->_getHtmlLegend(array_keys($aRow), 'db-ressources.')
 
                             : ''

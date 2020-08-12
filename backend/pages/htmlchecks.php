@@ -252,17 +252,4 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
         )
         ;
 
-
-
-// ----------------------------------------------------------------------
-// javascript: define datatables
-// ----------------------------------------------------------------------
-$sReturn.=''
-    . $oRenderer->renderInitDatatable('#tableCrawlerErrors',  array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableShortTitles',    array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableShortDescr',     array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableShortKeywords',  array('aaSorting'=>array(array(1, 'asc'))))
-    . $oRenderer->renderInitDatatable('#tableLongLoad',       array('aaSorting'=>array(array(1, 'desc'))))
-    . $oRenderer->renderInitDatatable('#tableLargePages',     array('aaSorting'=>array(array(1, 'desc'))))
-    ;
 return $sReturn;

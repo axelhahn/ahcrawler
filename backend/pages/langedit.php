@@ -313,8 +313,6 @@ $sReturn .= ''
     . '<br>'
     . $this->_getHtmlTable($aTbl, $sTablePrefix, $sTableId)
     // . $this->_getSimpleHtmlTable($aTbl, true, $sTableId)
-    . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(-1))))
-    // . $oRenderer->renderInitDatatable('#' . $sTableId)
        
     .'<div id="form2edittemplate">'
     . '</div>'

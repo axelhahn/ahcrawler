@@ -285,7 +285,7 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
                     . $sBtnReport.'<br><br>'
                     . $this->lB('ressources.list.intro')
                     . '</p>'
-                . $this->_getHtmlTable($aTable, "db-ressources.")
+                . $this->_getHtmlTable($aTable, "db-ressources.", 'tableResData')
                 . $this->_getHtmlLegend($aLegendKeys, "db-ressources.")
                 ;
         } 
@@ -392,8 +392,6 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         $sReturn.= $sBtnTable. ' '. $sBtnReport;
     }
 
-
-$sReturn.= $oRenderer->renderInitDatatable('.datatable', array('lengthMenu'=>array(array(20, 50, 100, -1))));
 
 return $sReturn;
 

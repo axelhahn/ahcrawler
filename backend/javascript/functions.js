@@ -185,6 +185,57 @@ function initBase64Input(sIdInput, sIdOutput){
         };
     }
 }
+
+function initDatatables(){
+    var aDtSettings={
+        // cookies
+        'tblSavedCookies':{   'lengthMenu':[[50,-1]], 'bStateSave': true},
+        
+        // htmlchecks
+        'tableCrawlerErrors':{ 'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableShortTitles':{   'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableShortDescr':{    'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableShortKeywords':{ 'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableLongLoad':{      'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableLargePages':{    'aaSorting':[[1,'asc']], 'bStateSave': true},
+        
+        // httpstatuscode
+        'httpstatuscdodes':{   'lengthMenu':[[-1]], 'bStateSave': true},
+        
+        // langedit
+        'tblLangtexts':{       'lengthMenu':[[-1]], 'bStateSave': true},
+        
+        // ressources output list
+        // 'tableResData'
+
+        // searchindexstatus
+        // 'tableAlldata'
+
+        // sslechecks
+        // 'tableNonhttpsitems'
+        
+        '_default':{'lengthMenu':[[10,25,50,100,-1]]}
+    };
+
+    $('.datatable').each(function () {
+        var aOptions=aDtSettings[this.id] ? aDtSettings[this.id] : aDtSettings['_default'];
+
+        if(aOptions['lengthMenu']){
+            if(!aOptions['lengthMenu'][1]){
+                aOptions['lengthMenu'][1]=[];
+                for (var i=0; i<aOptions['lengthMenu'][0].length; i++){
+                    aOptions['lengthMenu'][1][i]=aOptions['lengthMenu'][0][i] === -1 ? '...' : aOptions['lengthMenu'][0][i];
+                }
+            }
+        }
+        
+        if(this.id){
+            $('#'+this.id).DataTable( aOptions );
+        }
+        
+    });
+    // $('$sSelector').DataTable( ". json_encode($aOptions)." );} );
+}
 // ----------------------------------------------------------------------
 // modal dialog
 // ----------------------------------------------------------------------
@@ -293,6 +344,7 @@ window.addEventListener('load', function() {
     initExtendedView();
     initBase64Input('e_url', 'urlbase64');
     initToggleAreas();
+    initDatatables();
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

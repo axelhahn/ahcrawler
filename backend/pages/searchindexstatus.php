@@ -205,10 +205,9 @@ if (!$iPageId) {
         ;
     }
     if (count($aAllInIndex)) {
-        $sTableId = 'tbl-alldata';
+        $sTableId = 'tableAlldata';
         $sReturn .= '<h3>' . $this->lB('status.all_data') . ' (' . count($aAllInIndex) . ')</h3>'
-                . $this->_getSearchindexTable($aAllInIndex, 'db-pages.', $sTableId, true)
-                . $oRenderer->renderInitDatatable('#' . $sTableId)
+                 . $this->_getSearchindexTable($aAllInIndex, 'db-pages.', $sTableId, true)
         ;
     }
 }

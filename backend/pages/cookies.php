@@ -82,7 +82,6 @@ if (file_exists($this->sCcookieFilename)) {
                     false)
                 . $oRenderer->oHtml->getTag('button', array('label' => $this->_getIcon('button.delete') . $this->lB('button.delete'), 'class' => 'pure-button button-error', 'name' => 'action', 'value' => 'deletecookie'))
                 . '</form>'
-                . $oRenderer->renderInitDatatable('#' . $sTableId, array('lengthMenu'=>array(array(50, -1))))
         ;
     } else {
         $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.nocookie'), 'ok');
