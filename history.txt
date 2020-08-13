@@ -12,6 +12,7 @@
 
 2020-08-xx: v0.130
   * FIX: redirect to installer
+  * UPDATE: project selection is now a drop down instead of tabbed menu
   * UPDATE: move datatable initialisation into file to remove inline scripts
   * INTERNAL: replace message box $oRenderer->renderMessagebox()
 

@@ -186,6 +186,10 @@ function initBase64Input(sIdInput, sIdOutput){
     }
 }
 
+// ----------------------------------------------------------------------
+// datatables
+// ----------------------------------------------------------------------
+
 function initDatatables(){
     var aDtSettings={
         // cookies
@@ -236,6 +240,42 @@ function initDatatables(){
     });
     // $('$sSelector').DataTable( ". json_encode($aOptions)." );} );
 }
+
+// ----------------------------------------------------------------------
+// select project - aka nav 2
+// ----------------------------------------------------------------------
+
+// source: http://blog.crondesign.com/2010/05/javascript-auto-expand-forms-select-box.html
+function toggleSelectBox(selbox){ 
+ if(selbox.size>1){//HIDE:
+  selbox.size=1;
+  selbox.style.position='relative';
+ }else{//SHOW:
+  selbox.size = selbox.options.length;
+  selbox.style.position='absolute';
+  // selbox.style.height='auto';
+ }
+  selbox.style.height='auto';
+}
+
+function initSelectProject(){
+    var sId='selectProject';
+    
+    $('#'+sId+' select').change(function(){
+        location.href=this.value;
+    });
+    /*
+     * TODO
+     * 
+    $('#'+sId+' select').mouseover(function(){
+        toggleSelectBox(this);
+    });
+    $('#'+sId+' select').mouseout(function(){
+        toggleSelectBox(this);
+    });
+     */
+}
+
 // ----------------------------------------------------------------------
 // modal dialog
 // ----------------------------------------------------------------------
@@ -345,6 +385,7 @@ window.addEventListener('load', function() {
     initBase64Input('e_url', 'urlbase64');
     initToggleAreas();
     initDatatables();
+    initSelectProject();
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

@@ -465,11 +465,14 @@ class backend extends crawler_base {
              */
             $_SESSION['siteid']=$this->_sTab;
         }
+        /*
         if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
             // header('location: '.$_SERVER['REQUEST_URI'].'&siteid='.$_COOKIE['tab']);
             // $this->_sTab = $_COOKIE['tab'];
             $this->_sTab = $_SESSION['siteid'];
         }
+         * 
+         */
 
         if (!$this->_sTab) {
             $aTmp = array_keys($this->_getProfiles());
@@ -669,7 +672,7 @@ class backend extends crawler_base {
         return '<ul class="pure-menu-list">'.$sReturn.'</ul><br>';
     }
     /**
-     * get html code for horizontal navigation
+     * get html code for project selection
      * 
      * @param array    $aTabs        nav items
      * @param boolean  $bAddButton   flag for add button; default false; set true on profile setup
@@ -679,17 +682,53 @@ class backend extends crawler_base {
      */
     private function _getNavi2($aTabs=array(), $bAddButton=false, $sUpUrl=false) {
         $sReturn = '';
+        $sMore = '';
         if (!$this->_sTab) {
             $this->_getTab();
         }
         if($bAddButton){
-            $aTabs['add']=$this->_getIcon('button.add');
+            $aTabs['add']=$this->_getIcon('button.add').$this->lB('profile.new');
+            if($this->_getTab()!=='add'){
+                $sUrl = '?page=' . $this->_sPage . '&amp;siteid=add';
+                $sMore = ' <a href="'.$sUrl.'" class="pure-button">'.$this->_getIcon('button.add').$this->lB('profile.new').'</a>';
+            }
         }
         if($sUpUrl){
             $sReturn.='<li class="pure-menu-item">'
                     . '<a href="' . $sUpUrl . '" class="pure-menu-link"'
                     . '>' . $this->_getIcon('button.up') . '</a></li>';
         }
+        $sOptions='';
+        if(count($aTabs)){
+            foreach ($aTabs as $sId => $sLabel) {
+                $sUrl = '?page=' . $this->_sPage . '&amp;siteid=' . $sId;
+                $sOptions.='<option'
+                            . ' value="' . $sUrl . '"'
+                            .(($this->_sTab == $sId) ? ' selected="selected"' : '') 
+                        . '>'
+                        . $this->_getIcon('project') . $sLabel . '</option>';
+            }
+            if ($sOptions) {
+                $sOptions=''
+                        . '<span>'
+                        . $this->_getIcon('project') 
+                        . $this->lB('home.select-project').' '
+                        . '</span>'
+                        . '<select>'
+                            . $sOptions
+                        . '</select>'
+                        ;
+            }
+        }
+        $sReturn = ''
+                // . '<div class="pure-menu pure-menu-horizontal">'
+                . '<form class="pure-form pure-form-aligned">'
+                    . '<div id="selectProject" class="pure-control-group">'
+                    . $sOptions
+                    . $sMore
+                    . '</div>'
+                . '</form>';
+        /*
         foreach ($aTabs as $sId => $sLabel) {
             $sUrl = '?page=' . $this->_sPage . '&amp;siteid=' . $sId;
             $sClass = ($this->_sTab == $sId) ? ' pure-menu-link-active' : '';
@@ -698,12 +737,16 @@ class backend extends crawler_base {
                     . '>' . $this->_getIcon('project') . $sLabel . '</a></li>';
         }
         if ($sReturn) {
-            $sReturn = '<div class="pure-menu pure-menu-horizontal">'
+            $sReturn = ''
+                    // . '<div class="pure-menu pure-menu-horizontal">'
+                    . '<div id="nav2" class="pure-menu custom-restricted-width">'
                     . '<ul class="pure-menu-list">'
                     . '' . $sReturn . ''
                     . '</ul>'
                     . '</div>';
         }
+         * 
+         */
         return $sReturn;
     }
     /**
