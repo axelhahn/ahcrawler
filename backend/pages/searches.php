@@ -79,7 +79,7 @@ if (count($aLastSearches)) {
         $aRow['actions'] = $this->_getButton(array(
             'href' => '?page=searchindextester&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir . '&siteid=' . $this->_sTab,
             'popup' => false,
-            'class' => 'button-secondary',
+            'class' => 'pure-button',
             'label' => 'button.search'
         ));
 
@@ -183,7 +183,7 @@ $sQuery = ''
         . 'SELECT query, count(query) as count, results '
         . 'FROM searches '
         . 'WHERE siteid = ' . $this->_sTab . ' '
-        . ( $iSinceDays ? 'AND ts >= \'' . $sDateFrom . '\' '.'AND ts < \'' . $sDateTo . '\' '  : '')
+        . ( $iSinceDays ? 'AND ts >= \'' . $sDateFrom . '\' '.'AND ts <= \'' . $sDateTo . '\' '  : '')
         . 'GROUP BY query '
         . 'ORDER BY count desc, query asc '
         . 'LIMIT 0,' . $iCount;
@@ -226,7 +226,7 @@ if (count($aSearchterms)) {
             $aRow['actions'] = $this->_getButton(array(
                 'href' => '?page=searchindextester&action=search&q=' . $aRow['query'] . '&subdir=&siteid=' . $this->_sTab,
                 'popup' => false,
-                'class' => 'button-secondary',
+                'class' => 'pure-button',
                 'label' => 'button.search'
             ));
         }

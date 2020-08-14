@@ -101,7 +101,8 @@ if(!$iUrls){
                     'id' => $iCounter,
                     'ranking' => '<strong>'.$iRanking . '</strong> ('.round($iRanking/$iMaxRanking*100).'%)<br>' . $sResult . '</span>',
                     'summary' => $this->_getSimpleHtmlTable(array(
-                            array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
+                            // array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
+                            array('title', '<strong>' . $aItem['title'] . '</strong>'),
                             array('url', str_ireplace('','',$aItem['url'])),
                             array('lang', $aItem['lang']),
                             array('description', $aItem['description']),
@@ -111,8 +112,15 @@ if(!$iUrls){
                     ,
                     // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
                     'actions' => $this->_getButton(array(
+                        'href' => $aItem['url'],
+                        'class' => 'pure-button',
+                        'popup' => false,
+                        'target' => '_blank',
+                        'label' => 'button.openurl'
+                     ))
+                    .$this->_getButton(array(
                         'href' => './?page=searchindexstatus&id='.(int)$aItem['id'],
-                        'class' => 'button-secondary',
+                        'class' => 'pure-button',
                         'popup' => false,
                         'target' => '_top',
                         'label' => 'button.view'

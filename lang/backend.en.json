@@ -95,6 +95,8 @@
     "button.login.hint": "",
     "button.logoff": "Logoff",
     "button.logoff.hint": "",
+    "button.openurl": "Open url",
+    "button.openurl.hint": "Open url in a new tab",
     "button.reindex": "Re-Index",
     "button.reindex.hint": "Read the website now and update the search index",
     "button.save": "Save",
@@ -890,5 +892,8 @@
     "bookmarklet.sslcheck.posthint2": "Remark: you need to enable the ssl check in the frontend.",
     "sslcheck.nosslurl": "No SSL connection: maybe there was no response at all or it was no SSL. Check host and port number.",
     "ressources.crawler-not-finished-yet": "The job to index the ressources was started but is not finished yet. Please wait...<br>Or maybe restart the crawler??<pre>php [appdir]\/bin\/cli.php -a index -d ressources -p %s<\/pre>",
-    "error.not-enough-data": "Not enough data :-\/"
+    "error.not-enough-data": "Not enough data :-\/",
+    "status.detail.raw": "Raw data in the database",
+    "status.detail.words": "Wordlist",
+    "status.detail.words.intro": "Here you see the list of words with more than <strong>%s<\/strong> occurences in the html content. Maybe it hels to define or verify the keywords."
 }

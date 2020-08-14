@@ -226,6 +226,7 @@ class backend extends crawler_base {
             'button.home' => 'fas fa-home',
             'button.login' => 'fas fa-check',
             'button.logoff' => 'fas fa-power-off',
+            'button.openurl' => 'fas fa-external-link-alt',
             'button.refresh' => 'fas fa-sync',
             'button.save' => 'fas fa-paper-plane',
             'button.search' => 'fas fa-search',
@@ -1497,8 +1498,9 @@ class backend extends crawler_base {
     private function _prettifyString($sVal, $iMax = 500) {
         $sVal = str_replace(',', ', ', $sVal);
         $sVal = str_replace(',  ', ', ', $sVal);
-        $sVal = htmlentities($sVal);
-        return (strlen($sVal) > $iMax) ? substr($sVal, 0, $iMax) . '<span class="more"></span>' : $sVal;
+        // $sVal = htmlentities($sVal);
+        // return (strlen($sVal) > $iMax) ? substr($sVal, 0, $iMax) . '<span class="more"></span>' : $sVal;
+        return (strlen($sVal) > $iMax) ? '<textarea class="pure-input" cols="100" rows="10">'.$sVal . '</textarea><br>' : htmlentities($sVal);
     }
 
     /**
@@ -1521,7 +1523,7 @@ class backend extends crawler_base {
                 // 'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
                 'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$sId,
                 'popup' => false,
-                'class' => 'button-secondary',
+                'class' => 'pure-button',
                 'label' => 'button.view'
             ));
             $aTable[] = $aRow;

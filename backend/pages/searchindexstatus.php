@@ -17,9 +17,6 @@ $aHeaderIndex = array('id', 'ts', 'url', 'title', 'errorcount', 'lasterror');
 
 $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
 
-// ----------------------------------------------------------------------
-// get deta for tiles
-// ----------------------------------------------------------------------
 
 
 
@@ -29,6 +26,146 @@ if (!$iUrls) {
     $sReturn .= $oRenderer->renderMessagebox(sprintf($this->lB('status.emptyindex'), $this->_sTab), 'warning');
     return $sReturn;
 }
+
+
+// ----------------------------------------------------------------------
+// detail view of a found page
+// ----------------------------------------------------------------------
+
+
+$iPageId = $this->_getRequestParam('id', false, 'int');
+if ($iPageId) {
+    $aItem = $this->oDB->select(
+        'pages', '*', array(
+            'AND' => array(
+                'id' => $iPageId,
+            )
+        )
+    );
+    if (count($aItem)) {
+        $aTableInfos = array();
+        $aTableWords = array();
+        $aTable = array();
+        $sBackUrl="?page=searchindexstatus&siteid=".$this->_sTab;
+        $sBaseUrl=$sBackUrl."&id=".$iPageId;
+        
+        // --- general infos
+        $aTableInfos=array(
+            array(
+                $this->_getIcon('description').$this->lB('db-pages.description'), 
+                ($aItem[0]['description'] 
+                    ? $aItem[0]['description']
+                    : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-description').')', 'warning')
+                )),
+            array(
+                $this->_getIcon('keywords').$this->lB('db-pages.keywords'), 
+                ($aItem[0]['keywords'] 
+                    ? $aItem[0]['keywords'].'<br>' 
+                    : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-keywords').')', 'warning')
+                )),
+            array(
+                $this->_getIcon('url').$this->lB('db-pages.url'), 
+                '<a href="'.$aItem[0]['url'].'" target="_blank">'.$this->_getIcon('url').$aItem[0]['url'].'</a>'),
+            array(
+                $this->_getIcon('ts').$this->lB('db-pages.ts'), 
+                $aItem[0]['ts']
+                    ),
+        );
+
+        // --- used words in the content
+        $aWc=array();
+        $sUsedWords='';
+        
+        $aWordsInContent=$this->getWordsInAText($aItem[0]['content']);
+        $iMinCount=$this->_getRequestParam('kwcount', false, 'int');
+        $iMinCount=$iMinCount ? $iMinCount : 3;
+        
+        $aCounters=array();
+        foreach ($aWordsInContent as $sMyWord=>$iWordCount){
+            if($iWordCount>=$iMinCount){
+                $aTableWords[]=array($iWordCount, $sMyWord);
+            }
+            $aWc[$iWordCount]=true;
+        }
+
+        $sNavWc='';
+        if(count($aWc)){
+            krsort($aWc);
+            $sNavWc.='<p>'. sprintf($this->lB('status.detail.words.intro'), $iMinCount).'</p>'
+                    . '<nav>';
+            
+            foreach(array_keys($aWc) as $iMyCount){
+                $sNavWc.='<a href="'.$sBaseUrl.'&kwcount='.$iMyCount.'#wordlist" class="pure-button'.($iMyCount===$iMinCount ? ' button-secondary' : '').'">'.$iMyCount.'</a> ';
+            }
+            $sNavWc.='</nav><br>';
+        }
+
+        // --- raw data
+        foreach ($aItem[0] as $sKey => $sVal) {
+            $aTable[] = array(
+                $sKey,
+                $this->_prettifyString($sVal, 500)
+                    .(is_string($sVal) && strlen($sVal)>50 ? ' ['.strlen($sVal).']' : '')
+            );
+        }
+        
+        return '<h3>' . $this->lB('status.detail') . '</h3>'
+                . $this->_getButton(array(
+                    'href' => $sBackUrl,
+                    'class' => 'button-secondary',
+                    'popup' => false,
+                    'label' => 'button.back'
+                )) . '<br><br>'
+                
+                . '<h4>'.($aItem[0]['title'] ? $aItem[0]['title'] : $aItem[0]['url']).'</h4>'
+                . $this->_getSimpleHtmlTable($aTableInfos).'<br>'
+                . '<h4 id="wordlist">'.$this->lB('status.detail.words').'</h4>'
+                
+                . $sNavWc 
+                . $this->_getSimpleHtmlTable($aTableWords).'<br>'
+               
+                . $oRenderer->renderToggledContent(
+                        $this->lB('status.detail.raw'),
+                        '<form class="pure-form">'. $this->_getSimpleHtmlTable($aTable). '</form>',
+                        false
+                  )
+                .'<br>'
+                
+                /*
+                  . $this->_getButton(array(
+                  'href' => './?page=status',
+                  'target' => '_top',
+                  'class' => 'button-secondary',
+                  'label' => 'button.close'
+                  ))
+                  . ' '
+                  . $this->_getButton(array(
+                  'href' => 'overlay.php?action=updateindexitem&url=' . $aItem[0]['url'] . '&siteid=' . $aItem[0]['siteid'],
+                  'class' => 'button-success',
+                  'label' => 'button.reindex'
+                  ))
+                  . ' '
+                  . $this->_getButton(array(
+                  'href' => 'overlay.php?action=deleteindexitem&id=' . $sId . '&siteid=' . $aItem[0]['siteid'],
+                  'class' => 'button-error',
+                  'label' => 'button.delete'
+                  ))
+                 * 
+                 */
+                . $this->_getButton(array(
+                    'href' => $sBackUrl,
+                    'class' => 'button-secondary',
+                    'popup' => false,
+                    'label' => 'button.back'
+                )) . '<br><br>'
+
+        ;
+    }
+}
+
+// ----------------------------------------------------------------------
+// get deta for tiles
+// ----------------------------------------------------------------------
 
 $sReturn .= '<h3>' . $this->lB('status.overview') . '</h3>';
 $sTiles = $oRenderer->renderTile('', $this->lB('status.indexed_urls.label'), $iUrls, $this->lB('status.indexed_urls.footer'), '');
@@ -68,73 +205,9 @@ $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></di
 ;
 
 // ----------------------------------------------------------------------
-// detail view of a found page
-// ----------------------------------------------------------------------
-
-
-$iPageId = $this->_getRequestParam('id', false, 'int');
-if ($iPageId) {
-    $aItem = $this->oDB->select(
-        'pages', '*', array(
-            'AND' => array(
-                'id' => $iPageId,
-            )
-        )
-    );
-    if (count($aItem)) {
-        $aTable = array();
-        foreach ($aItem[0] as $sKey => $sVal) {
-            $aTable[] = array(
-                $sKey,
-                $this->_prettifyString($sVal, 5000)
-                    .(is_string($sVal) && strlen($sVal)>50 ? ' ['.strlen($sVal).']' : '')
-            );
-        }
-        $sReturn .= '<h3>' . $this->lB('status.detail') . '</h3>'
-                . $this->_getButton(array(
-                    'href' => 'javascript:history.back();',
-                    'class' => 'button-secondary',
-                    'popup' => false,
-                    'label' => 'button.back'
-                )) . '<br><br>'
-                . $this->_getSimpleHtmlTable($aTable)
-                . '<br>'
-                /*
-                  . $this->_getButton(array(
-                  'href' => './?page=status',
-                  'target' => '_top',
-                  'class' => 'button-secondary',
-                  'label' => 'button.close'
-                  ))
-                  . ' '
-                  . $this->_getButton(array(
-                  'href' => 'overlay.php?action=updateindexitem&url=' . $aItem[0]['url'] . '&siteid=' . $aItem[0]['siteid'],
-                  'class' => 'button-success',
-                  'label' => 'button.reindex'
-                  ))
-                  . ' '
-                  . $this->_getButton(array(
-                  'href' => 'overlay.php?action=deleteindexitem&id=' . $sId . '&siteid=' . $aItem[0]['siteid'],
-                  'class' => 'button-error',
-                  'label' => 'button.delete'
-                  ))
-                 * 
-                 */
-                . $this->_getButton(array(
-                    'href' => 'javascript:history.back();',
-                    'class' => 'button-secondary',
-                    'popup' => false,
-                    'label' => 'button.back'
-                )) . '<br><br>'
-
-        ;
-    }
-}
-
-
-// ----------------------------------------------------------------------
 // tables
 // ----------------------------------------------------------------------
+
 if (!$iPageId) {
 
     $aNewestInIndex = $this->oDB->select(

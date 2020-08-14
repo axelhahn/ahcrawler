@@ -185,7 +185,7 @@ class ressourcesrenderer extends crawler_base {
         return true;
     }
 
-    private function _getIcon($sKey, $bEmptyIfMissing = false, $sClass=false) {
+    public function _getIcon($sKey, $bEmptyIfMissing = false, $sClass=false) {
         if (array_key_exists($sKey."", $this->_aIcons)) {
             return '<i class="' . $this->_aIcons[$sKey] . ($sClass ? ' '.$sClass : '' ) .'"></i> ';
         }
