@@ -65,7 +65,7 @@ if ($iPageId) {
                 )),
             array(
                 $this->_getIcon('url').$this->lB('db-pages.url'), 
-                '<a href="'.$aItem[0]['url'].'" target="_blank">'.$this->_getIcon('url').$aItem[0]['url'].'</a>'),
+                '<a href="'.$aItem[0]['url'].'" target="_blank">'.$aItem[0]['url'].'</a>'),
             array(
                 $this->_getIcon('ts').$this->lB('db-pages.ts'), 
                 $aItem[0]['ts']
