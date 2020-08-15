@@ -10,12 +10,13 @@
 
 ----------------------------------------------------------------------
 
-2020-08-xx: v0.130
+2020-08-15: v0.130
   * FIX: redirect to installer
   * UPDATE: project selection is now a drop down instead of tabbed menu
   * UPDATE: move datatable initialisation into file to remove inline scripts
   * UPDATE: searchterm statistics: buttons were switched to gray
   * UPDATE: searchindex detail page (work in progress)
+  * UPDATE: crawler with basic auth (if enabled) is used for search index only
   * FIX: searchterm statistics ignored the newest search term
   * INTERNAL: replace message box $oRenderer->renderMessagebox()
 

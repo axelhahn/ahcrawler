@@ -107,7 +107,7 @@ if(!$iUrls){
                             array('lang', $aItem['lang']),
                             array('description', $aItem['description']),
                             array('keywords', $aItem['keywords']),
-                            array('content', $this->_prettifyString($aItem['content'], 400)),
+                            // array('content', $this->_prettifyString($aItem['content'], 400)),
                         ))
                     ,
                     // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
@@ -118,6 +118,7 @@ if(!$iUrls){
                         'target' => '_blank',
                         'label' => 'button.openurl'
                      ))
+                    . ' '
                     .$this->_getButton(array(
                         'href' => './?page=searchindexstatus&id='.(int)$aItem['id'],
                         'class' => 'pure-button',

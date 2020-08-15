@@ -318,7 +318,7 @@ class crawler extends crawler_base{
             $this->cliprint('info', $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfileEffective['searchindex']['iDepth']."\n" : "");
             return false;
         }
-
+        
         if (!array_key_exists($sUrl, $this->_aUrls2Crawl)) {
 
             $iCount=count($this->_aUrls2Crawl)+1;
@@ -614,6 +614,7 @@ class crawler extends crawler_base{
             }
 
             $aCurlOpt=$this->_getCurlOptions();
+            $aCurlOpt[CURLOPT_USERPWD] = isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false;
             $rollingCurl->setOptions($aCurlOpt)
                 ->setSimultaneousLimit((int)$this->aProfileEffective['searchindex']['simultanousRequests'])
                 ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {

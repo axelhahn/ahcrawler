@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.129',
-        'date' => '2020-08-11',
+        'version' => '0.130',
+        'date' => '2020-08-15',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -577,7 +577,7 @@ class crawler_base {
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_USERAGENT => $this->aOptions['crawler']['userAgent'],
-            CURLOPT_USERPWD => isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false,
+            // CURLOPT_USERPWD => isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false,
             CURLOPT_VERBOSE => false,
             CURLOPT_ENCODING => 'gzip, deflate, br',  // to fetch encoding
             CURLOPT_HTTPHEADER => array(
@@ -1238,6 +1238,36 @@ class crawler_base {
         return $this->getTxt('frontend', $sId);
     }
 
+    /**
+     * count words in a given text and return it as array with most used
+     * words on top.
+     * 
+     * @param string  $sText   text to analyze
+     * @param array   $aWords  optional: existing result list to expanc
+     * @return int
+     */
+    public function getWordsInAText($sText, $aWords=array()){
+        $characterMap='À..ÿ'; // chars #192 .. #255
+
+        foreach(str_word_count(
+                str_replace("'", '',$sText)
+            ,2,$characterMap) as $sWord ){
+
+            // strtolower destroyes umlauts
+            // $sKey=strtolower($sWord);
+            // $sKey=function_exists('mb_strtolower') ? mb_strtolower($sWord) : $sWord;
+            $sKey=$sWord;
+            if(strlen($sKey)>2){
+                if(!isset($aWords[$sKey])){
+                    $aWords[$sKey]=1;
+                } else {
+                    $aWords[$sKey]++;
+                }
+            }
+        }
+        arsort($aWords);
+        return $aWords;
+    }
     // ----------------------------------------------------------------------
     // STATUS / LOCKING
     // ----------------------------------------------------------------------

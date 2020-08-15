@@ -485,7 +485,7 @@
     "httpheader.securityheaders.notfound": "Not found",
     "cookies.headline": "Saved Cookies (%s)",
     "cookies.hint": "While crawling your website and following its links cookies can be saved in the browser of your visitors.<br>Remark: Cookies that are set by javascript are not in this list.",
-    "cookies.nofile": "Remark: No cookie file was created yet. Wait for the next craling process, please.",
+    "cookies.nofile": "Remark: No cookie file was created yet. Wait for the next craling process, please.<br>OR: there is no cookie at all.",
     "cookies.nocookie": "No cookie was created. Respect!",
     "cookies.count": "Count of cookies",
     "cookies.since": "Created cookies since",

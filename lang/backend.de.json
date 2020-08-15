@@ -522,7 +522,7 @@
     "httpheader.context.securityheaders-links": "Weitere Links zum Scan des Headers der Domain (englisch).",
     "cookies.headline": "Gespeicherte Cookies (%s)",
     "cookies.hint": "Beim Crawlen durch die Website und Nachverfolgen der Links k&ouml;nnen Cookies bei euren Besuchern gespeichert werden.<br>Anm.: Hierbei fehlen die per Javascript gesetzten Cookies.",
-    "cookies.nofile": "Hinweis: Es wurde noch keine Cookie-Datei angelegt. Bitte warten Sie auf den n&auml;chsten Crawling-Prozess.",
+    "cookies.nofile": "Hinweis: Es wurde noch keine Cookie-Datei angelegt. Bitte warten Sie auf den n&auml;chsten Crawling-Prozess.<br>Oder: es gibt wirklich gar keine Cookies.",
     "cookies.nocookie": "Es wurde keinerlei Cookie erzeugt. Respekt!",
     "cookies.count": "Anzahl Cookies",
     "cookies.since": "Alter der Cookie-Datei",
