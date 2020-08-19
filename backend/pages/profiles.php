@@ -139,6 +139,46 @@ if(isset($_POST['action'])){
             }
                     
             // --------------------------------------------------
+            // new profile image
+            // --------------------------------------------------
+            
+            if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew'] && strlen($aNewProfile['profileimagedatanew'])>100){
+                
+                $iMaxDimension=600;
+
+                // source: https://stackoverflow.com/questions/45478827/resize-image-from-base64-encode
+                $sPostedImg=str_replace('data:image/png;base64,', '', $aNewProfile['profileimagedatanew']);
+
+                $sTempImage = imagecreatefromstring(base64_decode($sPostedImg));
+                list($iWidthOrig, $iHeightOrig) = getimagesizefromstring(base64_decode($sPostedImg));
+
+                if ($iWidthOrig<=$iMaxDimension && $iHeightOrig<=$iMaxDimension){
+                    $sSmallImage=$sTempImage;
+                } else {
+                    
+                    if($iWidthOrig>$iHeightOrig){
+                        $iWidthNew=$iMaxDimension;
+                        $iHeightNew=round($iWidthNew/$iWidthOrig*$iHeightOrig);
+                    } else {
+                        $iHeightNew=$iMaxDimension;
+                        $iWidthNew=round($iHeightNew/$iHeightOrig*$iWidthOrig);
+                    }
+
+                    $sSmallImage = imagecreatetruecolor($iWidthNew, $iHeightNew);
+                    imagecopyresampled($sSmallImage, $sTempImage, 0, 0, 0, 0, $iWidthNew, $iHeightNew, $iWidthOrig, $iHeightOrig);
+                    // imagecopyresized($sSmallImage, $sTempImage, 0, 0, 0, 0, $iWidthNew, $iHeightNew, $iWidthOrig, $iHeightOrig);
+                }
+
+                ob_start();
+                imagepng($sSmallImage);
+                $sImageBase64 = base64_encode(ob_get_contents());
+                ob_end_clean();
+
+                $aNewProfile['profileimagedata']='data:image/png;base64,'.$sImageBase64;
+            }
+            unset($aNewProfile['profileimagedatanew']);
+            
+            // --------------------------------------------------
             // SAVE
             // --------------------------------------------------
            
@@ -242,6 +282,32 @@ $sReturn.='
                     'rows'=>3,
                     'label'=>isset($this->aProfileSaved['description']) ? $this->aProfileSaved['description'] : '',
                     ), true)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>'profileimagedata', 'label'=>$this->lB('profile.image')))
+                . '<div>'
+                    . $this->getProfileImage()
+                    . '</div>'
+                . '</div>'
+            . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('label'=>''))
+                . '<div>'
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'hidden', 
+                        'id'=>'profileimagedata', 
+                        'name'=>'profileimagedatanew', 
+                        'placeholder'=>'',
+                        'value'=>'',
+                        ), true)
+                    . '<br>'
+                    . $oRenderer->oHtml->getTag('div', array(
+                        'id'=>'profileimageinserter', 
+                        'class'=>'insertimage', 
+                        'contentEditable'=>'true',
+                        'label'=>$this->lB('profile.image.add'),
+                        ), true)
+                    . '</div>'
                 . '</div>'
 
             // ------------------------------------------------------------

@@ -10,6 +10,10 @@
 
 ----------------------------------------------------------------------
 
+2020-08-19: v0.131
+  * ADDED: you can set one image (i.e. screenshot) per profile
+  * FIX: htmlchecks - sortorder of tables for large and long loading pages
+
 2020-08-15: v0.130
   * FIX: redirect to installer
   * UPDATE: project selection is now a drop down instead of tabbed menu

@@ -224,9 +224,6 @@ if(!$this->_configExists() ){
             }
             
             
-            // $urlImage = '../image-'.$iProfileId.'.jpg';
-            $urlImage = false;
-
             $sHtml.=''
                 // .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 .$this->_getNavi2($this->_getProfiles(), false, '')
@@ -256,8 +253,8 @@ if(!$this->_configExists() ){
                     
                 // . '<br><br>'
                 . ($sTiles2 ? $oRenderer->renderTileBar($sTiles2) : '')
-                . ($urlImage ? '<img src="'.$urlImage.'" class="websnapshot">' : '')
                 .'<div style="clear: both;"></div>'
+                . $this->getProfileImage()
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'
                 // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'

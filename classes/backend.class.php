@@ -691,7 +691,7 @@ class backend extends crawler_base {
             $aTabs['add']=$this->_getIcon('button.add').$this->lB('profile.new');
             if($this->_getTab()!=='add'){
                 $sUrl = '?page=' . $this->_sPage . '&amp;siteid=add';
-                $sMore = ' <a href="'.$sUrl.'" class="pure-button">'.$this->_getIcon('button.add').$this->lB('profile.new').'</a>';
+                $sMore = ' <a href="'.$sUrl.'" class="pure-button button-success">'.$this->_getIcon('button.add').$this->lB('profile.new').'</a>';
             }
         }
         if($sUpUrl){
@@ -1583,7 +1583,13 @@ class backend extends crawler_base {
             : '';
     }
 
-
+    public function getProfileImage(){
+        return (isset($this->aProfileSaved['profileimagedata']) && $this->aProfileSaved['profileimagedata']
+                ? '<img src="'.$this->aProfileSaved['profileimagedata'].'" class="profile" title="'.$this->aProfileSaved['label'].'" alt="'.$this->aProfileSaved['label'].'">'
+                : ''
+        );
+    }
+        
     /**
      * return html + js code to draw a chart (pie or bar)
      * 

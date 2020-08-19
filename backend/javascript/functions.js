@@ -186,6 +186,43 @@ function initBase64Input(sIdInput, sIdOutput){
     }
 }
 
+/**
+ * initialize div with contenteditable=true to fetch imagae data from pasted 
+ * image; it adds an "on paste" event handler.
+ * @param {string} sIdInput   id of input div
+ * @param {string} sIdOutput  id of output field (<input type=hidden ..>)
+ * @returns {undefined}
+ */
+function initInsertImage(sIdInput, sIdOutput){
+    var oIn=document.getElementById(sIdInput);
+    var oOut=document.getElementById(sIdOutput);
+    if (oIn && oOut){
+        
+        // source: https://stackoverflow.com/questions/1391278/contenteditable-change-events
+        $('body').on('focus', '[contenteditable]', function() {
+            const $this = $(this);
+            $this.data('before', $this.html());
+        // }).on('blur keyup paste input', '[contenteditable]', function() {
+        }).on('paste keyup', '[contenteditable]', function() {
+            const $this = $(this);
+            if ($this.data('before') !== $this.html()) {
+                $this.data('before', $this.html());
+                $this.trigger('change');
+            }
+        });
+
+        $(oIn).change(function(){
+            // get src attribute value from first image
+            var data=$('#' + this.id + ' > img') ? $('#' + this.id + ' > img').attr("src") : '';
+            if(data && oOut.value!==data){
+                oOut.value=data;
+                oIn.innerHTML='['+data.length+']<br><img src="'+data+'">';
+            }
+        });
+    }
+}
+
+
 // ----------------------------------------------------------------------
 // datatables
 // ----------------------------------------------------------------------
@@ -200,8 +237,8 @@ function initDatatables(){
         'tableShortTitles':{   'aaSorting':[[1,'asc']], 'bStateSave': true},
         'tableShortDescr':{    'aaSorting':[[1,'asc']], 'bStateSave': true},
         'tableShortKeywords':{ 'aaSorting':[[1,'asc']], 'bStateSave': true},
-        'tableLongLoad':{      'aaSorting':[[1,'asc']], 'bStateSave': true},
-        'tableLargePages':{    'aaSorting':[[1,'asc']], 'bStateSave': true},
+        'tableLongLoad':{      'aaSorting':[[1,'desc']], 'bStateSave': true},
+        'tableLargePages':{    'aaSorting':[[1,'desc']], 'bStateSave': true},
         
         // httpstatuscode
         'httpstatuscdodes':{   'lengthMenu':[[-1]], 'bStateSave': true},
@@ -382,10 +419,12 @@ window.addEventListener('load', function() {
     initDrawH3list();
     initSoftscroll();
     initExtendedView();
-    initBase64Input('e_url', 'urlbase64');
     initToggleAreas();
     initDatatables();
     initSelectProject();
+    
+    initInsertImage('profileimageinserter', 'profileimagedata'); // page profiles
+    initBase64Input('e_url', 'urlbase64');
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');

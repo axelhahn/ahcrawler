@@ -286,11 +286,11 @@ ul.tiles a.tile:hover{
     box-shadow: 0 0 5px #fff, 0 0 1em #aaa;
 }
 
-img.websnapshot{
-    border: 0.1em solid #fff;
-    box-shadow: 0 0 1em #ccc;
+img.profile{
+    border: 0.0em solid #fff;
+    box-shadow: 0 0 0em #ccc;
     border-radius: 0.5em;
-    max-width: 50%;
+    padding: 0.5em;
 }
 
 .div-toggle-head{
@@ -506,6 +506,10 @@ form.pure-form label{min-width: 20em;}
 #selectProject select{font-size: 110%; font-weight: bold; background: none;  color: var(--color-default); border-width: 0px; opacity: 0.6;}
 #selectProject select option {font-size: 90%; font-weight: normal;padding: 0.4em;}
 #selectProject select:hover{background: #fff; opacity: 1;}
+
+.pure-control-group div {vertical-align: top; display: inline-block;}
+.insertimage {background: rgba(0,0,0,0.05); border: 3px dashed rgba(0,0,0,0.2); display: inline-block; max-width: 30em; padding: 1em; }
+.insertimage img{max-width: 50%;}
 
 #e_url{width: 58%;}
 /* --- overlay --- */
