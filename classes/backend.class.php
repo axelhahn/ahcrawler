@@ -1117,6 +1117,7 @@ class backend extends crawler_base {
                             $iKnown=$aFoundTags['http'];
                             $iUnkKnown=         isset($aFoundTags['unknown'])      ? $aFoundTags['unknown']      : 0;
                             $iUnwanted=         isset($aFoundTags['unwanted'])     ? $aFoundTags['unwanted']     : 0;
+                            $iDeprecated=       isset($aFoundTags['deprecated'])   ? $aFoundTags['deprecated']   : 0;
                             $iNonStandard=      isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
                             
                             $iCacheInfos=       isset($aFoundTags['cache'])        ? $aFoundTags['cache']        : 0;
@@ -1150,6 +1151,15 @@ class backend extends crawler_base {
                                 'thead'=>$this->lB('httpheader.header.unknown'),
                                 'tfoot'=>$iTotalHeaders ? $this->_getPercent($iUnkKnown/$iTotalHeaders) : '',
                                 'thash'=>($iUnkKnown ? '#warnunknown' : ''),
+                            );
+                            $aMsg['deprecated']=array(
+                                'counter'=>$iCounter++,
+                                'status'=>($iDeprecated ? 'warning' : 'ok'),
+                                'value'=>$iDeprecated, 
+                                'message'=>false,
+                                'thead'=>$this->lB('httpheader.header.deprecated'),
+                                'tfoot'=>$iTotalHeaders ? $this->_getPercent($iDeprecated/$iTotalHeaders) : '',
+                                'thash'=>($iDeprecated ? '#warndeprecated' : ''),
                             );
                             $aMsg['unwanted']=array(
                                 'counter'=>$iCounter++,

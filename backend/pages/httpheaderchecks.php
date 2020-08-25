@@ -162,6 +162,7 @@ $iTotalHeaders=count($oHttpheader->getHeaderAsArray());
 $iSecHeader=isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
 $iUnkKnown=isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted=isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
+$iDeprecated=isset($aFoundTags['deprecated']) ? $aFoundTags['deprecated'] : 0;
 $iNonStandard=isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
 
 $sTiles=$this->_getTilesOfAPage();
@@ -213,6 +214,22 @@ $sTiles='';
             . '<ul>'.$sLegendeUnknown.'</ul><br>'
             ;
     }
+    
+    // --- deprecated header vars
+    if ($iDeprecated){
+        $aDepr=$oHttpheader->getDeprecatedHeaders();
+        $iWarnings+=$iDeprecated;
+        $sWarnings.= ''
+            . '<h4 id="warndeprecated">'.$this->lB('httpheader.header.deprecated').'</h4>'
+            . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning')
+            . '<ul>'
+            ;
+        foreach($aDepr as $sKey=>$aHeaderitem){
+            $sWarnings.='<li><pre>['.$aHeaderitem['line'].'] '.$aHeaderitem['var'].': '.$aHeaderitem['value'].'</pre></li>';
+        }
+        $sWarnings.= '</ul><br>';
+    }
+    
     // --- unwanted header vars
     $aWarnheader=$oHttpheader->getUnwantedHeaders();
     if(is_array($aWarnheader) && count($aWarnheader)){
@@ -220,7 +237,7 @@ $sTiles='';
         $iWarnings+=$iUnwanted;
         $sWarnings.= ''
                 . '<h4 id="warnunwanted">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')).'</h4>'
-                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.description'), 'warning');
+                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning');
         foreach($aWarnheader as $sKey=>$aHeaderitem){
             $sWarnings .= $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])

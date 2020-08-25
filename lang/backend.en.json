@@ -474,15 +474,15 @@
     "httpheader.unknown.tile": "Unknown header",
     "httpheader.unknown.description": "Unknown header variables were found in the http response.",
     "httpheader.unknown.todo": "The unknown header variables are nothing that is visible in the browser. But check if these are necesessary to send and try to eliminate them.",
-    "httpheader.warnings.description": "You should not show too many details of your system in the http header. Even if sniffer tools can analyze several details.",
     "httpheader.warnings.ok-label": "nothing was found",
     "httpheader.warnings.ok": "OK",
     "httpheader.warnings.nocompression": "No compression was detected - there is no header <em>Content-Encoding<\/em>.<br>Let your webserver compress text content like html, javascript, css, xml.<br>The load impact on your server in minimal and the page performance (especially on distant) users will increase.",
     "httpheader.warnings.nocache": "No caching information was detected. You should set explizit information if \/ how long a browser is allowed to cache your content.",
     "httpheader.warnings.non-standard": "Header entries were detected, that are quite common - but non standard.",
+    "httpheader.warnings.unwanted": "You should not show too many details of your system in the http header. Even if sniffer tools can analyze several details.",
     "httpheader.x-powered-by.description": "On a productive system do not show the technology behind. Remove this header variable.",
     "httpheader.securityheaders": "Check of existing security headers (%s\/ %s)",
-    "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.",
+    "httpheader.securityheaders.description": "The usage of security headers is not a must for the functionality of a website but a strong recommendationfor its protection.<br><br>Remark:<br>Here are only data from the http response header. A few settings could be defined inside html code too and those are not shown here.",
     "httpheader.securityheaders.found": "Found",
     "httpheader.securityheaders.notfound": "Not found",
     "cookies.headline": "Saved Cookies (%s)",
@@ -897,5 +897,7 @@
     "error.not-enough-data": "Not enough data :-\/",
     "status.detail.raw": "Raw data in the database",
     "status.detail.words": "Wordlist",
-    "status.detail.words.intro": "Here you see the list of words with more than <strong>%s<\/strong> occurences in the html content. Maybe it hels to define or verify the keywords."
+    "status.detail.words.intro": "Here you see the list of words with more than <strong>%s<\/strong> occurences in the html content. Maybe it hels to define or verify the keywords.",
+    "httpheader.header.deprecated": "Deprecated",
+    "httpheader.warnings.deprecated": "Deprecated header variables are outdated and invalid soon. You should remove or replace them by a new syntax."
 }

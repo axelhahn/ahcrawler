@@ -492,6 +492,13 @@ class httpheader {
          */
         return false;
     }
+    /**
+     * get array of deprecated http response headers
+     * @return array
+     */
+    public function getDeprecatedHeaders() {
+        return $this->getHeadersWithGivenTag('deprecated');
+    }
 
     /**
      * get array of common but non-standard http response headers
