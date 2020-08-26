@@ -316,10 +316,27 @@ class backend extends crawler_base {
             return true;
         }
         if (
-                array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] && $aOptions['options']['auth']['password'] == md5($_POST['AUTH_PW'])
+                array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] && password_verify($_POST['AUTH_PW'], $aOptions['options']['auth']['password'])
         ) {
             $this->_setUser($_POST['AUTH_USER']);
             return true;
+        }
+        
+        if (
+                array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] && $aOptions['options']['auth']['password'] == md5($_POST['AUTH_PW'])
+        ) {
+            die('SORRY, the password handler function was exchanged by a stronger variant.<br>'
+                    . '<br>'
+                    . 'In config/crawler.config.json ...<br>'
+                    . '<br>'
+                    . 'remove the entry options -> auth -> user.<br>'
+                    . 'Then reload and go to the settings to set the user and password again.<br>'
+                    . '<br>'
+                    . 'OR<br>'
+                    . '<br>'
+                    . 'Get a new password hash on commandline by<br>'
+                    . '<code> php -r "echo password_hash(\'mypassword\', PASSWORD_DEFAULT);"</code><br>'
+                    . 'and enter the output into options -> auth -> password');
         }
         return false;
     }

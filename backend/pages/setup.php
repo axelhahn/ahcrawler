@@ -73,7 +73,8 @@ if(isset($_POST['action'])){
                 if(
                     (
                         $_POST['currentpassword'] 
-                        && md5($_POST['currentpassword'])===$aOptions['options']['auth']['password']
+                        // && md5($_POST['currentpassword'])===$aOptions['options']['auth']['password']
+                        && password_verify($_POST['currentpassword'], $aOptions['options']['auth']['password'])
                     ) 
                     || (!$_POST['currentpassword'])
                     // && $_POST['options']['pw1']!==$aOptions['options']['auth']['password']
@@ -98,12 +99,14 @@ if(isset($_POST['action'])){
                     (
                         (
                             $_POST['currentpassword'] 
-                            && md5($_POST['currentpassword'])===$aOptions['options']['auth']['password']
+                            // && md5($_POST['currentpassword'])===$aOptions['options']['auth']['password']
+                            && password_verify($_POST['currentpassword'],$aOptions['options']['auth']['password'])
                         ) 
                         || (!$_POST['currentpassword'])
                     ) && $_POST['pw1']===$_POST['pw2']
                 ){
-                    $_POST['options']['auth']['password']=md5($_POST['pw1']);
+                    // $_POST['options']['auth']['password']=md5($_POST['pw1']);
+                    $_POST['options']['auth']['password']=password_hash($_POST['pw1'], PASSWORD_DEFAULT);
                     $this->_setUser('');
                 } else {
                     $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.error.new-password'), 'error')

@@ -13,6 +13,14 @@
 2020-08-xx: v0.132
   * ADDED: show warnings for deprecated http headers
   * UPDATE: forms in profiles and settings
+  * UPDATE: use password_hash() instead of md5() for login. If you used the 
+            build in user ... In config/crawler.config.json ...
+            remove the entry options -> auth -> user.
+            Then go to the settings in the backend to set the user and password again.
+            OR
+            Get a new password hash by
+            > php -r "echo password_hash('mypassword', PASSWORD_DEFAULT);"
+            and enter the output into options -> auth -> password
 
 2020-08-19: v0.131
   * ADDED: you can set one image (i.e. screenshot) per profile
