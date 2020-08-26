@@ -30,7 +30,12 @@ $sBtnContinue='<hr><br>'
 ));
 
 $sPasswordDummy='12345678Dummy';
-    
+
+$iSizeInInput=72;
+$iColsInTA=70;
+
+$sPatternNumber='^[0-9]*';
+
 // ----------------------------------------------------------------------
 // handle POST DATA
 // ----------------------------------------------------------------------
@@ -316,7 +321,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     . $oRenderer->oHtml->getTag('textarea', array(
                         'id'=>$sIdPrefixOther.'menu', 
                         'name'=>'options[menu]',
-                        'cols'=>50,
+                        'cols'=>$iColsInTA,
                         'rows'=>isset($aOptions['options']['menu']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['menu']) ? count($aOptions['options']['menu'])+3 : 3 ,
                         // 'label'=>$sValueSearchCategories,
                         'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
@@ -348,8 +353,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAuth.'username', 'label'=>$this->lB('setup.section.auth.user')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAuth.'user', 
                     'name'=>'options[auth][user]',
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['auth']['user']) ? $aOptions['options']['auth']['user'] : '',
                     ), false)
                 . '</div>'
@@ -378,6 +385,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                             'id'=>$sIdPrefixAuth.'currentpassword', 
                             'type'=>'password',
                             'name'=>'currentpassword',
+                            'size'=>$iSizeInInput,
                             'value'=>'',
                             ), false)
                         . '</div>'
@@ -396,6 +404,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'id'=>$sIdPrefixAuth.'pw1', 
                     'type'=>'password',
                     'name'=>'pw1',
+                    'size'=>$iSizeInInput,
                     'value'=>'',
                     ), false)
                 . '</div>'
@@ -405,6 +414,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'id'=>$sIdPrefixAuth.'pw2', 
                     'type'=>'password',
                     'name'=>'pw2',
+                    'size'=>$iSizeInInput,
                     'value'=>'',
                     ), false)
                 . '</div>'
@@ -422,8 +432,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 'label'=>$this->lB('setup.section.crawler.searchindex.simultanousRequests')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'number',
                     'id'=>$sIdPrefixCrawler.'searchindex-simultanousRequests', 
                     'name'=>'options[crawler][searchindex][simultanousRequests]',
+                    'size'=>$iSizeInInput,
+                    'step'=>1,
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['crawler']['searchindex']['simultanousRequests'],
                     'value'=>isset($aOptions['options']['crawler']['searchindex']['simultanousRequests']) 
                         ? (int)$aOptions['options']['crawler']['searchindex']['simultanousRequests'] 
@@ -434,9 +448,13 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 'label'=>$this->lB('setup.section.crawler.ressources.simultanousRequests')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'number',
                     'id'=>$sIdPrefixCrawler.'ressources-simultanousRequests', 
                     'name'=>'options[crawler][ressources][simultanousRequests]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['crawler']['ressources']['simultanousRequests'],
+                    'size'=>$iSizeInInput,
+                    'step'=>1,
                     'value'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) 
                         ? (int)$aOptions['options']['crawler']['ressources']['simultanousRequests'] 
                         : $this->aDefaultOptions['crawler']['ressources']['simultanousRequests'],
@@ -446,8 +464,11 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'timeout', 'label'=>$this->lB('setup.section.crawler.timeout')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'number',
                     'id'=>$sIdPrefixCrawler.'timeout', 
                     'name'=>'options[crawler][timeout]',
+                    'size'=>$iSizeInInput,
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['crawler']['timeout'],
                     'value'=>isset($aOptions['options']['crawler']['timeout']) ? $aOptions['options']['crawler']['timeout'] : $this->aDefaultOptions['crawler']['timeout'],
                     ), false)
@@ -456,8 +477,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'memoryLimit', 'label'=>$this->lB('setup.section.crawler.memoryLimit')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixCrawler.'memoryLimit', 
                     'name'=>'options[crawler][memoryLimit]',
+                    'size'=>$iSizeInInput,
                     'placeholder'=>$this->aDefaultOptions['crawler']['memoryLimit'],
                     'value'=>isset($aOptions['options']['crawler']['memoryLimit']) ? $aOptions['options']['crawler']['memoryLimit'] : '',
                     ), false)
@@ -468,7 +491,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('input', array(
                     'id'=>$sIdPrefixCrawler.'userAgent', 
                     'name'=>'options[crawler][userAgent]',
-                    'size'=>130,
+                    'size'=>$iSizeInInput,
                     'placeholder'=>$this->aDefaultOptions['crawler']['userAgent'],
                     'value'=>isset($aOptions['options']['crawler']['userAgent']) ? $aOptions['options']['crawler']['userAgent'] : '',
                     ), false)
@@ -496,7 +519,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . $oRenderer->oHtml->getTag('textarea', array(
                     'id'=>$sIdPrefixSearchindex.'regexToRemove', 
                     'name'=>'options[searchindex][regexToRemove]',
-                    'cols'=>50,
+                    'cols'=>$iColsInTA,
                     'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
                     // 'label'=>$sValueSearchCategories,
                     'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
@@ -525,8 +548,11 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         $sReturn.='<div class="pure-control-group">'
                             . $oRenderer->oHtml->getTag('label', array('for'=>$sFieldId, 'label'=>$this->lB('setup.section.search.rw.'.$sMatchField)))
                             . $oRenderer->oHtml->getTag('input', array(
+                                'type'=>'text',
                                 'id'=>$sFieldId, 
                                 'name'=>'options[searchindex][rankingWeights]['.$sMatchSection.']['.$sMatchField.']',
+                                'size'=>$iSizeInInput,
+                                'pattern'=>$sPatternNumber,
                                 'placeholder'=>$this->aDefaultOptions['searchindex']['rankingWeights'][$sMatchSection][$sMatchField],
                                 'value'=>$sValue,
                                 ), false)
@@ -552,9 +578,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinTitleLength')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAnalyis.'MinTitleLength', 
                     'name'=>'options[analysis][MinTitleLength]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['analysis']['MinTitleLength'],
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['analysis']['MinTitleLength']) 
                         && $aOptions['options']['analysis']['MinTitleLength'] ? $aOptions['options']['analysis']['MinTitleLength'] 
                         : $this->aDefaultOptions['analysis']['MinTitleLength'],
@@ -564,9 +593,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinTitleLength', 'label'=>$this->lB('setup.section.analysis.MinDescriptionLength')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAnalyis.'MinDescriptionLength', 
                     'name'=>'options[analysis][MinDescriptionLength]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['analysis']['MinDescriptionLength'],
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['analysis']['MinDescriptionLength']) && $aOptions['options']['analysis']['MinDescriptionLength'] 
                         ? $aOptions['options']['analysis']['MinDescriptionLength'] 
                         : $this->aDefaultOptions['analysis']['MinDescriptionLength'],
@@ -576,9 +608,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MinKeywordsLength', 'label'=>$this->lB('setup.section.analysis.MinKeywordsLength')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAnalyis.'MinKeywordsLength', 
                     'name'=>'options[analysis][MinKeywordsLength]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['analysis']['MinKeywordsLength'],
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['analysis']['MinKeywordsLength']) && (int)$aOptions['options']['analysis']['MinKeywordsLength'] >= 0
                         ? $aOptions['options']['analysis']['MinKeywordsLength'] 
                         : $this->aDefaultOptions['analysis']['MinKeywordsLength'],
@@ -588,9 +623,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxPagesize', 'label'=>$this->lB('setup.section.analysis.MaxPagesize')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAnalyis.'MaxPagesize', 
                     'name'=>'options[analysis][MaxPagesize]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['analysis']['MaxPagesize'],
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['analysis']['MaxPagesize']) && $aOptions['options']['analysis']['MaxPagesize'] 
                         ? $aOptions['options']['analysis']['MaxPagesize'] 
                         : $this->aDefaultOptions['analysis']['MaxPagesize'],
@@ -600,9 +638,12 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixAnalyis.'MaxLoadtime', 'label'=>$this->lB('setup.section.analysis.MaxLoadtime')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixAnalyis.'MaxLoadtime', 
                     'name'=>'options[analysis][MaxLoadtime]',
+                    'pattern'=>$sPatternNumber,
                     'placeholder'=>$this->aDefaultOptions['analysis']['MaxLoadtime'],
+                    'size'=>$iSizeInInput,
                     'value'=>isset($aOptions['options']['analysis']['MaxLoadtime']) && $aOptions['options']['analysis']['MaxLoadtime'] 
                         ? $aOptions['options']['analysis']['MaxLoadtime'] 
                         : $this->aDefaultOptions['analysis']['MaxLoadtime'],
@@ -626,7 +667,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     . $oRenderer->oHtml->getTag('textarea', array(
                         'id'=>$sIdPrefixOther.'menu-public', 
                         'name'=>'options[menu-public]',
-                        'cols'=>50,
+                        'cols'=>$iColsInTA,
                         'rows'=>isset($aOptions['options']['menu-public']) && is_array($aOptions['options']['menu-public']) && count($aOptions['options']['menu-public']) ? count($aOptions['options']['menu-public'])+3 : 3 ,
                         // 'label'=>$sValueSearchCategories,
                         'label'=> json_encode($aOptions['options']['menu-public'], JSON_PRETTY_PRINT),
@@ -660,9 +701,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'file', 'label'=>$this->lB('setup.section.database.file')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'type', 
                         'name'=>'options[database][database_file]', 
-                        'size'=>50, 
+                        'size'=>$iSizeInInput, 
                         'value'=>isset($aOptions['options']['database']['database_file']) ? $aOptions['options']['database']['database_file'] : '__DIR__/data/ahcrawl.db',
                         ), false)
                 . '</div>'
@@ -672,8 +714,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'server', 'label'=>$this->lB('setup.section.database.server')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'name', 
                         'name'=>'options[database][server]',
+                        'size'=>$iSizeInInput,
                         'value'=>isset($aOptions['options']['database']['server']) ? $aOptions['options']['database']['server'] : '',
                         ), false)
                     . '</div>'
@@ -681,8 +725,11 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'port', 'label'=>$this->lB('setup.section.database.port')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'port', 
                         'name'=>'options[database][port]',
+                        'pattern'=>$sPatternNumber,
+                        'size'=>$iSizeInInput,
                         'value'=>isset($aOptions['options']['database']['port']) ? $aOptions['options']['database']['port'] : '',
                         ), false)
                     . '</div>'
@@ -692,6 +739,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     . $oRenderer->oHtml->getTag('input', array(
                         'id'=>$sIdPrefixDb.'name', 
                         'name'=>'options[database][database_name]',
+                        'size'=>$iSizeInInput,
                         'value'=>isset($aOptions['options']['database']['database_name']) ? $aOptions['options']['database']['database_name'] : '',
                         ), false)
                     . '</div>'
@@ -699,8 +747,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'username', 'label'=>$this->lB('setup.section.database.username')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'username', 
                         'name'=>'options[database][username]',
+                        'size'=>$iSizeInInput,
                         'value'=>isset($aOptions['options']['database']['username']) ? $aOptions['options']['database']['username'] : '',
                         ), false)
                     . '</div>'
@@ -711,6 +761,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         'id'=>$sIdPrefixDb.'password', 
                         'type'=>'password',
                         'name'=>'options[database][password]',
+                        'size'=>$iSizeInInput,
                         // 'value'=>isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : '',
                         'value'=>$sPasswordDummy,
                         ), false)
@@ -719,8 +770,10 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'charset', 'label'=>$this->lB('setup.section.database.charset')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'charset', 
                         'name'=>'options[database][charset]',
+                        'size'=>$iSizeInInput,
                         'value'=>isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8',
                         ), false)
                     . '</div>'

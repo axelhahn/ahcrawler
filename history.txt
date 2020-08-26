@@ -10,6 +10,10 @@
 
 ----------------------------------------------------------------------
 
+2020-08-xx: v0.132
+  * ADDED: show warnings for deprecated http headers
+  * UPDATE: forms in profiles and settings
+
 2020-08-19: v0.131
   * ADDED: you can set one image (i.e. screenshot) per profile
   * FIX: htmlchecks - sortorder of tables for large and long loading pages

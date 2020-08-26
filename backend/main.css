@@ -500,6 +500,7 @@ td div.tdcenter strong{font-size: 150%; color:#8ac;}
 tr.mark{background: #cde !important;}
 /* --- form --- */
 form.pure-form label{min-width: 20em;}
+/* .pure-form input[type=number] {background: #f0f8f0;}*/
 .pure-form select {height: auto;}
 
 #selectProject span {display: inline-block; margin: 1em 0.2em 1em 0 ;}
