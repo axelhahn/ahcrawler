@@ -21,6 +21,7 @@
             Get a new password hash by
             > php -r "echo password_hash('mypassword', PASSWORD_DEFAULT);"
             and enter the output into options -> auth -> password
+  * FIX: navigating from "add profile" page to any other page
 
 2020-08-19: v0.131
   * ADDED: you can set one image (i.e. screenshot) per profile

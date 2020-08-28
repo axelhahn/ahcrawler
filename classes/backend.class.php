@@ -461,9 +461,9 @@ class backend extends crawler_base {
      * 
      * @return string|integer
      */
-    private function _getTab() {
-        $sAdd = $this->_getRequestParam('siteid', '/add/');
-        $sAll = $this->_getRequestParam('siteid', '/all/');
+    private function _getTab($bAllowSpecialSiteids=false) {
+        $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
+        $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
         if ($this->_sTab && $this->_sTab!=='add') {
             /*
@@ -701,12 +701,12 @@ class backend extends crawler_base {
     private function _getNavi2($aTabs=array(), $bAddButton=false, $sUpUrl=false) {
         $sReturn = '';
         $sMore = '';
-        if (!$this->_sTab) {
+        if (!$this->_sTab) {            
             $this->_getTab();
         }
         if($bAddButton){
             $aTabs['add']=$this->_getIcon('button.add').$this->lB('profile.new');
-            if($this->_getTab()!=='add'){
+            if($this->_getTab($bAddButton)!=='add'){
                 $sUrl = '?page=' . $this->_sPage . '&amp;siteid=add';
                 $sMore = ' <a href="'.$sUrl.'" class="pure-button button-success">'.$this->_getIcon('button.add').$this->lB('profile.new').'</a>';
             }
