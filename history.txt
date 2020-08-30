@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2020-08-xx: v0.132
+2020-08-30: v0.132
   * ADDED: show warnings for deprecated http headers
   * UPDATE: forms in profiles and settings
   * UPDATE: use password_hash() instead of md5() for login. If you used the 
