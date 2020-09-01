@@ -253,8 +253,9 @@ if(!$this->_configExists() ){
                     
                 // . '<br><br>'
                 . ($sTiles2 ? $oRenderer->renderTileBar($sTiles2) : '')
-                .'<div style="clear: both;"></div>'
+                .'<div style="clear: left;"></div>'
                 . $this->getProfileImage()
+                .'<div style="clear: both;"></div>'
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'
                 // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'

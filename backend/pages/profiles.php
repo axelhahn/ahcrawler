@@ -175,11 +175,10 @@ if(isset($_POST['action'])){
                 }
 
                 ob_start();
-                imagepng($sSmallImage);
-                $sImageBase64 = base64_encode(ob_get_contents());
+                    imagejpeg($sSmallImage, NULL, 65);
+                    $sImageBase64 = base64_encode(ob_get_contents());
                 ob_end_clean();
-
-                $aNewProfile['profileimagedata']='data:image/png;base64,'.$sImageBase64;
+                $aNewProfile['profileimagedata']='data:image/jpg;base64,'.$sImageBase64;
             }
             unset($aNewProfile['profileimagedatanew']);
             
