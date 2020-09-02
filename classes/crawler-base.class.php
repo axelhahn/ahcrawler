@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.132',
-        'date' => '2020-08-30',
+        'version' => '0.133-dev',
+        'date' => '2020-09-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -759,15 +759,22 @@ class crawler_base {
      */
     protected function _checkDbResult($aResult = false) {
         $aErr = $this->oDB->error();
+        $iMaxLenOfQuery=1000;
         if ($aErr[1]) {
             echo "!!! Database error detected :-/<br>\n";
             if ($this->aOptions['debug']) {
                 $this->logAdd(''
-                    . '... DB-QUERY : ' . $this->oDB->last() . "\n"
+                    . '... DB-QUERY : ' . substr($this->oDB->last(), 0, $iMaxLenOfQuery) . "\n"
                     . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
                     . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
                 )
                 ;
+                echo ''
+                    . '... DB-QUERY : ' . substr($this->oDB->last(), 0, $iMaxLenOfQuery) . "\n"
+                    . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
+                    . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
+                ;
+                
                 sleep(3);
             }
             return false;

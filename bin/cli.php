@@ -250,6 +250,7 @@ foreach ($aProfileIds as $sSiteId){
                 case "all":
                     $oCrawler->setSiteId($sSiteId);
                     $oCrawler->run();
+                    unset($oCrawler); // prevents locking of sqlite database
                     $oRes=new ressources();
                     $oRes->setSiteId($sSiteId);
                     $oRes->cleanupRessources();

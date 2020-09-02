@@ -146,7 +146,6 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             // new profile image
             // --------------------------------------------------
-            
             if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew'] && strlen($aNewProfile['profileimagedatanew'])>100){
                 
                 $iMaxDimension=600;
@@ -179,6 +178,8 @@ if(isset($_POST['action'])){
                     $sImageBase64 = base64_encode(ob_get_contents());
                 ob_end_clean();
                 $aNewProfile['profileimagedata']='data:image/jpg;base64,'.$sImageBase64;
+            } else {
+                $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'];
             }
             unset($aNewProfile['profileimagedatanew']);
             
@@ -293,7 +294,14 @@ $sReturn.='
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>'profileimagedata', 'label'=>$this->lB('profile.image')))
                 . '<div>'
-                    . $this->getProfileImage()
+                    . ($this->getProfileImage() 
+                                ? $this->getProfileImage() 
+                                    . $oRenderer->oHtml->getTag('button', array(
+                                        'id'=>'profileimagedelete',
+                                        'label'=>' X '
+                                      ))
+                                : '. . .'
+                      )
                     . '</div>'
                 . '</div>'
             . '<div class="pure-control-group">'
@@ -301,19 +309,36 @@ $sReturn.='
                 . '<div>'
                     . $oRenderer->oHtml->getTag('input', array(
                         'type'=>'hidden', 
+                        'name'=>'profileimagedatacurrent', 
+                        'placeholder'=>'',
+                        'value'=>isset($this->aProfileSaved['profileimagedata']) ? $this->aProfileSaved['profileimagedata'] : '',
+                        ), true)
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'hidden', 
                         'id'=>'profileimagedata', 
                         'name'=>'profileimagedatanew', 
                         'placeholder'=>'',
                         'value'=>'',
                         ), true)
-                    . '<br>'
                     . $oRenderer->oHtml->getTag('div', array(
                         'id'=>'profileimageinserter', 
                         'class'=>'insertimage', 
                         'contentEditable'=>'true',
                         'label'=>$this->lB('profile.image.add'),
                         ), true)
-                    . '</div>'
+                . '</div>'
+                . '<br>'
+                . '</div>'
+            . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('label'=>''))
+                . '<div>'
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'file', 
+                        'id'=>'profileimagefile', 
+                        'name'=>'profileimagefile', 
+                        'placeholder'=>'',
+                        'value'=>'',
+                        ), true)
                 . '</div>'
 
             // ------------------------------------------------------------

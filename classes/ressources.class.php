@@ -91,7 +91,7 @@ class ressources extends crawler_base {
      * @return type
      */
     public function cleanupRessources() {
-        if (!$this->iSiteId) {
+        if (!(int)$this->iSiteId) {
             return false;
         }
         $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
@@ -99,49 +99,11 @@ class ressources extends crawler_base {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
-
-        $this->cliprint('info', "CLEANUP ressources_rel<br>\n");
-        $this->oDB->delete('ressources_rel', array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-            ),
-        ));
-        $this->cliprint('info', "CLEANUP ressources<br>\n");
-        $this->oDB->delete('ressources', array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-            ),
-        ));
+        $this->flushData(array('ressources'=>1), $this->iSiteId);
         $this->_aRessourceIDs = array();
         $this->disableLocking();
+        $this->cliprint('info', "CLEANUP ressources done<br>\n");
     }
-
-    /*
-      see crawler_base
-      $this->_createTable("ressources", array(
-      'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-      'siteid' => 'INTEGER NULL',
-      'url' => 'VARCHAR(1024)  NOT NULL',
-      'type' => 'VARCHAR(32) NULL',
-      'header' => 'VARCHAR(1024)  NULL',
-
-      'last_status' => 'INTEGER NULL',
-      'loadtime' => 'INTEGER NULL',
-      'rescan' => 'BOOLEAN TRUE',
-
-      'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
-      'tserror' => 'DATETIME NULL',
-      'errorcount' => 'INTEGER NULL',
-      'lasterror' => 'VARCHAR(1024)  NULL',
-      )
-      );
-      $this->_createTable("ressources_rel", array(
-      'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
-      'id_ressource' => 'INTEGER  NULL',
-      'id_ressource_to' => 'INTEGER  NULL',
-      )
-      );
-     */
 
     /**
      * create an array for ressource table; it fills missing keys with
@@ -419,6 +381,7 @@ class ressources extends crawler_base {
      * @return boolean
      */
     public function addRessourcesFromPages() {
+        $iMaxRowsPerInsert=25;
         $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
@@ -440,6 +403,7 @@ class ressources extends crawler_base {
             $this->cliprint('cli', "INFO: insert " . count($aResult) . " already crawled pages as ressource<br>\n");
             // sleep(2);
             $aPages = array();
+            $iRow=0;
             foreach ($aResult as $aData) {
                 $aData['rescan'] = 0;
                 $aData['ressourcetype'] = 'page';
@@ -451,16 +415,21 @@ class ressources extends crawler_base {
                 // $this->addOrUpdateRessource($aRessource);
                 $aPages[] = $this->_sanitizeRessourceArray($aData);
                 $this->_aRessourceIDs[$aData['url']] = true;
+                $iRow++;
+                if(count($aPages)==$iMaxRowsPerInsert || $iRow>=count($aResult)){
+                    $this->cliprint('cli', "INFO: reached row $iRow .. insert ".count($aPages)." rows...\n");
+                    $this->oDB->insert('ressources', $aPages);
+                    $this->_checkDbResult($aResult);
+                    $aPages=array();
+                }
             }
-            $this->oDB->insert('ressources', $aPages);
-            $this->_checkDbResult($aResult);
 
             $this->cliprint('cli', "INFO ... adding relitems of already crawled pages<br>\n");
-            sleep(2);
             foreach ($aResult as $aData) {
                 unset($aData['id']);
                 $this->addRelRessourcesOfAPage($aData);
             }
+            $this->cliprint('cli', "DONE ... adding relitems.<br>\n");
         }
         $this->disableLocking();
         $this->cliprint('cli', "<br>\n");

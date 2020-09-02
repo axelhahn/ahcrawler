@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-09-01: v0.133
+  * FIX: index ressources with more pages with sqlite engine
+  * FIX: searchindex indexer could have false positives in extension detection
+  * FIX: cli calls "-a reindex" or "-a index -d all" with sqlite engine locked the database for ressources
+  * UPDATE: searchindex indexer got a few more extensions
+  * UPDATE: profile image uses jpeg insted of png (uses less space)
+
 2020-08-30: v0.132
   * ADDED: show warnings for deprecated http headers
   * UPDATE: forms in profiles and settings

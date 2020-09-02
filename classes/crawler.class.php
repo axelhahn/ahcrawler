@@ -71,7 +71,7 @@ class crawler extends crawler_base{
      * @var string
      */
     private $aSkipExtensions = array(
-        // images
+        // documents
         'doc',
         'docx',
         'pdf',
@@ -94,9 +94,19 @@ class crawler extends crawler_base{
         'webm',
         // archives
         'gz',
+        'hqx',
+        'rar',
+        'sit',
         'tar',
         'tgz',
         'zip',
+        // disc images
+        'iso',
+        // installer
+        'dmg',
+        'exe',
+        'msi',
+        'rpm',
     );
     /**
      * list of regex with links to remove
@@ -306,7 +316,7 @@ class crawler extends crawler_base{
             }
         }
 
-        $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')/i';
+        $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')$/i';
         if (preg_match($sSkipExtensions, $sUrl)) {
             $this->cliprint('cli', $bDebug ? "... SKIP by extension: $sUrl\n" : "");
             return false;
