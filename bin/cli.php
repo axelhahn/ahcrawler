@@ -282,6 +282,8 @@ foreach ($aProfileIds as $sSiteId){
                     $oRes->setSiteId($sSiteId);
                     $oRes->crawlRessoures();
                     break;
+                default:
+                    echo "Ooops ... action [$sAction] cannot be combined with data [$sWhat] \nuse one of searchindex|ressources";
             }
             break;
         case 'empty':
