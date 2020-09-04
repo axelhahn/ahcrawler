@@ -908,6 +908,18 @@ class backend extends crawler_base {
                 . (isset($sH2) && $sH2 ? $sH2 . '</h2><p class="pageHint">' . $sHint . '</p>' : '')
         ;
     }
+    
+    /**
+     * find page specific javascript to be loaded optional on footer of html document
+     * It returns relative url to js file
+     * @return string
+     */
+    public function getMoreJS(){
+        $sUrlJs='javascript/functions-'.$this->_sPage.'.js';
+        $sPageJs=dirname(__DIR__).'/backend/'.$sUrlJs;
+        return file_exists($sPageJs) ? $sUrlJs : '';
+    }
+    
     public function getStatus() {
         $oStatus=new status();
         $aStatus=$oStatus->getStatus();
@@ -1570,7 +1582,7 @@ class backend extends crawler_base {
     // ----------------------------------------------------------------------
     // PAGE CONTENT
     // ----------------------------------------------------------------------
-
+    
     /**
      * wrapper function: get page content as html
      * @return string

@@ -146,15 +146,29 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             // new profile image
             // --------------------------------------------------
+            $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'];
+            $sPostedImg = false;
+            
+            if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew']=='DELETE'){
+                $aNewProfile['profileimagedata']='';
+            }
+            
+            
+            // pasted image
             if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew'] && strlen($aNewProfile['profileimagedatanew'])>100){
-                
+                $sPostedImg=base64_decode(str_replace('data:image/png;base64,', '', $aNewProfile['profileimagedatanew']));
+            }
+            
+            // uploaded image (has priority over pasted image)
+            // echo '<pre>'.print_r($_FILES, 1).'</pre>'; die();
+            if(isset($_FILES['profileimagefile']['tmp_name']) && $_FILES['profileimagefile']['tmp_name']){
+                $sPostedImg = file_get_contents($_FILES['profileimagefile']['tmp_name']);
+            }
+
+            if($sPostedImg){
+                $sTempImage = imagecreatefromstring($sPostedImg);
                 $iMaxDimension=600;
-
-                // source: https://stackoverflow.com/questions/45478827/resize-image-from-base64-encode
-                $sPostedImg=str_replace('data:image/png;base64,', '', $aNewProfile['profileimagedatanew']);
-
-                $sTempImage = imagecreatefromstring(base64_decode($sPostedImg));
-                list($iWidthOrig, $iHeightOrig) = getimagesizefromstring(base64_decode($sPostedImg));
+                list($iWidthOrig, $iHeightOrig) = getimagesizefromstring($sPostedImg);
 
                 if ($iWidthOrig<=$iMaxDimension && $iHeightOrig<=$iMaxDimension){
                     $sSmallImage=$sTempImage;
@@ -178,8 +192,6 @@ if(isset($_POST['action'])){
                     $sImageBase64 = base64_encode(ob_get_contents());
                 ob_end_clean();
                 $aNewProfile['profileimagedata']='data:image/jpg;base64,'.$sImageBase64;
-            } else {
-                $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'];
             }
             unset($aNewProfile['profileimagedatanew']);
             
@@ -246,7 +258,7 @@ if(isset($this->aProfileSaved['searchcategories']) && count($this->aProfileSaved
 
 $sReturn.='
         <br>
-        <form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
+        <form class="pure-form pure-form-aligned" method="POST"  enctype="multipart/form-data" action="?'.$_SERVER['QUERY_STRING'].'">
             '
             . $oRenderer->oHtml->getTag('input', array(
                 'type'=>'hidden',
@@ -293,13 +305,18 @@ $sReturn.='
 
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>'profileimagedata', 'label'=>$this->lB('profile.image')))
-                . '<div>'
+                . '<div id="myimagediv">'
                     . ($this->getProfileImage() 
-                                ? $this->getProfileImage() 
+                                ? ''
+                                    . $this->getProfileImage() 
+                                    . '<br>'
                                     . $oRenderer->oHtml->getTag('button', array(
+                                        'label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 
+                                        'class'=>'pure-button button-error',
                                         'id'=>'profileimagedelete',
-                                        'label'=>' X '
                                       ))
+                                    . '<br><br>'
+                        
                                 : '. . .'
                       )
                     . '</div>'

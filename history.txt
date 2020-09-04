@@ -10,10 +10,12 @@
 
 ----------------------------------------------------------------------
 
-2020-09-01: v0.133
+2020-09-xx: v0.133
+  * ADDED: profile image - has a delete button and file upload too now
   * FIX: index ressources with more pages with sqlite engine
   * FIX: searchindex indexer could have false positives in extension detection
   * FIX: cli calls "-a reindex" or "-a index -d all" with sqlite engine locked the database for ressources
+  * UPDATE: cli - show hint if using "-d all"
   * UPDATE: searchindex indexer got a few more extensions
   * UPDATE: profile image uses jpeg insted of png (uses less space)
 
