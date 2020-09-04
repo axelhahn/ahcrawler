@@ -93,6 +93,8 @@ class crawler extends crawler_base{
         'mp4',
         'webm',
         // archives
+        '7z',
+        'ace',
         'gz',
         'hqx',
         'rar',
@@ -103,6 +105,7 @@ class crawler extends crawler_base{
         // disc images
         'iso',
         // installer
+        'deb',
         'dmg',
         'exe',
         'msi',
