@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2020-09-xx: v0.133
+2020-09-05: v0.133
   * ADDED: profile image - has a delete button and file upload too now
   * FIX: index ressources with more pages with sqlite engine
   * FIX: searchindex indexer could have false positives in extension detection
