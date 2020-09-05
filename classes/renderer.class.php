@@ -785,7 +785,7 @@ class ressourcesrenderer extends crawler_base {
         }
         $sButtons='';
         if($bShowHttpstatus && (!$aResourceItem['http_code'] || $aResourceItem['http_code']>299)){
-            $sButtons.='<a href="#" class="pure-button blacklist" data-url="'.$aResourceItem['url'].'" title="'.$this->lB('ressources.blacklist.add').'">'
+            $sButtons.='<a href="#" class="pure-button blacklist" data-url="'.$aResourceItem['url'].'" title="'.$this->lB('ressources.denylist.add').'">'
                             . $this->_getIcon('blacklist')
                         . '</a> '
                     ;

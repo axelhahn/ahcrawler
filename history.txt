@@ -18,6 +18,7 @@
   * UPDATE: cli - show hint if using "-d all"
   * UPDATE: searchindex indexer got a few more extensions
   * UPDATE: profile image uses jpeg insted of png (uses less space)
+  * UPDATE: wording changed: blacklist into deny list
 
 2020-08-30: v0.132
   * ADDED: show warnings for deprecated http headers

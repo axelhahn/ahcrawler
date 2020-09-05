@@ -238,7 +238,7 @@ if(!$this->_configExists() ){
                         
                         // count of blacklisted items
                         .(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])
-                            ? '<hr>'.sprintf($this->lB('home.blacklisted'), '<strong>'. count($this->aProfileSaved['ressources']['blacklist']).'</strong>') . '<br><br>'
+                            ? '<hr>'.sprintf($this->lB('home.denyentries'), '<strong>'. count($this->aProfileSaved['ressources']['blacklist']).'</strong>') . '<br><br>'
                             : ''
                         )
                         . $this->_getLink2Navitem('profiles')

@@ -33,16 +33,16 @@ if(isset($_POST) && count($_POST) && isset($_POST['blacklistitem']) ){
         $this->aProfileSaved['ressources']['blacklist']=array();
     } 
     if(!array_search($_POST['blacklistitem'] , $this->aProfileSaved['ressources']['blacklist'])===false){
-        $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-skip'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'warning');
+        $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.denylist.save-skip'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'warning');
     } else {
         $this->aProfileSaved['ressources']['blacklist'][]=$_POST['blacklistitem'];
         $this->aProfileSaved['ressources']['blacklist'] = array_unique($this->aProfileSaved['ressources']['blacklist']);
 
         $aOptions['profiles'][$iProfileId]=$this->aProfileSaved;
         if ($this->_saveConfig($aOptions)){
-            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'ok');
+            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.denylist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'ok');
         } else {
-            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.blacklist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'error');
+            $sReturn.=$oRenderer->renderMessagebox(sprintf($this->lB('ressources.denylist.save-ok'), $_POST['blacklistitem'], $this->aProfileSaved['label']), 'error');
         }
     }
 }
@@ -291,7 +291,7 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         } 
         if ($bShowReport){
             $sForm='<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
-                        . '<p>'.$this->lB('ressources.blacklist.intro').'</p>'
+                        . '<p>'.$this->lB('ressources.denylist.intro').'</p>'
                         . '<div class="pure-control-group">'
                             // . $oRenderer->oHtml->getTag('label', array('for'=>'input-url', 'label'=>'TODO', 'style'=>'min-width: 0; width: 4em;'))
                             . $oRenderer->oHtml->getTag('input', array(
@@ -303,11 +303,11 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
                                 ))
                             . '</div>'
                         . '<ul>'
-                            . '<li>'.$this->lB('ressources.blacklist.hint-scan').'</li>'
-                            . '<li>'.$this->lB('ressources.blacklist.hint-start').'</li>'
-                            . '<li>'.$this->lB('ressources.blacklist.hint-protocol').'</li>'
-                            . '<li>'.$this->lB('ressources.blacklist.hint-end').'</li>'
-                            . '<li>'.$this->lB('ressources.blacklist.hint-profile').'</li>'
+                            . '<li>'.$this->lB('ressources.denylist.hint-scan').'</li>'
+                            . '<li>'.$this->lB('ressources.denylist.hint-start').'</li>'
+                            . '<li>'.$this->lB('ressources.denylist.hint-protocol').'</li>'
+                            . '<li>'.$this->lB('ressources.denylist.hint-end').'</li>'
+                            . '<li>'.$this->lB('ressources.denylist.hint-profile').'</li>'
                         . '</ul>'
                         . '<hr>'
                         . '<div>'
@@ -346,7 +346,7 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
 
                             // ensure that the form and ids exist
                             modalDlg_setContent(\''.$sForm.'\');
-                            modalDlg_setTitle("'.$this->lB('ressources.blacklist.title').'");
+                            modalDlg_setTitle("'.$this->lB('ressources.denylist.title').'");
 
                             $("#input-url").val(sUrl);
                             $("#btnswitch").html(sProto + " >> " + sBoth);

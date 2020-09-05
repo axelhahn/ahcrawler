@@ -546,9 +546,11 @@ $sReturn.='
                         'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
                         ), false)
                     . '</div>'
-                // blacklist
+                .'<br>'
+                .'<br>'
+                // deny list
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>'ressources-blacklist', 'label'=>$this->lB('profile.ressources.blacklist')))
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'ressources-blacklist', 'label'=>$this->lB('profile.ressources.denylist')))
                     . $oRenderer->oHtml->getTag('textarea', array(
                         'id'=>'ressources-blacklist', 
                         'name'=>'ressources[blacklist]',
