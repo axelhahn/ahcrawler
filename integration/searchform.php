@@ -12,7 +12,7 @@
  * 
  *  
  */
-require_once("../classes/search.class.php");
+require_once(__DIR__ . "/../classes/search.class.php");
 
 // --- defaults:
 $sDefaultSiteId=1;
