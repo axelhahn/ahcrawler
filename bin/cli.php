@@ -39,7 +39,7 @@ error_reporting(E_ALL);
 
 $aParamDefs=array(
     'label' => 'AhCrawler :: C L I',
-    'description' => 'CLI tool to start crawling and ressource scan',
+    'description' => 'CLI tool to start crawling and resource scan',
     'params'=>array(
         'action'=>array(
             'short' => 'a',
@@ -51,9 +51,9 @@ $aParamDefs=array(
         'data'=>array(
             'short' => 'd',
             'value'=> CLIVALUE_REQUIRED,
-            'pattern'=>'/^(searchindex|ressources|search|all)$/',
+            'pattern'=>'/^(searchindex|resources|search|all)$/',
             'shortinfo' => 'kind of data',
-            'description' => 'The data value is one of searchindex | ressources | search | all',
+            'description' => 'The data value is one of searchindex | resources | search | all',
         ),
         'profile'=>array(
             'short' => 'p',
@@ -129,16 +129,16 @@ ACTIONS:
     flush:   drop data for ALL profiles
              (requires -d [value])
 
-    index:   start crawler to reindex searchindex or ressources 
+    index:   start crawler to reindex searchindex or resources 
              (requires -d [value] and -p [profile])
 
     list:    list all existing profiles
 
     reindex: delete existing data of the given profile an reindex searchindex 
-             and ressources (requires -p [profile])
+             and resources (requires -p [profile])
              This is a combination of actions empty + index for [all] data.
 
-    update:  start crawler to update missed searchindex or ressources 
+    update:  start crawler to update missed searchindex or resources 
              (requires -d [value] and -p [profile])
 
 EXAMPLES:
@@ -159,13 +159,13 @@ EXAMPLES:
     index data:
 
       '.$sBase.' -a reindex -p 1
-          recreate search index + ressources for profile [1]
+          recreate search index + resources for profile [1]
 
       '.$sBase.' -a index -d all -p 1
-          create search index and ressources for profile [1]
+          create search index and resources for profile [1]
 
       '.$sBase.' -a update -d all -p 1
-          update missed items in search index and ressources for profile [1]
+          update missed items in search index and resources for profile [1]
 
 ';
     exit(0);
@@ -261,7 +261,7 @@ foreach ($aProfileIds as $sSiteId){
                     $oCrawler->setSiteId($sSiteId);
                     $oCrawler->run();
                     break;
-                case "ressources":
+                case "resources":
                     $oRes=new ressources();
                     $oRes->setSiteId($sSiteId);
                     $oRes->cleanupRessources();
@@ -277,13 +277,13 @@ foreach ($aProfileIds as $sSiteId){
                     $oCrawler->setSiteId($sSiteId);
                     $oCrawler->run(true);
                     break;
-                case "ressources":
+                case "resources":
                     $oRes=new ressources();
                     $oRes->setSiteId($sSiteId);
                     $oRes->crawlRessoures();
                     break;
                 default:
-                    echo "Ooops ... action [$sAction] cannot be combined with data [$sWhat] \nuse one of searchindex|ressources";
+                    echo "Ooops ... action [$sAction] cannot be combined with data [$sWhat] \nuse one of searchindex|resources";
             }
             break;
         case 'empty':
@@ -295,5 +295,5 @@ foreach ($aProfileIds as $sSiteId){
     }
 }
 $oCli->color('reset');
-echo "\nDONE.\n\n";
+echo "\nDONE.\n";
 // ----------------------------------------------------------------------

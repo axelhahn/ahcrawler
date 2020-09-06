@@ -102,7 +102,7 @@ class ressources extends crawler_base {
         $this->flushData(array('ressources'=>1), $this->iSiteId);
         $this->_aRessourceIDs = array();
         $this->disableLocking();
-        $this->cliprint('info', "CLEANUP ressources done<br>\n");
+        $this->cliprint('info', "CLEANUP resources done<br>\n");
     }
 
     /**
@@ -185,9 +185,9 @@ class ressources extends crawler_base {
         // if (count($aCurrent) && $aCurrent[0]['id']) {
         if ($bExists) {
             if ($bSkipIfExist) {
-                $this->cliprint('cli', 'SKIP ressource ' . $sUrl . " (exists)\n");
+                $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
             } else {
-                $this->cliprint('info', 'UPDATE existing ressource ' . $sUrl . "\n");
+                $this->cliprint('info', 'UPDATE existing resource ' . $sUrl . "\n");
                 /*
                   $aCurrent = $this->oDB->select('ressources', array('id'), array(
                   'url' => $aData['url'],
@@ -204,7 +204,7 @@ class ressources extends crawler_base {
                 $this->_checkDbResult($aResult);
             }
         } else {
-            $this->cliprint('info', 'INSERT new ressource ' . $aData['url'] . "\n");
+            $this->cliprint('info', 'INSERT new resource ' . $aData['url'] . "\n");
             $aResult = $this->oDB->insert('ressources', $aData);
             $this->_checkDbResult($aResult);
             $this->_aRessourceIDs[$sUrl] = true;
@@ -400,7 +400,7 @@ class ressources extends crawler_base {
         );
 
         if (is_array($aResult) && count($aResult)) {
-            $this->cliprint('cli', "INFO: insert " . count($aResult) . " already crawled pages as ressource<br>\n");
+            $this->cliprint('cli', "INFO: insert " . count($aResult) . " already crawled pages as resource<br>\n");
             // sleep(2);
             $aPages = array();
             $iRow=0;
@@ -612,7 +612,7 @@ class ressources extends crawler_base {
 
         // check blacklist
         if($this->_isInBlacklist($sUrl)){
-            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches blacklist regex [$sMyRegex]\n" : "");
+            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches deny list regex [$sMyRegex]\n" : "");
             sleep(3);
             return false;
         }
