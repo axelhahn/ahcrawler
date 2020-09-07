@@ -134,7 +134,7 @@ class ahsearch extends crawler_base {
         return $aReturn;
     }
     
-    public function getSearchtermsOfUsers(){
+    public function __TO_REMOVE__getSearchtermsOfUsers(){
             $sQuery=''
                     . 'SELECT query, count(query) as count, results '
                     . 'FROM searches '
@@ -197,7 +197,7 @@ class ahsearch extends crawler_base {
      * @param type $aOptions
      *   url    {string}  limit url i.e. //[domain]/[path] - without "%"
      *   subdir {string}  => subset of search without domain with starting slash (/[path])
-     *   mode   {string}  one of AND | OR | PHRASE (default: OR)
+     *   mode   {string}  one of AND | OR | PHRASE (default: AND)
      *   lang   {string}  force language of the document; default: all
      * @param string  $aOptions     options
      * @return array
@@ -466,18 +466,18 @@ class ahsearch extends crawler_base {
         return $aReturn;
     }
 
+    /**
+     * get count of search results 
+     * @param array   array of $this->search()
+     * @return int
+     */
     public function getCountOfSearchresults($aResult) {
         $iCounter = 0;
         if (!is_array($aResult)) {
-            return false;
+            return 0;
         }
         foreach ($aResult as $iRanking => $aDataItems) {
-            $aRow = array();
-            foreach ($aDataItems as $aItem) {
-                // unset($aItem['content']);
-                // echo '<pre>'.print_r($aItem, 1); die();
-                $iCounter ++;
-            }
+            $iCounter+=count($aDataItems);
         }
         return $iCounter;
     }
@@ -554,7 +554,7 @@ class ahsearch extends crawler_base {
             . '<input'
             . $this->_addAttributes(array(
                 'type'=>'hidden',
-                'name'=>'lang',
+                'name'=>'guilang',
                 'value'=>$this->sLang,
             ))
             .'>'
@@ -682,31 +682,67 @@ class ahsearch extends crawler_base {
     
     /**
      * do search and render search results
-     * @param string  $q            search string
-     * @param string  $aOptions     options
-     *                  url => subset of search, i.e. '//[domain]/[path]'
-     *                  subdir => subset of search without domain with starting slash (/[path])
-     * @param string  $sOutputType  one of html| ...
+     * @param string  $aParams     search options understanding those keys:
+     * 
+     *                  q      {string}  search string
+     * 
+     *                  url    {string}  limit url i.e. //[domain]/[path] - without "%"
+     *                  subdir {string}  => subset of search without domain with starting slash (/[path])
+     *                  mode   {string}  one of AND | OR | PHRASE (default: AND)
+     *                  lang   {string}  force language of the document; default: all
+     * 
+     *                  limit  {integer} limit of max search results; default: 50
+     * 
+     *                  head   {string}  html template code for header before result list
+     *                  result {string}  html template code for each result
      * @return string
      */
-    public function renderSearchresults($q=false, $aOptions = array(), $sOutputType = 'html') {
+    public function renderSearchresults($aParams = array()) {
         $sOut = '';
         $aData = array();
         $iHits = 0;
-        if(!$q){
-            $q=$this->getQueryValue('q');
-        }
-        $q = trim($q);
+        $sCss='
+            <!-- default css code added by '.__CLASS__.' -->
+            <style>
+                .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
+                .searchresult:hover{background:#fafafa;}
+                .searchresult a{color:#44a; font-size: 120%;}
+                .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
+                .searchresult .url{color:#393;}
+                .searchresult .detail{color:#888;}
+                .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
+                .searchresult .bar span{float: right}
+                .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
+
+                .searchresult .mark1{background:#fd3;}
+                .searchresult .mark2{background:#3f3;}
+                .searchresult .mark3{background:#f88;}
+                .searchresult .mark4{background:#ccf;}
+            </style>
+            <!-- /css -->
+            ';
+        $iLimit=(isset($aParams['limit']) && (int)$aParams['limit'] ? (int)$aParams['limit'] : 50);
+        $q=trim(isset($aParams['q']) ? $aParams['q'] : $this->getQueryValue('q'));
+
+        // output of results:
+        $sHead='';
+        $sResults='';
+        
         if ($q) {
-            $aData = $this->search($q, $aOptions);
+            $aSet=array();
+            foreach (array('url', 'subdir', 'mode', 'lang') as $sMyKey){
+                if(isset($aParams[$sMyKey])){
+                    $aSet[$sMyKey]=$aParams[$sMyKey];
+                }
+            }
+            $aData = $this->search($q, $aSet);
 
             $iHits = $this->getCountOfSearchresults($aData);
             
             // LIMIT output ... maybe add a paging?
-            while(count($aData)>50){
+            while(count($aData)>$iLimit){
                 array_pop($aData);
             } 
-            
 
             // echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
             if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -718,7 +754,7 @@ class ahsearch extends crawler_base {
                     'searches', array(
                         'ts' => date("Y-m-d H:i:s"),
                         'siteid' => $this->iSiteId,
-                        'searchset' => $aOptions,
+                        'searchset' => $aSet,
                         'query' => $q,
                         'results' => $iHits,
                         'host' => $client_ip,
@@ -728,108 +764,113 @@ class ahsearch extends crawler_base {
             );
             // echo "\n" . $this->oDB->last() . '<br>'; 
 
-            switch ($sOutputType) {
-                case 'html':
-                    $sOut = '<strong>'.$this->lF('searchout.results').'</strong><br><br>';
-                    if (!$iHits) {
-                        $sOut .= $q ? '<p>' . $this->lF('searchout.nohit') . '</p>' : '';
-                    } else {
-                        $sOut .= '
-                            <style>
-                            .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
-                            .searchresult:hover{background:#fafafa;}
-                            .searchresult a{color:#44a; font-size: 120%;}
-                            .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
-                            .searchresult .url{color:#393;}
-                            .searchresult .detail{color:#888;}
-                            .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
-                            .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
+            $sTplHead=isset($aParams['head']) 
+                ? $aParams['head'] 
+                : (isset($aParams['result']) ? '' : $sCss ) . '
+                    <strong>{{RESULTS}}</strong><br><br>
+                    <p>{{HITS}}</p>
+                '
+                ;
+            $sTplResults=isset($aParams['result']) ? $aParams['result'] : '
+                <div class="searchresult">
+                    <div class="bar">
+                        <span>{{PERCENT}}%</span>
+                        <div class="bar2" style="width: {{PERCENT}}%">&nbsp;</div>
+                    </div>
+                    <a href="{{URL}}">{{TITLE}}</a> <span class="date">{{AGE}}</span><br>
 
-                            .searchresult .mark1{background:#fd3;}
-                            .searchresult .mark2{background:#3f3;}
-                            .searchresult .mark3{background:#f88;}
-                            .searchresult .mark4{background:#ccf;}
-
-                            </style>';
-                        if ($iHits > 50) {
-                            $sOut .= '<p>' . $this->lF('searchout.too-many-hits') . '<br><br></p>';
-                        } else {
-                            $sOut .= '<p>' . sprintf($this->lF('searchout.hits'), $iHits) . '</p>';
-                        }
-                        $iMaxRanking = false;
-                        foreach ($aData as $iRanking => $aDataItems) {
-                            if (!$iMaxRanking) {
-                                $iMaxRanking = $iRanking ? $iRanking : 1;
-                            }
-                            foreach ($aDataItems as $aItem) {
-                                $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
-                                $sAge = $sAge > 1 ? '(' . $sAge . ' Tage)' : '';
-
-                                $sDetail = '';
-                                if ($aItem['description']) {
-                                    $sDetail.=$aItem['description'] . '<br>';
-                                }
-                                // $sDetail.= '<pre>'.print_r($aItem['results'],true) . '</pre>';
-                                //echo "<pre>" . print_r($aItem,1 ) . "</pre>";
-                                $aPreviews = array();
-                                $aSearchwords = explode(" ", $q);
-                                foreach ($aSearchwords as $sWord) {
-
-                                    $iLastPos = 0;
-                                    $iSurround = 30;
-                                    while (!stripos($aItem['content'], $sWord, $iLastPos) === false) {
-                                        $iLastPos = stripos($aItem['content'], $sWord, $iLastPos);
-                                        $aPreviews[$iLastPos] = substr($aItem['content'], $iLastPos - $iSurround, ($iSurround * 4 + strlen($sWord)));
-                                        $iLastPos++;
-                                    }
-                                }
-                                ksort($aPreviews);
-                                // echo "<pre>" . print_r($aPreviews,1 ) . "</pre>";
-
-                                if (count($aPreviews)) {
-                                    $iPreview = 0;
-                                    foreach ($aPreviews as $sPreview) {
-                                        $iPreview++;
-                                        if ($iPreview > 1) {
-                                            $iMore = count($aPreviews) - $iPreview;
-                                            $sDetail.=sprintf($this->lF('searchout.n-more-hits'), $iMore);
-                                            break;
-                                        }
-                                        $sDetail.='...' . $sPreview . '...<br>';
-                                    }
-                                }
-                                $iWord = 0;
-                                foreach ($aSearchwords as $sWord) {
-                                    $iWord++;
-                                    $sClass = "mark${iWord}";
-                                    $sDetail = preg_replace('@' . $sWord . '@i', '<span class="' . $sClass . '">\\0</span>', $sDetail);
-                                }
-
-                                $sOut.='
-                                <div class="searchresult" CConclickCC="location.href=\'' . $aItem['url'] . '\';">
-                                    <div class="bar">
-                                        <span style="float: right">' . round($iRanking / $iMaxRanking * 100) . '%</span>
-                                        <div class="bar2" style="width: ' . round($iRanking / $iMaxRanking * 100) . '%">&nbsp;</div>
-                                    </div>
-                                   <a href="' . $aItem['url'] . '">' . $aItem['title'] . '</a> <span class="date">' . $sAge . '</span><br>
-
-                                    <div class="url">' . $aItem['url'] . '</div>
-                                    <div class="detail">'
-                                        . $sDetail . '
-                                    </div>
-                                </div>
-                                     ';
-                            }
-                        }
+                    <div class="url">{{URL}}</div>
+                    <div class="detail">{{DETAIL}}</div>
+                </div>'
+                ;
+                
+            $sTplFoot='';
+            
+            
+            $sInsResults=$this->lF('searchout.results');
+            if (!$iHits) {
+                $sInsHits=$this->lF('searchout.nohit');
+            } else {
+                if ($iHits > $iLimit) {
+                    $sInsHits=$this->lF('searchout.too-many-hits');
+                } else {
+                    $sInsHits=sprintf($this->lF('searchout.hits'), $iHits);
+                }
+                
+                $sHead=str_replace(
+                    array('{{RESULTS}}', '{{HITS}}'), 
+                    array($sInsResults, $sInsHits),
+                    $sTplHead
+                );
+                
+                $iMaxRanking = false;
+                foreach ($aData as $iRanking => $aDataItems) {
+                    if (!$iMaxRanking) {
+                        $iMaxRanking = $iRanking ? $iRanking : 1;
                     }
+                    foreach ($aDataItems as $aItem) {
+                        $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
+                        $sAge = $sAge > 1 ? sprintf($this->lF('searchout.days'), $sAge) : $this->lF('searchout.today');
 
-                    break;
+                        $sDetail = '';
+                        // $sDetail.= '<pre>'.print_r($aItem['results'],true) . '</pre>';
+                        //echo "<pre>" . print_r($aItem,1 ) . "</pre>";
+                        $aPreviews = array();
+                        $aSearchwords = explode(" ", $q);
+                        foreach ($aSearchwords as $sWord) {
 
-                default:
-                    break;
+                            $iLastPos = 0;
+                            $iSurround = 30;
+                            while (!stripos($aItem['content'], $sWord, $iLastPos) === false) {
+                                $iLastPos = stripos($aItem['content'], $sWord, $iLastPos);
+                                $aPreviews[$iLastPos] = substr($aItem['content'], $iLastPos - $iSurround, ($iSurround * 4 + strlen($sWord)));
+                                $iLastPos++;
+                            }
+                        }
+                        ksort($aPreviews);
+                        // echo "<pre>" . print_r($aPreviews,1 ) . "</pre>";
+
+                        if (count($aPreviews)) {
+                            $iPreview = 0;
+                            foreach ($aPreviews as $sPreview) {
+                                $iPreview++;
+                                if ($iPreview > 1) {
+                                    $iMore = count($aPreviews) - $iPreview;
+                                    $sDetail.=sprintf($this->lF('searchout.n-more-hits'), $iMore);
+                                    break;
+                                }
+                                $sDetail.='...' . $sPreview . '...<br>';
+                            }
+                        }
+                        $iWord = 0;
+                        foreach ($aSearchwords as $sWord) {
+                            $iWord++;
+                            $sClass = "mark${iWord}";
+                            $sDetail = preg_replace('@' . $sWord . '@i', '<span class="' . $sClass . '">\\0</span>', $sDetail);
+                        }
+
+                        $sResults.=str_replace(
+                            array('{{URL}}', '{{TITLE}}', '{{DESCRIPTION}}', '{{KEYWORDS}}', '{{LANG}}', '{{PERCENT}}', '{{AGE}}', '{{DETAIL}}'), 
+                            array(
+                                $aItem['url'],
+                                $aItem['title'],
+                                $aItem['description'],
+                                $aItem['keywords'],
+                                $aItem['lang'],
+                                round($iRanking / $iMaxRanking * 100), 
+                                $sAge,
+                                $sDetail,
+                            ), 
+                            $sTplResults
+                        );
+                    }
+                }
             }
+
         }
-        return $sOut 
+        return ''
+                . $sHead
+                . $sResults
                 . '<br>'
                 . 'powered by <a href="'.$this->aAbout['urlDocs'].'">' . $this->aAbout['product'].' '.$this->aAbout['version'].'</a>: '
                 . $this->LF('about.infostring');

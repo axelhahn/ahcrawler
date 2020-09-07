@@ -24,6 +24,8 @@
     "searchout.too-many-hits": "Remark: You get a lot of hits. You should add one more term for your search.",
     "searchout.n-more-hits": "... %s more hit(s) in the content",
     "searchout.hits": "Results: <strong>%s</strong>",
+    "searchout.days": "%s day(s)",
+    "searchout.today": "today",
     
     "about.infostring": "OpenSource search engine and website analytics"
 }

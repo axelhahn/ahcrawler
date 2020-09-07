@@ -21,7 +21,7 @@ $sDefaultLang='en';
 // ----- check current params:
 
 $iSiteId=isset($_GET['siteid'])?(int)$_GET['siteid'] : $sDefaultSiteId;
-$sLang=isset($_GET['lang'])?$_GET['lang'] : $sDefaultLang;
+$sLang=isset($_GET['guilang'])?$_GET['guilang'] : $sDefaultLang;
 
 // ----- (1) init with site id:
 $o = new ahsearch();
