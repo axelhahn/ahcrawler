@@ -146,6 +146,7 @@ if ($this->_bIsPublic){
 
         // for RAW DATA
         $aSslInfosAll=$oSsl->getCertinfos($url=false);
+        $sCertType=$oSsl->getCertType();
         
         $sOwnerInfos='';
         // if($aSslInfos['type']==='EV'){
@@ -168,25 +169,42 @@ if ($this->_bIsPublic){
             'domainowner',
             'issuer',
             'CA',
+            'chaining',
             'DNS',
             'signatureTypeSN',
             'validfrom',
             'validto',
         ) as $sKey){
+            $soutdata='';
+            switch ($sKey) {
+                case 'chaining':
+                    $soutdata.=($sCertType=='selfsigned' 
+                            ? '('.$this->lB('sslcheck.type.selfsigned').')'
+                            : ''
+                                . ($aSslInfos[$sKey] 
+                                    ? $this->lB('sslcheck.chaining.ok') 
+                                    : $this->lB('sslcheck.chaining.failed')
+                                ).
+                            '<br> > ' . $aSslInfos['CN'] . '<br>&nbsp;&nbsp;&nbsp;&nbsp; > '.$aSslInfos['issuer'] .'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; > '.$aSslInfos['CA'].'<br>'
+                        )
+                        ;
+                    break;
+                case 'domainowner':
+                    $soutdata.=$sOwnerInfos;
+                    break;
+                case 'type':
+                    $soutdata.='<strong>'.$this->_getIcon('ssl.type-'.$aSslInfos['type']).$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
+                                . $this->lB('sslcheck.type.usage').':<br>'
+                                . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
+                            ;
+                    break;
+                default:
+                    $soutdata.=$aSslInfos[$sKey];
+                    break;
+            }
             $sTbl.='<tr '.(isset($aCData['keys'][$sKey]) && $aCData['keys'][$sKey]!=='ok' ? ' class="'.$aCData['keys'][$sKey].'"' : '') .'>'
                     . '<td>'.$this->lB('sslcheck.'.$sKey).'</td>'
-                    . '<td>'
-                        .($sKey=='type' 
-                                ? '<strong>'.$this->_getIcon('ssl.type-'.$aSslInfos['type']).$this->lB('sslcheck.type.'.$aSslInfos['type']).'</strong><br><br>'
-                                    . $this->lB('sslcheck.type.usage').':<br>'
-                                    . $this->lB('sslcheck.type.'.$aSslInfos['type'].'.usage')
-                                : ($sKey=='domainowner' 
-                                    ? $sOwnerInfos
-                                    : $aSslInfos[$sKey]
-                                )
-                        )
-                    
-                    .'</td>'
+                    . '<td>'.$soutdata.'</td>'
                 . '</tr>';
         }
 

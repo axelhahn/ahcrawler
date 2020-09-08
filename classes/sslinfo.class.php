@@ -114,6 +114,19 @@ class sslinfo {
             return array('_error' => "Error: socket was connected to ssl://$this->_sHost:$this->_iPort - but I cannot read certificate infos with stream_context_get_params ");
         }
         $this->_aCertInfos = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
+        
+
+        // check chaining
+        $aStreamOptions2 = stream_context_create(array(
+            'ssl' => array(
+                'capture_peer_cert' => true,
+                'verify_peer'       => true,
+                'verify_peer_name'  => true
+            ))
+        );
+        $read2 = @stream_socket_client("ssl://$this->_sHost:$this->_iPort", $errno, $errstr, $iTimeout, STREAM_CLIENT_CONNECT, $aStreamOptions2);
+        $this->_aCertInfos['chaining']=$read2 ? true : false;
+        
         return $this->_aCertInfos;
     }
 
@@ -177,6 +190,17 @@ class sslinfo {
             $aReturn['keys']['validto']='error';
         }
 
+        // ----- check: is chaining OK?
+        $sCertType=$this->getCertType();
+        if ($sCertType && $sCertType!=='selfsigned' && isset($certinfo['chaining'])){
+            if ($certinfo['chaining']){
+                $aReturn['ok'][] = "Chaining is OK.";
+                $aReturn['keys']['chaining']='ok';
+            } else {
+                $aReturn['warnings'][] = "Problem with chaining.";
+                $aReturn['keys']['chaining']='warning';
+            }
+        }
         // ----- current domain is part of dns names?
         $bInDnsList=false;
         $sHost = $this->_sHost;
@@ -228,6 +252,7 @@ class sslinfo {
 
         // ----- get return status
         $aReturn['status'] = count($aReturn['errors']) ? 'error' : (count($aReturn['warnings']) ? 'warning' : 'ok');
+        // echo '<pre>'.print_r($certinfo, 1).'</pre>'; die();
         // echo '<pre>'.print_r($aReturn, 1).'</pre>'; die();
 
         return $aReturn;
@@ -271,6 +296,7 @@ class sslinfo {
             $aInfos['validfrom'] = date("Y-m-d H:i", $certinfo['validFrom_time_t']);
             $aInfos['validto'] = date("Y-m-d H:i", $certinfo['validTo_time_t']);
             $aInfos['signatureTypeSN'] = $certinfo['signatureTypeSN'];
+            $aInfos['chaining'] = $certinfo['chaining'];
         } else {
             $aInfos['_error'] = 'Certificate is not readable.';
         }

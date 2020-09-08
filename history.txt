@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-09-05: v0.134
+  * ADDED: sslcheck: show certificate chain check
+  * UPDATE: rename "ressource" to resource in output. IMPORTANT: cli parameter -d is included too. --> Check your cronjobs!
+  * UPDATE: search.class: use param "guilang" for frontend language and "lang" for language in search --> Check integrations/*.php
+  * UPDATE: search.class: customize search result output
+  * UPDATE: remove unneeded functions
+
 2020-09-05: v0.133
   * ADDED: profile image - has a delete button and file upload too now
   * FIX: index ressources with more pages with sqlite engine
