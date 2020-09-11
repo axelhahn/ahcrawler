@@ -354,6 +354,7 @@ $sReturn.='
                         'id'=>'profileimagefile', 
                         'name'=>'profileimagefile', 
                         'placeholder'=>'',
+                        'accept'=>'image/*',
                         'value'=>'',
                         ), true)
                 . '</div>'
