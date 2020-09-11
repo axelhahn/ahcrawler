@@ -183,9 +183,9 @@ if ($this->_bIsPublic){
                             : ''
                                 . ($aSslInfos[$sKey] 
                                     ? $this->lB('sslcheck.chaining.ok') 
-                                    : $this->lB('sslcheck.chaining.failed')
-                                ).
-                            '<br> > ' . $aSslInfos['CN'] . '<br>&nbsp;&nbsp;&nbsp;&nbsp; > '.$aSslInfos['issuer'] .'<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; > '.$aSslInfos['CA'].'<br>'
+                                    : $this->lB('sslcheck.chaining.fail')
+                                )
+                            // .'<br><pre> > ' . $aSslInfos['CN'] . '<br>&nbsp;&nbsp; > '.$aSslInfos['CA'].'</pre>'
                         )
                         ;
                     break;

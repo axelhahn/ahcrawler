@@ -562,7 +562,7 @@
     "sslcheck.thvalue": "Wert",
     "sslcheck.chaining": "Zertifikatskette (Chaining)",
     "sslcheck.chaining.ok": "OK",
-    "sslcheck.chaining.fail": "Fehlerhaft.",
+    "sslcheck.chaining.fail": "Chaining fehlerhaft.",
     "sslcheck.CN": "Common Name",
     "sslcheck.signatureTypeSN": "Verschl\u00fcsselung",
     "sslcheck.type": "Typ des Zertifikats",

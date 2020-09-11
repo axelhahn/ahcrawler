@@ -538,7 +538,7 @@
     "sslcheck.issuer": "Issuer",
     "sslcheck.chaining": "Certificate chain",
     "sslcheck.chaining.ok": "OK",
-    "sslcheck.chaining.fail": "Failed. The webserver configuration must be checked.",
+    "sslcheck.chaining.fail": "Chaining failed.",
     "sslcheck.CA": "CA",
     "sslcheck.DNS": "DNS names",
     "sslcheck.validfrom": "valid from",

@@ -1277,7 +1277,8 @@ class backend extends crawler_base {
                                     'status'=>$sStatus, 
                                     'data'=>$aSslInfos, 
                                     'value'=>$aSslInfos['issuer'], 
-                                    'message'=>$aSslInfos['issuer'].': '.$aSslInfos['CN'].'; '.$aSslInfos['validto'].' ('.$iDaysleft.' d)',
+                                    'message'=>$aSslInfos['issuer'].': '.$aSslInfos['CN'].'; '.$aSslInfos['validto'].' ('.$iDaysleft.' d) '
+                                        . ($aSslInfos['chaining'] ? '': $this->lB('sslcheck.chaining.fail')),
                                     'thead'=>$aSslInfos['CN'],
                                     'tfoot'=>$aSslInfos['validto'].' ('.$iDaysleft.' d)',
                                 );
