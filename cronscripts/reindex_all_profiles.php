@@ -52,14 +52,14 @@ foreach($aIds as $iProfile){
         $sParams = '--action index --data searchindex --profile '.$iProfile;
         $iRc=run("php " . __DIR__ . '/../bin/cli.php '.$sParams);
 
-        $sParams = '--action index --data ressources --profile '.$iProfile;
+        $sParams = '--action index --data resources --profile '.$iProfile;
         $iRc=run("php " . __DIR__ . '/../bin/cli.php '.$sParams);
 
 }
 
 // ----- UPDATE MISSING RESSOURCES
 foreach($aIds as $iProfile){
-        $sParams = '--action update --data ressources --profile '.$iProfile;
+        $sParams = '--action update --data resources --profile '.$iProfile;
         $iRc=run("php " . __DIR__ . '/../bin/cli.php '.$sParams);
 }
 
