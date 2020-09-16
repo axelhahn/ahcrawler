@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-09-xx: v0.135
+  * ADD: log cli output of crawling actions in ./data/
+  * ADD: page to view log data of crawling actions
+  * FIX: ressource scan shows matching regex of the deny list
+  * UPDATE: show hint if a url matches a regex in the deny list
+  * UPDATE: show hint url switches from https to http
+
 2020-09-11: v0.134
   * ADDED: sslcheck: show certificate chain check
   * UPDATE: rename "ressource" to resource in output. IMPORTANT: cli parameter -d is included too. --> Check your cronjobs!

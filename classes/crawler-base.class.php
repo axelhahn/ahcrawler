@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.134',
-        'date' => '2020-09-11',
+        'version' => '0.135-dev',
+        'date' => '2020-09-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -357,6 +357,12 @@ class crawler_base {
     protected $sUserAgent = false;
 
     protected $sCcookieFilename = false;
+    
+    /**
+     * filename of indexer log actions
+     * @var string
+     */
+    protected $sLogFilename = false;
     protected $_oLog = false;
     
     // ----------------------------------------------------------------------
@@ -979,6 +985,9 @@ class crawler_base {
 
             // @since v0.22 
             $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
+
+            // @since v0.135
+            $this->sLogFilename = dirname(__DIR__).'/data/indexlog-siteid-'.$iSiteId.'.log';
             
         } else {
             $this->aProfileSaved = array();
@@ -1350,6 +1359,7 @@ class crawler_base {
         }
         if($sMessage){
             $oCli->color($sColor, $sMessage);
+            $this->logfileAppend($sColor, $sMessage);
         }
         if($sNextColor){
             $oCli->color($sNextColor);
@@ -1357,4 +1367,64 @@ class crawler_base {
         return true;
     }
 
+    // ----------------------------------------------------------------------
+    // LOGFILE of crawler/ indexer
+    // ----------------------------------------------------------------------
+
+    /**
+     * delete crawler/ indexer logfile; returns true if a logfile does not
+     * exist anymore
+     * @return boolean
+     */
+    public function logfileDelete(){
+        if($this->sLogFilename && file_exists($this->sLogFilename)){
+            unlink($this->sLogFilename);
+        }
+        return !file_exists($this->sLogFilename);
+    }
+    
+    /**
+     * add a message to a logfile; the params are orientated by method cliprint()
+     * where logfileAppend is called.
+     * 
+     * @see cliprint
+     * 
+     * @param string  $sColor      color key; one of head|input|cli|ok|info|warning|error
+     * @param string  $sMessage    string to show
+     * @return boolean
+     */
+    public function logfileAppend($sColor, $sMessage){
+        if($this->sLogFilename){
+            // remark: if you change the syntax of writing log data you need to
+            //         update the method logfileToHtml() too
+            return file_put_contents(
+                    $this->sLogFilename, 
+                    date("Y-m-d_H:i:s").'  '.sprintf('%-10s', $sColor).$sMessage, 
+                    FILE_APPEND
+                    );
+        }
+        return false;
+    }
+    
+    /**
+     * read log file and get html code for page crawlerlog
+     * @return string
+     */
+    public function logfileToHtml(){
+        $sReturn='';
+        if($this->sLogFilename && file_exists($this->sLogFilename)){
+            foreach(file($this->sLogFilename) as $line) {
+                $aResult=array();
+                preg_match_all('/(^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}:[0-9]{2}:[0-9]{2})\ *([a-z]*)\ *(.*)/', $line, $aResult);
+                // echo '<pre>'.print_r($aResult,1).'</pre>';
+                if(isset($aResult[3][0])){
+                    $sReturn.=($sReturn ? '</div>' : '') . '<div class="message-'.$aResult[2][0].'">'.$aResult[0][0];
+                } else {
+                    $sReturn.=$line;
+                }
+            }
+            $sReturn=$sReturn ? '<pre class="logdata">'.$sReturn.'</pre>' : '';
+        }
+        return $sReturn;
+    }
 }

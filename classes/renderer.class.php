@@ -465,8 +465,12 @@ class ressourcesrenderer extends crawler_base {
                 // . ' #'.$iIdRessource.' '.$iLevel.' '
                 . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
                     . ($iLevel>2 ? '<div class="redirects">' : '')
-                    .($aRessourceItem['url']==str_replace('http://', 'https://',  $sLastUrl)
+                    . ($aRessourceItem['url']==str_replace('http://', 'https://',  $sLastUrl)
                         ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
+                        : ''
+                    )
+                    . ($aRessourceItem['url']==str_replace('https://', 'http://',  $sLastUrl)
+                        ? $this->renderMessagebox($this->lB("linkchecker.https-to-http"), 'warning')
                         : ''
                     )
                     . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
@@ -801,6 +805,11 @@ class ressourcesrenderer extends crawler_base {
                 . ' ' . $this->_renderArrayValue('type', $aResourceItem)
                 . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
                 . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid='.$aResourceItem['siteid'].'" class="url" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
+                . ($aResourceItem['http_code']==-1 && $this->oRes->isInDenyList($aResourceItem['url'])
+                    ? $this->renderMessagebox(sprintf($this->lB("linkchecker.found-in-deny-list"), $this->oRes->isInDenyList($aResourceItem['url'])), 'ok')
+                    : ''
+                )
+                
                 /*
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
                         ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 

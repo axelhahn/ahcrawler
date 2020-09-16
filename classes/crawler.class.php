@@ -525,6 +525,7 @@ class crawler extends crawler_base{
                 
             }
         } else {
+            $this->logfileDelete();
             // ... starturls in config
             $this->cliprint('info', "RESCAN complete index.\n");
             if(!count($this->aProfileEffective['searchindex']['urls2crawl'])){

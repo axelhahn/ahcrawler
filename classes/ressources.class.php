@@ -571,23 +571,24 @@ class ressources extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * get boolean (true|false) if the given url is blacklisted in the profile
+     * get string of first matching regex the given url matches in the deny
+     * list ... or false
      * @param string  $sUrl  url to analyze
      * @return boolean
      */
-    protected function _isInBlacklist($sUrl){
+    public function isInDenyList($sUrl){
         // profile settings if siteid N are in $this->aProfileSaved
         if(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])){
-            foreach ($this->aProfileSaved['ressources']['blacklist'] as $sBlackitem){
+            foreach ($this->aProfileSaved['ressources']['blacklist'] as $sDenyitem){
                 try {
                     /*
                     if (strpos($sUrl, $sBlackitem)!==false){
                         return true;
                     }
                      */
-                    $sMyRegex='#'.$sBlackitem.'#';
+                    $sMyRegex='#'.$sDenyitem.'#';
                     if (@preg_match($sMyRegex, $sUrl)){
-                        return $sMyRegex;
+                        return $sDenyitem;
                     }
                 } catch (Exception $exc) {
                     // nop
@@ -610,10 +611,11 @@ class ressources extends crawler_base {
         // ... and spaces
         $sUrl = str_replace(' ', '%20', $sUrl);
 
-        // check blacklist
-        if($this->_isInBlacklist($sUrl)){
-            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches deny list regex [$sMyRegex]\n" : "");
-            sleep(3);
+        // check deny klist
+        $sMatchingRegex=$this->isInDenyList($sUrl);
+        if($sMatchingRegex){
+            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches deny list regex [$sMatchingRegex]\n" : "");
+            // sleep(3);
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
@@ -827,13 +829,15 @@ class ressources extends crawler_base {
         $this->cliprint('info', "\n\n----- start http requests<br>\n");
         $rollingCurl = new \RollingCurl\RollingCurl();
         while (count($this->_getUrls2Crawl())) {
+            $iUrlsLeft=count($this->_getUrls2Crawl());
+            $sStatusPrefix=$iUrlsLeft.' urls left';
             if ($bPause && $this->iSleep) {
-                $this->touchLocking('sleep ' . $this->iSleep . 's');
+                $this->touchLocking($sStatusPrefix.'; sleep ' . $this->iSleep . 's');
                 $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
-            $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()) . ' ... ');
+            $this->touchLocking($sStatusPrefix);
             $self = $this;
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
@@ -844,7 +848,7 @@ class ressources extends crawler_base {
             $rollingCurl->setOptions($aCurlOpt)
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);
-                        $self->touchLocking('processing ' . $request->getUrl());
+                        $self->touchLocking(count($this->_getUrls2Crawl()) . ' urls left; processing ' . $request->getUrl());
                         $rollingCurl->clearCompleted();
                         $rollingCurl->prunePendingRequestQueue();
                     })

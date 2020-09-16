@@ -77,6 +77,7 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             
             $this->flushData(array('full'), $iProfileId);
+            $this->logfileDelete();
             
             // --------------------------------------------------
             // SAVE
