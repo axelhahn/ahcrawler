@@ -1395,11 +1395,20 @@ class crawler_base {
      */
     public function logfileAppend($sColor, $sMessage){
         if($this->sLogFilename){
+            
+            /*
+            $sTextToAdd=(strstr($sMessage, "\n") 
+                        ? date("Y-m-d_H:i:s").'  '.sprintf('%-10s', $sColor).$sMessage
+                        : $sMessage
+                    );
+             */
             // remark: if you change the syntax of writing log data you need to
             //         update the method logfileToHtml() too
+            $sTextToAdd=date("Y-m-d_H:i:s").'  '.sprintf('%-10s', $sColor).$sMessage . (strstr($sMessage, "\n") ? '' : "\n") ;
+
             return file_put_contents(
                     $this->sLogFilename, 
-                    date("Y-m-d_H:i:s").'  '.sprintf('%-10s', $sColor).$sMessage, 
+                    $sTextToAdd, 
                     FILE_APPEND
                     );
         }
@@ -1410,20 +1419,34 @@ class crawler_base {
      * read log file and get html code for page crawlerlog
      * @return string
      */
-    public function logfileToHtml(){
+    public function logfileToHtml($iLimitLines=0){
         $sReturn='';
+        $iCounter=0;
         if($this->sLogFilename && file_exists($this->sLogFilename)){
             foreach(file($this->sLogFilename) as $line) {
+                $iCounter++;
+                if($iLimitLines && $iCounter>=$iLimitLines){
+                    continue;
+                }
                 $aResult=array();
+                if(strstr($line, '==========')){
+                    $line=preg_replace('/========== (.*)/', '<h3 id="'.'action-'.md5($line).'">$1</h3>', $line);
+                }
                 preg_match_all('/(^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}:[0-9]{2}:[0-9]{2})\ *([a-z]*)\ *(.*)/', $line, $aResult);
                 // echo '<pre>'.print_r($aResult,1).'</pre>';
                 if(isset($aResult[3][0])){
-                    $sReturn.=($sReturn ? '</div>' : '') . '<div class="message-'.$aResult[2][0].'">'.$aResult[0][0];
+                    $sReturn.=($sReturn ? '</div>' : '') . '<div class="message-'.$aResult[2][0].'">'.$aResult[1][0].'  '.sprintf('%-8s', $aResult[2][0]).' '.$aResult[3][0];
                 } else {
                     $sReturn.=$line;
                 }
             }
-            $sReturn=$sReturn ? '<pre class="logdata">'.$sReturn.'</pre>' : '';
+            $sReturn=$sReturn 
+                    ? '<pre class="logdata">'.$sReturn.'</pre>'
+                        . ($iCounter>$iLimitLines 
+                            ? '<a href="'.$_SERVER['REQUEST_URI'].'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> '
+                            : ''
+                            )
+                    : '';
         }
         return $sReturn;
     }

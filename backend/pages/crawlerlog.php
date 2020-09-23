@@ -8,7 +8,8 @@ $sHtml='';
 $iProfileId=$this->_getTab();
 $this->setSiteId($iProfileId);
 
-$sLogs=$this->logfileToHtml();
+$iLines2Show=$this->_getRequestParam('full') ? 0 : 1000;
+$sLogs=$this->logfileToHtml($iLines2Show);
 
 $sHtml.=''        
     .$this->_getNavi2($this->_getProfiles(), false, '')

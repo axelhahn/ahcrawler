@@ -94,15 +94,19 @@ class ressources extends crawler_base {
         if (!(int)$this->iSiteId) {
             return false;
         }
-        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
+        $this->cliprint('info', "========== Resources cleanup".PHP_EOL);
+        $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
         }
+        $this->cliprint('info', "Flushing resources...\n");
         $this->flushData(array('ressources'=>1), $this->iSiteId);
         $this->_aRessourceIDs = array();
         $this->disableLocking();
-        $this->cliprint('info', "CLEANUP resources done<br>\n");
+
+        $this->cliprint('info', "----- Cleanup of resources is done<br>\n");
+        $this->_showResourceStatusOnCli();
     }
 
     /**
@@ -382,7 +386,8 @@ class ressources extends crawler_base {
      */
     public function addRessourcesFromPages() {
         $iMaxRowsPerInsert=25;
-        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
+        $this->cliprint('info', "========== Add searchindex items\n");
+        $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
             return false;
@@ -390,7 +395,7 @@ class ressources extends crawler_base {
         if (!$this->iSiteId) {
             return false;
         }
-        $this->cliprint('info', "INFO: reading pages ...<br>\n");
+        $this->cliprint('info', "INFO: reading pages ...\n");
         $aResult = $this->oDB->select(
                 'pages', '*', array(
             'AND' => array(
@@ -432,9 +437,20 @@ class ressources extends crawler_base {
             $this->cliprint('cli', "DONE ... adding relitems.<br>\n");
         }
         $this->disableLocking();
-        $this->cliprint('cli', "<br>\n");
+
+        $this->cliprint('info', "----- Adding pages and their linked urls is finished.\n");
+        $this->_showResourceStatusOnCli();
     }
 
+    protected function _showResourceStatusOnCli() {
+        $iUrls = $this->oDB->count('ressources', array('url'), array(
+            'AND' => array(
+                'siteid' => $this->iSiteId,
+            ),));
+        $this->cliprint('info', "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n");
+        $this->cliprint('info', "$iUrls resource urls (links, images, css, ...) are in the index now (table 'ressources')\n");
+        return true;
+    }
     // ----------------------------------------------------------------------
     // get resource details for reporting
     // ----------------------------------------------------------------------
@@ -785,7 +801,8 @@ class ressources extends crawler_base {
         $this->_aRessourceIDs = array();
         $this->iStartCrawl = date("U");
         $bPause = false;
-        $this->cliprint('info', "\n\n----- ".__METHOD__."<br>\n");
+        $this->cliprint('info', "========== Ressource scan".PHP_EOL);
+        $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         $sMsgId = 'ressources-profile-' . $this->iSiteId;
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
             $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
@@ -826,7 +843,7 @@ class ressources extends crawler_base {
             $this->_aRessourceIDs[$sUrl]=1;
         }
 
-        $this->cliprint('info', "\n\n----- start http requests<br>\n");
+        $this->cliprint('info', "--- Starting http requests...".PHP_EOL);
         $rollingCurl = new \RollingCurl\RollingCurl();
         while (count($this->_getUrls2Crawl())) {
             $iUrlsLeft=count($this->_getUrls2Crawl());
@@ -858,19 +875,12 @@ class ressources extends crawler_base {
         }
         $this->updateExternalRedirect();
         $this->disableLocking();
-        $iUrls = $this->oDB->count('ressources', array('url'), array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-            ),));
+
         $iTotal=date("U") - $this->iStartCrawl;
-        $this->cliprint('info', 
-             "\n"
-            . "Ressource Scan has finished.\n\n"
-            . "STATUS of profile [".$this->iSiteId."] " . $this->aProfileEffective['label'].":\n"
-            . $this->_iUrlsCrawled . " urls were crawled\n"
-            . "process needed $iTotal sec; ". ($iTotal ? number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec." : '') . "\n"
-            . "$iUrls ressource urls are in the index now (table 'ressources')\n"
-        );
+        $this->cliprint('info', "----- Resource scan is finished.\n");
+        $this->cliprint('info', $this->_iUrlsCrawled . " urls were crawled.\n");
+        $this->cliprint('info', "process needed $iTotal sec; ". ($iTotal ? number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec." : '') . "\n");
+        $this->_showResourceStatusOnCli();
     }
 
 }

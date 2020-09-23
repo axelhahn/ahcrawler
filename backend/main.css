@@ -197,6 +197,9 @@ pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-defau
 pre.logdata div:hover{
     background: rgba(0,0,0,0.05);
 }
+pre.logdata h3{display: inline-block; margin: 0; }
+pre.logdata .message-cli{opacity: 0.7;}
+
 
 /* --- context box --- */
 div.contextbox{

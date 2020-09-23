@@ -44,9 +44,9 @@ class backend extends crawler_base {
                 'searchindexstatus'=>array('needs'=>array('pages')), 
                 'searchindextester'=>array('needs'=>array('pages')), 
                 'searches'=>array('needs'=>array('searches')),
-                'profiles'=>array(),
                 'crawlerlog'=>array('needs'=>array('pages')), 
-            ),
+                'profiles'=>array(),
+           ),
         ), 
         // 'search'=>array(),
         'analysis'=>array(
