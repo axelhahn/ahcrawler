@@ -440,9 +440,7 @@ $sReturn.='
 
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
-                . '<div class="pure-control-group">'
-                    . '<br><p>' . $this->lB('profile.overrideDefaults') . '</p>'
-                . '</div>'
+                . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
                     . $oRenderer->oHtml->getTag('input', array(
@@ -529,9 +527,7 @@ $sReturn.='
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
 
-                . '<div class="pure-control-group">'
-                    . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
-                . '</div>'
+                . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array(
                         'for'=>'ressources-simultanousRequests', 
