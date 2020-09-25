@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.135',
-        'date' => '2020-09-23',
+        'version' => '0.136-dev',
+        'date' => '2020-09-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1419,13 +1419,23 @@ class crawler_base {
      * read log file and get html code for page crawlerlog
      * @return string
      */
-    public function logfileToHtml($iLimitLines=0){
+    public function logfileToHtml($iLimitLines=0, $iPage=1){
         $sReturn='';
         $iCounter=0;
+        
+        // check params
+        $iLimitLines=(int)$iLimitLines; $iLimitLines=$iLimitLines?$iLimitLines:0;
+        $iPage=(int)$iPage; $iPage=$iPage?$iPage:1;
+        
+        $iStartLine=($iPage-1)*$iLimitLines + 1;
+        $iEndLine=($iPage)*$iLimitLines;
+        
         if($this->sLogFilename && file_exists($this->sLogFilename)){
             foreach(file($this->sLogFilename) as $line) {
                 $iCounter++;
-                if($iLimitLines && $iCounter>=$iLimitLines){
+                if($iLimitLines 
+                    && ($iCounter < $iStartLine || $iCounter>$iEndLine)
+                ){
                     continue;
                 }
                 $aResult=array();
@@ -1440,13 +1450,31 @@ class crawler_base {
                     $sReturn.=$line;
                 }
             }
+            
+            // ----- navi
+            
+            $sNavi='';
+            
+            $sUrl=$_SERVER['REQUEST_URI'];
+            $sUrl=preg_replace('|&logpage=[0-9]*|', '', $sUrl);
+            $sUrl=preg_replace('|&full=[0-9]*|'    , '', $sUrl);
+            if($iLimitLines){
+                $iLastPage=round($iCounter/$iLimitLines + 0.5);
+                if($iLastPage>1 || $iPage>$iLastPage){
+                    $sNavi.=$iLastPage>1 ? '<a href="'.$sUrl.'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> ' : '';
+                    for($i=1; $i<=$iLastPage; $i++){
+                        $sNavi.='<a href="'.$sUrl.'&logpage='.$i.'" class="pure-button'.($iPage==$i ? ' button-secondary' : '').'">'.$i.'</a> ';
+                    }
+                }
+            } else {
+                $sNavi.='<a href="'.$sUrl.'" class="pure-button button-secondary"> << </a> ' . $this->lB('crawlerlog.full');
+            }
+            
             $sReturn=$sReturn 
-                    ? '<pre class="logdata">'.$sReturn.'</pre>'
-                        . ($iCounter>$iLimitLines 
-                            ? '<a href="'.$_SERVER['REQUEST_URI'].'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> '
-                            : ''
-                            )
-                    : '';
+                    ?  $sNavi
+                        . '<pre class="logdata">'.$sReturn.'</pre>'
+                        . $sNavi
+                    : $sNavi;
         }
         return $sReturn;
     }
