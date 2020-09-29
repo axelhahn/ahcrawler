@@ -43,6 +43,24 @@ class crawler_base {
             'phpversion'=>'5.5',
             'phpextensions'=>array('curl', 'PDO','xml','zip')
         ),
+        'thanks' => array(
+            'testing'=>array(
+                array(
+                    'label'=>'', 
+                    'name'=>'Roberto José de Amorim', 
+                    'image'=>'', 
+                    'url'=>''
+                ),
+            ),
+            'translation'=>array(
+                array(
+                    'label'=>'Russian', 
+                    'name'=>'Artone Ozhiganov', 
+                    'image'=>'', 
+                    'url'=>''
+                ),
+            ),
+        ),
     );
 
     /**
@@ -1461,13 +1479,20 @@ class crawler_base {
             if($iLimitLines){
                 $iLastPage=round($iCounter/$iLimitLines + 0.5);
                 if($iLastPage>1 || $iPage>$iLastPage){
-                    $sNavi.=$iLastPage>1 ? '<a href="'.$sUrl.'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> ' : '';
                     for($i=1; $i<=$iLastPage; $i++){
                         $sNavi.='<a href="'.$sUrl.'&logpage='.$i.'" class="pure-button'.($iPage==$i ? ' button-secondary' : '').'">'.$i.'</a> ';
                     }
+                    $sNavi.=$iLastPage>1 ? '<a href="'.$sUrl.'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> ' : '';
                 }
+                $sNavi.=$sNavi ? '<br><br>' : '';
+                $sNavi.=($iStartLine==1 && $iEndLine >= $iCounter
+                        ? sprintf($this->lB('crawlerlog.linestotal'), $iCounter)
+                        : sprintf($this->lB('crawlerlog.lines'), $iStartLine, min($iEndLine, $iCounter), $iCounter)
+                        ).'<br>';
             } else {
-                $sNavi.='<a href="'.$sUrl.'" class="pure-button button-secondary"> << </a> ' . $this->lB('crawlerlog.full');
+                $sNavi.='<a href="'.$sUrl.'" class="pure-button button-secondary"> << '.$this->lB('button.back').' </a><br><br>'
+                        .sprintf($this->lB('crawlerlog.linestotal'), $iCounter).'<br>'
+                    ;
             }
             
             $sReturn=$sReturn 
