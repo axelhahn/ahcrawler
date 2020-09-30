@@ -4,21 +4,63 @@
  */
 $sReturn = '';
 
+$aIcons=array(
+    'testing'=>'fas fa-stethoscope',
+    'translation'=>'fas fa-flag',
+);
+
 /*
-require_once __DIR__.'/../../classes/ahwi-updatecheck.class.php';
-$oUpdate=new ahwiupdatecheck(array(
-        'product'=>$this->aAbout['product'],
-        'version'=>$this->aAbout['version'],
-        'baseurl'=>'https://c58.axel-hahn.de/versions/',
-        'tmpdir'=>__DIR__.'/../../tmp/',
-        'ttl'=>10,
-        // 'ttl'=>86400,     // 1 day
-));
-// echo "getUpdateInfos : </pre>" . print_r($oUpdate->getUpdateInfos(), 1).'</pre>';
+// see view-source:https://allcontributors.org/docs/en/emoji-key
+$aIcons=array(
+    'testing'=>'⚠️',
+    'translation'=>'🌍',
+);
+ * 
+ */
 
 
+$sPeople='';
 
-*/
+$oRenderer=new ressourcesrenderer($this->_sTab);
+
+if (isset($this->aAbout['thanks'])){
+    foreach ($this->aAbout['thanks'] as $sSection=>$aPeople ){
+        if(count($aPeople)){
+            $sPeople.='<h4>'
+                    .(isset($aIcons[$sSection]) ? '<i class="'.$aIcons[$sSection].'"></i> ': '')
+                    // .(isset($aIcons[$sSection]) ? $aIcons[$sSection].' ' : '')
+                    .$this->lB('about.contributors.section-'.$sSection)
+                    .'</h4>'
+                    .'<p>'.$this->lB('about.contributors.section-'.$sSection.'.hint').'</p>'
+                    ;
+            foreach($aPeople as $aPerson){
+                /*
+                 * $aPerson looks like that
+                array(
+                    'label'=>'', 
+                    'name'=>'', 
+                    'image'=>'', 
+                    'url'=>''
+                ),
+                 */
+                $sName=$aPerson['name']?$aPerson['name']:'%';
+                $sLinkedName=$aPerson['url']
+                        ? $oRenderer->oHtml->getTag('a',array(
+                            'href'=>$aPerson['url'],
+                            'title'=>$aPerson['url'],
+                            'label'=>$sName
+                        ))
+                        :$sName;
+                $sPeople.='<div class="person">'
+                        . ($aPerson['image']   ? '<img src="'.$aPerson['image'].'" ><br>' : '')
+                        . '<div class="name">'.$sLinkedName.'</div>'
+                        . ($aPerson['label']? '<div class="label">'.$aPerson['label'].'</div>':'')
+                        . '</div>';
+            }
+            $sPeople.='<div style="clear: both"></div>';
+        }
+    }
+}
 $oRenderer=new ressourcesrenderer();
 $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
 
@@ -57,6 +99,12 @@ $sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '
                 )
         )
         */
+
+        . ($sPeople 
+                ?'<h3>' . $this->lB('about.contributors') . '</h3>' . $sPeople
+                : ''
+        )
+        
         . '<h3>' . $this->lB('about.thanks') . '</h3>'
         . '<p>' . $this->lB('about.thanks-text') . '</p>'
         . $this->_getSimpleHtmlTable(

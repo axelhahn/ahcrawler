@@ -519,6 +519,8 @@ form.pure-form label{min-width: 20em;}
 .insertimage img{max-width: 50%;}
 
 #e_url{width: 58%;}
+
+
 /* --- overlay --- */
 #overlay{
     position: fixed; width: 100%; height: 100%; top: 0; left: 0;
@@ -538,7 +540,14 @@ form.pure-form label{min-width: 20em;}
     padding: 2em;
     
 }
+/* 
+--------------------------------------------------------------------------------
+    about
+--------------------------------------------------------------------------------
+*/
 
+div.person{border: 1px solid rgba(0,0,0,.1); background: #fff; height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
+div.person .name{font-weight: bold;}
 
  @media print{
     body{font-size: 0.9em;}

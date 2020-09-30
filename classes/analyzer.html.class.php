@@ -214,17 +214,34 @@ class analyzerHtml {
     // ----------------------------------------------------------------------    
 
     /**
+     * helper function: get html header from html document as string
+     * 
+     * @param string   $sItem   header element to extract
+     * @return boolean|array
+     */
+    public function getHtmlHead() {
+        preg_match("@<head[^>]*>(.*?)<\/head>@si", $this->_sHtml, $regs);
+        if (!is_array($regs) || count($regs) < 2) {
+            return false;
+        }
+        return $regs[1];
+    }
+    
+    /**
      * helper function: get a value from html header
      * 
      * @param string   $sItem   header element to extract
      * @return boolean|array
      */
     private function _getMetaHead($sItem) {
+        /*
         preg_match("@<head[^>]*>(.*?)<\/head>@si", $this->_sHtml, $regs);
         if (!is_array($regs) || count($regs) < 2) {
             return false;
         }
         $headdata = $regs[1];
+         */
+        $headdata = $this->getHtmlHead();
 
         $res = Array();
         if ($headdata != "") {
@@ -235,6 +252,18 @@ class analyzerHtml {
             if (isset($res) && count($res) > 1) {
                 return $res[1];
             }
+        }
+        return false;
+    }
+    
+    /**
+     * get url of canonical link from html -> head -> <link rel="canonical" ...>
+     * @return string|boolean
+     */
+    public function getCanonicalUrl(){
+        if (preg_match("/<link +rel *=[\"']?canonical[\"'].*\>?/i", $this->getHtmlHead(), $aFoundLinks)){
+            preg_match("/<link.*href=[\"']?([^<>'\"]+)[\"']?/i", $aFoundLinks[0], $res);
+            return isset($res[1]) ? $res[1] : false;
         }
         return false;
     }
@@ -505,6 +534,20 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
+     * helper function - return boolean if an initialized html page exists 
+     * including its url - and that page contains a canonical url that 
+     * differs to the url of the document.
+     * @return boolean
+     */
+    public function hasOtherCanonicalUrl(){
+        if($this->_sUrl && $this->_sHtml 
+                && $this->getCanonicalUrl() 
+                && $this->getCanonicalUrl()!==$this->_sUrl){
+            return true;
+        }
+        return false;
+    }
+    /**
      * get follow links information from html head area and X-Robots-Tag
      * it returns true if is allowed to follow the links in the document
      * @return string
@@ -517,6 +560,9 @@ class analyzerHtml {
                 strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
                 || strpos($sRobots, 'nofollow') === 0 || strpos($sRobots, 'nofollow') > 0)
         ) {
+            return false;
+        }
+        if($this->hasOtherCanonicalUrl()){
             return false;
         }
         
@@ -536,6 +582,9 @@ class analyzerHtml {
                 strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
                 || strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)
         ) {
+            return false;
+        }
+        if($this->hasOtherCanonicalUrl()){
             return false;
         }
         return true;

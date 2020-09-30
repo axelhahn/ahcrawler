@@ -484,6 +484,11 @@ class crawler extends crawler_base{
             $this->_preparePageForIndex(array('header' => $info, 'body' => $response));
         } else  {
             $this->cliprint('warning', "url won't be indexed - : $url\n");
+            if($oHtml->hasOtherCanonicalUrl()){
+                $sCanonicalUrl=$oHtml->getCanonicalUrl();
+                $this->cliprint('info', "... canonical url was found: $sCanonicalUrl\n");
+                $this->_addUrl2Crawl($sCanonicalUrl);
+            }
         }
 
         return true;
