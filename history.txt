@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2020-09-23: v0.136
+2020-09-30: v0.136
   * ADDED: crawlerlog got a paging navi
   * ADDED: crawler follows canonical urls
   * ADDED: show contributors in about page
