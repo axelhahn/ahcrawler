@@ -672,7 +672,7 @@
     "update.welcome.version-latest": "Aktuelle Version",
     "update.welcome.unusedLibs": "Hinweis: es gibt <strong>%s<\/strong> ungenutze Vendor-Bibliotheken, die man l&ouml;schen kann.",
     "update.info.label": "Informationen zum Ablauf",
-    "update.info.description": "Eine kurze Beschreibung, wie das Update abl&auml;ft.",
+    "update.info.description": "Eine kurze Beschreibung, wie das Update abl&auml;uft.",
     "update.steps": "Die Aktualisierung erfolgt in wenigen Schritten. Es geht wie folgt weiter:",
     "update.steps.downloadurl": "<strong>Download<\/strong> der URL<br>%s<br><br>als Zieldatei<br>%s<br><br>",
     "update.steps.extractto": "<strong>Dekomprimieren<\/strong> nach<br>%s",

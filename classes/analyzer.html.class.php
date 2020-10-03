@@ -151,8 +151,9 @@ class analyzerHtml {
         if (!$this->_oDom) {
             echo "WARNING: this is no valid DOM $sUrl \n<br>";
             return false;
+        } else if ($sHtmlcode){
+            $this->_getBaseHref();
         }
-        $this->_getBaseHref();
         return true;
     }
 
@@ -372,7 +373,7 @@ class analyzerHtml {
                 . (array_key_exists('query', $aPartsReturn) ? '?'.$aPartsReturn['query'] : '')
                 . (array_key_exists('fragment', $aPartsReturn) ? '#'.$aPartsReturn['fragment'] : '')
                 ;
-        // echo $sRelUrl . " -- " . print_r($aPartsRelUrl, 1) ." NEW \n". print_r($aPartsReturn, 1) . "\n--> $sUrl\n\n";
+        // echo "DEBUG: " . $sRelUrl . " -- " . print_r($aPartsRelUrl, 1) ." NEW \n". print_r($aPartsReturn, 1) . "\n--> $sUrl\n\n";
         return $sUrl;
     }
 
@@ -403,7 +404,7 @@ class analyzerHtml {
             case 'http':
             case 'https':
                 if (!array_key_exists('host', $aParse)) {
-                    if (array_key_exists('path', $aParse)) {
+                    if (array_key_exists('path', $aParse) || array_key_exists('query', $aParse)) {
                         return 'internal';
                     }
                     if (array_key_exists('fragment', $aParse)) {
@@ -713,6 +714,7 @@ class analyzerHtml {
                         'title' => $element->getAttribute('title'),
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'img',
+                        '_line' => $element->getLineNo(),
                     ));
                 }
             }
@@ -733,6 +735,7 @@ class analyzerHtml {
                         'title' => '',
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'link :: rel=image_src',
+                        '_line' => $element->getLineNo(),
                     ));
                 }
             }
@@ -753,6 +756,7 @@ class analyzerHtml {
                         'title' => '',
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'meta :: property=og:image',
+                        '_line' => $element->getLineNo(),
                     ));
                 }
             }
@@ -772,6 +776,7 @@ class analyzerHtml {
                         'title' => '',
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'video poster',
+                        '_line' => $element->getLineNo(),
                     ));
                 }
             }
@@ -779,6 +784,42 @@ class analyzerHtml {
         return $aReturn;
     }
 
+    /**
+     * get all SOURCEs from AUDIO and VIDEO tags in this document
+     * @param string  $sFilterByType  return links of this type only
+     * @return array
+     */
+    public function getMedia($sFilterByType = false) {
+        $aReturn = array();
+        if ($this->_oDom) {
+
+            foreach(array('audio', 'video') as $sMediaTag){
+                $allAudio = $this->_oDom->getElementsByTagName($sMediaTag);
+                var_dump($allAudio);
+                foreach ($allAudio as $media) {
+                    $sources = $media->getElementsByTagName('source');
+                    foreach ($sources as $element) {
+                        if ($element->getAttribute('src')) {
+                            $sHref = $element->getAttribute('src');
+                            $sType = $this->getUrlType($sHref);
+                            if ($sFilterByType && $sFilterByType != $sType) {
+                                continue;
+                            }
+                            $this->_add2Array($aReturn[$sType], array(
+                                'ressourcetype' => 'media',
+                                'href' => $sHref,
+                                'type' => $element->getAttribute('type'),
+                                '_url' => $this->getFullUrl($sHref),
+                                '_tag' => 'img',
+                                '_line' => $element->getLineNo(),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+        return $aReturn;
+    }
     /**
      * get all scripts of this document
      * @param string  $sFilterByType  return links of this type only
@@ -799,7 +840,9 @@ class analyzerHtml {
                     $this->_add2Array($aReturn[$sType], array(
                         'ressourcetype' => 'script',
                         'href' => $sHref,
-                        '_url' => $this->getFullUrl($element->getAttribute('src')),
+                        '_url' => $this->getFullUrl($sHref),
+                        '_tag' => 'script',
+                        '_line' => $element->getLineNo(),
                     ));
                 }
             }
@@ -898,12 +941,14 @@ class analyzerHtml {
                     $sUrl = preg_replace('/\#.*$/', '', $this->getFullUrl($sHref));
                 }
                 $aLink = array(
-                    '_tag' => $element->nodeName,
-                    '_attribute' => $element->getAttribute('_attribute'),
                     'ressourcetype' => 'link',
                     'href' => $sHref,
                     // 'element' => $element,
                     'label' => $element->nodeValue,
+                    '_url' => $sHref,
+                    '_tag' => $element->nodeName,
+                    '_attribute' => $element->getAttribute('_attribute'),
+                    '_line' => $element->getLineNo(),
                 );
                 if ($sType == "mailto") {
                     $aEmail = $this->_parseEmail($sHref);
@@ -1006,6 +1051,7 @@ class analyzerHtml {
             'body' => array(
                 'images' => $this->getImages(),
                 'links' => $this->getLinks(),
+                'media' => $this->getMedia(),
             )
         );
     }

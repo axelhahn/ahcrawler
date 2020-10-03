@@ -81,6 +81,7 @@ class ressourcesrenderer extends crawler_base {
         'css'=>'fas fa-eye-dropper',
         'image'=>'far fa-file-image',
         'link'=>'fas fa-link',
+        'media'=>'fas fa-photo-video',
         'page'=>'far fa-sticky-note',
         // 'redirect'=>'fas fa-angle-double-right',
         'script'=>'far fa-file-code',

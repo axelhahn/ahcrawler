@@ -289,6 +289,7 @@ class ressources extends crawler_base {
             $oHtml = new analyzerHtml($aData['response'], $aData['url']);
             $this->addPageRelItems($aData, $oHtml->getCss());
             $this->addPageRelItems($aData, $oHtml->getImages());
+            $this->addPageRelItems($aData, $oHtml->getMedia());
             $this->addPageRelItems($aData, $oHtml->getLinks(false,false));
             $this->addPageRelItems($aData, $oHtml->getScripts());
         }
