@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2020-10-04: v0.137
+  * ADDED: html analyzer - scan for AUDIO and VIDEO sources
+  * ADDED: html analyzer - add line number in the source code of found items
+  * FIX: html analyzer - handle urls starting with ? in html content
+
 2020-09-30: v0.136
   * ADDED: crawlerlog got a paging navi
   * ADDED: crawler follows canonical urls

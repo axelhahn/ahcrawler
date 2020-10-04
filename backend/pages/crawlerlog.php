@@ -3,7 +3,7 @@
  * CRAWLER LOG
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
-$iLinesPerPageDefault=1000;
+$iLinesPerPageDefault=5000;
 $sHtml='';
 
 $iProfileId=$this->_getTab();
