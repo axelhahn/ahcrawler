@@ -728,7 +728,7 @@ class ressources extends crawler_base {
             $aRelItem = array(
                 'id' => $iId,
                 'url' => $url,
-                'isEndpoint' => false,
+                'isEndpoint' => $this->isInDenyList($sNewUrl),
                 'header' => json_encode($info),
                 'rescan' => 0,
                 'ts' => date("Y-m-d H:i:s"),
