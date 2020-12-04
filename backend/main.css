@@ -22,7 +22,7 @@
     --status-bg-warning-flat:#fdb;
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
     --status-color-error:#855;
-    --status-color-ok:#585;
+    --status-color-ok:#575;
     --status-color-warning:#975;
     --status-color-todo:#778;
     
@@ -412,7 +412,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .ico-security{color:#0c6;}
 .ico-http{color:#083;}
 .ico-unknown{color:#aaa;}
-.ico-error{color:#c42;}
+.ico-error{color:#e66;}
 .ico-warn{color:#fa2;}
 .ico-warning{color:#fa2;}
 /* http header */
