@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.137',
-        'date' => '2020-10-04',
+        'version' => '0.138',
+        'date' => '2020-12-05',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -228,7 +228,9 @@ class crawler_base {
                     // array('PRIMARY KEY', '', array('id')),
                     array('siteid', array('siteid')),
                     array('url',    array('url')),
-                    array('search', array('url', 'title', 'description', 'keywords', 'lang', 'content'), 'FULLTEXT'),
+
+                    // it won't be created on php7 ... and crashes on php8
+                    // array('search', array('url', 'title', 'description', 'keywords', 'lang', 'content'), 'FULLTEXT'),
                 ),
             ),
                 
@@ -1378,7 +1380,7 @@ class crawler_base {
             $oCli=new axelhahn\cli();
         }
         if($sMessage){
-            $oCli->color($sColor, $sMessage);
+            $oCli->color($sColor, round(memory_get_usage()/1024 + 0.5) .' kB |'. $sMessage);
             $this->logfileAppend($sColor, $sMessage);
         }
         if($sNextColor){
@@ -1414,6 +1416,7 @@ class crawler_base {
      * @return boolean
      */
     public function logfileAppend($sColor, $sMessage){
+        return true;
         if($this->sLogFilename){
             
             /*

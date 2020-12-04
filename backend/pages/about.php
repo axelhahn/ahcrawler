@@ -2,6 +2,20 @@
 /**
  * page about
  */
+
+/*
+require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
+$oInstaller=new ahwi(array(
+    'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
+    'source'=>'',
+    'installdir'=>'',
+    'tmpzip'=>'',
+    'checks'=>$this->aAbout['requirements'],
+));
+$aRequirements=$oInstaller->getRequirements();
+echo '<pre>'. print_r($aRequirements, 1).'</pre>';
+ */
+
 $sReturn = '';
 
 $aIcons=array(
@@ -61,8 +75,12 @@ if (isset($this->aAbout['thanks'])){
         }
     }
 }
-$oRenderer=new ressourcesrenderer();
-$sReturn.='<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
+$sReturn.=''
+        .$oRenderer->renderContextbox(
+                phpversion(), 
+                $this->lB('context.infos')
+                )
+        . '<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
 
         // update info
         . '<p>' . $this->lB('about.info') . '</p>'

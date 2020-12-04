@@ -145,6 +145,11 @@ class analyzerHtml {
         }
         $this->_aReport = array();
 
+        if(!$sHtmlcode){
+            $this->_oDom = false;
+            return false;
+        }
+        // echo __METHOD__. " ... $sUrl". PHP_EOL ."html size: " . strlen($sHtmlcode) . ' byte'. PHP_EOL;
         $this->_oDom = new DOMDocument('1.0');
         @$this->_oDom->loadHTML($sHtmlcode);
 

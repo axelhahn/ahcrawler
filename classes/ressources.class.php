@@ -655,7 +655,7 @@ class ressources extends crawler_base {
         // echo __FUNCTION__."()\n";
         $aReturn = array();
         foreach ($this->_aUrls2Crawl as $sUrl => $bToDo) {
-            if ($bToDo > 0) {
+            if ($bToDo) {
                 $aReturn[] = $sUrl;
             }
         }
@@ -670,7 +670,11 @@ class ressources extends crawler_base {
      */
     private function _removeUrlFromCrawling($sUrl) {
         // echo __FUNCTION__."($sUrl)\n";
-        return $this->_aUrls2Crawl[$sUrl] = false;
+        // FIX for PHP8: do not return the variable setting
+        if (isset($this->_aUrls2Crawl[$sUrl]) && $this->_aUrls2Crawl[$sUrl]) {
+            $this->_aUrls2Crawl[$sUrl] = 0;
+        }
+        return true;
     }
 
     /**

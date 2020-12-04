@@ -10,6 +10,14 @@
 
 ----------------------------------------------------------------------
 
+2020-12-05: v0.138
+  * FIX: deny list was not applied on 3xx redirects
+  * FIX: update code for PHP8 compatibility (work in progress)
+  * UPDATE: Css colors
+  * UPDATE lib: Chart.js 2.9.3 -> 2.9.4
+  * UPDATE lib: datatables 1.10.20 -> 1.10.21
+  * UPDATE lib: font-awesome 5.13.0 -> 5.15.1
+
 2020-10-04: v0.137
   * ADDED: html analyzer - scan for AUDIO and VIDEO sources
   * ADDED: html analyzer - add line number in the source code of found items
