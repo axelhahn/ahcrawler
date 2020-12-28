@@ -1092,6 +1092,7 @@ class crawler extends crawler_base{
                 $iCounter=0;
             }
         }
+        $this->cliprint('cli', "\n") ;
         /*
         if (count($aInsertdata)){
             

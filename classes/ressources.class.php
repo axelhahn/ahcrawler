@@ -189,7 +189,8 @@ class ressources extends crawler_base {
         // if (count($aCurrent) && $aCurrent[0]['id']) {
         if ($bExists) {
             if ($bSkipIfExist) {
-                $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
+                // v 0.139 skip displaying this
+                // $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
             } else {
                 $this->cliprint('info', 'UPDATE existing resource ' . $sUrl . "\n");
                 /*
@@ -852,7 +853,8 @@ class ressources extends crawler_base {
         $rollingCurl = new \RollingCurl\RollingCurl();
         while (count($this->_getUrls2Crawl())) {
             $iUrlsLeft=count($this->_getUrls2Crawl());
-            $sStatusPrefix=$iUrlsLeft.' urls left';
+            $iUrlsTotal=count($this->_aUrls2Crawl);
+            $sStatusPrefix=$iUrlsLeft . '  of '.$iUrlsTotal.' urls left ('.(100-round($iUrlsLeft*100/$iUrlsTotal)).'%)';
             if ($bPause && $this->iSleep) {
                 $this->touchLocking($sStatusPrefix.'; sleep ' . $this->iSleep . 's');
                 $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
@@ -861,8 +863,9 @@ class ressources extends crawler_base {
             $bPause = true;
             $this->touchLocking($sStatusPrefix);
             $self = $this;
+            $iLimit=(int)$this->aProfileEffective['ressources']['simultanousRequests'];
             foreach ($this->_getUrls2Crawl() as $sUrl) {
-                $rollingCurl->get($sUrl);
+                $rollingCurl->request($sUrl, "HEAD");
             }
 
             $aCurlOpt=$this->_getCurlOptions();
@@ -870,13 +873,16 @@ class ressources extends crawler_base {
             $rollingCurl->setOptions($aCurlOpt)
                     ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);
-                        $self->touchLocking(count($this->_getUrls2Crawl()) . ' urls left; processing ' . $request->getUrl());
+                        $iUrlsLeft=count($this->_getUrls2Crawl());
+                        $iUrlsTotal=count($this->_aUrls2Crawl);
+                        $self->touchLocking($iUrlsLeft . '  of '.$iUrlsTotal.' urls left ('.(100-round($iUrlsLeft*100/$iUrlsTotal)).'%); processing ' . $request->getUrl());
                         $rollingCurl->clearCompleted();
                         $rollingCurl->prunePendingRequestQueue();
                     })
                     ->setSimultaneousLimit((int)$this->aProfileEffective['ressources']['simultanousRequests'])
                     ->execute()
             ;
+            // echo "DEBUG: rolling curl is done ...\n"; sleep(3);
         }
         $this->updateExternalRedirect();
         $this->disableLocking();
