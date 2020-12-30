@@ -280,7 +280,7 @@ foreach ($aProfileIds as $sSiteId){
                 case "resources":
                     $oRes=new ressources();
                     $oRes->setSiteId($sSiteId);
-                    $oRes->crawlRessoures();
+                    $oRes->crawlRessoures('GET');
                     break;
                 default:
                     echo "Ooops ... action [$sAction] cannot be combined with data [$sWhat] \nuse one of searchindex|resources";

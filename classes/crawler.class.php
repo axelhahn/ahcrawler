@@ -630,6 +630,12 @@ class crawler extends crawler_base{
         // print_r($this->aOptions); $oStatus->finishAction($sMsgId);die();
         $self = $this;
         $rollingCurl = new \RollingCurl\RollingCurl();
+        $aCurlOpt=$this->_getCurlOptions();
+        $aCurlOpt[CURLOPT_USERPWD] = isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false;
+        $rollingCurl
+            ->setOptions($aCurlOpt)
+            ->setSimultaneousLimit((int)$this->aProfileEffective['searchindex']['simultanousRequests'])
+            ;
         while (count($this->_getUrls2Crawl())) {
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
@@ -643,20 +649,16 @@ class crawler extends crawler_base{
                 $rollingCurl->get($sUrl);
             }
 
-            $aCurlOpt=$this->_getCurlOptions();
-            $aCurlOpt[CURLOPT_USERPWD] = isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false;
-            $rollingCurl->setOptions($aCurlOpt)
-                ->setSimultaneousLimit((int)$this->aProfileEffective['searchindex']['simultanousRequests'])
-                ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
+            $rollingCurl->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
                     // echo "... content: " . substr($request->getResponseText(), 0 ,10) . " (...) \n";
                     $self->processResponse($request);
                     $self->touchLocking('processing ' . $request->getUrl());
                     $rollingCurl->clearCompleted();
-                    $rollingCurl->prunePendingRequestQueue();
                 })
                 ->execute()
                 ;
+            $rollingCurl->prunePendingRequestQueue();
             
         }
         

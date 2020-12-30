@@ -49,7 +49,8 @@ if(isset($_POST) && count($_POST) && isset($_POST['blacklistitem']) ){
 
 
 
-$aWhere=array('siteid' => $this->_sTab, 'isExternalRedirect'=>0);
+// $aWhere=array('siteid' => $this->_sTab, 'isExternalRedirect'=>0);
+$aWhere=array('siteid' => $this->_sTab);
 $aFilterItems=$this->_getRequestParam('filteritem');
 if ($aFilterItems){
     $aFilterValues=$this->_getRequestParam('filtervalue');

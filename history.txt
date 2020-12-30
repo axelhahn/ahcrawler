@@ -10,6 +10,13 @@
 
 ----------------------------------------------------------------------
 
+2020-12-30: v0.140
+  * UPDATE: crawling processes
+  * UPDATE: cli action "update" uses GET requets to handle errors caused by
+            denying http head requests
+  * FIX: remove a var_dump output in crawling process
+  * FIX: remove context box in about page
+
 2020-12-28: v0.139
   * UPDATE: show done urls in percent
   * FIX: writing crawling logs is enabled again

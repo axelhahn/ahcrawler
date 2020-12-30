@@ -801,13 +801,14 @@ class ressources extends crawler_base {
     /*
      * a main entry point: start crawling ressources
      */
-    public function crawlRessoures() {
+    public function crawlRessoures($sHttpMethod='HEAD') {
         $this->_aUrls2Crawl = array();
         $this->_iUrlsCrawled = 0;
         $this->_aRessourceIDs = array();
         $this->iStartCrawl = date("U");
         $bPause = false;
-        $this->cliprint('info', "========== Ressource scan".PHP_EOL);
+        $iSimultanous=(int)$this->aProfileEffective['ressources']['simultanousRequests'];
+        $this->cliprint('info', "========== Ressource scan using http $sHttpMethod".PHP_EOL);
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         $sMsgId = 'ressources-profile-' . $this->iSiteId;
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
@@ -828,6 +829,11 @@ class ressources extends crawler_base {
                 // "LIMIT" => 2,
                 )
         );
+        foreach ($aUrls as $sUrl) {
+            $this->_addUrl2Crawl($sUrl, true);
+        }
+
+        /*
         $aUrlsDone = $this->oDB->select(
                 'ressources', 'url', array(
                     'AND' => array(
@@ -842,15 +848,20 @@ class ressources extends crawler_base {
         );
         // echo $this->oDB->last()."\n"; die("STOP in ".__FUNCTION__);
 
-        foreach ($aUrls as $sUrl) {
-            $this->_addUrl2Crawl($sUrl, true);
-        }
         foreach ($aUrlsDone as $sUrl) {
             $this->_aRessourceIDs[$sUrl]=1;
         }
+         */
 
-        $this->cliprint('info', "--- Starting http requests...".PHP_EOL);
+        $this->cliprint('info', "--- Starting http $sHttpMethod requests - $iSimultanous parallel".PHP_EOL);
         $rollingCurl = new \RollingCurl\RollingCurl();
+        $aCurlOpt=$this->_getCurlOptions();
+        // $aCurlOpt[CURLOPT_NOBODY]=true; // means: fetch the ressponse header only
+        
+        $rollingCurl
+            ->setOptions($aCurlOpt)
+            ->setSimultaneousLimit($iSimultanous)
+            ;
         while (count($this->_getUrls2Crawl())) {
             $iUrlsLeft=count($this->_getUrls2Crawl());
             $iUrlsTotal=count($this->_aUrls2Crawl);
@@ -863,32 +874,27 @@ class ressources extends crawler_base {
             $bPause = true;
             $this->touchLocking($sStatusPrefix);
             $self = $this;
-            $iLimit=(int)$this->aProfileEffective['ressources']['simultanousRequests'];
             foreach ($this->_getUrls2Crawl() as $sUrl) {
-                $rollingCurl->request($sUrl, "HEAD");
+                $rollingCurl->request($sUrl, $sHttpMethod);
             }
 
-            $aCurlOpt=$this->_getCurlOptions();
-            $aCurlOpt[CURLOPT_NOBODY]=true; // means: fetch the ressponse header only
-            $rollingCurl->setOptions($aCurlOpt)
-                    ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
+            $rollingCurl
+                ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                         $self->processResponse($request);
                         $iUrlsLeft=count($this->_getUrls2Crawl());
                         $iUrlsTotal=count($this->_aUrls2Crawl);
                         $self->touchLocking($iUrlsLeft . '  of '.$iUrlsTotal.' urls left ('.(100-round($iUrlsLeft*100/$iUrlsTotal)).'%); processing ' . $request->getUrl());
                         $rollingCurl->clearCompleted();
-                        $rollingCurl->prunePendingRequestQueue();
                     })
-                    ->setSimultaneousLimit((int)$this->aProfileEffective['ressources']['simultanousRequests'])
-                    ->execute()
+                ->execute()
             ;
-            // echo "DEBUG: rolling curl is done ...\n"; sleep(3);
+            $rollingCurl->prunePendingRequestQueue();
         }
         $this->updateExternalRedirect();
         $this->disableLocking();
 
         $iTotal=date("U") - $this->iStartCrawl;
-        $this->cliprint('info', "----- Resource scan is finished.\n");
+        $this->cliprint('info', "----- Resource scan with http $sHttpMethod is finished.\n");
         $this->cliprint('info', $this->_iUrlsCrawled . " urls were crawled.\n");
         $this->cliprint('info', "process needed $iTotal sec; ". ($iTotal ? number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec." : '') . "\n");
         $this->_showResourceStatusOnCli();

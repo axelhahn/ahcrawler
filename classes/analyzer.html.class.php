@@ -800,7 +800,7 @@ class analyzerHtml {
 
             foreach(array('audio', 'video') as $sMediaTag){
                 $allAudio = $this->_oDom->getElementsByTagName($sMediaTag);
-                var_dump($allAudio);
+                // var_dump($allAudio);
                 foreach ($allAudio as $media) {
                     $sources = $media->getElementsByTagName('source');
                     foreach ($sources as $element) {

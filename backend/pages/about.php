@@ -76,10 +76,6 @@ if (isset($this->aAbout['thanks'])){
     }
 }
 $sReturn.=''
-        .$oRenderer->renderContextbox(
-                phpversion(), 
-                $this->lB('context.infos')
-                )
         . '<h3>' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' ('.$this->aAbout['date'].')</h3>'
 
         // update info
