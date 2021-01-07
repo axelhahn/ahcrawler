@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2021-01-08: v0.141
+  * UPDATE: cronscript supports update and single profiles
+
 2020-12-30: v0.140
   * UPDATE: crawling processes
   * UPDATE: cli action "update" uses GET requets to handle errors caused by
