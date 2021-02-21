@@ -20,11 +20,10 @@ $sZipfile = $sApproot.'/tmp/__latest.zip';
 $sTargetPath = $sApproot;
 // $sTargetPath = $sApproot.'/tmp';
 
-$sLatestUrl=$this->oUpdate->getDownloadUrl();
-
 $oInstaller=new ahwi(array(
     'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
-    'source'=>$sLatestUrl,
+    'source'=>$this->oUpdate->getDownloadUrl(),
+    'md5'=>$this->oUpdate->getChecksumUrl(),
     'installdir'=>$sTargetPath,
     'tmpzip'=>$sZipfile,
     'checks'=>$this->aAbout['requirements'],

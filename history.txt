@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2021-02-xx: v0.142
+  * ADDED: updater verifies md5 checksum
+
 2021-01-08: v0.141
   * UPDATE: cronscript supports update and single profiles
 

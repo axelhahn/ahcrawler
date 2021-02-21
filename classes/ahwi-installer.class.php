@@ -266,7 +266,7 @@ class ahwi {
     * check if a php module was found
     * @return boolean
     */
-    function _checkModules($aRequiredMods=array()){
+    function _checkModules(){
         if (isset($this->aCfg['checks']['phpextensions']) 
             && is_array($this->aCfg['checks']['phpextensions'])
             && count($this->aCfg['checks']['phpextensions'])){
@@ -295,7 +295,7 @@ class ahwi {
     * check php version 
     * @return boolean
     */
-    function _checkPhpversion($aRequiredMods=array()){
+    function _checkPhpversion(){
         if (isset($this->aCfg['checks']['phpversion']) 
             && $this->aCfg['checks']['phpversion']
             && version_compare(phpversion(), $this->aCfg['checks']['phpversion'],'<')){
@@ -374,7 +374,7 @@ class ahwi {
             die("FATAL ERROR: download won\'t be started. Direcory is not writable: ".dirname($sZipfile).".\n");
         }
 
-        echo "INFO: fetching url $sUrl ...\n";
+        echo "INFO: fetching software url $sUrl ...\n";
         $sData = $this->_httpGet($sUrl);
         echo 'INFO: size is '.strlen($sData) . " byte\n";
         
@@ -386,11 +386,47 @@ class ahwi {
             die("ERROR: unable to store download file $sZipfile.\n");
         } else {
             echo "INFO: download was saved as: $sZipfile\n";
+            if (!$this->verifyDownload(md5_file($sZipfile))){
+                echo "INFO: Verification failed. Removing Download file $sZipfile.\n";
+                unlink($sZipfile);
+                die("ERROR: download file was not as expected.\n");
+            }
         }
-
         return true;
     }
+    
+    /**
+     * verify checksum of download data
+     * @param string  $md5OfData  md5 hash (see method download())
+     * @param string  $sUrl       optional: force an md5 url
+     * @return boolean
+     */
+    function verifyDownload($md5OfData, $sUrl=false) {
+        $sMd5Url=($sUrl 
+                ? $sUrl 
+                : (isset($this->aCfg['md5']) && $this->aCfg['md5']))
+                    ? $this->aCfg['md5']
+                    : $this->aCfg['source'].'.md5'
+                ;
+        echo "INFO: fetching url for checksum $sMd5Url ...\n";
+        $sData = trim($this->_httpGet($sMd5Url));
+        echo 'INFO: size is '.strlen($sData) . " byte\n";
 
+        // if(strlen($sData)!=30 || strlen($sData)>36){
+        if(strlen($sData)!=32){
+            echo "INFO: Ooops, no md5 hash here - skipping md5 check ...\n";
+            return !$this->aCfg['md5'];
+        }
+        echo "INFO: checksums are ...\n"
+                . "  Download: $md5OfData\n"
+                . "  Required: $sData\n";
+        if(strtolower($sData)!=strtolower($md5OfData)){
+            echo "ERROR: checksums do not match\n";
+            return false;
+        }
+        echo "INFO: Checksum is OK.\n";
+        return true;
+    }
     /**
      * install/ unzip method; extract downloaded zip file into target directory
      * if the installation was successful the zip file will be deleted

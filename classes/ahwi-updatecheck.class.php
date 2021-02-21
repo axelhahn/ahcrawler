@@ -39,6 +39,7 @@ class ahwiupdatecheck {
             'latest_version'=>'unknown',
             'release'=>'unknown',
             'download'=>false,
+            'md5'=>false,
     );
     protected $_aInfos=array();
     
@@ -141,6 +142,7 @@ class ahwiupdatecheck {
      *     [release] => stable
      *     [latest_version] => 2.00.03
      *     [download] => https://sourceforge.net/projects/pimpapachestat/files/latest/download
+     *     [md5] => https://sourceforge.net/projects/pimpapachestat/files/versionNNN.md5/download
      * )
      * 
      * @global type $aEnv
@@ -238,6 +240,13 @@ class ahwiupdatecheck {
      */
     public function getDownloadUrl(){
         return $this->_aInfos['download'];
+    }
+    /**
+     * get download url for latest software version
+     * @return boolean
+     */
+    public function getChecksumUrl(){
+        return $this->_aInfos['md5'];
     }
     /**
      * get version of latest software version
