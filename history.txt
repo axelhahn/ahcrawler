@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2021-02-19: v0.142
+2021-03-19: v0.142
   * ADDED: software updater script; see php cronscripts/updater.php -h
   * ADDED: updater verifies a md5 checksum of download file
   * UPDATE: setup page in backend shows checkboxes to activate menu items
