@@ -36,6 +36,28 @@ $iColsInTA=70;
 
 $sPatternNumber='^[0-9]*';
 
+/**
+ * helper function to render setup checkboxes for menu in frontend and backend
+ * @param string $sItem     menu key
+ * @param array  $aOptions  array of options
+ * @param string $sSubkey   one of menu|menu-public
+ * @param prefix $sPrefix   html code for spacing before checkbox
+ * @return string
+ */
+function _renderCB($sItem, $aOptions, $sSubkey, $sPrefix=''){
+    $sReturn='';
+    $val=$aOptions['options'][$sSubkey][$sItem];
+    $cbid='cbMenu'.$sSubkey.$sItem;
+    $sReturn.=''
+        . '<label for="'.$cbid.'" class="align-left">'
+        . $sPrefix
+        . '<input type="checkbox" name="options['.$sSubkey.']['.$sItem.']" value="true" id="'.$cbid.'"'.($val ? ' checked="checked"' : '').'>'
+        . ' '. $sItem// . $this->lB('setup.section.backend.debug.off')
+        . '</label><br>'
+    ;
+    return $sReturn;
+}
+
 // ----------------------------------------------------------------------
 // handle POST DATA
 // ----------------------------------------------------------------------
@@ -158,14 +180,12 @@ if(isset($_POST['action'])){
                 }
             }
 
-            foreach (array('menu', 'menu-public') as $sMenuKey){
-                if(isset($aOptions['options'][$sMenuKey]) 
-                        && $aOptions['options'][$sMenuKey]
-                        && json_decode($aOptions['options'][$sMenuKey])
-                ){
-                    $aOptions['options'][$sMenuKey] = json_decode($aOptions['options'][$sMenuKey]);
-                } else {
-                    $aOptions['options'][$sMenuKey] = array();
+            foreach (array('menu', 'menu-public') as $sSection){
+                foreach(array_keys($aOptionsCurrent['options'][$sSection]) as $sMenukey){
+                    $aOptions['options'][$sSection][$sMenukey]=isset($aOptions['options'][$sSection][$sMenukey])
+                        ? $aOptions['options'][$sSection][$sMenukey]
+                        : false
+                    ;
                 }
             }
 
@@ -248,6 +268,27 @@ foreach($this->getLanguages('backend') as $sLangOption=>$sLangname){
 }
 $aLangOptions[$sDefaultLang]['selected']='selected';
 
+$sMenuVisibility='';
+$sFrontendVisibility='';
+foreach ($this->_aMenu as $sItem=>$aSubItems) {
+    $val=$aOptions['options']['menu'][$sItem];
+    $sMenuVisibility.=_renderCB($sItem, $aOptions, 'menu', '');
+
+    if (isset($aSubItems['children']) && count($aSubItems['children'])){
+        foreach ($aSubItems['children'] as $sItem2=>$aSubItems2) {
+            $sMenuVisibility.=_renderCB($sItem2, $aOptions, 'menu', '&nbsp;&nbsp;&nbsp;&nbsp;');
+        }
+    }
+    $sMenuVisibility.='<br>';
+}
+$sMenuVisibility='<div>'.$sMenuVisibility.'</div>';
+
+
+foreach ($aOptions['options']['menu-public'] as $sItem=>$val) {
+    $sFrontendVisibility.=_renderCB($sItem, $aOptions, 'menu-public', '');;
+}
+$sFrontendVisibility='<div>'.$sFrontendVisibility.'</div>';
+
 $aDebugOptions=array(
     false=>array(
         'label'=>$this->lB('setup.section.backend.debug.off'),
@@ -321,6 +362,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu', 'label'=>$this->lB('setup.section.backend.menu')))
+                    . $sMenuVisibility
+                    /*
                     . $oRenderer->oHtml->getTag('textarea', array(
                         'id'=>$sIdPrefixOther.'menu', 
                         'name'=>'options[menu]',
@@ -329,6 +372,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         // 'label'=>$sValueSearchCategories,
                         'label'=> json_encode($aOptions['options']['menu'], JSON_PRETTY_PRINT),
                         ), true)
+                     *  
+                     */
                     . '</div>'
                 . '<div class="pure-control-group">'
                     // . '<label> </label>'
@@ -667,6 +712,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'menu-public', 'label'=>$this->lB('setup.section.public-services.menu-public')))
+                    . $sFrontendVisibility
+                    /*
                     . $oRenderer->oHtml->getTag('textarea', array(
                         'id'=>$sIdPrefixOther.'menu-public', 
                         'name'=>'options[menu-public]',
@@ -675,6 +722,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         // 'label'=>$sValueSearchCategories,
                         'label'=> json_encode($aOptions['options']['menu-public'], JSON_PRETTY_PRINT),
                         ), true)
+                     */
                     . '</div>'
             . '</div>'
         
