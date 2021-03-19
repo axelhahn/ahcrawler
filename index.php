@@ -36,10 +36,10 @@
         'debug'=>0,
         ));
     $oCdn->setLibs(array(
-        "pure/2.0.3",
+        "pure/2.0.5",
         "datatables/1.10.21",
-        "font-awesome/5.13.0",
-        "jquery/3.5.1",
+        "font-awesome/5.14.0",
+        "jquery/3.6.0",
         "Chart.js/2.9.4"
     ));
 
