@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.141',
-        'date' => '2021-01-08',
+        'version' => '0.142',
+        'date' => '2021-02-19',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -148,6 +148,17 @@ class crawler_base {
             'baseurl'=>'https://www.axel-hahn.de/versions/',
             'tmpdir'=>false,
             'ttl'=>86400,     // 1 day
+            // TODO: 
+            // - remove unwanted files and dirs
+            // - hmmm ... and what about database upgrades?
+            'toremove' => array(
+                'files' => array(
+                    'backend/pages/search.php',
+                ),
+                'dirs' => array(
+                    
+                ),
+            )
         ),
     );
     /**
@@ -1169,6 +1180,19 @@ class crawler_base {
         return $aReturn;
     }
     
+    /**
+     * get array of ahwi-updater
+     * @return type
+     */
+    public function setupRemoveUnwanted(){
+        foreach($thisaDefaultOptions['updater']['toremove']['files'] as $sFile){
+            unlink($sFile);
+        }
+        foreach($thisaDefaultOptions['updater']['toremove']['dirs'] as $sDir){
+            unlink($sDir);
+        }
+        return true;
+    }
     // ----------------------------------------------------------------------
     // content
     // ----------------------------------------------------------------------

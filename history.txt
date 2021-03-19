@@ -10,8 +10,14 @@
 
 ----------------------------------------------------------------------
 
-2021-02-xx: v0.142
-  * ADDED: updater verifies md5 checksum
+2021-02-19: v0.142
+  * ADDED: software updater script; see php cronscripts/updater.php -h
+  * ADDED: updater verifies a md5 checksum of download file
+  * UPDATE: setup page in backend shows checkboxes to activate menu items
+  * UPDATE lib: pure -> 2.0.5
+  * UPDATE lib: font-awesome -> 5.14.0
+  * UPDATE lib: jquery -> 3.6.0
+  * FIX/ UPDATE: typos in english texts; update texts for setup
 
 2021-01-08: v0.141
   * UPDATE: cronscript supports update and single profiles
