@@ -10,6 +10,10 @@
 
 ----------------------------------------------------------------------
 
+2021-04-11: v0.143
+  * FIX: usage of local vendor libs
+  * FIX: public service pages did not work with a set internal auth user
+
 2021-03-19: v0.142
   * ADDED: software updater script; see php cronscripts/updater.php -h
   * ADDED: updater verifies a md5 checksum of download file

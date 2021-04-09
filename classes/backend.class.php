@@ -312,6 +312,9 @@ class backend extends crawler_base {
      * @return boolean
      */
     private function _checkAuth() {
+        if($this->_bIsPublic){
+            return true;
+        }
         $aOptions = $this->_loadConfigfile();
         if (!isset($aOptions['options']['auth']['user']) || $this->_getUser()
         ) {

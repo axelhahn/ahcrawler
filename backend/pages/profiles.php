@@ -426,20 +426,20 @@ $sReturn.='
                     'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
                     ), false)
                 . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'type'=>'text',
-                    'id'=>'userpwd', 
-                    'name'=>'userpwd',
-                    'size'=>$iSizeInInput,
-                    'placeholder'=>'',
-                    'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
-                    ), false)
-                . '</div>'
-
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
+                        'id'=>'userpwd', 
+                        'name'=>'userpwd',
+                        'size'=>$iSizeInInput,
+                        'placeholder'=>'',
+                        'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
+                        ), false)
+                    . '</div>'
+
                 . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')))
@@ -490,31 +490,34 @@ $sReturn.='
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('profile.section.frontend')
             .'</h3>'
-        
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchcategories', 'label'=>$this->lB('profile.frontend.searchcategories')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'frontend-searchcategories', 
-                    'name'=>'frontend[searchcategories]',
-                    'cols'=>$iColsInTA,
-                    'rows'=>isset($this->aProfileSaved['frontend']['searchcategories']) && is_array($this->aProfileSaved['frontend']['searchcategories']) && count($this->aProfileSaved['frontend']['searchcategories']) ? count($this->aProfileSaved['frontend']['searchcategories'])+3 : 3 ,
-                    // 'label'=>$sValueSearchCategories,
-                    'label'=> (isset($this->aProfileSaved['frontend']['searchcategories']) 
-                            ? json_encode($this->aProfileSaved['frontend']['searchcategories'], JSON_PRETTY_PRINT) 
-                            : ''
-                        ),
-                    ), true)
-                . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchlang', 'label'=>$this->lB('profile.frontend.searchlang')))
-                . $oRenderer->oHtml->getTag('textarea', array(
-                    'id'=>'frontend-searchlang', 
-                    'name'=>'frontend[searchlang]',
-                    'cols'=>$iColsInTA,
-                    'rows'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? count($this->aProfileSaved['frontend']['searchlang'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? implode("\n", $this->aProfileSaved['frontend']['searchlang']) : '',
-                    ), true)
-                . '</div>'
+            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
+            . '<div class="extended">'
+
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchcategories', 'label'=>$this->lB('profile.frontend.searchcategories')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'frontend-searchcategories', 
+                        'name'=>'frontend[searchcategories]',
+                        'cols'=>$iColsInTA,
+                        'rows'=>isset($this->aProfileSaved['frontend']['searchcategories']) && is_array($this->aProfileSaved['frontend']['searchcategories']) && count($this->aProfileSaved['frontend']['searchcategories']) ? count($this->aProfileSaved['frontend']['searchcategories'])+3 : 3 ,
+                        // 'label'=>$sValueSearchCategories,
+                        'label'=> (isset($this->aProfileSaved['frontend']['searchcategories']) 
+                                ? json_encode($this->aProfileSaved['frontend']['searchcategories'], JSON_PRETTY_PRINT) 
+                                : ''
+                            ),
+                        ), true)
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'frontend-searchlang', 'label'=>$this->lB('profile.frontend.searchlang')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>'frontend-searchlang', 
+                        'name'=>'frontend[searchlang]',
+                        'cols'=>$iColsInTA,
+                        'rows'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? count($this->aProfileSaved['frontend']['searchlang'])+1 : 3 ,
+                        'label'=>isset($this->aProfileSaved['frontend']['searchlang']) && count($this->aProfileSaved['frontend']['searchlang']) ? implode("\n", $this->aProfileSaved['frontend']['searchlang']) : '',
+                        ), true)
+                    . '</div>'
+            . '</div>'
 
             // ------------------------------------------------------------
             // ressources scan

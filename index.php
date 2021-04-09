@@ -30,7 +30,7 @@
 
     global $oCdn;
     $oCdn=new axelhahn\cdnorlocal(array(
-        'vendorrelpath'=>'../vendor/cache',
+        'vendorrelpath'=>($bIsBackend ? '..' :'' ) . '/vendor/cache',
         // 'vendordir'=>__DIR__.'/vendor/cache',
         // 'vendorurl'=>'../cache',
         'debug'=>0,
