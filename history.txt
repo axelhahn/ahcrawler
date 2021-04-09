@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2021-04-11: v0.143
+2021-04-10: v0.143
   * FIX: usage of local vendor libs
   * FIX: public service pages did not work with a set internal auth user
 
