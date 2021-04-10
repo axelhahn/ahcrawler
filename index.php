@@ -106,7 +106,7 @@
     // SEND SECURITY HEADER
     // ----------------------------------------------------------------------
     if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']){
-        header('Strict-Transport-Security: max-age=31536000');
+        header('Strict-Transport-Security: max-age=63072000');
     }
     header('X-XSS-Protection: 1; mode=block');
     header('X-Frame-Options: SAMEORIGIN');
