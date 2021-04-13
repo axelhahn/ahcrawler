@@ -192,6 +192,19 @@ $sTiles='';
     $sLegendeUnknown='';
     $sLegendeWarn='';
 
+    $sHttpVer=$oHttpheader->getHttpVersion();
+    if($sHttpVer<'2'){
+        $iWarnings+=1;
+        $sWarnings.= ''
+                . '<h4 id="warnhttpver">'.str_replace('<br>', ' ', $this->lB('httpheader.header.httpversion')).'</h4>'
+                . $oRenderer->renderMessagebox($this->lB('httpheader.header.httpversion.hint'), 'warning')
+                . $oRenderer->renderTileBar($oRenderer->renderTile($oHttpheader->getHttpVersionStatus($sHttpVer), $this->lB('httpheader.header.httpversion'), $sHttpVer, ''))
+                . '<div style="clear: both;"></div>'
+                . '<p>'.$this->lB('httpheader.header.httpversion.description').'</p>'
+                ;
+    }
+    
+    
     // --- unknown header vars
     $aUnknownheader=$oHttpheader->getUnknowHeaders();
     if(is_array($aUnknownheader) && count($aUnknownheader)){
@@ -311,7 +324,7 @@ $sTiles='';
             */
         ;
     }
-    
+
 
 // ----------------------------------------------------------------------
 // security header

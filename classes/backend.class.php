@@ -10,6 +10,7 @@ require_once 'renderer.class.php';
 require_once 'search.class.php';
 require_once 'sslinfo.class.php';
 require_once 'status.class.php';
+require_once 'cache.class.php';
 
 /**
  * ____________________________________________________________________________
@@ -988,6 +989,15 @@ class backend extends crawler_base {
                     $floatValue==1 ? '100' : sprintf("%01.2f", (100*$floatValue))
                 ).'%' : '';
     }
+    
+    protected function _getCacheModule(){
+        return 'project-'.$this->_sTab.'-backend';
+    }
+    protected function _getCacheId($sMethod){
+        $sReturn='';
+        $sReturn.=$sMethod;
+        return $sReturn;
+    }
     /**
      * get hash analyse data with rating and counter
      * @see _getAnalyseData()
@@ -998,13 +1008,17 @@ class backend extends crawler_base {
     protected function _getStatusinfos($aPages=false){
         global $oRenderer;
         static $aStatusinfo;
+
         if($aPages===false){
             $aPages=array_merge(array('_global'), array_keys($this->_aIcons['menu']));
         }
         if(!isset($aStatusinfo)){
             $aStatusinfo=array();
         }
-        
+        $oCache=new AhCache($this->_getCacheModule(), $this->_getCacheId(__METHOD__ . '-'. md5(serialize($aPages) )));
+        if(!$oCache->isExpired()){
+            return $oCache->read();
+        }
         $aOptions = $this->getEffectiveOptions();
         $iCounter=0;
         $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->_sTab));
@@ -1176,6 +1190,16 @@ class backend extends crawler_base {
                                 'thead'=>$this->lB('httpheader.header.http'),
                                 'tfoot'=>'',
                                 'thash'=>'',
+                            );
+                            $sHttpverVer=$oHttpheader->getHttpVersion();
+                            $aMsg['httpversion']=array(
+                                'counter'=>$iCounter++,
+                                'status'=>$oHttpheader->getHttpVersionStatus($sHttpverVer),
+                                'value'=>$sHttpverVer, 
+                                'message'=>false,
+                                'thead'=>$this->lB('httpheader.header.httpversion'),
+                                'tfoot'=>'',
+                                'thash'=>$oHttpheader->getHttpVersionStatus($sHttpverVer) == 'ok' ? '' : '#warnhttpver',
                             );
                             $aMsg['unknown']=array(
                                 'counter'=>$iCounter++,
@@ -1376,6 +1400,7 @@ class backend extends crawler_base {
                 }
             }
         }
+        $oCache->write($aStatusinfo, 10);
         return $aStatusinfo;
     }
     

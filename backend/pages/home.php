@@ -7,7 +7,8 @@ $sHtml='';
 $sTable='';
 $sTiles='';
 
-$aOptions = $this->_loadConfigfile();
+// $aOptions = $this->_loadConfigfile();
+$aOptions = $this->getEffectiveOptions();
 $bShowProject=true;
 
 // echo '<pre>'.print_r($aOptions,1 ).'</pre>';
@@ -255,7 +256,18 @@ if(!$this->_configExists() ){
                 . ($sTiles2 ? $oRenderer->renderTileBar($sTiles2) : '')
                 .'<div style="clear: left;"></div>'
                 . $this->getProfileImage()
-                .'<div style="clear: both;"></div>'
+                .'<div class="floatleft">'
+                    . $this->lB('db-pages.time').'<br>'
+                    . $this->_getChartOfRange(
+                        'select time
+                        from pages 
+                        where siteid='.$this->_sTab.' and errorcount=0
+                        order by time desc',
+                        'time',
+                        $aOptions['analysis']['MaxLoadtime']
+                    )
+                . '</div>'
+                .'<div style="clear: left;"></div>'
 
                 // .'<h3>'.$this->lB('home.status').'</h3>'
                 // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'

@@ -424,6 +424,13 @@ class httpheader {
     protected function _getTagsOfHeaderline($varname, $val) {
         $aTags = array();
         $aRegex = array();
+        if($varname=='_status'){
+            $sVersionStatus=$this->getHttpVersionStatus();
+            $aTags[] = 'http';
+            $aTags[] ='httpversion';
+            $aTags[] ='httpstatus';
+            return array($aTags, $aRegex);
+        }
         foreach ($this->_aHeaderVars as $sSection => $aSection) {
             foreach ($aSection as $sVar => $aParams) {
 
@@ -561,6 +568,32 @@ class httpheader {
         return $aReturn;
     }
 
+    /**
+     * get http version from http response status line i.e. "1.1" or "2"
+     * @return string
+     */
+    public function getHttpVersion(){
+        $sReturn = '';
+        foreach ($this->_aHeader as $aData) {
+            if ($aData[0]=='_status'){
+                return preg_replace('#.*/([0-9\.]*)\ .*#u', '\1', $aData[1]);
+            }
+        }
+        return false;
+    }
+    /**
+     * helper function for rendering / reporting: get a status value as string
+     * one of ok|warning|error 
+     * in dependency of http version.
+     * @param string $sVersion  optional: version number; default: take version from current http header
+     * @return string
+     */
+    public function getHttpVersionStatus($sVersion=false){
+        if (!$sVersion){
+            $sVersion=$this->getHttpVersion();
+        }
+        return ($sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning') );
+    }
     /**
      * get array with cookie data from curl cookie file
      * https://stackoverflow.com/questions/410109/php-reading-a-cookie-file

@@ -10,6 +10,10 @@
 
 ----------------------------------------------------------------------
 
+2021-04-14: v0.144
+  * ADDED: chart of load time over all pages on start page
+  * ADDED: http header check for http version. If below http version 2 you get a warning
+
 2021-04-10: v0.143
   * FIX: usage of local vendor libs
   * FIX: public service pages did not work with a set internal auth user
