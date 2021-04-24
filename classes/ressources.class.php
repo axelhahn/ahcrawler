@@ -865,7 +865,7 @@ class ressources extends crawler_base {
         while (count($this->_getUrls2Crawl())) {
             $iUrlsLeft=count($this->_getUrls2Crawl());
             $iUrlsTotal=count($this->_aUrls2Crawl);
-            $sStatusPrefix=$iUrlsLeft . '  of '.$iUrlsTotal.' urls left ('.(100-round($iUrlsLeft*100/$iUrlsTotal)).'%)';
+            $sStatusPrefix=(100-round($iUrlsLeft*100/$iUrlsTotal)).'%: '.$iUrlsLeft . '  of '.$iUrlsTotal.' urls left';
             if ($bPause && $this->iSleep) {
                 $this->touchLocking($sStatusPrefix.'; sleep ' . $this->iSleep . 's');
                 $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
@@ -883,7 +883,7 @@ class ressources extends crawler_base {
                         $self->processResponse($request);
                         $iUrlsLeft=count($this->_getUrls2Crawl());
                         $iUrlsTotal=count($this->_aUrls2Crawl);
-                        $self->touchLocking($iUrlsLeft . '  of '.$iUrlsTotal.' urls left ('.(100-round($iUrlsLeft*100/$iUrlsTotal)).'%); processing ' . $request->getUrl());
+                        $self->touchLocking((100-round($iUrlsLeft*100/$iUrlsTotal)) . '%: ' .$iUrlsLeft . '  of '.$iUrlsTotal.' urls left; processing ' . $request->getUrl());
                         $rollingCurl->clearCompleted();
                     })
                 ->execute()

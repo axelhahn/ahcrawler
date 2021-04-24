@@ -10,6 +10,14 @@
 
 ----------------------------------------------------------------------
 
+2021-04-24: v0.145
+  * ADDED: reindex function on starting page "home"
+  * ADDED: detection if only one resource was crawled
+  * FIXED: homepage and display items in different constellations
+  * FIXED: settings changed username without giving current password
+  * UPDATE: move check of http version in http header check
+  * UPDATE: css of contextbox
+
 2021-04-14: v0.144
   * ADDED: chart of load time over all pages on start page
   * ADDED: http header check for http version. If below http version 2 you get a warning

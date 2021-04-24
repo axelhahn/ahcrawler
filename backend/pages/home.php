@@ -165,13 +165,13 @@ if(!$this->_configExists() ){
             $this->setSiteId($iProfileId);
 
             $aGlobal=$this->_getStatusinfos(array('_global'));
-            // echo '<pre>'.print_r($aGlobal, 1).'</pre>';
+            // echo '<pre>aGlobal = '.print_r($aGlobal, 1).'</pre>';
             
             $sTiles2='';
             foreach($aGlobal['_global'] as $sMyType=>$aData){
                 if(isset($aData['value']) && $aData['value']){
                     $sTiles2.=$oRenderer->renderTile(
-                        ''
+                        $aData['status']
                         , $aData['thead']
                         , $aData['value']
                         , $aData['tfoot']
@@ -194,6 +194,10 @@ if(!$this->_configExists() ){
             
             $sHints='';
             
+            $sHints.=($aGlobal['_global']['ressources']['value']==1
+                    ? $oRenderer->renderMessagebox($this->lB('ressources.only-one'), 'warning').'<br>'
+                    : ''
+            );
             
             // foreach (array('error', 'warning', 'ok', 'info') as $sMyKey) {
             $sHints.=(count($this->_getStatusInfoByLevel('error'))
@@ -233,6 +237,9 @@ if(!$this->_configExists() ){
                 .$oRenderer->renderContextbox(
                         ($this->aProfileSaved['description'] ? '<strong>'.$this->aProfileSaved['description'].'</strong><hr>' : '')
                     
+                        . $this->getProfileImage()
+                        // .'<div style="clear: left;"></div>'
+
                         // start urls
                         .'<p>'.$this->_getIcon('checkurl'). $this->lB('home.starturls').'</p>'
                         .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
@@ -243,6 +250,8 @@ if(!$this->_configExists() ){
                             : ''
                         )
                         . $this->_getLink2Navitem('profiles')
+                        . '<hr>'
+                        . $oRenderer->renderIndexActions('reindex', 'searchindex', $this->_sTab)
                         ,
                     
                         $this->lB('context.infos')
@@ -255,29 +264,30 @@ if(!$this->_configExists() ){
                 // . '<br><br>'
                 . ($sTiles2 ? $oRenderer->renderTileBar($sTiles2) : '')
                 .'<div style="clear: left;"></div>'
-                . $this->getProfileImage()
-                .'<div class="floatleft">'
-                    . $this->lB('db-pages.time').'<br>'
-                    . $this->_getChartOfRange(
-                        'select time
-                        from pages 
-                        where siteid='.$this->_sTab.' and errorcount=0
-                        order by time desc',
-                        'time',
-                        $aOptions['analysis']['MaxLoadtime']
-                    )
-                . '</div>'
-                .'<div style="clear: left;"></div>'
-
-                // .'<h3>'.$this->lB('home.status').'</h3>'
-                // .$oRenderer->renderTileBar($sTiles2).'<div style="clear: both;"></div>'
-
-                .'<h3>'.$this->lB('home.hints').'</h3>'
-                
+                // . $this->getProfileImage()
+                // .'<div style="clear: left;"></div>'
+                .''
+                .($aGlobal['_global']['pages']['value']
+                        ? '<div class="floatleft">'
+                        . $this->lB('db-pages.time').'<br>'
+                        . $this->_getChartOfRange(
+                            'select time
+                            from pages 
+                            where siteid='.$this->_sTab.' and errorcount=0
+                            order by time desc',
+                            'time',
+                            $aOptions['analysis']['MaxLoadtime']
+                        )
+                        . '</div>'
+                        . '<div style="clear: left;"></div>'
+                        :''
+                )
                 .($sHints
-                     ? $sHints
-                     : $oRenderer->renderMessagebox($this->lB('home.hints.nothing-was-found'), 'ok')
-                 )
+                     ?  '<h3>'.$this->lB('home.hints').'</h3>'
+                        .$sHints
+                     : ''
+                )
+
                 ;
 
 

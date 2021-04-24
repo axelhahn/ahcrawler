@@ -922,5 +922,7 @@
     "status.detail.words": "Wordlist",
     "status.detail.words.intro": "Here you see the list of words with more than <strong>%s<\/strong> occurences in the html content. Maybe it hels to define or verify the keywords.",
     "httpheader.header.deprecated": "Deprecated",
-    "httpheader.warnings.deprecated": "Deprecated header variables are outdated and invalid soon. You should remove or replace them by a new syntax."
+    "httpheader.warnings.deprecated": "Deprecated header variables are outdated and invalid soon. You should remove or replace them by a new syntax.",
+    "ressources.only-one": "There is a single ressource only. Just guessing: only the starting page was indexed and the content-encoding is not supported by the curl version on the server.",
+    "status.indexer_is_running": "Please wait... the crawler is running..."
 }

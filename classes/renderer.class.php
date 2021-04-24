@@ -147,6 +147,8 @@ class ressourcesrenderer extends crawler_base {
 
         'ico.toggle-off'=>'fas fa-toggle-off',
         'ico.toggle-on'=>'fas fa-toggle-on',
+        
+        'ico.reindex'=>'fas fa-redo',
     );
     public $oHtml=false;
 
@@ -616,7 +618,31 @@ class ressourcesrenderer extends crawler_base {
         ));
     }
     
+    /**
+     * 
+     */
+    public function renderIndexButton($sAction, $sWhat, $sSiteId){
+        return $this->oHtml->getTag(
+            'a', 
+            array(
+                 'href' => './get.php?action='.$sAction.'-'.$sWhat.'&siteid='.$sSiteId,
+                 'class' => 'pure-button button-secondary trigger_action_reindex',
+                 'target' => 'selfiframe',
+                 'label'=> $this->_getIcon('ico.reindex').$this->lB('button.'.$sAction),
+            ));
+    }
     
+    public function renderIndexActions($sAction, $sWhat, $sSiteId){
+        return '<div class="actions-crawler">'
+            . '<div class="running">'
+                .$this->renderMessagebox($this->lB('status.indexer_is_running'), 'warning')
+            . '</div>'
+            . '<div class="stopped">'
+                .$this->renderIndexButton($sAction, $sWhat, $sSiteId)
+            . '</div>'
+            . '</div>';
+    }
+
     /**
      * get html code for a button that points to a known page (anywhere) in the menu
      * @param string $sMenuItem         target menu id (page=...)

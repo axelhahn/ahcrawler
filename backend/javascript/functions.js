@@ -352,9 +352,10 @@ function getStyleRuleValue(style, selector, sheet) {
 }
 
 // ----------------------------------------------------------------------
-// status
+// status display of running crawler
 // ----------------------------------------------------------------------
 
+var indexer_was_started=false;
 /**
  * 
  * @param {type} sUrl
@@ -367,9 +368,22 @@ function updateStatus(sUrl){
         .then(data => {
             oDiv.innerHTML=data;
             oDiv.style.display=data ? 'inline' : 'none';
-            var iTimer=data ? 1 : 10;
+            if(oDiv.innerHTML){
+                indexer_was_started=true;
+                $('.actions-crawler .running').show();
+                $('.actions-crawler .stopped').hide();
+            } else {
+                $('.actions-crawler .running').hide();
+                $('.actions-crawler .stopped').show();
+                if(indexer_was_started){
+                    location.reload();
+                    indexer_was_started=false;
+                }
+            }
+            var iTimer=data ? 1 : 5;
             window.setTimeout('updateStatus("'+sUrl+'")', 1000*iTimer);
         });
+        
 }
 // ----------------------------------------------------------------------
 // init

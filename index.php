@@ -148,7 +148,6 @@
 
     <body>
 
-
         <div id="overlay">
             <div class="divdialog" >
                 <button class="button-error pure-button"
@@ -196,9 +195,9 @@
 
             </div>
         </div>
-        <div id="divStatus" style="display: none;"></div>
-        <div style="clear: both;"></div>
+        <div id="divStatus"></div>
         
+        <iframe name="selfiframe"></iframe>
         <footer>
             <?php 
                 echo '<a href="'.$oBackend->aAbout['urlDocs'].'" target="_blank"><strong>'.$oBackend->aAbout['product'].'</strong></a>'

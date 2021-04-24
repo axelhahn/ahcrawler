@@ -192,6 +192,7 @@ h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 
 
 
 hr{border: 0; border-bottom: 2px dotted #ddd;}
+iframe{position: fixed; bottom: -3 em; height: 1em; border: none;}
 pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 
 pre.logdata div:hover{
@@ -220,12 +221,15 @@ div.contextbox .content{margin: 1em;}
 
 #divStatus{
     background:#cde;
+    display: none;
+    overflow: hidden;
     padding: 0.5em;
     left: 0.5em;bottom: 0.5em;
     position: fixed;
     z-index: 200;
     opacity: 0.8;
 }
+.actions-crawler>div{display: none;}
 
 footer{position: fixed; background: rgba(0,0,0,0.05); bottom: 0; padding: 0.5em 1em; right: 0;}
 /* --- tiles --- */
@@ -296,7 +300,8 @@ img.profile{
     border: 0.0em solid #fff;
     box-shadow: 0 0 0em #ccc;
     border-radius: 0.5em;
-    padding: 0.5em;
+    padding: 0;
+    max-width: 100%;
 }
 
 .div-toggle-head{

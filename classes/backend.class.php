@@ -312,7 +312,7 @@ class backend extends crawler_base {
      * @global array  $aUserCfg  config from ./config/config_user.php
      * @return boolean
      */
-    private function _checkAuth() {
+    public function checkAuth() {
         if($this->_bIsPublic){
             return true;
         }
@@ -622,7 +622,7 @@ class backend extends crawler_base {
      * @return string
      */
     public function getNavi() {
-        if (!$this->_checkAuth()) {
+        if (!$this->checkAuth()) {
             return '';
         }
         if (!$this->installationWasDone()){
@@ -886,7 +886,7 @@ class backend extends crawler_base {
     public function getHead() {
         $sReturn='';
         $this->logAdd(__METHOD__ . '() start; page = "' . $this->_sPage . '"');
-        if (!$this->_checkAuth()) {
+        if (!$this->checkAuth()) {
             $this->_sPage='login';
         }
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
@@ -895,7 +895,7 @@ class backend extends crawler_base {
                 
         $this->logAdd(__METHOD__ . ' H2 = "'.$sH2.'"');
         return ''
-                . (!$this->_bIsPublic && $this->_checkAuth() && $this->_getUser()
+                . (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()
                     ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'
                         . $this->_getButton(array(
                             'href' => './?page=logoff',
@@ -1041,7 +1041,7 @@ class backend extends crawler_base {
                         );
                         $aMsg['ressources']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$iRessourcesCount ? 'info' : 'error', 
+                            'status'=>$iRessourcesCount ? ($iRessourcesCount>1 ? 'info' : 'warning') : 'error', 
                             'value'=>$iRessourcesCount, 
                             'message'=>$iRessourcesCount ? false : sprintf($this->lB('ressources.empty'), $this->_sTab),
                             'thead'=>$this->lB('nav.ressources.label'),
@@ -1191,16 +1191,6 @@ class backend extends crawler_base {
                                 'tfoot'=>'',
                                 'thash'=>'',
                             );
-                            $sHttpverVer=$oHttpheader->getHttpVersion();
-                            $aMsg['httpversion']=array(
-                                'counter'=>$iCounter++,
-                                'status'=>$oHttpheader->getHttpVersionStatus($sHttpverVer),
-                                'value'=>$sHttpverVer, 
-                                'message'=>false,
-                                'thead'=>$this->lB('httpheader.header.httpversion'),
-                                'tfoot'=>'',
-                                'thash'=>$oHttpheader->getHttpVersionStatus($sHttpverVer) == 'ok' ? '' : '#warnhttpver',
-                            );
                             $aMsg['unknown']=array(
                                 'counter'=>$iCounter++,
                                 'status'=>($iUnkKnown ? 'warning' : 'ok'),
@@ -1236,6 +1226,16 @@ class backend extends crawler_base {
                                 'thead'=>$this->lB('httpheader.header.non-standard'),
                                 'tfoot'=>$this->_getPercent($iNonStandard/$iTotalHeaders),
                                 'thash'=>($iNonStandard ? '#warnnonstandard' : ''),
+                            );
+                            $sHttpverVer=$oHttpheader->getHttpVersion();
+                            $aMsg['httpversion']=array(
+                                'counter'=>$iCounter++,
+                                'status'=>$oHttpheader->getHttpVersionStatus($sHttpverVer),
+                                'value'=>$sHttpverVer, 
+                                'message'=>false,
+                                'thead'=>$this->lB('httpheader.header.httpversion'),
+                                'tfoot'=>'',
+                                'thash'=>$oHttpheader->getHttpVersionStatus($sHttpverVer) == 'ok' ? '' : '#warnhttpver',
                             );
                             $aMsg['cacheinfos']=array(
                                 'counter'=>$iCounter++,
@@ -1619,7 +1619,7 @@ class backend extends crawler_base {
      * @return string
      */
     public function getContent() {
-        if (!$this->_checkAuth()) {
+        if (!$this->checkAuth()) {
             return $this->_getLoginForm();
         }
         return include $this->_sPageFile;
@@ -1642,7 +1642,7 @@ class backend extends crawler_base {
         if($this->_bIsPublic){
             return '';
         }
-        return $this->_checkAuth() && $this->oUpdate->hasUpdate()
+        return $this->checkAuth() && $this->oUpdate->hasUpdate()
             ? $oRenderer->renderMessagebox(
                     sprintf($this->lB('update.available-yes') , $this->oUpdate->getLatestVersion()) 
                     .' '

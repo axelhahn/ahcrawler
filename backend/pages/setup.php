@@ -98,7 +98,7 @@ if(isset($_POST['action'])){
                         // && md5($_POST['currentpassword'])===$aOptions['options']['auth']['password']
                         && password_verify($_POST['currentpassword'], $aOptions['options']['auth']['password'])
                     ) 
-                    || (!$_POST['currentpassword'])
+                    // || (!$_POST['currentpassword'])
                     // && $_POST['options']['pw1']!==$aOptions['options']['auth']['password']
                 ){
                     // $sReturn.="ok, a new user wants to be set and the old pw was correct<br>";

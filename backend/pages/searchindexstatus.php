@@ -203,6 +203,12 @@ $sTiles .= ''
 
 $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></div>'
 ;
+// ----------------------------------------------------------------------
+// actions
+// ----------------------------------------------------------------------
+
+$sRunStatus=$this->getStatus();
+$sReturn .= $oRenderer->renderIndexActions('reindex', 'searchindex', $this->_sTab);
 
 // ----------------------------------------------------------------------
 // tables

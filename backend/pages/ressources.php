@@ -257,9 +257,16 @@ $sBtnTable=$this->_getButton(array(
     'label'=>'ressources.showtable',
     'popup' => false
 ));
+
+
 $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
         . $oRenderer->renderRessourceStatus(). '<div style="clear: both;"></div>'
         . '<p>'.$this->lB('ressources.overview.intro').'</p>'
+        .($iRessourcesCount==1
+                ? $oRenderer->renderMessagebox($this->lB('ressources.only-one'), 'warning').'<br>'
+                : ''
+        )
+        
         ;
 
 
