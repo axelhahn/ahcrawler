@@ -263,6 +263,7 @@
     "setup.section.backend.hint": "Einstellungen f&uuml;r das Backend",
     "setup.section.backend.lang": "Sprache im Backend",
     "setup.section.backend.menu": "Sichtbarkeit der Menu-Elemente",
+    "setup.section.backend.customfooter": "Eigener Html-code am Dokument-Ende (zum Besuchertracking o.&auml;.)",
     "setup.section.backend.debug": "Debugging Anzeige einblenden<br>(f&uuml;r Entwickler)",
     "setup.section.crawler": "Crawler-Vorgaben",
     "setup.section.crawler.hint": "Diese Einstellungen gelten als Default f&uuml;r alle Projekte, k&ouml;nnen dort aber &uuml;bersteuert werden.",

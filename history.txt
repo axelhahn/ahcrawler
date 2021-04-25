@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2021-04-25: v0.146
+  * ADDED: settings got entry for custom html code (i.e. to add statistic tracking)
+
 2021-04-24: v0.145
   * ADDED: reindex function on starting page "home"
   * ADDED: detection if only one resource was crawled

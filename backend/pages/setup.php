@@ -191,6 +191,7 @@ if(isset($_POST['action'])){
 
             // ----- fix array values
             $aArrays=array(
+                'output'=>array('customfooter'),
                 'searchindex'=>array('regexToRemove'),
             );
             foreach($aArrays as $sIndex1=>$aSubArrays){
@@ -238,6 +239,7 @@ if(isset($_POST['action'])){
     }
     
     $sReturn.=$sBtnContinue;
+    // $sReturn.='<pre>'.print_r($aOptions, 1).'</pre>';
     return $sReturn;
 }
 
@@ -374,6 +376,18 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         ), true)
                      *  
                      */
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'customfooter', 'label'=>$this->lB('setup.section.backend.customfooter')))
+                    . $oRenderer->oHtml->getTag('textarea', array(
+                        'id'=>$sIdPrefixOther.'customfooter', 
+                        'name'=>'options[output][customfooter]',
+                        'cols'=>$iColsInTA,
+                        'rows'=>isset($aOptions['options']['output']['customfooter']) && is_array($aOptions['options']['output']['customfooter']) && count($aOptions['options']['output']['customfooter']) ? count($aOptions['options']['output']['customfooter'])+1 : 3 ,
+                        // 'label'=>$sValueSearchCategories,
+                        'label'=> implode("\n", $aOptions['options']['output']['customfooter']),
+                        // 'label'=> $aOptions['options']['customfooter'],
+                        ), true)
                     . '</div>'
                 . '<div class="pure-control-group">'
                     // . '<label> </label>'
@@ -568,7 +582,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'id'=>$sIdPrefixSearchindex.'regexToRemove', 
                     'name'=>'options[searchindex][regexToRemove]',
                     'cols'=>$iColsInTA,
-                    'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['menu']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
+                    'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['searchindex']['regexToRemove']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
                     // 'label'=>$sValueSearchCategories,
                     'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
                     ), true)

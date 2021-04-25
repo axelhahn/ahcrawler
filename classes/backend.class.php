@@ -914,6 +914,15 @@ class backend extends crawler_base {
                 . (isset($sH2) && $sH2 ? $sH2 . '</h2><p class="pageHint">' . $sHint . '</p>' : '')
         ;
     }
+    /**
+     * get custom html code for document footer/ statistic tracking
+     * @return string
+     */
+    public function getCustomFooter() {
+        $sReturn='';
+        $this->logAdd(__METHOD__ . '() start;');
+        return implode("\n", $this->aOptions['output']['customfooter']);
+    }
     
     /**
      * find page specific javascript to be loaded optional on footer of html document

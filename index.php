@@ -212,7 +212,8 @@
             // load a page specific js file
             $sMoreJs=$oBackend->getMoreJS();
             echo $sMoreJs ? '<script src="'.$sBackendRel.'/'.$sMoreJs.'"></script>' : '';
-
+            
+            echo $oBackend->getCustomFooter(); 
             echo $oBackend->logRender(); 
             // echo '<pre>'.print_r($_SERVER, 1).'</pre>';
         ?>

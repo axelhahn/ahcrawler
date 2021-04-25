@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.145',
-        'date' => '2021-04-24',
+        'version' => '0.146',
+        'date' => '2021-04-25',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -83,6 +83,11 @@ class crawler_base {
         ),
         'debug' => false,
         'lang' => 'en',
+        
+        // since v0.146
+        'output' => array(
+            'customfooter' => array(),
+        ),
         
         // see backend.class
         'menu' => array(),
@@ -406,7 +411,9 @@ class crawler_base {
      */
     public function __construct($iSiteId = false) {
 
+        $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') start');
         $this->_oLog=new logger();
+        $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') logger was initialized');
         return $this->setSiteId($iSiteId);
     }
 
@@ -991,8 +998,8 @@ class crawler_base {
      * @param integer $iSiteId
      */
     public function setSiteId($iSiteId = false) {        
-        $iSiteId= preg_replace('/[^a-z0-9]/', '', $iSiteId);
         $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') start');
+        $iSiteId= preg_replace('/[^a-z0-9]/', '', $iSiteId);
 
         $this->iSiteId = false;
         $this->aProfileSaved = array();
