@@ -925,5 +925,10 @@
     "httpcode.???.label": "Propriet&auml;r",
     "httpcode.???.descr": "Ein Webbetreiber hat sich den Code nur ausgedacht; dieser Statuscode ist nicht in den relevanten RFC standardisiert und kann irgendeinen Fehler bedeuten.",
     "httpcode.???.todo": "Bitte pr&uuml;fen.",
-    "profile.userpwd": "optional: Username und Passwort"
+    "profile.userpwd": "optional: Username und Passwort",
+    "profile.ignore-Description": "Diese 2 Optionen mit Vorsicht und nur testweise aktivieren - es kann zun unerw&uuml;nschten Effekten f&uuml;hren. Eine korrekte Webseite muss ohne Aktivierung korrekt indexiert werden werden k&ouml;nnen.",
+    "profile.ignoreNoindex": "NoIndex Verhalten",
+    "profile.ignoreNoindex.description": "Mit NoIndex markierte Inhalte dennoch indexieren (Vorgabewert: AUS).",
+    "profile.ignoreNofollow": "NoFollow Verhalten",
+    "profile.ignoreNofollow.description": "Mit NoFollow markierten Links dennoch folgen (Vorgabewert: AUS)."
 }

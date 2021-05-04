@@ -228,21 +228,25 @@ if(!$this->_configExists() ){
                 }        
             }
             
-            
+            $sStartUrls='';
+            foreach($this->aProfileSaved['searchindex']['urls2crawl'] as $sUrl){
+                $sStartUrls.='<li><a href="'.$sUrl.'" target="_blank">'.$sUrl.'</a></li>';
+            }
             $sHtml.=''
                 // .$oRenderer->renderTileBar($sTiles).'<div style="clear: both;"></div>'
                 .$this->_getNavi2($this->_getProfiles(), false, '')
                     
                 // profile 
                 .$oRenderer->renderContextbox(
-                        ($this->aProfileSaved['description'] ? '<strong>'.$this->aProfileSaved['description'].'</strong><hr>' : '')
-                    
+                        ($this->aProfileSaved['label'] ? '<strong>'.$this->aProfileSaved['label'].'</strong><br>' : '')
+                        .($this->aProfileSaved['description'] ? '<em>'.$this->aProfileSaved['description'].'</em>' : '')
+                        .'<hr>'
                         . $this->getProfileImage()
                         // .'<div style="clear: left;"></div>'
 
                         // start urls
                         .'<p>'.$this->_getIcon('checkurl'). $this->lB('home.starturls').'</p>'
-                        .'<ul><li>'.implode('</li><li>',$this->aProfileSaved['searchindex']['urls2crawl']).'</li></ul>'
+                        .'<ul>'.$sStartUrls.'</ul>'
                         
                         // count of blacklisted items
                         .(isset($this->aProfileSaved['ressources']['blacklist']) && count($this->aProfileSaved['ressources']['blacklist'])

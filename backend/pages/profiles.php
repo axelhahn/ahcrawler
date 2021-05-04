@@ -411,23 +411,20 @@ $sReturn.='
                         'label'=>isset($this->aProfileSaved['searchindex']['exclude']) && count($this->aProfileSaved['searchindex']['exclude']) ? implode("\n", $this->aProfileSaved['searchindex']['exclude']) : '',
                         ), true)
                     . '</div>'
-            . '</div>'
 
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iDepth', 'label'=>$this->lB('profile.searchindex.iDepth')))
-                . $oRenderer->oHtml->getTag('input', array(
-                    'type'=>'number',
-                    'id'=>'searchindex-iDepth', 
-                    'name'=>'searchindex[iDepth]',
-                    'size'=>$iSizeInInput,
-                    'step'=>1,
-                    'pattern'=>$sPatternNumber,
-                    'placeholder'=>$this->aProfileDefault['searchindex']['iDepth'],
-                    'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
-                    ), false)
-                . '</div>'
-            . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
-            . '<div class="extended">'
+                . '<div class="pure-control-group">'
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-iDepth', 'label'=>$this->lB('profile.searchindex.iDepth')))
+                    . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'number',
+                        'id'=>'searchindex-iDepth', 
+                        'name'=>'searchindex[iDepth]',
+                        'size'=>$iSizeInInput,
+                        'step'=>1,
+                        'pattern'=>$sPatternNumber,
+                        'placeholder'=>$this->aProfileDefault['searchindex']['iDepth'],
+                        'value'=>isset($this->aProfileSaved['searchindex']['iDepth']) ? $this->aProfileSaved['searchindex']['iDepth'] : '',
+                        ), false)
+                    . '</div>'
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
                     . $oRenderer->oHtml->getTag('input', array(
@@ -438,6 +435,29 @@ $sReturn.='
                         'placeholder'=>'',
                         'value'=>isset($this->aProfileSaved['userpwd']) ? $this->aProfileSaved['userpwd'] : '',
                         ), false)
+                    . '</div>'
+        
+                . '<p>' . $this->lB('profile.ignore-Description') . '</p>'
+
+                . '<div class="pure-control-group">'
+                    // . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-ignoreNoindex', 'label'=>$this->lB('profile.ignoreNoindex')))
+                    . '<div>'
+                        . '<label for="searchindex-ignoreNoindex" class="align-left">'
+                        . '<input type="checkbox" name="searchindex[ignoreNoindex]" value="true" id="searchindex-ignoreNoindex"'.(isset($this->aProfileSaved['searchindex']['ignoreNoindex']) && $this->aProfileSaved['searchindex']['ignoreNoindex'] ? ' checked="checked"' : '').' />'
+                        . ' '.$this->lB('profile.ignoreNoindex.description')
+                        . '</label>'
+                    . '</div>'
+                    . '</div>'
+                . '<div class="pure-control-group">'
+                    // . $oRenderer->oHtml->getTag('label', array('for'=>'userpwd', 'label'=>$this->lB('profile.userpwd')))
+                    . $oRenderer->oHtml->getTag('label', array('for'=>'searchindex-ignoreNoindex', 'label'=>$this->lB('profile.ignoreNofollow')))
+                    . '<div>'
+                        . '<label for="searchindex-ignoreNofollow" class="align-left">'
+                        . '<input type="checkbox" name="searchindex[ignoreNofollow]" value="true" id="searchindex-ignoreNofollow"'.(isset($this->aProfileSaved['searchindex']['ignoreNofollow']) && $this->aProfileSaved['searchindex']['ignoreNofollow'] ? ' checked="checked"' : '').' />'
+                        . ' '.$this->lB('profile.ignoreNofollow.description')
+                        . '</label>'
+                    . '</div>'
                     . '</div>'
 
                 . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'

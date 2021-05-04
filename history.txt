@@ -10,6 +10,14 @@
 
 ----------------------------------------------------------------------
 
+2021-05-04: v0.147
+  * ADDED: ignore noindex tagging
+  * ADDED: ignore nofollow tagging (can be dangerous)
+  * FIX: Php 8 compatibility in get.php (removes warnings in statusbar)
+  * FIX: visibilty of menu item Start -> Crawler log
+  * UPDATE: home page has links to crawler start urls (before: text only)
+  * UPDATE: Css rules (preparing skin support in next versions)
+
 2021-04-25: v0.146
   * ADDED: settings got entry for custom html code (i.e. to add statistic tracking)
 

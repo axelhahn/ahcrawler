@@ -1,5 +1,10 @@
 /* nothing here */
 body, .contextbox{
 	color: var(--color-default);
-        background: #f8f8f8 url('bg_main.png') fixed;
+        background: var(--color-bg-default) url('bg_main.png') fixed;
+}
+h2{
+    background:#f8f8f8; 
+    background:linear-gradient(90deg,#fff, #f4f4f4);  
+    box-shadow: 0 1em 1em #fff; 
 }

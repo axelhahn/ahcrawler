@@ -21,7 +21,7 @@ switch($sAction){
         set_time_limit(0);
         
         $sSiteid = isset($_POST['siteid']) ? (int)$_POST['siteid'] 
-                : isset($_GET['siteid']) ? (int)$_GET['siteid'] : false;
+                : (isset($_GET['siteid']) ? (int)$_GET['siteid'] : false);
         exec('php '.dirname(__DIR__).'/cronscripts/reindex_all_profiles.php -p '.$sSiteid.' & ');
         echo 'job was started ...';
         return true;

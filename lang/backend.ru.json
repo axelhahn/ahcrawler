@@ -925,5 +925,10 @@
     "httpheader.tag.httpstatus": "Http status",
     "ressources.only-one": "There is a single ressource only. Just guessing: only the starting page was indexed and the content-encoding is not supported by the curl version on the server.",
     "status.indexer_is_running": "Please wait... the crawler is running...",
-    "setup.section.backend.customfooter": "Custom html code at the body end (i.e. for user statistics)"
+    "setup.section.backend.customfooter": "Custom html code at the body end (i.e. for user statistics)",
+    "profile.ignoreNoindex": "Noindex",
+    "profile.ignoreNoindex.description": "Index contents marked with NoIndex anyway (default value: OFF)",
+    "profile.ignoreNofollow": "NoFollow",
+    "profile.ignoreNofollow.description": "Follow all links and ignore nofollow tagging (default value: OFF)",
+    "profile.ignore-Description": "Activate these 2 options with caution and only on a test basis - it can lead to undesirable effects. A correct website must be able to be indexed correctly without activation."
 }

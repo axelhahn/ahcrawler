@@ -4,7 +4,10 @@
 
 **/
 :root {
+    --color-bg-default:#f8f8f8;
     --color-default:#345;
+    --color-shadow-default:rgba(200,200,200,1);
+
     --color-border-active:#89a;
     --color-border-click:#fc2;
     --color-border-click:#cde;
@@ -27,6 +30,7 @@
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
+    --chart-background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);
     --chart-border:5px solid #fff;
 }
 .sidebar{
@@ -55,7 +59,7 @@
     border: 0px solid;
     border-radius: 0;
     border-bottom-right-radius: 0.3em;
-    box-shadow: 0 0 0.5em #aaa;
+    box-shadow: 0 0 0.5em var(--color-shadow-default);
     margin: 0 0 1em; padding: 0.2em;
 }
     #pacman {
@@ -74,11 +78,11 @@
 
 /* --- menu left --- */
 .header .langnav{position: fixed; top: 1em; right: 2em;}
-.pure-menu{margin-left: 1.0em; _background: rgba(255,255,255,0.5); width: 90%;}
+.pure-menu{margin-left: 0.5em; _background: rgba(255,255,255,0.5); width: 90%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{ _box-shadow: -1em 0 3em #ccd;}
 .header .pure-menu-link i{font-size: 130%;}
-.header .pure-menu-link{color:var(--color-default); border-left: 6px solid #fafafa; padding: 0.6em; }
+.header .pure-menu-link{color:var(--color-default); border-left: 0px dotted var(--color-default); padding: 0.6em; }
 .header .pure-menu-link:hover{background:var(--navi-bg-on-hover); border-color: var(--color-default); }
 .header .pure-menu-link:focus{border-color:var(--color-border-click); }
 .header .pure-menu-link-active, .header .pure-menu-link-active:hover{background:var(--color-default); color:#fff; border-color:var(--color-border-active); }
@@ -90,9 +94,9 @@
 
 
 /* level 1 */
-.header .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px solid #eee; border-left: 0px solid #ddd; margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
+.header .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px dotted var(--color-default); border-left: 0px solid var(--color-default); margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
 .header .pure-menu-list .pure-menu-list .pure-menu-link {
-    border-color: #eee;
+    border-color: var(--color-default);
     padding: 0.3em;
 }
 .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {background: var(--navi-bg-on-hover); border-color: var(--color-default); }
@@ -103,8 +107,10 @@
     text-shadow: none;
 }
 /* level 2 */
-.header .pure-menu-link{border-radius: 0 0.3em 0.3em 0; display: block; white-space:normal; overflow-wrap: break-word; }
-.header .pure-menu-list .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px solid #ddd; }
+.header .pure-menu-link{border-radius: 0.3em; display: block; white-space:normal; overflow-wrap: break-word; }
+/*
+.header .pure-menu-list .pure-menu-list .pure-menu-list {background: rgba(0,0,0,0.03); border-bottom: 1px solid var(--color-default); }
+*/
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link{border-color: none; }
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link,
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:focus{color:#567; text-decoration: none; padding: 0.2em;}
@@ -164,19 +170,19 @@ a.hoverinfos:hover span{display: block;}
 h1{ background:#cde; margin:0 0 1em; border-top-left-radius: 0.5em;}
 
 h2{
-    background:#f8f8f8; 
-    background:linear-gradient(90deg,#fff, #f4f4f4);  
     border-bottom: 1px dotted; 
     font-size: 3em; 
-    padding: 0.2em 0em; 
-    margin: 0 ; 
+    padding: 0.2em 0em 0.2em 0.3em; 
+    margin: 0 0 0 -0.3em; 
     color: #678; 
     position: fixed; 
     display: block; 
     width: 100%;
-    box-shadow: 0 1em 1em #fff; 
     z-index:100;
     text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;
+    background: var(--color-bg-default);
+    box-shadow: 0 1em 1em var(--color-shadow-default);
+    text-shadow: 1px 1px 1px var(--color-shadow-default), 0.25em 0.25em 0.2em var(--color-shadow-default);
 }
 p.pageHint{
     background:rgba(0,0,0,0.03);
@@ -207,7 +213,7 @@ div.contextbox{
     position: relative;
     float: right;
     margin: 0 0 2em 2em;
-    box-shadow: 0 0 1em #ddd;
+    box-shadow: 0 0 1em var(--color-shadow-default);
     margin-top: 1em;
     width: 30%;
 }
@@ -236,8 +242,10 @@ footer{position: fixed; background: rgba(0,0,0,0.05); bottom: 0; padding: 0.5em 
 
 a.childitem{
     border: 1px solid rgba(0,0,0,0.1);
+    /*
     background: linear-gradient(#fff, #e0e4ea);
     background: #fff;
+    */
     border-radius: 1em;
     color:#666;
     display: block;
@@ -251,8 +259,8 @@ a.childitem{
 }
 a.childitem:hover{
     background: var(--navi-bg-on-hover);
-    border-color: #fff;
-    box-shadow: 0 0 1em #aaa;
+    /* border-color: #fff; */
+    box-shadow: 0 0 1em var(--color-shadow-default);
     
 }
 a.childitem:focus{box-shadow: none;}
@@ -272,6 +280,7 @@ ul.tiles a.tile{
     border: 2px outset rgba(0,0,0,0.1); 
     border-radius: 0.5em;
     box-shadow: 1px 1px 5px #fff, 0.2em 0.2em 1em #aaa;
+    box-shadow: 1px 1px 5px var(--color-shadow-default);
     color: var(--tile-color);
     display: block;
     float: left;
@@ -289,7 +298,6 @@ ul.tiles a.tile.nonclickable:hover{box-shadow: none;
 }
 
 ul.tiles a.tile strong{
-    text-shadow: 0 0 0.1em #fff;
     font-size: 200%;
 }
 ul.tiles a.tile:hover{
@@ -363,7 +371,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 
 /* --- color for pie chart --- */
 
-.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: var(--boxes-shadow); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);}
+.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 1em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
 .floatright{float: right; margin: 0 0 1em 2em;}
 .floatleft{float: left; margin: 0 2em 1em 0;}
 .chartcolor-error{color:#d88;}
@@ -520,7 +528,7 @@ form.pure-form label{min-width: 20em;}
 #selectProject select option {font-size: 90%; font-weight: normal;padding: 0.4em;}
 #selectProject select:hover{background: #fff; opacity: 1;}
 
-.pure-control-group div {vertical-align: top; display: inline-block;}
+.pure-control-group div {vertical-align: top; display: inline-block; min-width: 36em;}
 .insertimage {background: rgba(0,0,0,0.05); border: 3px dashed rgba(0,0,0,0.2); display: inline-block; max-width: 30em; padding: 1em; }
 .insertimage img{max-width: 50%;}
 

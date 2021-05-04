@@ -99,6 +99,7 @@
             .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/default/skin.css">'
+            // .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/dark/skin.css">'
 
             ;
     

@@ -463,8 +463,14 @@ class crawler extends crawler_base{
     private function _processHtmlPage($response, $info) {
         
         $url = $info['url'];
+        // $bIngoreNoIndex=isset($this->aProfileSaved['searchindex']['ignoreNoindex']) && $this->aProfileSaved['searchindex']['ignoreNofollow'];
         $oHtml=new analyzerHtml($response, $url);
-        if ($this->_bFollowLinks && $oHtml->canFollowLinks()){
+        $bIngoreNoFollow=isset($this->aProfileSaved['searchindex']['ignoreNofollow']) && $this->aProfileSaved['searchindex']['ignoreNofollow'];
+        $bIngoreNoIndex=isset($this->aProfileSaved['searchindex']['ignoreNoindex']) && $this->aProfileSaved['searchindex']['ignoreNoindex'];
+        echo "DEBUG: bIngoreNoFollow = $bIngoreNoFollow \n";
+        echo "DEBUG: this-bFollowLinks = $this->_bFollowLinks \n";
+        echo "DEBUG oHtml->canFollowLinks() = " . $oHtml->canFollowLinks() . "\n";
+        if ($bIngoreNoFollow || ($this->_bFollowLinks && $oHtml->canFollowLinks())){
             // TODO:
             // use external links too and check domain with sticky domain array
             $aLinks=$oHtml->getLinks("internal");
@@ -479,15 +485,18 @@ class crawler extends crawler_base{
                     }
                 }
             }
+        } else {
+                $this->cliprint('info', "SKIP: do not following links in url $url\n");
         }
-        if ($oHtml->canIndexContent()){
+        if ($bIngoreNoIndex || $oHtml->canIndexContent()){
             $this->_preparePageForIndex(array('header' => $info, 'body' => $response));
         } else  {
-            $this->cliprint('warning', "url won't be indexed - : $url\n");
             if($oHtml->hasOtherCanonicalUrl()){
                 $sCanonicalUrl=$oHtml->getCanonicalUrl();
-                $this->cliprint('info', "... canonical url was found: $sCanonicalUrl\n");
+                $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl\n");
                 $this->_addUrl2Crawl($sCanonicalUrl);
+            } else {
+                $this->cliprint('warning', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");
             }
         }
 
@@ -752,18 +761,23 @@ class crawler extends crawler_base{
             // echo "\n";sleep(5);
             return false;
         }
-                
-        // X-Robots-Tag in http response header
-        // see https://developers.google.com/search/reference/robots_meta_tag
-        // to test: $aPage['header']['X-Robots-Tag']='none';
-        $sRobotsX=(isset($aPage['header']['X-Robots-Tag']) ? $aPage['header']['X-Robots-Tag'] : '');
-        if (
-            $sRobotsX && (
-                strpos($sRobotsX, 'noindex') === 0 || strpos($sRobotsX, 'noindex') > 0
-                || strpos($sRobotsX, 'none') === 0 || strpos($sRobotsX, 'none') > 0)
-        ) {
-            $this->cliprint('info', "Skip: X-Robots-Tag $sRobotsX for url $url\n");
-            return false;
+
+        $bIngoreNoIndex=isset($this->aProfileSaved['searchindex']['ignoreNoindex']) && $this->aProfileSaved['searchindex']['ignoreNoindex'];
+        if($bIngoreNoIndex){
+            $this->cliprint('info', "Ignoring Noindex for url $url\n");
+        } else {
+            // X-Robots-Tag in http response header
+            // see https://developers.google.com/search/reference/robots_meta_tag
+            // to test: $aPage['header']['X-Robots-Tag']='none';
+            $sRobotsX=(isset($aPage['header']['X-Robots-Tag']) ? $aPage['header']['X-Robots-Tag'] : '');
+            if (
+                $sRobotsX && (
+                    strpos($sRobotsX, 'noindex') === 0 || strpos($sRobotsX, 'noindex') > 0
+                    || strpos($sRobotsX, 'none') === 0 || strpos($sRobotsX, 'none') > 0)
+            ) {
+                $this->cliprint('info', "Skip: X-Robots-Tag $sRobotsX for url $url\n");
+                return false;
+            }
         }
         
         // if it is NOT utf8 then utf8_decode()
@@ -774,7 +788,7 @@ class crawler extends crawler_base{
         
         $sRobots=$this->_getMetaHead($sContent, 'robots');
         
-        if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
+        if (!$bIngoreNoIndex && $sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
             $this->cliprint('info', "Skip: meta robots $sRobots for url $url\n");
             return false;
         }
