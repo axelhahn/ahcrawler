@@ -6,6 +6,8 @@
 This is free software and Open Source 
 GNU General Public License (GNU GPL) version 3
 
+AhCrawler is a search engine for your website and analytics tool.
+
 It is written in PHP and consists of
 - crawler (spider) and indexer
 - search for your website
@@ -15,7 +17,7 @@ It is written in PHP and consists of
   - http response header check
   - linkchecker (http status check of all links, css, images, ...)
 
-Runs with PHP 7 and higher (up to PHP 7.3) Maybe it runs on PHP 5.5, but PHP7 is recommended.
+It runs with PHP 7 and higher (up to PHP 8.0).
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
 
 This software has BETA status.
