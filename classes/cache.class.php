@@ -39,6 +39,8 @@
  *                  - rename var in cache.class_config.php to "$this->_sCacheDirDivider"<br>
  * 2019-11-26  2.5  - added getModules() to get a list of existing modules that stored<br>
  *                    a cached item<br>
+ * 2021-04-xx  2.6  - cleanup always deletes expired items
+ *                  - added: 
  * --------------------------------------------------------------------------------<br>
  * @version 2.5
  * @author Axel Hahn
@@ -125,18 +127,11 @@ class AhCache {
     /**
      * constructor
      * @param  string  $sModule   name of module or app that uses the cache
-     * @param  string  $sCacheID  cache-id (must be uniq for a module; used to generate filename of cachefile)
+     * @param  string  $sCacheID  cache-id (must be uniq within a module; used to generate filename of cachefile)
      * @return boolean 
      */
     public function __construct($sModule = ".", $sCacheID = '.') {
-        $this->sModule = $sModule;
-        $this->sCacheID = $sCacheID;
-
-        $this->_setup();
-
-        $this->_getCacheFilename();
-        $this->read();
-
+        $this->setModule($sModule, $sCacheID);
         return true;
     }
 
@@ -201,6 +196,10 @@ class AhCache {
             $this->_iTtl = $aTmp['iTtl'];
             $this->_tsExpire = $aTmp['tsExpire'];
             $this->_aCacheInfos['stat'] = stat($this->_sCacheFile);
+
+            // @see loadCachefile: it sets module + id to false
+            $this->sModule=$this->sModule ? $this->sModule : $aTmp['module'];
+            $this->sCacheID=$this->sCacheID ? $this->sCacheID : $aTmp['cacheid'];
         }
         return $this->_aCacheInfos;
     }
@@ -212,6 +211,7 @@ class AhCache {
      * @return array|boolean
      */
     private function _readCacheItem($sFile) {
+        chdir($this->_sCacheDir);
         if (file_exists($sFile)) {
             return unserialize(file_get_contents($sFile));
         }
@@ -247,20 +247,37 @@ class AhCache {
      * @return void
      */
     private function _removeEmptyCacheDir($sDir, $bShowOutput=false){
-        // echo __METHOD__."($sDir)<br>\n";
-        if (dirname($sDir) > $this->_sCacheDir . "/" . $this->sModule){
-            if (@rmdir(dirname($sFile))){
-                echo $bShowOutput ? 'REMOVED DIR  '.dirname($sFile) ."\n" : '';
-                $this->_removeEmptyCacheDir(dirname($sDir), $bShowOutput);
+        // echo $bShowOutput ? __METHOD__."($sDir)<br>\n" : '';
+        if ($sDir > $this->_sCacheDir . "/" . $this->sModule){
+            echo $bShowOutput ? "REMOVE DIR [$sDir] ... " : '';
+            if (is_dir($sDir)){
+                if (rmdir($sDir)){
+                    chdir($this->_sCacheDir);
+                    echo $bShowOutput ? "OK<br>\n" : '';
+                    usleep(20000); // 0.02 sec
+                    $this->_removeEmptyCacheDir(dirname($sDir), $bShowOutput);
+                } else {
+                    echo $bShowOutput ? "failed.<br>\n" : '';
+                    return false;
+                }
+            } else {
+                echo $bShowOutput ? "skip: not a directory.<br>\n" : '';
             }
+            return true;
         }
-        return true;
+        return false;
     }
+
+    /* ----------------------------------------------------------------------
+      public funtions
+      ---------------------------------------------------------------------- */
 
     // ----------------------------------------------------------------------
     /**
-     * Cleanup cache directory; delete all cachefiles older than n seconds
-     * Other filetypes in the directory won't be touched.
+     * Cleanup cache directory; It deletes all outdated cache items of current module.
+     * Additionally you can delete all cachefiles older than n seconds (because
+     * there are chache items that are not based on a TTL).
+     * Other filetypes in the cache directory won't be touched.
      * Empty directories will be deleted.
      * 
      * Only the directory of the initialized module/ app will be deleted.
@@ -276,13 +293,17 @@ class AhCache {
      */
     public function cleanup($iSec = false, $bShowOutput=false) {
         // quick and dirty
-        $aData=$this->getCachedItems(false, array('ageOlder'=>$iSec));
+        $aFilter=array('lifetimeBelow'=>0);
+        if(!$iSec===false){
+            $aFilter['ageOlder']=$iSec;
+        }
+        $aData=$this->getCachedItems(false, $aFilter);
         echo $bShowOutput ? 'CLEANUP  '.count($aData) ." files\n" : '';
         if($aData){
             $aFiles=array_keys($aData);
             rsort($aFiles);
             foreach(array_keys($aData) as $sFile){
-                echo $bShowOutput ? 'DELETE '.$sFile ."\n" : '';
+                echo $bShowOutput ? 'DELETE '.$sFile ."<br>\n" : '';
                 unlink($sFile);
                 $this->_removeEmptyCacheDir(dirname($sFile), $bShowOutput);
             }
@@ -296,13 +317,13 @@ class AhCache {
      * @since 2.4
      *
      * @param string  $sDir     full path of cache dir; default: false (auto detect cache dir)
-	 * @param array   $aFilter  filter; valid keys are
-	 *                          - ageOlder         integer  return items that are older [n] sec
-	 *                          - lifetimeBelow    integer  return items that expire in less [n] sec (or outdated)
-	 *                          - lifetimeGreater  integer  return items that expire in more than [n] sec
-	 *                          - ttlBelow         integer  return items with ttl less than [n] sec
-	 *                          - ttlGreater       integer  return items with ttl more than [n] sec
-	 *                          no filter returns all cached entries
+     * @param array   $aFilter  filter; valid keys are
+     *                          - ageOlder         integer  return items that are older [n] sec
+     *                          - lifetimeBelow    integer  return items that expire in less [n] sec (or outdated)
+     *                          - lifetimeGreater  integer  return items that expire in more than [n] sec
+     *                          - ttlBelow         integer  return items with ttl less than [n] sec
+     *                          - ttlGreater       integer  return items with ttl more than [n] sec
+     *                          no filter returns all cached entries
      * @return void
      */
     public function getCachedItems($sDir=false, $aFilter=array()){
@@ -337,6 +358,7 @@ class AhCache {
 
                     $aData['_lifetime']=$aData['tsExpire']-date('U');
                     $aData['_age']=date('U')-filemtime($sEntry);
+                    $aData['_lifetime']=filemtime($sEntry) > filemtime($this->_sCacheRemovefile) ? $aData['tsExpire'] - date('U') : -1;
 
                     $bAdd=false;
 
@@ -346,7 +368,7 @@ class AhCache {
                     if(isset($aFilter['lifetimeBelow']) && ($aData['_lifetime']<$aFilter['lifetimeBelow'])){
                         $bAdd=true;
                     }
-                    if(isset($aFilter['lifetimeGreater']) && ($aData['_lifetime']<$aFilter['lifetimeGreater'])){
+                    if(isset($aFilter['lifetimeGreater']) && ($aData['_lifetime']>$aFilter['lifetimeGreater'])){
                         $bAdd=true;
                     }
                     if(isset($aFilter['ttlBelow']) && ($aData['iTtl']<$aFilter['ttlBelow'])){
@@ -372,6 +394,28 @@ class AhCache {
 
     // ----------------------------------------------------------------------
     /**
+     * get currently activated module
+     * 
+     * @since 2.6
+     * @return string
+     */
+    public function getCurrentModule() {
+        return $this->sModule;
+    }
+    
+    // ----------------------------------------------------------------------
+    /**
+     * get current cache id
+     * 
+     * @since 2.6
+     * @return string
+     */
+    public function getCurrentId() {
+        return $this->sCacheID;
+    }
+    
+    // ----------------------------------------------------------------------
+    /**
      * get a flat array of module names that saved a cache item already
      * @since 2.5
      * 
@@ -389,7 +433,9 @@ class AhCache {
 
     // ----------------------------------------------------------------------
     /**
-     * public function delete - delete a single cache item if it exist
+     * delete a single cache item if it exist.
+     * It returns true if a cache item was deleted. It returns false if it
+     * does not exist (yet) or the deletion failed.
      * @return     boolean
      */
     public function delete() {
@@ -403,6 +449,24 @@ class AhCache {
         }
         return false;
     }
+    // ----------------------------------------------------------------------
+    /**
+     * delete all existing cached items of the set module
+     * Remark: this method should be used in an admin interface or cronjob only.
+     * It makes a recursive filesystem scan and is quite slow.
+     * 
+     * @since 2.6
+     * @param boolean   $bShowOutput   flag: show output? default: false (=no output)
+     * @return     boolean
+     */
+    public function deleteModule($bShowOutput=false) {
+        if (!$this->sModule){
+            return false;
+        }
+        $this->cleanup(0, $bShowOutput);
+        $this->removefileDelete();
+        return rmdir($this->_sCacheDir . "/" . $this->sModule);
+    }
 
     // ----------------------------------------------------------------------
     /**
@@ -411,20 +475,30 @@ class AhCache {
      */
     public function dump() {
         echo "
-            <hr>
-            <strong>".__METHOD__."()<br></strong>
+            <!--<strong>".__METHOD__."()<br></strong>-->
             <strong>module: </strong>" . $this->sModule . "<br>
             <strong>ID: </strong>" . $this->sCacheID . "<br>
-            <strong>filename: </strong>" . $this->_sCacheFile
-        . (!file_exists($this->_sCacheFile) ? " (does not exist yet)" : "")
-        . "<br>
-            <strong>age: </strong>" . $this->getAge() . " s<br>
-            <strong>ttl: </strong>" . $this->getTtl() . " s<br>
-            <strong>expires: </strong>" . $this->getExpire() . " (" . date("d.m.y - H:i:s", $this->getExpire()) . ")<br>
-            <pre>"
-        ;
-        print_r($this->_aCacheInfos);
-        echo "</pre><hr>";
+            <strong>filename: </strong>" . $this->_sCacheFile."<br>
+            "
+            ;
+        if (file_exists($this->_sCacheFile)){
+            echo "
+                <strong>size: </strong>" . filesize($this->_sCacheFile). " byte<br>
+                <strong>created: </strong>" . filemtime($this->_sCacheFile) . " (" . date("d.m.y - H:i:s", filemtime($this->_sCacheFile)) . ")<br>
+                <strong>age: </strong>" . $this->getAge() . " s<br>
+                <strong>ttl: </strong>" . $this->getTtl() . " s<br>
+                ".($this->getTtl()<0 ? '' : "<strong>expires: </strong>" . $this->getExpire() . " (" . date("d.m.y - H:i:s", $this->getExpire()) . ")<br>")
+                ."<br>
+                <strong>data in the cache:</strong>
+                <pre>"
+            ;
+            echo htmlentities(print_r($this->_aCacheInfos, 1));
+            echo "</pre><hr>";
+        } else  {
+            echo "Cache file does not exist (yet).<br>
+                Maybe the _sDivider was changed in another cache instance.<br>
+                ";
+        }
         return true;
     }
 
@@ -523,6 +597,31 @@ class AhCache {
 
     // ----------------------------------------------------------------------
     /**
+     * load cache item from a given file - this is like reverse engineering 
+     * by reading data file; needed for a admin interface only
+     * 
+     * @since 2.6
+     * @param string  $sFile  filename with full path
+     * @return boolean
+     */
+    public function loadCachefile($sFile){
+        $this->_sCacheFile=false;
+        $this->sModule=false;
+        $this->sCacheID=false;
+        if(file_exists($sFile)){
+            $this->_sCacheFile=$sFile;
+            $this->_getAllCacheData();
+            // reverse engineered _sCacheDirDivider
+            $sRelfile=str_replace($this->_sCacheDir . "/" . $this->sModule, '', $this->_sCacheFile);
+            $sTmp=preg_replace('#^\/([0-9a-f]*)([/\.].*)#', '$1', $sRelfile);
+            $this->_sCacheDirDivider=strlen($sTmp);
+            return true;
+        }
+        return false;
+    }
+
+    // ----------------------------------------------------------------------
+    /**
      * public function getCacheData() - read cachedata if it exist
      * @return     various  cachedata or false if cache does not exist
      */
@@ -538,6 +637,29 @@ class AhCache {
 
     // ----------------------------------------------------------------------
     /**
+     * delete module based remove file
+     *
+     * @since 2.6
+     * @return boolean
+     */
+    public function removefileDelete(){
+        if (file_exists($this->_sCacheRemovefile)){
+            return unlink($this->_sCacheRemovefile);
+        }
+        return false;
+    }
+    // ----------------------------------------------------------------------
+    /**
+     * make all cache items invalid by touching the remove file
+     *
+     * @since 2.6
+     * @return boolean
+     */
+    public function removefileTouch(){
+        return touch($this->_sCacheRemovefile);
+    }
+    // ----------------------------------------------------------------------
+    /**
      * public function setData($data) - set cachedata into cache object
      * data can be any serializable type, like string, array or object
      * Remark: You additionally need to call the write() method to store data in the filesystem
@@ -548,7 +670,36 @@ class AhCache {
     public function setData($data) {
         return $this->_aCacheInfos['data'] = $data;
     }
+    
+    /**
+     * set new cache id; it keeps current module
+     * @param  string  $sCacheID  cache-id (must be uniq within a module; used to generate filename of cachefile)
+     *                            adding the cache id is recommendet, otherwise
+     *                            you addiionally need to call setCacheId()
+     * @return boolean
+     */
+    public function setCacheId($sCacheID) {
+        $this->sCacheID = $sCacheID;
 
+        $this->_setup();
+
+        $this->_getCacheFilename();
+        $this->read();
+
+        return true;
+    }
+    /**
+     * set module
+     * @param  string  $sModule   name of module or app that uses the cache
+     * @param  string  $sCacheID  optional: cache-id (must be uniq within a module; used to generate filename of cachefile)
+     *                            adding the cache id is recommendet, otherwise
+     *                            you addiionally need to call setCacheId()
+     * @return boolean
+     */
+    public function setModule($sModule, $sCacheID = false) {
+        $this->sModule = $sModule;
+        return $this->setCacheId($sCacheID);
+    }
     // ----------------------------------------------------------------------
     /**
      * public function setTtl() - set TTL of cache in seconds
@@ -570,8 +721,9 @@ class AhCache {
      * @return boolean 
      */
     public function touch() {
-        if (!file_exists($this->_sCacheFile))
+        if (!file_exists($this->_sCacheFile)){
             return false;
+        }
 
         // touch der Datei reicht nicht mehr, weil tsExpire verloren ginge
         if (!$this->_iTtl){
