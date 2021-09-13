@@ -269,7 +269,17 @@ class analyzerHtml {
     public function getCanonicalUrl(){
         if (preg_match("/<link +rel *=[\"']?canonical[\"'].*\>?/i", $this->getHtmlHead(), $aFoundLinks)){
             preg_match("/<link.*href=[\"']?([^<>'\"]+)[\"']?/i", $aFoundLinks[0], $res);
-            return isset($res[1]) ? $res[1] : false;
+            if (isset($res[1])){
+                $aUrl= parse_url($res[1]);
+                return ''
+                    . $aUrl['scheme'].'://'
+                    . (isset($aUrl['user']) ? $aUrl['user'].':'.$aUrl['passwort'].'@' : '' )
+                    . $aUrl['host']
+                    . (isset($aUrl['port']) ? ':'.$aUrl['port'] : '' )
+                    . (isset($aUrl['path']) ? $aUrl['path'] : '/' )
+                    . (isset($aUrl['query']) ? '?'.$aUrl['query'] : '' )
+                    ;
+            }
         }
         return false;
     }

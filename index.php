@@ -36,11 +36,12 @@
         'debug'=>0,
         ));
     $oCdn->setLibs(array(
-        "pure/2.0.5",
+        "pure/2.0.6",
         "datatables/1.10.21",
-        "font-awesome/5.14.0",
+        "font-awesome/5.15.4",
         "jquery/3.6.0",
-        "Chart.js/2.9.4"
+        // "Chart.js/2.9.4"
+        "Chart.js/3.5.1"
     ));
 
     // ----------------------------------------------------------------------
@@ -95,7 +96,7 @@
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('datatables')."/js/jquery.dataTables.min.js") . "\n"
 
             // Chart.js
-            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/Chart.min.js") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/chart.min.js") . "\n"
             .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/default/skin.css">'

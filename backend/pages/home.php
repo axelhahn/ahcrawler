@@ -273,7 +273,8 @@ if(!$this->_configExists() ){
                 .''
                 .($aGlobal['_global']['pages']['value']
                         ? '<div class="floatleft">'
-                        . $this->lB('db-pages.time').'<br>'
+                        . '<br>'
+                        . $this->lB('db-pages.time').'<br><br>'
                         . $this->_getChartOfRange(
                             'select time
                             from pages 

@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.147',
-        'date' => '2021-05-04',
+        'version' => '0.148',
+        'date' => '2021-09-14',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -332,24 +332,32 @@ class crawler_base {
                     array('id_ressource_to', array('id_ressource_to')),
                 ),
             ),
-            /*
-            'stats' => array(
+
+            'counters' => array(
                 'columns'=>array(
                     // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
                     'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
                     'siteid' => 'INTEGER NOT NULL',
-                    'itemid' => 'VARCHAR(16) NOT NULL',
-                    'count' => 'INTEGER NULL',
+                    'counterid' => 'INTEGER NOT NULL', // ref id to counteritems table
+                    'value' => 'MEDIUMTEXT',
                     'ts' => 'DATETIME DEFAULT CURRENT_TIMESTAMP NULL',
                 ),
                 'indexes'=>array(
                     array('siteid', array('siteid')),
-                    array('itemid', array('itemid')),
-                    array('ts', array('url'), ''),
+                    array('counterid', array('counterid')),
+                    array('ts', array('ts')),
                 ),
             ),
-             * 
-             */
+            'counteritems' => array(
+                'columns'=>array(
+                    // 'id' => 'VARCHAR(32) NOT NULL PRIMARY KEY',
+                    'id' => 'INTEGER  NOT NULL PRIMARY KEY AUTOINCREMENT',
+                    'label' => 'VARCHAR(32)',
+                ),
+                'indexes'=>array(
+                    array('label', array('label')),
+                ),
+            ),
         ),
     );
     protected $_aCurlopt=array();
@@ -626,7 +634,7 @@ class crawler_base {
             CURLOPT_USERAGENT => $this->aOptions['crawler']['userAgent'],
             // CURLOPT_USERPWD => isset($this->aProfileEffective['userpwd']) ? $this->aProfileEffective['userpwd'] : false,
             CURLOPT_VERBOSE => false,
-            CURLOPT_ENCODING => 'gzip, deflate, br',  // to fetch encoding
+            CURLOPT_ENCODING => 'gzip, deflate',  // to fetch encoding
             CURLOPT_HTTPHEADER => array(
                 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
                 'Accept-Language: en',
@@ -913,6 +921,187 @@ class crawler_base {
         // echo "SQL: " . $this->oDB->last() ."<br>";
         return $aData;
     }
+    
+        /**
+         * html check - get count pages with too short element
+         * used in crawler.base.class and page htmlchecks (needs to be public)
+         * @param string   $sKey        name of item; one of title|description|keywords
+         * @param integer  $iMinLength  minimal length
+         * @return integer
+         */
+        public function getHtmlchecksCount($sKey, $iMinLength){
+            $aTmp = $this->oDB->query('
+                    select count(*) count from pages 
+                    where siteid='.$this->iSiteId.' and errorcount=0 and length('.$sKey.')<'.$iMinLength
+                )->fetchAll(PDO::FETCH_ASSOC);
+            return isset($aTmp[0]['count']) ? $aTmp[0]['count'] : false;
+        }
+        /**
+         * html check - get pages with too large values
+         * @param string   $sKey    name of item; one of size|time
+         * @param integer  $iMax    max value
+         * @return integer
+         */
+        private function _getHtmlchecksLarger($sKey, $iMax){
+            $aTmp = $this->oDB->query('
+                    select count(*) count from pages 
+                    where siteid='.$this->iSiteId.' and errorcount=0 and '.$sKey.'>'.$iMax
+                )->fetchAll(PDO::FETCH_ASSOC);
+            return isset($aTmp[0]['count']) ? $aTmp[0]['count'] : false;
+        }
+    
+    /**
+     * WIP ... 
+     * 
+     * get hash with counts ... of pages, resources, ... and more
+     * to be used in 
+     * - backend::_getStatusinfos 
+     * - insert counters after crawling to collect them for historical data
+     * 
+     * @staticvar array  $aStatusinfo  static "cahce" of return data
+     * @param string  $sPage  array of target page name; default: get infos for all targets
+     * @return array
+     */
+    public function getStatusCounters($sPage=false, $bIgnoreCache=false){
+        static $aStatuscounters;
+        $aPagesArray=array('_global', 'htmlchecks', 'linkchecker');
+
+        /*
+        $oCache=new AhCache($this->_getCacheModule(), $this->_getCacheId(__METHOD__ . '-'. $this->iSiteId.'-'.$sPage));
+        if(false && !$bIgnoreCache && $this->sLogFilename && $oCache->isNewerThanFile($this->sLogFilename)){
+            // $this->logAdd(__METHOD__.' returning cache data ... aPages = '.print_r($aPages, 1).' ... ['.$this->sLogFilename.']' );
+            return $oCache->read();
+        }
+         */
+        if(!isset($aStatuscounters)){
+            $aStatuscounters=array();
+        }
+        if(!isset($aStatuscounters[$this->iSiteId])){
+            $aStatuscounters[$this->iSiteId]=array();
+        }
+
+        if(isset($aStatuscounters[$this->iSiteId][$sPage])){
+            return $aStatuscounters[$this->iSiteId][$sPage];
+        }
+        
+        $aReturn=array();
+
+        if(!$sPage){
+            foreach($aPagesArray as $sMyPage){
+                $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
+            }
+            // create counters of all found errors and warnings
+            $aReturn['TotalWarnings']=0
+                // + $aReturn['countCrawlerErrors']
+                + $aReturn['countShortTitles']
+                + $aReturn['countShortDescr']
+                + $aReturn['countShortKeywords']
+                + $aReturn['countLargePages']
+                + $aReturn['countLongLoad']
+                + $aReturn['statusWarning']
+                ;
+            $aReturn['TotalErrors']=0
+                + $aReturn['statusError']
+                ;
+            
+            return $aReturn;
+        }
+        // $this->logAdd(__METHOD__.' reading source data ... aPages = '.print_r($aPages, 1).' ... ['.$this->sLogFilename.']');
+        // $aOptions = $this->getEffectiveOptions();
+
+        // (1) prepare
+        if($sPage=='_global'){
+            $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->iSiteId));
+            $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->iSiteId));
+            $iSearchesCount=$this->getRecordCount('searches', array('siteid'=>$this->iSiteId));
+        }
+        switch ($sPage) {
+            case '_global':
+                $aReturn=array(
+                    'pages'=>$iPagesCount,
+                    'ressources'=>$iRessourcesCount,
+                    'searches'=>$iSearchesCount,
+                );
+                break;
+
+            case 'htmlchecks':
+                $oCrawler=new crawler($this->iSiteId);
+                $aOptions = $this->getEffectiveOptions();
+
+                $aReturn['countCrawlerErrors']=$oCrawler->getCount(array(
+                    'AND' => array(
+                        'siteid' => $this->iSiteId,
+                        'errorcount[>]' => 0,
+                    )));
+                $aReturn['countShortTitles']   = $this->getHtmlchecksCount('title',       $aOptions['analysis']['MinTitleLength']);
+                $aReturn['countShortDescr']    = $this->getHtmlchecksCount('description', $aOptions['analysis']['MinDescriptionLength']);
+                $aReturn['countShortKeywords'] = $this->getHtmlchecksCount('keywords',    $aOptions['analysis']['MinKeywordsLength']);
+                $aReturn['countLargePages']    = $this->_getHtmlchecksLarger('size',       $aOptions['analysis']['MaxPagesize']);
+                $aReturn['countLongLoad']      = $this->_getHtmlchecksLarger('time',       $aOptions['analysis']['MaxLoadtime']);
+                break;
+            case 'linkchecker':
+                $oCrawler=new crawler($this->iSiteId);
+                $aOptions = $this->getEffectiveOptions();
+                
+                $oRessources=new ressources($this->iSiteId);
+                $aCountByStatuscode=$oRessources->getCountsOfRow(
+                    'ressources', 'http_code', 
+                    array(
+                        'siteid'=> $this->iSiteId,
+                        'isExternalRedirect'=>'0',
+                    )
+                );
+                if (count($aCountByStatuscode)){
+
+                    $oHttp=new httpstatus();
+                    $aTmpItm=array('status'=>array(), 'total'=>0);
+                    $aBoxes=array('Todo'=>$aTmpItm, 'Error'=>$aTmpItm,'Warning'=>$aTmpItm, 'Ok'=>$aTmpItm);
+
+                    // echo '<pre>$aCountByStatuscode = '.print_r($aCountByStatuscode,1).'</pre>';
+                    foreach ($aCountByStatuscode as $aStatusItem){
+                        $iHttp_code=$aStatusItem['http_code'];
+                        $iCount=$aStatusItem['count'];
+                        $oHttp->setHttpcode($iHttp_code);
+
+                        if ($oHttp->isError()){
+                           $aBoxes['Error']['status'][$iHttp_code] = $iCount;
+                           $aBoxes['Error']['total']+=$iCount;
+                        }
+                        if ($oHttp->isRedirect()){
+                           $aBoxes['Warning']['status'][$iHttp_code] = $iCount;
+                           $aBoxes['Warning']['total']+=$iCount;
+                        }
+                        if ($oHttp->isOperationOK()){
+                           $aBoxes['Ok']['status'][$iHttp_code] = $iCount;
+                           $aBoxes['Ok']['total']+=$iCount;
+                        }
+                        if ($oHttp->isTodo()){
+                           $aBoxes['Todo']['status'][$iHttp_code] = $iCount;
+                           $aBoxes['Todo']['total']+=$iCount;
+                        }
+                    } // foreach ($aCountByStatuscode as $aStatusItem){
+
+                    foreach (array_keys($aBoxes) as $sSection){
+                        $aReturn['status'.$sSection]=$aBoxes[$sSection]['total'];
+                        foreach(array_keys($aBoxes[$sSection]['status']) as $iHttp_code){
+                            $aReturn['status'.$sSection.'['.$iHttp_code.']']=$aBoxes[$sSection]['status'][$iHttp_code];
+                        }
+                    } // foreach (array_keys($aBoxes) as $sSection){                    
+                }
+                break;
+            default:
+                break;
+        }
+        if(!count($aReturn)){
+            return false;
+        }
+        $aStatuscounters[$this->iSiteId][$sPage]=$aReturn;
+        // $oCache->write($aReturn);
+        
+        // $oCache->write($aStatusinfo, 10);
+        return $aReturn;
+    }
+    
 
     /**
      * delete database tables for crawled data. as a reminder: this deletes
@@ -944,6 +1133,9 @@ class crawler_base {
         if ($bFull || array_key_exists('searches', $aItems) && $aItems['searches']) {
             $aTables[] = 'search';
         }
+        if ($bFull || array_key_exists('counters', $aItems) && $aItems['counters']) {
+            $aTables[] = 'counter';
+        }
         if (count($aTables)) {
             foreach ($aTables as $sTable) {
                 
@@ -972,9 +1164,11 @@ class crawler_base {
      */
     public function logAdd($sMessage, $sLevel = "info"){
         if($this->_oLog){
+            /*
             if(php_sapi_name()==='cli'){
-                echo $sMyMsg."\n";
+                echo $sMessage."\n";
             }
+            */
             return $this->_oLog->add($sMessage, $sLevel);
         }
         return false;
@@ -1029,9 +1223,11 @@ class crawler_base {
 
             // @since v0.135
             $this->sLogFilename = dirname(__DIR__).'/data/indexlog-siteid-'.$iSiteId.'.log';
+            $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') set $this->iSiteId = ' . $this->iSiteId);
             
         } else {
             $this->aProfileSaved = array();
+            $this->logAdd(__METHOD__.'('.htmlentities($iSiteId).') no profile $this->iSiteId = FALSE');
         }
         $this->getEffectiveProfile($iSiteId);
         return true;
@@ -1242,7 +1438,8 @@ class crawler_base {
      * @return array
      */
     public function setLangBackend($sLang = false) {
-        $this->setSiteId(false);
+        // TODO: why id made this? 
+        // $this->setSiteId(false);
         return $this->_getLangData('backend', $sLang);
     }
 

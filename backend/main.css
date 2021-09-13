@@ -198,7 +198,7 @@ h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 
 
 
 hr{border: 0; border-bottom: 2px dotted #ddd;}
-iframe{position: fixed; bottom: -3 em; height: 1em; border: none;}
+iframe{position: fixed; bottom: -3em; height: 1em; border: none;}
 pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 
 pre.logdata div:hover{
@@ -372,6 +372,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 /* --- color for pie chart --- */
 
 .piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 1em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
+.piechart-pie{width: 24em;}
 .floatright{float: right; margin: 0 0 1em 2em;}
 .floatleft{float: left; margin: 0 2em 1em 0;}
 .chartcolor-error{color:#d88;}

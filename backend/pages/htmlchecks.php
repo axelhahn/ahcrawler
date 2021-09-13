@@ -66,7 +66,7 @@ $iPagesCount=$iPagesTotalCount-$iCountCrawlererrors;
 // table with too short titles
 // ----------------------------------------------------------------------
 if ($iCountShortTitles) {
-    $iCountNoTitle=$this->_getHtmlchecksCount('title', 1);
+    $iCountNoTitle=$this->getHtmlchecksCount('title', 1);
     $sReturn.= '<h3 id="tblshorttitle">' . sprintf($this->lB('htmlchecks.tableShortTitles'), $iCountShortTitles) . '</h3>'
         . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iPagesCount, $iCountShortTitles-$iCountNoTitle, $iCountNoTitle)
@@ -94,7 +94,7 @@ if ($iCountShortTitles) {
 // too short descriptions
 // ----------------------------------------------------------------------
 if ($iCountShortDescr) {
-    $iCountNoDescr=$this->_getHtmlchecksCount('description', 1);
+    $iCountNoDescr=$this->getHtmlchecksCount('description', 1);
     $sReturn.= '<h3 id="tblshortdescription">' . sprintf($this->lB('htmlchecks.tableShortDescription'), $iCountShortDescr) . '</h3>'
         . '<div class="floatright">'
             .$this->_getHtmlchecksChart($iPagesCount, $iCountShortDescr-$iCountNoDescr, $iCountNoDescr) 
@@ -138,7 +138,7 @@ if ($iCountShortDescr) {
 // table with too short keyword
 // ----------------------------------------------------------------------
 if ($iCountShortKeywords) {
-    $iCountNoKeywords=$this->_getHtmlchecksCount('keywords', 1);
+    $iCountNoKeywords=$this->getHtmlchecksCount('keywords', 1);
     $sReturn.= '<h3 id="tblshortkeywords">' . sprintf($this->lB('htmlchecks.tableShortKeywords'), $iCountShortKeywords) . '</h3>'
         .$oRenderer->renderMessagebox($this->lB('htmlchecks.keywords-seo'),'warning')
         . '<div class="floatright">'

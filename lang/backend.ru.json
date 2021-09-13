@@ -832,7 +832,7 @@
     "httpcode.502.todo": "",
     "httpcode.503.label": "Server error: Service Unavailable",
     "httpcode.503.descr": "The requested application has an error and does not respond.",
-    "httpcode.503.todo": "Try it again later.",
+    "httpcode.503.todo": "Try it again later.<br>If the message occurs on your own website then a script in an application has an error that must be checked.",
     "httpcode.504.label": "Server error: Gateway time-out",
     "httpcode.504.descr": "-",
     "httpcode.504.todo": "",

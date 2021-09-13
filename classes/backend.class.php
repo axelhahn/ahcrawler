@@ -280,9 +280,10 @@ class backend extends crawler_base {
                     }
                 }
             }
-            
+            $iSiteId=$iSiteId ? $iSiteId : $this->_getRequestParam('siteid', false, 'int');
+            $this->logAdd(__METHOD__.' iSiteId detected as '.$iSiteId);
             $this->setSiteId($iSiteId);
-            $this->logAdd(__METHOD__.' site id was set');
+            $this->logAdd(__METHOD__.' site id was set to '.$this->iSiteId);
             $this->setLangBackend();
             $this->logAdd(__METHOD__.' backend lang was set');
             /*
@@ -981,9 +982,15 @@ class backend extends crawler_base {
     // ----------------------------------------------------------------------
     
     public function hasDataInDb($sTableitem){
-        $aData=$this->_getStatusinfos(array('_global'));
+        /* $aData=$this->_getStatusinfos(array('_global'));
         return isset($aData['_global'][$sTableitem]['value']) 
             ? $aData['_global'][$sTableitem]['value']
+            : false
+            ;
+         */
+        $aData=$this->getStatusCounters('_global');
+        return isset($aData[$sTableitem]) 
+            ? $aData[$sTableitem]
             : false
             ;
     }
@@ -1008,13 +1015,17 @@ class backend extends crawler_base {
         return $sReturn;
     }
     /**
+     * TODO: 
+     * get counters in crawler-base::getStatusCounters() and build visual 
+     * information here
+     * 
      * get hash analyse data with rating and counter
      * @see _getAnalyseData()
      * @staticvar array  $aStatusinfo  return data
      * @param array  $aPages  array of target page name; default: get infos for all targets
      * @return array
      */
-    protected function _getStatusinfos($aPages=false){
+    public function _getStatusinfos($aPages=false, $bIgnoreCache=false){
         global $oRenderer;
         static $aStatusinfo;
 
@@ -1024,17 +1035,34 @@ class backend extends crawler_base {
         if(!isset($aStatusinfo)){
             $aStatusinfo=array();
         }
+        /*
         $oCache=new AhCache($this->_getCacheModule(), $this->_getCacheId(__METHOD__ . '-'. md5(serialize($aPages) )));
-        if(!$oCache->isExpired()){
+        // if(!$oCache->isExpired()){
+
+        if(!$bIgnoreCache && $this->sLogFilename && $oCache->isNewerThanFile($this->sLogFilename)){
+            $this->logAdd(__METHOD__.' returning cache data ... aPages = '.print_r($aPages, 1).' ... ['.$this->sLogFilename.']' );
             return $oCache->read();
         }
-        $aOptions = $this->getEffectiveOptions();
+         * 
+         */
+        $this->logAdd(__METHOD__.' reading source data ... aPages = '.print_r($aPages, 1).' ... ['.$this->sLogFilename.']');
+        // $aOptions = $this->getEffectiveOptions();
         $iCounter=0;
-        $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->_sTab));
-        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));
-        $iSearchesCount=$this->getRecordCount('searches', array('siteid'=>$this->_sTab));
+        
+        /*
+        $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->iSiteId));
+        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->iSiteId));
+        $iSearchesCount=$this->getRecordCount('searches', array('siteid'=>$this->iSiteId));
+         * 
+         */
+        $aMyGlobalCounters=$this->getStatusCounters('_global');
+        $iPagesCount=$aMyGlobalCounters['pages'];
+        $iRessourcesCount=$aMyGlobalCounters['ressources'];
+        $iSearchesCount=$aMyGlobalCounters['searches'];
         foreach ($aPages as $sPage){
             if(!isset($aStatusinfo[$sPage])){
+                $aMyCounters=$this->getStatusCounters($sPage); // crawler-base.class.php
+                // echo 'DEBUG '.__METHOD__.': $sPage = '.$sPage.'<pre>$aMyCounters = '.print_r($aMyCounters, 1).'</pre>';
                 $aMsg=array();
                 switch ($sPage){
                     case '_global':
@@ -1072,8 +1100,9 @@ class backend extends crawler_base {
 
                     // Analysis --> HTML checks
                     case 'htmlchecks':
-                        $aOptions = $this->getEffectiveOptions();
 
+                        $aOptions = $this->getEffectiveOptions();
+                        /*
                         $oCrawler=new crawler($this->_sTab);
                         $aCounter=array();
                         $aCounter['countCrawlerErrors']=$oCrawler->getCount(array(
@@ -1087,60 +1116,62 @@ class backend extends crawler_base {
                         $aCounter['countShortKeywords'] = $this->_getHtmlchecksCount('keywords',    $aOptions['analysis']['MinKeywordsLength']);
                         $aCounter['countLargePages']    = $this->_getHtmlchecksLarger('size',       $aOptions['analysis']['MaxPagesize']);
                         $aCounter['countLongLoad']      = $this->_getHtmlchecksLarger('time',       $aOptions['analysis']['MaxLoadtime']);
+                         * 
+                         */
                         // (floor($iCountCrawlererrors/$iRessourcesCount*1000)/10).'%';
                         // sprintf("%01.2f", $money)
                         $aMsg['countCrawlerErrors']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countCrawlerErrors']?'error':'ok', 
-                            'value'=>$aCounter['countCrawlerErrors'],
+                            'status'=>$aMyCounters['countCrawlerErrors']?'error':'ok', 
+                            'value'=>$aMyCounters['countCrawlerErrors'],
                             'message'=>false,
                             'thead'=>$this->lB('htmlchecks.tile-crawlererrors'),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countCrawlerErrors']/$iPagesCount) : '',
-                            'thash'=>$aCounter['countCrawlerErrors'] ? '#tblcrawlererrors' : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countCrawlerErrors']/$iPagesCount) : '',
+                            'thash'=>$aMyCounters['countCrawlerErrors'] ? '#tblcrawlererrors' : '',
                         );
                         $aMsg['countShortTitles']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countShortTitles']?'warning':'ok', 
-                            'value'=>$aCounter['countShortTitles'], 
+                            'status'=>$aMyCounters['countShortTitles']?'warning':'ok', 
+                            'value'=>$aMyCounters['countShortTitles'], 
                             'message'=>false,
                             'thead'=>sprintf($this->lB('htmlchecks.tile-check-short-title'), $aOptions['analysis']['MinTitleLength']),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countShortTitles']/$iPagesCount) : '',
-                            'thash'=>$aCounter['countShortTitles'] ? '#tblshorttitle' : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countShortTitles']/$iPagesCount) : '',
+                            'thash'=>$aMyCounters['countShortTitles'] ? '#tblshorttitle' : '',
                         );
                         $aMsg['countShortDescr']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countShortDescr']?'warning':'ok', 
-                            'value'=>$aCounter['countShortDescr'], 
+                            'status'=>$aMyCounters['countShortDescr']?'warning':'ok', 
+                            'value'=>$aMyCounters['countShortDescr'], 
                             'message'=>false,
                             'thead'=>sprintf($this->lB('htmlchecks.tile-check-short-description'), $aOptions['analysis']['MinDescriptionLength']),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countShortDescr']/$iPagesCount) : '',
-                            'thash'=>$aCounter['countShortDescr'] ? '#tblshortdescription' : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countShortDescr']/$iPagesCount) : '',
+                            'thash'=>$aMyCounters['countShortDescr'] ? '#tblshortdescription' : '',
                         );
                         $aMsg['countShortKeywords']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countShortKeywords']?'warning':'ok', 
-                            'value'=>$aCounter['countShortKeywords'], 
+                            'status'=>$aMyCounters['countShortKeywords']?'warning':'ok', 
+                            'value'=>$aMyCounters['countShortKeywords'], 
                             'message'=>false,
                             'thead'=>sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $aOptions['analysis']['MinKeywordsLength']),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countShortKeywords']/$iPagesCount) : '',
-                            'thash'=>$aCounter['countShortKeywords'] ? '#tblshortkeywords' : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countShortKeywords']/$iPagesCount) : '',
+                            'thash'=>$aMyCounters['countShortKeywords'] ? '#tblshortkeywords' : '',
                         );
                         $aMsg['countLongLoad']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countLongLoad']?'warning':'ok', 
-                            'value'=>$aCounter['countLongLoad'], 
+                            'status'=>$aMyCounters['countLongLoad']?'warning':'ok', 
+                            'value'=>$aMyCounters['countLongLoad'], 
                             'message'=>false,
                             'thead'=>sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $aOptions['analysis']['MaxLoadtime']),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countLongLoad']/$iPagesCount) : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countLongLoad']/$iPagesCount) : '',
                             'thash'=>'#tblloadtimepages',
                         );
                         $aMsg['countLargePages']=array(
                             'counter'=>$iCounter++,
-                            'status'=>$aCounter['countLargePages']?'warning':'ok', 
-                            'value'=>$aCounter['countLargePages'], 
+                            'status'=>$aMyCounters['countLargePages']?'warning':'ok', 
+                            'value'=>$aMyCounters['countLargePages'], 
                             'message'=>false,
                             'thead'=>sprintf($this->lB('htmlchecks.tile-check-large-pages'), $aOptions['analysis']['MaxPagesize']),
-                            'tfoot'=>$iPagesCount ? $this->_getPercent($aCounter['countLargePages']/$iPagesCount) : '',
+                            'tfoot'=>$iPagesCount ? $this->_getPercent($aMyCounters['countLargePages']/$iPagesCount) : '',
                             'thash'=>'#tbllargepages',
                         );
                         
@@ -1351,50 +1382,42 @@ class backend extends crawler_base {
                                 );
                                  */
                             } else {
-                                $oHttp=new httpstatus();
                                 $aTmpItm=array('status'=>array(), 'total'=>0);
-                                $aBoxes=array('todo'=>$aTmpItm, 'error'=>$aTmpItm,'warning'=>$aTmpItm, 'ok'=>$aTmpItm);
-
-                                // echo '<pre>$aCountByStatuscode = '.print_r($aCountByStatuscode,1).'</pre>';
-                                foreach ($aCountByStatuscode as $aStatusItem){
-                                    $iHttp_code=$aStatusItem['http_code'];
-                                    $iCount=$aStatusItem['count'];
-                                    $oHttp->setHttpcode($iHttp_code);
-
-                                    if ($oHttp->isError()){
-                                       $aBoxes['error']['status'][$iHttp_code] = $iCount;
-                                       $aBoxes['error']['total']+=$iCount;
-                                    }
-                                    if ($oHttp->isRedirect()){
-                                       $aBoxes['warning']['status'][$iHttp_code] = $iCount;
-                                       $aBoxes['warning']['total']+=$iCount;
-                                    }
-                                    if ($oHttp->isOperationOK()){
-                                       $aBoxes['ok']['status'][$iHttp_code] = $iCount;
-                                       $aBoxes['ok']['total']+=$iCount;
-                                    }
-                                    if ($oHttp->isTodo()){
-                                       $aBoxes['todo']['status'][$iHttp_code] = $iCount;
-                                       $aBoxes['todo']['total']+=$iCount;
-                                    }
-                                } // foreach ($aCountByStatuscode as $aStatusItem){
-
+                                
+                                // TODO: 
+                                // use $aMyCounters['status...']
+                                // 
+                                // 4540 kB |add counter ... statusTodo = 10.
+                                // 4540 kB |add counter ... statusTodo[-1] = 10.
+                                // 4540 kB |add counter ... statusError = 0.
+                                // 4540 kB |add counter ... statusWarning = 0.
+                                // 4540 kB |add counter ... statusOk = 75.
+                                // 4540 kB |add counter ... statusOk[200] = 75.
+                                // 
+                                $aBoxes=array('Todo'=>$aTmpItm, 'Error'=>$aTmpItm,'Warning'=>$aTmpItm, 'Ok'=>$aTmpItm);
                                 foreach (array_keys($aBoxes) as $sSection){
-
-                                    // --- add a tile on top
-                                    $sStatus=(!$aBoxes[$sSection]['total'] || $sSection==='ok' ? 'ok' : $sSection );
-
-                                    $aMsg[$sSection]=array(
+                                    $aHttpStatus=array();
+                                    foreach($aMyCounters as $sKey=>$ivalue){
+                                        if(strstr($sKey, $sSection.'[')){
+                                            $iStatuscode=preg_replace('/.*\[(.*)\]/i','\1', $sKey);
+                                            $aHttpStatus[$iStatuscode]=$ivalue;
+                                        }
+                                    }
+                                    $iBoxvalue=$aMyCounters['status'.$sSection];
+                                    $sStatus=(!$iBoxvalue || $sSection==='ok' ? 'ok' : strtolower($sSection) );
+                                    $aMsg[strtolower($sSection)]=array(
                                         'counter'=>$iCounter++,
-                                        '_data'=>$aBoxes[$sSection]['status'], 
+                                        '_data'=>$aHttpStatus, 
                                         'status'=>$sStatus, 
-                                        'value'=>$aBoxes[$sSection]['total'], 
+                                        'value'=>$aMyCounters['status'.$sSection], 
                                         'message'=>false,
-                                        'thead'=>$this->lB('linkchecker.found-http-'.$sSection),
-                                        'tfoot'=>$this->_getPercent($aBoxes[$sSection]['total']/$iRessourcesCount),
-                                        'thash'=>($aBoxes[$sSection]['total'] ? '#h3-'.$sSection : ''),
-                                    );
-                                } // foreach (array_keys($aBoxes) as $sSection){
+                                        'thead'=>$this->lB('linkchecker.found-http-'.strtolower($sSection)),
+                                        'tfoot'=>$this->_getPercent($iBoxvalue/$iRessourcesCount),
+                                        'thash'=>($iBoxvalue ? '#h3-'.strtolower($sSection) : ''),
+                                    );      
+                                    
+                                }
+                                // echo '<pre>'.print_r( $aMsg,1).'</pre>';
                             }
                         }
                         break;
@@ -1409,7 +1432,7 @@ class backend extends crawler_base {
                 }
             }
         }
-        $oCache->write($aStatusinfo, 10);
+        // $oCache->write($aStatusinfo, 10);
         return $aStatusinfo;
     }
     
@@ -1677,7 +1700,10 @@ class backend extends crawler_base {
      * @param type $aOptions
      *              valid keys are
      *              type   {string}  one of pie|bar
-     *              data   {array}   data of values
+     *              data   {array}   data of values ... each item has the keys
+     *                                 label  {string}
+     *                                 value  {float}
+     *                                 color  {string}
      *              limit  {float}   render a limit value (for bars)
      *              avg    {float}   render an average value (for bars)
      * @return type
@@ -1696,7 +1722,7 @@ class backend extends crawler_base {
         $sVarChart='chartConfig'.$iChartCount;
         $sVarCtx='chartCtx'.$iChartCount;
         
-        $bShowLegend=$aOptions['type'] === 'pie';
+        $bShowLegend=$aOptions['type'] !== 'bar';
         
         $sLimit='';
         $sAvg='';
@@ -1718,8 +1744,7 @@ class backend extends crawler_base {
             }
         }
         return '
-            
-            <div id="'.$sDomIdDiv.'" class="piechart">
+            <div id="'.$sDomIdDiv.'" class="piechart piechart-'.$aOptions['type'].'">
 		<canvas id="'.$sDomIdCanvas.'"></canvas>
             </div>
             <script>
@@ -1730,12 +1755,14 @@ class backend extends crawler_base {
                             {
                                 data: '.json_encode($aOptions['values']).',
                                 backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
+                                borderWidth: 1,
                                 fill: false
                             }
                             '.($sLimit
                                 ? ', {
                                     type: \'line\',
                                     data: JSON.parse(\'['.$sLimit.']\'),
+                                    backgroundColor: \'#c00\',
                                     borderColor: \'#c00\',
                                     borderWidth: 1,
                                     fill: false,
@@ -1747,6 +1774,7 @@ class backend extends crawler_base {
                                 ? ', {
                                     type: \'line\',
                                     data: JSON.parse(\'['.$sAvg.']\'),
+                                    backgroundColor: \'#56a\',
                                     borderColor: \'#56a\',
                                     borderWidth: 1,
                                     borderDash: [3, 3],
@@ -1762,8 +1790,10 @@ class backend extends crawler_base {
                         animation: {
                             duration: 0
                         },
-                        legend: {
-                            display: '.($bShowLegend ? 'true' : 'false').'
+                        plugins: {
+                            legend: {
+                                display: '.($bShowLegend ? 'true' : 'false').'
+                            },
                         },
                         responsive: true,
                         scales: {
@@ -1822,32 +1852,6 @@ class backend extends crawler_base {
             ));
     }
 
-        /**
-         * html check - get count pages with too short element
-         * @param string   $sKey        name of item; one of title|description|keywords
-         * @param integer  $iMinLength  minimal length
-         * @return integer
-         */
-        private function _getHtmlchecksCount($sKey, $iMinLength){
-            $aTmp = $this->oDB->query('
-                    select count(*) count from pages 
-                    where siteid='.$this->_sTab.' and errorcount=0 and length('.$sKey.')<'.$iMinLength
-                )->fetchAll(PDO::FETCH_ASSOC);
-            return $aTmp[0]['count'];
-        }
-        /**
-         * html check - get pages with too large values
-         * @param string   $sKey    name of item; one of size|time
-         * @param integer  $iMax    max value
-         * @return integer
-         */
-        private function _getHtmlchecksLarger($sKey, $iMax){
-            $aTmp = $this->oDB->query('
-                    select count(*) count from pages 
-                    where siteid='.$this->_sTab.' and errorcount=0 and '.$sKey.'>'.$iMax
-                )->fetchAll(PDO::FETCH_ASSOC);
-            return $aTmp[0]['count'];
-        }
         /**
          * html check - get get html code for a chart of too short elements
          * @param string   $sQuery      query to fetch data

@@ -10,6 +10,15 @@
 
 ----------------------------------------------------------------------
 
+2021-09-14: v0.148
+  * ADDED: store counter values
+  * UPDATE: upgrade chart js from v2 to v3 (using 3.5.1)
+  * UPDATE: font-awesome 5.15.4
+  * UPDATE: pure 2.0.6
+  * FIX: remove encoding br (Brotli) in http request headers
+  * FIX: comparison with canonical links
+  * PATCH: get redirect url from raw http response header if missed in curl data
+
 2021-05-04: v0.147
   * ADDED: ignore noindex tagging
   * ADDED: ignore nofollow tagging (can be dangerous)

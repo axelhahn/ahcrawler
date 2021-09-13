@@ -745,14 +745,18 @@ class ressources extends crawler_base {
             // add url
             // if(array_key_exists('redirect_url', $info)){
             if ($sNewUrl) {
-                $aRel = $this->_prepareRelitem(array(
-                    'url' => $sNewUrl,
-                    // 'ressourcetype' => 'page',
-                    'ressourcetype' => 'link',
-                        ), $iId);
-                $aResult = $this->oDB->insert('ressources_rel', $aRel);
-                $this->_checkDbResult($aResult);
-                $this->_addUrl2Crawl($sNewUrl, true);
+                if ($this->_addUrl2Crawl($sNewUrl, true)) {
+                    $this->cliprint('info', "redirect target $sNewUrl was added.\n");
+                    $aRel = $this->_prepareRelitem(array(
+                        'url' => $sNewUrl,
+                        // 'ressourcetype' => 'page',
+                        'ressourcetype' => 'link',
+                            ), $iId);
+                    $aResult = $this->oDB->insert('ressources_rel', $aRel);
+                    $this->_checkDbResult($aResult);
+                } else {
+                    $this->cliprint('info', "SKIP: redirect target was added already: $sNewUrl\n");
+                }
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
@@ -798,8 +802,11 @@ class ressources extends crawler_base {
         return true;
     }
 
-    /*
+    /**
      * a main entry point: start crawling ressources
+     * 
+     * @param string  $sHttpMethod  optional: http method; default: GET
+     * @return boolean
      */
     public function crawlRessoures($sHttpMethod='HEAD') {
         $this->_aUrls2Crawl = array();
@@ -898,6 +905,31 @@ class ressources extends crawler_base {
         $this->cliprint('info', $this->_iUrlsCrawled . " urls were crawled.\n");
         $this->cliprint('info', "process needed $iTotal sec; ". ($iTotal ? number_format($this->_iUrlsCrawled/$iTotal, 2)." urls per sec." : '') . "\n");
         $this->_showResourceStatusOnCli();
+
+        $this->addAllCounters();
+
+        return true;
+    }
+    
+    /**
+     * 
+     */
+    public function addAllCounters() {
+
+        // ----- add counters to get history data
+        $this->cliprint('info', "----- add counters to get history data for site id $this->iSiteId.\n");
+        require_once 'counter.class.php';
+        $oCounter=new counter();
+        $aCounterdata=$this->getStatusCounters();
+        foreach($aCounterdata as $sKey=>$value){
+            $this->cliprint('info', "add counter ... $sKey = $value.\n");
+            $oCounter->add($this->iSiteId, $sKey, (string)$value);
+        }
+        $this->cliprint('info', "Cleanup old counter values.\n");
+        $oCounter->cleanup();
+        // $oCounter->add('hello', 'world');
+        // $oCounter->dump();
+        
     }
 
 }

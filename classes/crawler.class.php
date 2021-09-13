@@ -467,9 +467,6 @@ class crawler extends crawler_base{
         $oHtml=new analyzerHtml($response, $url);
         $bIngoreNoFollow=isset($this->aProfileSaved['searchindex']['ignoreNofollow']) && $this->aProfileSaved['searchindex']['ignoreNofollow'];
         $bIngoreNoIndex=isset($this->aProfileSaved['searchindex']['ignoreNoindex']) && $this->aProfileSaved['searchindex']['ignoreNoindex'];
-        echo "DEBUG: bIngoreNoFollow = $bIngoreNoFollow \n";
-        echo "DEBUG: this-bFollowLinks = $this->_bFollowLinks \n";
-        echo "DEBUG oHtml->canFollowLinks() = " . $oHtml->canFollowLinks() . "\n";
         if ($bIngoreNoFollow || ($this->_bFollowLinks && $oHtml->canFollowLinks())){
             // TODO:
             // use external links too and check domain with sticky domain array
@@ -493,7 +490,7 @@ class crawler extends crawler_base{
         } else  {
             if($oHtml->hasOtherCanonicalUrl()){
                 $sCanonicalUrl=$oHtml->getCanonicalUrl();
-                $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl\n");
+                $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl ... adding $sCanonicalUrl\n");
                 $this->_addUrl2Crawl($sCanonicalUrl);
             } else {
                 $this->cliprint('warning', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");

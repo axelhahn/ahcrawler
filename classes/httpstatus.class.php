@@ -147,6 +147,12 @@ class httpstatus {
         }
         $this->_responseInfo=$aResponseInfo;
         $this->_http_code=$aResponseInfo['http_code'];
+        
+        // patch curl data: add a missing redirect_url
+        if ($this->isRedirect() && !$this->_responseInfo['redirect_url'] && isset($aResponseInfo['_responseheader'][0]) ){
+            preg_match("/location: (.*)[\\r]/i" , $aResponseInfo['_responseheader'][0], $aTmp);
+            $this->_responseInfo['redirect_url']=isset($aTmp[1]) ? $aTmp[1] : $this->_responseInfo['redirect_url'];
+        }
     }
     
     public function setHttpcode($iHttpcode){
@@ -271,8 +277,9 @@ class httpstatus {
         if (!$this->isRedirect()){
             return false;
         }
-        if (!$this->_responseInfo){
+        if (!$this->_responseInfo || !isset($this->_responseInfo['redirect_url']) || !$this->_responseInfo['redirect_url'] ){
             echo "WARNING: redirect was found but I have just the status code " . $this->_http_code . "<br>\n";
+            print_r($this->_responseInfo);
             return false;
         }
         return $this->_responseInfo['redirect_url'];
