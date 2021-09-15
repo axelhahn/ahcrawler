@@ -134,7 +134,7 @@ class counter extends crawler_base {
      * cleanup older counter values of the current siteid
      * @return boolean
      */
-    public function cleanup(){
+    public function cleanup($iSiteId){
         $sDeleteBefore=date("Y-m-d", date("U") - $this->_iKeepDays*24*60*60);
         $aResult = $this->oDB->delete(
             $this->_db_table,

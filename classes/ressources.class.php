@@ -926,7 +926,7 @@ class ressources extends crawler_base {
             $oCounter->add($this->iSiteId, $sKey, (string)$value);
         }
         $this->cliprint('info', "Cleanup old counter values.\n");
-        $oCounter->cleanup();
+        $oCounter->cleanup($this->iSiteId);
         // $oCounter->add('hello', 'world');
         // $oCounter->dump();
         
