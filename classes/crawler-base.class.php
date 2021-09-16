@@ -32,8 +32,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.148',
-        'date' => '2021-09-14',
+        'version' => '0.149-dev',
+        'date' => '2021-09-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -76,7 +76,7 @@ class crawler_base {
      */
     protected $aDefaultOptions = array(
         'database' => array(
-            'database_type' => 'sqlite',
+            'type' => 'sqlite',
             'database_file' => '__DIR__/data/ahcrawl.db',
         ),
         'auth' => array(
@@ -490,6 +490,22 @@ class crawler_base {
         if(isset($aDbConfig['database_file'])){
             $aDbConfig['database_file'] = str_replace('__DIR__/', dirname(__DIR__) . '/', $aDbConfig['database_file']);
         }
+        
+        // v0.149: upgrade medoo to 2.x
+        if(isset($aDbConfig['database_type'])){
+            $aDbConfig['type']=$aDbConfig['database_type'];
+        }        
+        if($aDbConfig['type']==='sqlite'){
+            $aDbConfig['database']=$aDbConfig['database_file'];
+        } else {
+            $aDbConfig['database']=$aDbConfig['database_name'];
+        }
+
+        if(isset($aDbConfig['server'])){
+            $aDbConfig['host']=$aDbConfig['server'];
+        }
+        // / v0.149: upgrade medoo to 2.x
+        
         return $aDbConfig;
     }
 
@@ -710,7 +726,7 @@ class crawler_base {
                 break;
 
             default:
-                echo __FUNCTION__ . ' - type ' . $this->aOptions['database']['database_type'] . ' was not implemented yet.<br><pre>';
+                echo __FUNCTION__ . ' - type ' . $this->aOptions['database']['type'] . ' was not implemented yet.<br><pre>';
                 print_r($this->aOptions['database']);
                 die();
         }
@@ -742,7 +758,8 @@ class crawler_base {
                         . 'sql: '.$this->oDB->last()."\n"
                         . 'pre generated code for medoo:<br>'.htmlentities($sql) . "\n"
                     . '</pre><br>'
-                    .print_r($this->oDB->error(), 1)
+                    .print_r($this->oDB->error, 1)
+                    .print_r($this->oDB->errorInfo, 1)
                     ;
                 die();
             }
@@ -768,7 +785,8 @@ class crawler_base {
                                 . 'sql: '.$this->oDB->last()."\n\n"
                                 . 'pre generated code for medoo:<br>'.htmlentities($sqlIndex) . "\n"
                             . '</pre><br>'
-                            .print_r($this->oDB->error(), 1)
+                            .print_r($this->oDB->error, 1)
+                            .print_r($this->oDB->errorInfo, 1)
                             ;
                         die();
                     }
@@ -813,21 +831,21 @@ class crawler_base {
      * @return boolean
      */
     protected function _checkDbResult($aResult = false) {
-        $aErr = $this->oDB->error();
+        $aErr = $this->oDB->errorInfo;
         $iMaxLenOfQuery=1000;
-        if ($aErr[1]) {
+        if (isset($aErr[1])) {
             echo "!!! Database error detected :-/<br>\n";
             if ($this->aOptions['debug']) {
                 $this->logAdd(''
                     . '... DB-QUERY : ' . substr($this->oDB->last(), 0, $iMaxLenOfQuery) . "\n"
                     . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
-                    . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
+                    . '... DB-ERROR: ' . print_r($this->oDB->error, 1) . print_r($this->oDB->errorInfo, 1) . "\n"
                 )
                 ;
                 echo ''
                     . '... DB-QUERY : ' . substr($this->oDB->last(), 0, $iMaxLenOfQuery) . "\n"
                     . ($aResult ? '... DB-RESULT: ' . print_r($aResult, 1) . "\n" : '')
-                    . '... DB-ERROR: ' . print_r($this->oDB->error(), 1) . "\n"
+                    . '... DB-ERROR: ' . print_r($this->oDB->error, 1) . print_r($this->oDB->errorInfo, 1) . "\n"
                 ;
                 
                 sleep(3);
@@ -964,8 +982,18 @@ class crawler_base {
      */
     public function getStatusCounters($sPage=false, $bIgnoreCache=false){
         static $aStatuscounters;
-        $aPagesArray=array('_global', 'htmlchecks', 'linkchecker');
-
+        $aPagesArray=['_global', 'htmlchecks', 'linkchecker'];
+        $aWarningCounterIds=[
+            'countShortTitles', 
+            'countShortDescr',
+            'countShortKeywords',
+            'countLargePages', 
+            'countLongLoad',
+            'statusWarning'
+        ];
+        $aErrotCounterIds=[
+            'statusError', 
+        ];
         /*
         $oCache=new AhCache($this->_getCacheModule(), $this->_getCacheId(__METHOD__ . '-'. $this->iSiteId.'-'.$sPage));
         if(false && !$bIgnoreCache && $this->sLogFilename && $oCache->isNewerThanFile($this->sLogFilename)){
@@ -990,19 +1018,16 @@ class crawler_base {
             foreach($aPagesArray as $sMyPage){
                 $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
             }
+            
             // create counters of all found errors and warnings
-            $aReturn['TotalWarnings']=0
-                // + $aReturn['countCrawlerErrors']
-                + $aReturn['countShortTitles']
-                + $aReturn['countShortDescr']
-                + $aReturn['countShortKeywords']
-                + $aReturn['countLargePages']
-                + $aReturn['countLongLoad']
-                + $aReturn['statusWarning']
-                ;
-            $aReturn['TotalErrors']=0
-                + $aReturn['statusError']
-                ;
+            $aReturn['TotalErrors']=0;
+            $aReturn['TotalWarnings']=0;
+            foreach($aErrotCounterIds as $sCounterId){
+                $aReturn['TotalErrors']+=isset($aReturn[$sCounterId]) ? $aReturn[$sCounterId] : 0;
+            }
+            foreach($aWarningCounterIds as $sCounterId){
+                $aReturn['TotalWarnings']+=isset($aReturn[$sCounterId]) ? $aReturn[$sCounterId] : 0;
+            }
             
             return $aReturn;
         }
@@ -1147,7 +1172,8 @@ class crawler_base {
                 echo "DEBUG: $sql\n";
                 if (!$this->oDB->query($sql)) {
                     echo "Failed!!\n";
-                    var_dump($this->oDB->error(), 1);
+                    var_dump($this->oDB->error, 1);
+                    var_dump($this->oDB->errorInfo, 1);
                     die();
                 }
             }
@@ -1609,7 +1635,7 @@ class crawler_base {
             $oCli=new axelhahn\cli();
         }
         if($sMessage){
-            $oCli->color($sColor, round(memory_get_usage()/1024 + 0.5) .' kB |'. $sMessage);
+            $oCli->color($sColor, sprintf("%0.3f", memory_get_usage()/1024/1024 + 0.5) .' MB | '. $sMessage);
             $this->logfileAppend($sColor, $sMessage);
         }
         if($sNextColor){

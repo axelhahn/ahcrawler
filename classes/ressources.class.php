@@ -880,6 +880,7 @@ class ressources extends crawler_base {
             }
             $bPause = true;
             $this->touchLocking($sStatusPrefix);
+            $this->cliprint('info', $sStatusPrefix."\n");
             $self = $this;
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->request($sUrl, $sHttpMethod);
@@ -896,6 +897,7 @@ class ressources extends crawler_base {
                 ->execute()
             ;
             $rollingCurl->prunePendingRequestQueue();
+            $this->cliprint('info', "prunePendingRequestQueue was done ... urls left " . count($this->_getUrls2Crawl()). " ... \n");
         }
         $this->updateExternalRedirect();
         $this->disableLocking();
@@ -922,7 +924,7 @@ class ressources extends crawler_base {
         $oCounter=new counter();
         $aCounterdata=$this->getStatusCounters();
         foreach($aCounterdata as $sKey=>$value){
-            $this->cliprint('info', "add counter ... $sKey = $value.\n");
+            $this->cliprint('info', "add counter ... $sKey = $value\n");
             $oCounter->add($this->iSiteId, $sKey, (string)$value);
         }
         $this->cliprint('info', "Cleanup old counter values.\n");
