@@ -30,7 +30,8 @@
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
-    --chart-background: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);
+    --chart-background_OLD: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);
+    --chart-background: none;
     --chart-border:5px solid #fff;
 }
 .sidebar{
@@ -371,7 +372,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 
 /* --- color for pie chart --- */
 
-.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 1em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
+.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 0.5em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
 .piechart-pie{width: 24em;}
 .floatright{float: right; margin: 0 0 1em 2em;}
 .floatleft{float: left; margin: 0 2em 1em 0;}

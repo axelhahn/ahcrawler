@@ -922,13 +922,14 @@ class ressources extends crawler_base {
         $this->cliprint('info', "----- add counters to get history data for site id $this->iSiteId.\n");
         require_once 'counter.class.php';
         $oCounter=new counter();
+        $oCounter->mysiteid($this->iSiteId);
         $aCounterdata=$this->getStatusCounters();
         foreach($aCounterdata as $sKey=>$value){
             $this->cliprint('info', "add counter ... $sKey = $value\n");
-            $oCounter->add($this->iSiteId, $sKey, (string)$value);
+            $oCounter->add($sKey, (string)$value);
         }
         $this->cliprint('info', "Cleanup old counter values.\n");
-        $oCounter->cleanup($this->iSiteId);
+        $oCounter->cleanup();
         // $oCounter->add('hello', 'world');
         // $oCounter->dump();
         

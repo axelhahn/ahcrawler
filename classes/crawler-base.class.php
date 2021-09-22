@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../vendor/medoo/src/Medoo.php';
 require_once 'status.class.php';
 require_once 'logger.class.php';
+require_once 'httpheader.class.php';
 
 /**
  * ____________________________________________________________________________
@@ -40,7 +41,7 @@ class crawler_base {
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
         'requirements' => array(
-            'phpversion'=>'5.5',
+            'phpversion'=>'7.3',
             'phpextensions'=>array('curl', 'PDO','xml','zip')
         ),
         
@@ -982,14 +983,24 @@ class crawler_base {
      */
     public function getStatusCounters($sPage=false, $bIgnoreCache=false){
         static $aStatuscounters;
-        $aPagesArray=['_global', 'htmlchecks', 'linkchecker'];
+        $aPagesArray=['_global', 'htmlchecks', 'linkchecker', 'httpheaderchecks'];
+        $aWarnIfZero=[
+            'responseheaderKnown',
+            'responseheaderCache',
+            'responseheaderCompression',
+            'responseheaderSecurity',
+        ];
         $aWarningCounterIds=[
             'countShortTitles', 
             'countShortDescr',
             'countShortKeywords',
             'countLargePages', 
             'countLongLoad',
-            'statusWarning'
+            'statusWarning',
+            'responseheaderUnknown',
+            'responseheaderUnwanted',
+            'responseheaderDeprecated',
+            'responseheaderNonStandard',
         ];
         $aErrotCounterIds=[
             'statusError', 
@@ -1018,7 +1029,6 @@ class crawler_base {
             foreach($aPagesArray as $sMyPage){
                 $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
             }
-            
             // create counters of all found errors and warnings
             $aReturn['TotalErrors']=0;
             $aReturn['TotalWarnings']=0;
@@ -1028,6 +1038,12 @@ class crawler_base {
             foreach($aWarningCounterIds as $sCounterId){
                 $aReturn['TotalWarnings']+=isset($aReturn[$sCounterId]) ? $aReturn[$sCounterId] : 0;
             }
+            
+            // add warning if a counter is zero
+            foreach($aWarnIfZero as $sCounterId){
+                $aReturn['TotalWarnings']+=($aReturn[$sCounterId] ? 0 : 1 );
+            }
+            $aReturn['TotalWarnings']+=($aReturn['responseheaderVersionStatus']==='warning' ? 1 : 0);
             
             return $aReturn;
         }
@@ -1114,6 +1130,56 @@ class crawler_base {
                     } // foreach (array_keys($aBoxes) as $sSection){                    
                 }
                 break;
+            case 'httpheaderchecks':
+
+                // default: detect first url in pages table
+                $aPagedata = $this->oDB->select(
+                    'pages', 
+                    array('url', 'header'), 
+                    array(
+                        'AND' => array(
+                            'siteid' => $this->iSiteId,
+                        ),
+                        "ORDER" => array("id"=>"ASC"),
+                        "LIMIT" => 1
+                    )
+                );
+                if (count($aPagedata)){
+                    $oHttpheader=new httpheader();
+                    $sInfos=$aPagedata[0]['header'];
+                    $aInfos=json_decode($sInfos,1);
+                    // _responseheader ?? --> see crawler.class - method processResponse()
+                    $oHttpheader->setHeaderAsString($aInfos['_responseheader']);
+
+                    $aFoundTags=$oHttpheader->getExistingTags();
+
+                    $iTotalHeaders=count($oHttpheader->getHeaderAsArray());
+                    $iKnown=$aFoundTags['http'];
+                    $iUnkKnown=         isset($aFoundTags['unknown'])      ? $aFoundTags['unknown']      : 0;
+                    $iUnwanted=         isset($aFoundTags['unwanted'])     ? $aFoundTags['unwanted']     : 0;
+                    $iDeprecated=       isset($aFoundTags['deprecated'])   ? $aFoundTags['deprecated']   : 0;
+                    $iNonStandard=      isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
+
+                    $iCacheInfos=       isset($aFoundTags['cache'])        ? $aFoundTags['cache']        : 0;
+                    $iCompressionInfos= isset($aFoundTags['compression'])  ? $aFoundTags['compression']  : 0;
+
+                    $iSecHeader=        isset($aFoundTags['security'])     ? $aFoundTags['security']     : 0;
+                    
+                    $aReturn['responseheaderCount']=$iTotalHeaders;
+                    $aReturn['responseheaderKnown']=$iKnown;
+                    $aReturn['responseheaderUnknown']=$iUnkKnown;
+                    $aReturn['responseheaderUnwanted']=$iUnwanted;
+                    $aReturn['responseheaderDeprecated']=$iDeprecated;
+                    $aReturn['responseheaderNonStandard']=$iNonStandard;
+                    $aReturn['responseheaderCache']=$iCacheInfos;
+                    $aReturn['responseheaderCompression']=$iCompressionInfos;
+                    $aReturn['responseheaderSecurity']=$iSecHeader;
+                    $aReturn['responseheaderVersion']=$oHttpheader->getHttpVersion();
+                    $aReturn['responseheaderVersionStatus']=$oHttpheader->getHttpVersionStatus($aReturn['responseheaderVersion']);
+                    
+                }
+                break;
+
             default:
                 break;
         }

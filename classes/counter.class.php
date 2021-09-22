@@ -22,6 +22,17 @@ require_once 'crawler-base.class.php';
  * SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY <br>
  * SERVICING, REPAIR OR CORRECTION.<br>
  * 
+ * @example <code>
+ * // add counters with a value
+ * $oCounter=new counter();
+ * $oCounter->mysiteid($this->iSiteId);
+ * $oCounter->add("mykey-1", $countervalue1);
+ * $oCounter->add("mykey-N", $countervalueN);
+ * 
+ * // cleanup after $_iKeepDays days:
+ * $oCounter->cleanup();
+ * </code>
+
  * ----------------------------------------------------------------------------
  * */
 class counter extends crawler_base {
@@ -44,6 +55,8 @@ class counter extends crawler_base {
      * @var type 
      */
     private $_iKeepDays = 90;
+
+    private $_iWebId = 1;
 
     // ----------------------------------------------------------------------
 
@@ -93,11 +106,10 @@ class counter extends crawler_base {
 
     /**
      * add a counter value
-     * @param int    $iSiteId       id of website
      * @param string $sCounterItem  Name of the counter
      * @param string $sValue        Value of the counter as int/ astring/ json/ ...
      */
-    public function add($iSiteId, $sCounterItem, $sValue) {
+    public function add($sCounterItem, $sValue) {
         $iCouterId = $this->_getCounterId($sCounterItem, true);
         if ($iCouterId) {
             
@@ -106,7 +118,7 @@ class counter extends crawler_base {
                 $aResult = $this->oDB->delete(
                     $this->_db_table,
                     array(
-                        'siteid' => (int)$iSiteId,
+                        'siteid' => $this->_iWebId,
                         'counterid' => $iCouterId,
                         'ts[>]' => date("Y-m-d"),
                     )
@@ -115,7 +127,7 @@ class counter extends crawler_base {
             $aResult = $this->oDB->insert(
                 $this->_db_table,
                 array(
-                    'siteid' => (int)$iSiteId,
+                    'siteid' => $this->_iWebId,
                     'counterid' => $iCouterId,
                     'value' => $sValue,
                     'ts' => date("Y-m-d H:i:s"),
@@ -125,21 +137,30 @@ class counter extends crawler_base {
         }
         return false;
     }
+    
+    /**
+     * set siteid for counters
+     * @param type $iSiteId
+     * @return type
+     */
+    public function mysiteid($iSiteId) {
+        return $this->_iWebId=(int)$iSiteId;
+    }
 
     // ----------------------------------------------------------------------
     // GETTER
     // ----------------------------------------------------------------------
 
     /**
-     * cleanup older counter values of the current siteid
+     * cleanup older counter values of the current web
      * @return boolean
      */
-    public function cleanup($iSiteId){
+    public function cleanup(){
         $sDeleteBefore=date("Y-m-d", date("U") - $this->_iKeepDays*24*60*60);
         $aResult = $this->oDB->delete(
             $this->_db_table,
             array(
-                'siteid' => (int)$iSiteId,
+                'siteid' => $this->_iWebId,
                 // 'counterid' => $iCouterId,
                 'ts[<]' => $sDeleteBefore,
             )
@@ -185,7 +206,7 @@ class counter extends crawler_base {
      * get last set values of given counter ids
      * @param string  $sCounter  name of counter
      */
-    public function getCountersHistory($iSiteId, $sCounter = '') {
+    public function getCountersHistory($sCounter, $iMax=30) {
         $aReturn=$this->oDB->select(
             $this->_db_table,
             array('[>]' . $this->_db_reltable => array('counterid' => 'id')),
@@ -197,12 +218,18 @@ class counter extends crawler_base {
                 $this->_db_table.'.ts',
             ),
             array(
-                $this->_db_table.'.siteid'=>$iSiteId,
+                $this->_db_table.'.siteid'=>$this->_iWebId,
                 $this->_db_reltable.'.label'=>$sCounter,
-            )
+            ),[
+                "LIMIT" => array(0, $iMax),
+            ]
         );
         // echo 'SQL: ' . $this->oDB->last().'<br>';
         return $aReturn;
     }
+    // ----------------------------------------------------------------------
+    // VISUALS
+    // ----------------------------------------------------------------------
+
 
 }

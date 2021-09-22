@@ -10,9 +10,15 @@
 
 ----------------------------------------------------------------------
 
-2021-09-14: v0.148
+2021-09-xx: v0.149
   * FIX: warning if missing iSiteid in counter.class.php
-  * UPDATE: upgrade medoo from version 1.x to 2.x
+  * UPDATE: upgrade medoo from version 1.x to 2.x ... what requires PHP 7.3 now
+  * UPDATE: charts backgound is more simple
+  * ADDED: counters for http header checks
+  * ADDED: stacked view for errors and warnings on backend home page
+  * ADDED: slight animation for 
+  * ADDED: many historical views of warnings/ errors/ values on several views
+  * UPDATE: y scale in charts
 
 2021-09-14: v0.148
   * ADDED: store counter values
