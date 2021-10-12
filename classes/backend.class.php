@@ -254,9 +254,11 @@ class backend extends crawler_base {
         if($bIsPublic){
             $this->_bIsPublic=true;
             $this->_aMenu=$this->_aMenuPublic;
-        }
-        if (!isset($_SESSION)) {
-            session_start();
+        } else {
+            if (!isset($_SESSION)) {
+                session_name('ahcrawler');
+                session_start();
+            }
         }
         
         // for settings: create a default array with all available menu items
@@ -299,7 +301,7 @@ class backend extends crawler_base {
             // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
         }
         
-        $this->_getPage();
+        $this->getPage();
         $this->logAdd(__METHOD__.' getPage was finished');
         
         return true;
@@ -308,6 +310,26 @@ class backend extends crawler_base {
     // LOGIN
     // ----------------------------------------------------------------------
 
+    public function isCacheable(){
+        $_nonCachable=[
+            'sslcheck',
+            'searches',
+            // 'searchindextester',
+            'profiles',
+            'langedit',
+            'update',
+            'setup',
+            'vendor',
+        ];
+        if(isset($this->aOptions['debug']) && $this->aOptions['debug']){
+            $this->logAdd(__METHOD__.' - debug is enabled - ignore page cache' );
+            $bReturn=false;
+        } else {
+            $bReturn = !array_search($this->_sPage, $_nonCachable);
+            $this->logAdd(__METHOD__.' - page = '. $this->_sPage. ' - ' .($bReturn ? 'true' : 'false' ) );
+        }
+        return $bReturn;
+    }
     /**
      * check authentication if a user and password were configured
      * @global array  $aUserCfg  config from ./config/config_user.php
@@ -442,7 +464,7 @@ class backend extends crawler_base {
      * find the current page (returns one of the menu items of _aMenu)
      * @return string
      */
-    private function _getPage() {
+    public function getPage() {
         // $sPage = $this->_getRequestParam('page','/^[a-z]*$/');
         $sPage = $this->_getRequestParam('page');
         if (!$sPage) {
@@ -1480,7 +1502,7 @@ class backend extends crawler_base {
     protected function _getTilesOfAPage(){
         global $oRenderer;
         $sReturn='';
-        $sPage=$this->_getPage();
+        $sPage=$this->getPage();
         if(!$sPage){
             return '';
         }
@@ -1706,6 +1728,10 @@ class backend extends crawler_base {
             : '';
     }
 
+    /**
+     * get html code to show screenshot of the current profile
+     * @return string
+     */
     public function getProfileImage(){
         return (isset($this->aProfileSaved['profileimagedata']) && $this->aProfileSaved['profileimagedata']
                 ? '<img src="'.$this->aProfileSaved['profileimagedata'].'" class="profile" title="'.$this->aProfileSaved['label'].'" alt="'.$this->aProfileSaved['label'].'">'

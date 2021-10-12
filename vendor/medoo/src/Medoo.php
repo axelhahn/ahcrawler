@@ -6,7 +6,7 @@ declare(strict_types=1);
  *
  * The Lightweight PHP Database Framework to Accelerate Development.
  *
- * @version 2.1.2
+ * @version 2.1.3
  * @author Angel Lai
  * @package Medoo
  * @copyright Copyright 2021 Medoo Project, Angel Lai.
@@ -601,10 +601,7 @@ class Medoo
         );
 
         foreach ($map as $key => $value) {
-            // Fast fix: adding is_integer() - https://github.com/catfan/Medoo/issues/1011
-            if (is_integer($value[1])) {
-                $replace = $value[0] . '';
-            } elseif ($value[1] === PDO::PARAM_STR) {
+            if ($value[1] === PDO::PARAM_STR) {
                 $replace = $this->quote($value[0]);
             } elseif ($value[1] === PDO::PARAM_NULL) {
                 $replace = 'NULL';
@@ -747,7 +744,8 @@ class Medoo
         $map = [
             'NULL' => PDO::PARAM_NULL,
             'integer' => PDO::PARAM_INT,
-            'double' => PDO::PARAM_STR,
+            // 'double' => PDO::PARAM_STR,
+            'double' => PDO::PARAM_INT,
             'boolean' => PDO::PARAM_BOOL,
             'string' => PDO::PARAM_STR,
             'object' => PDO::PARAM_STR,
@@ -859,7 +857,7 @@ class Medoo
             $isIndex = is_int($key);
 
             preg_match(
-                '/([\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\[(?<operator>\>\=?|\<\=?|\!|\<\>|\>\<|\!?~|REGEXP)\])?([\p{L}_][\p{L}\p{N}@$#\-_\.]*)?/u',
+                '/([\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\[(?<operator>\>\=?|\<\=?|\=|\!\=?|\<\>|\>\<|\!?~|REGEXP)\])?([\p{L}_][\p{L}\p{N}@$#\-_\.]*)?/u',
                 $isIndex ? $value : $key,
                 $match
             );
@@ -940,7 +938,7 @@ class Medoo
                     foreach ($value as $index => $item) {
                         $item = strval($item);
 
-                        if (!preg_match('/((?<!\\\)\[.+(?<!\\\)\]|(?<!\\\)[\*\?\!\%\-#^_]|%.+|.+%)/', $item)) {
+                        if (!preg_match('/((?<!\\\)\[.+(?<!\\\)\]|(?<!\\\)[\*\?\!\%#^_]|%.+|.+%)/', $item)) {
                             $item = '%' . $item . '%';
                         }
 

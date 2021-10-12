@@ -244,7 +244,7 @@ class ahsearch extends crawler_base {
             $aOptions['url'] = '';
         } else {
             // remove '%' ... it is added below in 'url[~]' => $aOptions['url'],
-            $aOptions['url'] = str_replace('%', '', $aOptions['url']);
+            // $aOptions['url'] = str_replace('%', '', $aOptions['url']);
         }
         $sPhrase=$this->_replaceSearchterm4Sql($q);
         if($aOptions['mode']==='PHRASE'){
@@ -289,8 +289,11 @@ class ahsearch extends crawler_base {
                     // 'LIMIT' => 55
                 )
         );
-        // echo "DEBUG <pre>" . print_r($aQuery, 1) ."</pre><br>";
-        // echo 'DEBUG: ' . $this->oDB->last() . '<br>';
+        /*
+        echo "DEBUG aQuery = <pre>" . print_r($aQuery, 1) ."</pre><br>";
+        echo 'DEBUG: Query = ' . $this->oDB->last() . '<br>';
+        echo "DEBUG aOptions = <pre>" . print_r($aOptions, 1) ."</pre><br>"; 
+         */
         if (is_array($aDbitems) && count($aDbitems)) {
             $aResult = $this->_reorderByRanking($aDbitems, $q);
             /*

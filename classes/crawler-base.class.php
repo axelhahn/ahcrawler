@@ -34,7 +34,7 @@ class crawler_base {
     public $aAbout = array(
         'product' => 'ahCrawler',
         'version' => '0.149-dev',
-        'date' => '2021-09-xx',
+        'date' => '2021-10-12',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1499,9 +1499,28 @@ class crawler_base {
     }
 
     // ----------------------------------------------------------------------
+    // Cache
+    // ----------------------------------------------------------------------
+    
+    /**
+     * get an id of the cache module
+     * @return type
+     */
+    public function getCacheModule(){
+        return "pages-siteid-".$this->iSiteId;
+    }
+    
+    // ----------------------------------------------------------------------
     // LANGUAGE
     // ----------------------------------------------------------------------
-
+    
+    /**
+     * get current language
+     * @return string
+     */
+    public function getLang(){
+        return $this->sLang;
+    }
     /**
      * helper function to load language array
      * @param string  $sPlace  one of frontend|backend
@@ -1511,7 +1530,7 @@ class crawler_base {
     private function _getLangData($sPlace, $sLang = false) {
         if (!$sLang) {
             // $this->setSiteId(false);
-            $sLang = $this->sLang;
+            $sLang = $this->getLang();
         }
         $sPlace= preg_replace('/[^a-z]/', '', $sPlace);
         $sLang= preg_replace('/[^a-z\-\_]/', '', $sLang);

@@ -190,7 +190,7 @@ class ressources extends crawler_base {
         if ($bExists) {
             if ($bSkipIfExist) {
                 // v 0.139 skip displaying this
-                // $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
+                $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
             } else {
                 $this->cliprint('info', 'UPDATE existing resource ' . $sUrl . "\n");
                 /*
@@ -745,18 +745,14 @@ class ressources extends crawler_base {
             // add url
             // if(array_key_exists('redirect_url', $info)){
             if ($sNewUrl) {
-                if ($this->_addUrl2Crawl($sNewUrl, true)) {
-                    $this->cliprint('info', "redirect target $sNewUrl was added.\n");
-                    $aRel = $this->_prepareRelitem(array(
-                        'url' => $sNewUrl,
-                        // 'ressourcetype' => 'page',
-                        'ressourcetype' => 'link',
-                            ), $iId);
-                    $aResult = $this->oDB->insert('ressources_rel', $aRel);
-                    $this->_checkDbResult($aResult);
-                } else {
-                    $this->cliprint('info', "SKIP: redirect target was added already: $sNewUrl\n");
-                }
+                $aRel = $this->_prepareRelitem(array(
+                    'url' => $sNewUrl,
+                    // 'ressourcetype' => 'page',
+                    'ressourcetype' => 'link',
+                        ), $iId);
+                $aResult = $this->oDB->insert('ressources_rel', $aRel);
+                $this->_checkDbResult($aResult);
+                $this->_addUrl2Crawl($sNewUrl, true);                
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
@@ -910,6 +906,13 @@ class ressources extends crawler_base {
 
         $this->addAllCounters();
 
+        $this->cliprint('info', "----- cleanup cache.\n");
+        require_once("cache.class.php");
+        $this->cliprint('info', "deleting items in module ".$this->getCacheModule().".\n");
+        $oCache = new AhCache($this->getCacheModule());
+        $oCache->deleteModule(true);
+        $this->cliprint('info', "Cache was deleted.\n");
+        
         return true;
     }
     
