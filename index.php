@@ -39,6 +39,9 @@
         $sCacheId='backend-page'
                 // .'|user='.$_SESSION['AUTH_USER']
                 // .'|template='...
+                .'|'.$oBackend->aAbout['product']
+                .'|'.$oBackend->aAbout['version']
+                .'|'.$oBackend->aAbout['date']
                 .'|siteid='.$iSiteId
                 .'|lang='.$oBackend->getLang()
                 .'|page='.$oBackend->getPage()
