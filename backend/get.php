@@ -22,8 +22,13 @@ switch($sAction){
         
         $sSiteid = isset($_POST['siteid']) ? (int)$_POST['siteid'] 
                 : (isset($_GET['siteid']) ? (int)$_GET['siteid'] : false);
+        exec('php -v', $sOut, $iRcPhp);
+        if(!$iRcPhp==0){
+            echo 'PHP interpreter was not found. Cannot start crawler :-/';
+            return false;
+        } 
         exec('php '.dirname(__DIR__).'/cronscripts/reindex_all_profiles.php -p '.$sSiteid.' & ');
-        echo 'job was started ...';
+        echo 'Crawler was started.';
         return true;
         /*
         $oBackend = new backend();

@@ -153,12 +153,14 @@ if(isset($_POST['action'])){
                 $this->_setUser(''); // logoff
             }
             
-            
             // prepare new config array
             $aOptionsCurrent=$aOptions;
             $aOptions['options']=$_POST['options'];
             
             // ----- fix boolean options
+            if(!isset($aOptions['options']['cache'])){
+                $aOptions['options']['cache']=false;
+            }
             if(!isset($aOptions['options']['debug'])){
                 $aOptions['options']['debug']=false;
             }
@@ -318,8 +320,18 @@ $aCbDebug=array(
     'name'=>'options[debug]',
     'value'=>'true',
 );
-if (isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
+if (isset($aOptions['options']['debug']) && $aOptions['options']['debug']==true){
     $aCbDebug['checked']='checked';
+}
+$aCbNocache=array(
+    'id'=>$sIdPrefixOther.'cache', 
+    'type'=>'checkbox',
+    'name'=>'options[cache]',
+    'value'=>'true',
+    'checked'=>'checked',
+);
+if (isset($aOptions['options']['cache']) && $aOptions['options']['cache']==false){
+    unset($aCbNocache['checked']);
 }
 
 $sReturn.=(!isset($_SERVER['HTTPS'])
@@ -389,12 +401,27 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                         // 'label'=> $aOptions['options']['customfooter'],
                         ), true)
                     . '</div>'
+                /*
                 . '<div class="pure-control-group">'
                     // . '<label> </label>'
                     . '<label class="pure-checkbox" for="'.$sIdPrefixOther.'debug">'
                     . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
                             .' '.$this->lB('setup.section.backend.debug')
                     . '</label>'
+                    . '</div>'
+                */
+                . '<div class="pure-control-group">'
+                    . '<label>'.$this->lB('setup.section.backend.fordevelopers').'</label>'
+                    . '<div>'
+                        . '<label class="align-left">'
+                            . $oRenderer->oHtml->getTag('input', $aCbDebug, false)
+                            .' '.$this->lB('setup.section.backend.debug')
+                        . '</label><br>'
+                        . '<label class="align-left">'
+                            . $oRenderer->oHtml->getTag('input', $aCbNocache, false)
+                            .' '.$this->lB('setup.section.backend.cache')
+                        . '</label><br>'
+                    . '</div>'
                     . '</div>'
             .'</div>'
             // ------------------------------------------------------------

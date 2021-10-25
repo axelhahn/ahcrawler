@@ -524,7 +524,7 @@ form.pure-form label{min-width: 20em;}
 /* .pure-form input[type=number] {background: #f0f8f0;}*/
 .pure-form select {height: auto;}
 .pure-form-aligned .pure-control-group label.align-left{text-align: left;}
-
+div.pure-control-group > div > label:hover{opacity: 0.7; background: rgba(255,255,255,0.3);} 
 #selectProject span {display: inline-block; margin: 1em 0.2em 1em 0 ;}
 #selectProject select{font-size: 110%; font-weight: bold; background: none;  color: var(--color-default); border-width: 0px; opacity: 0.6;}
 #selectProject select option {font-size: 90%; font-weight: normal;padding: 0.4em;}

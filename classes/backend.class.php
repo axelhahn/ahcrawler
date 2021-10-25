@@ -321,7 +321,10 @@ class backend extends crawler_base {
             'setup',
             'vendor',
         ];
-        if(isset($this->aOptions['debug']) && $this->aOptions['debug']){
+        if(isset($this->aOptions['cache']) && !$this->aOptions['cache']){
+            $this->logAdd(__METHOD__.' - cache is disabled - ignore page cache' );
+            $bReturn=false;
+        } else if(isset($this->aOptions['debug']) && $this->aOptions['debug']){
             $this->logAdd(__METHOD__.' - debug is enabled - ignore page cache' );
             $bReturn=false;
         } else {
