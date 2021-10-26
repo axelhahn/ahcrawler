@@ -251,7 +251,7 @@
     "home.status": "Status",
     "home.status.hint": "Zusammenfassung der eingerichteten Projekte und Status der erhobenen Daten.",
     "home.hints": "Hinweise zu Verbesserungsm&ouml;glichkeiten",
-    "home.hints.loadingtime-all-pages": "Die Verteilung der Ladezeiten (*) aller Einzelseiten des Webauftritts [ms] zeigt, ub es Ausreisser in der Performance gibt.<br>(*) betrifft reinen HTML Content ohne Nachladen von Bildern u.\u00e4.",
+    "home.hints.loadingtime-all-pages": "Die Verteilung der Ladezeiten (*) aller Einzelseiten des Webauftritts [ms] zeigt, ob es Ausreisser in der Performance gibt.<br>(*) betrifft reinen HTML Content ohne Nachladen von Bildern u.\u00e4.",
     "home.hints.no-critical-was-found": "Zuerst die gute Nachricht: es wurde kein Fehler gefunden :-) Schauen Sie aber noch zu den aufgef&uuml;hrten Warnungen.",
     "home.hints.nothing-was-found": "OK, sieht gut aus! Es wurde kein Hinweis gefunden.",
     "home.starturls": "Start-URL(s) des Crawlers:",
