@@ -783,6 +783,7 @@ class crawler_base {
                             . '( <'.implode('>, <', $aIndexItems[1]).'> )'
                             ;
                     if (!$this->oDB->query($sqlIndex)) {
+                        /*
                         echo 'DATABASE - CREATION OF INDEX FAILED :-/<pre>'
                                 . 'sql: '.$this->oDB->last()."\n\n"
                                 . 'pre generated code for medoo:<br>'.htmlentities($sqlIndex) . "\n"
@@ -791,6 +792,8 @@ class crawler_base {
                             .print_r($this->oDB->errorInfo, 1)
                             ;
                         die();
+                         * 
+                         */
                     }
                 }
             }
