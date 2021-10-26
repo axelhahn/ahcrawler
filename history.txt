@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2021-10-12: v0.149
+2021-10-26: v0.149
   * FIX: warning if missing iSiteid in counter.class.php
   * FIX: follow 30x redirects in link checker
   * UPDATE: upgrade medoo from version 1.x to 2.1.3 ... which requires PHP 7.3 now
@@ -22,6 +22,8 @@
            (it takes a few days to appear)
   * ADDED: caching for backend pages
   * UPDATE: y scale in charts
+  * UPDATE: upgrade chart js -> 3.6.0
+  * ADDED: log error message on missing php interpreter as cli tool.
 
 2021-09-14: v0.148
   * ADDED: store counter values
