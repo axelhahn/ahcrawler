@@ -42,6 +42,7 @@ $sTiles .= $oRenderer->renderTile('', $this->lB('searches.since'), $oRenderer->h
 $sTiles .= $oRenderer->renderTile('', $this->lB('searches.last'), $oRenderer->hrAge(date('U', strtotime($sYoungest))), $sYoungest, '');
 
 $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></div>'
+        . $this->_getHistoryCounter(['searches'])
 ;
 
 

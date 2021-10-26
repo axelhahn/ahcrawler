@@ -254,9 +254,11 @@ class backend extends crawler_base {
         if($bIsPublic){
             $this->_bIsPublic=true;
             $this->_aMenu=$this->_aMenuPublic;
-        }
-        if (!isset($_SESSION)) {
-            session_start();
+        } else {
+            if (!isset($_SESSION)) {
+                session_name('ahcrawler');
+                session_start();
+            }
         }
         
         // for settings: create a default array with all available menu items
@@ -299,7 +301,7 @@ class backend extends crawler_base {
             // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
         }
         
-        $this->_getPage();
+        $this->getPage();
         $this->logAdd(__METHOD__.' getPage was finished');
         
         return true;
@@ -308,6 +310,29 @@ class backend extends crawler_base {
     // LOGIN
     // ----------------------------------------------------------------------
 
+    public function isCacheable(){
+        $_nonCachable=[
+            'sslcheck',
+            'searches',
+            // 'searchindextester',
+            'profiles',
+            'langedit',
+            'update',
+            'setup',
+            'vendor',
+        ];
+        if(isset($this->aOptions['cache']) && !$this->aOptions['cache']){
+            $this->logAdd(__METHOD__.' - cache is disabled - ignore page cache' );
+            $bReturn=false;
+        } else if(isset($this->aOptions['debug']) && $this->aOptions['debug']){
+            $this->logAdd(__METHOD__.' - debug is enabled - ignore page cache' );
+            $bReturn=false;
+        } else {
+            $bReturn = !array_search($this->_sPage, $_nonCachable);
+            $this->logAdd(__METHOD__.' - page = '. $this->_sPage. ' - ' .($bReturn ? 'true' : 'false' ) );
+        }
+        return $bReturn;
+    }
     /**
      * check authentication if a user and password were configured
      * @global array  $aUserCfg  config from ./config/config_user.php
@@ -442,7 +467,7 @@ class backend extends crawler_base {
      * find the current page (returns one of the menu items of _aMenu)
      * @return string
      */
-    private function _getPage() {
+    public function getPage() {
         // $sPage = $this->_getRequestParam('page','/^[a-z]*$/');
         $sPage = $this->_getRequestParam('page');
         if (!$sPage) {
@@ -1193,6 +1218,7 @@ class backend extends crawler_base {
                             )
                         );
                         if (count($aPagedata)){
+                            /*
                             $oHttpheader=new httpheader();
                             $sInfos=$aPagedata[0]['header'];
                             $aInfos=json_decode($sInfos,1);
@@ -1212,7 +1238,28 @@ class backend extends crawler_base {
                             $iCompressionInfos= isset($aFoundTags['compression'])  ? $aFoundTags['compression']  : 0;
                             
                             $iSecHeader=        isset($aFoundTags['security'])     ? $aFoundTags['security']     : 0;
-                            
+                              
+                            $aReturn['responseheaderCount']=$iTotalHeaders;
+                            $aReturn['responseheaderKnown']=$iKnown;
+                            $aReturn['responseheaderUnknown']=$iUnkKnown;
+                            $aReturn['responseheaderUnwanted']=$iUnwanted;
+                            $aReturn['responseheaderDeprecated']=$iDeprecated;
+                            $aReturn['responseheaderNonStandard']=$iNonStandard;
+                            $aReturn['responseheaderCache']=$iCacheInfos;
+                            $aReturn['responseheaderCompression']=$iCompressionInfos;
+                            $aReturn['responseheaderSecurity']=$iSecHeader;
+                             
+                            */
+                            $iTotalHeaders=$aMyCounters['responseheaderCount'];
+                            $iKnown=$aMyCounters['responseheaderKnown'];
+                            $iUnkKnown=$aMyCounters['responseheaderUnknown'];
+                            $iUnwanted=$aMyCounters['responseheaderUnwanted'];
+                            $iDeprecated=$aMyCounters['responseheaderDeprecated'];
+                            $iNonStandard=$aMyCounters['responseheaderNonStandard'];
+                            $iCacheInfos=$aMyCounters['responseheaderCache'];
+                            $iCompressionInfos=$aMyCounters['responseheaderCompression'];
+                            $iSecHeader=$aMyCounters['responseheaderSecurity'];
+
                             // $aSecHeader=$oHttpheader->getSecurityHeaders();
                             $aMsg['total']=array(
                                 'counter'=>$iCounter++,
@@ -1267,15 +1314,14 @@ class backend extends crawler_base {
                                 'tfoot'=>$this->_getPercent($iNonStandard/$iTotalHeaders),
                                 'thash'=>($iNonStandard ? '#warnnonstandard' : ''),
                             );
-                            $sHttpverVer=$oHttpheader->getHttpVersion();
                             $aMsg['httpversion']=array(
                                 'counter'=>$iCounter++,
-                                'status'=>$oHttpheader->getHttpVersionStatus($sHttpverVer),
-                                'value'=>$sHttpverVer, 
+                                'status'=>$aMyCounters['responseheaderVersionStatus'],
+                                'value'=>$aMyCounters['responseheaderVersion'], 
                                 'message'=>false,
                                 'thead'=>$this->lB('httpheader.header.httpversion'),
                                 'tfoot'=>'',
-                                'thash'=>$oHttpheader->getHttpVersionStatus($sHttpverVer) == 'ok' ? '' : '#warnhttpver',
+                                'thash'=>$aMyCounters['responseheaderVersionStatus'] == 'ok' ? '' : '#warnhttpver',
                             );
                             $aMsg['cacheinfos']=array(
                                 'counter'=>$iCounter++,
@@ -1459,7 +1505,7 @@ class backend extends crawler_base {
     protected function _getTilesOfAPage(){
         global $oRenderer;
         $sReturn='';
-        $sPage=$this->_getPage();
+        $sPage=$this->getPage();
         if(!$sPage){
             return '';
         }
@@ -1685,6 +1731,10 @@ class backend extends crawler_base {
             : '';
     }
 
+    /**
+     * get html code to show screenshot of the current profile
+     * @return string
+     */
     public function getProfileImage(){
         return (isset($this->aProfileSaved['profileimagedata']) && $this->aProfileSaved['profileimagedata']
                 ? '<img src="'.$this->aProfileSaved['profileimagedata'].'" class="profile" title="'.$this->aProfileSaved['label'].'" alt="'.$this->aProfileSaved['label'].'">'
@@ -1701,11 +1751,15 @@ class backend extends crawler_base {
      *              valid keys are
      *              type   {string}  one of pie|bar
      *              data   {array}   data of values ... each item has the keys
-     *                                 label  {string}
-     *                                 value  {float}
-     *                                 color  {string}
+     *                                 label  {string}  label text for tooltip and 
+     *                                 value  {float}   value
+     *                                 color  {string}  color value; can be a js function
+     *              datasets  {array}  array of multiple data arrays 
+     *                                 label {string}  label for legend of this dataset
+     *                                 data  {array}   data items (see param data)
      *              limit  {float}   render a limit value (for bars)
      *              avg    {float}   render an average value (for bars)
+     *              legend_display  {bool}  show legend for datarows
      * @return type
      */
     private function _getChart($aOptions){
@@ -1723,24 +1777,59 @@ class backend extends crawler_base {
         $sVarCtx='chartCtx'.$iChartCount;
         
         $bShowLegend=$aOptions['type'] !== 'bar';
+        $bShowLegend=isset($aOptions['legend_display']) ? $aOptions['legend_display'] : $bShowLegend;
+
+        $bShowRaster=$aOptions['type'] === 'bar';
         
+        $sDatasets='';
         $sLimit='';
         $sAvg='';
+        if(isset($aOptions['datasets'])){
+            $aDatasets=$aOptions['datasets'];
+        }
         if(isset($aOptions['data'])){
-            $aOptions['labels']=array();
-            $aOptions['values']=array();
-            $aOptions['colors']=array();
-            foreach($aOptions['data'] as $aItem){
-                $aOptions['labels'][]=$aItem['label'];
-                $aOptions['values'][]=$aItem['value'];
-                $aOptions['colors'][]=$aItem['color'];
-                if(isset($aOptions['limit']) && $aOptions['limit']){
-                    $sLimit .= ($sLimit ? ', ' : '') . $aOptions['limit'];
+            $aDatasets[]['data']=$aOptions['data'];
+        }
+
+        if(count($aDatasets)){
+
+            $dsLabels=[];
+            foreach ($aDatasets as $aDataset){
+                $dsData=[
+                    'values'=>[],
+                    'colors'=>[],
+                ];                
+                foreach($aDataset['data'] as $aItem){
+                    if(!$sDatasets){
+                        $dsLabels[]=$aItem['label'];
+                    }
+                    $dsData['values'][]=$aItem['value'];
+                    $dsData['colors'][]=$aItem['color'];
+                    if(isset($aOptions['limit']) && $aOptions['limit']){
+                        $sLimit .= ($sLimit ? ', ' : '') . $aOptions['limit'];
+                    }
+                    if(isset($aOptions['avg']) && $aOptions['avg']){
+                        $sAvg .= ($sAvg ? ', ' : '') . $aOptions['avg'];
+                    }
+
                 }
-                if(isset($aOptions['avg']) && $aOptions['avg']){
-                    $sAvg .= ($sAvg ? ', ' : '') . $aOptions['avg'];
-                }
-                
+                /*
+                 *                             {
+                                data: '.json_encode($aOptions['values']).',
+                                backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
+                                borderWidth: 1,
+                                fill: false
+                            }
+
+                 */
+                $sDatasets.=($sDatasets ? ', ' : '')
+                    .'{
+                        label: \''.(isset($aDataset['label']) ? $aDataset['label'] : '').'\',
+                        data: '.json_encode($dsData['values']).',
+                        backgroundColor: '. str_replace('"', '', json_encode($dsData['colors'])).',
+                        borderWidth: 1,
+                        fill: false                    
+                    }';
             }
         }
         return '
@@ -1752,12 +1841,7 @@ class backend extends crawler_base {
                     type: \''.$aOptions['type'].'\',
                     data: {
                         datasets: [
-                            {
-                                data: '.json_encode($aOptions['values']).',
-                                backgroundColor: '. str_replace('"', '', json_encode($aOptions['colors'])).',
-                                borderWidth: 1,
-                                fill: false
-                            }
+                            '.$sDatasets.'
                             '.($sLimit
                                 ? ', {
                                     type: \'line\',
@@ -1784,21 +1868,32 @@ class backend extends crawler_base {
                                 : ''
                             ).'
                         ],
-                        labels: '.json_encode($aOptions['labels']).'
+                        labels: '.json_encode($dsLabels).'
                     },
                     options: {
                         animation: {
-                            duration: 0
+                            duration: 500
                         },
                         plugins: {
                             legend: {
                                 display: '.($bShowLegend ? 'true' : 'false').'
-                            },
+                            }
                         },
                         responsive: true,
                         scales: {
-                            
-                        }
+                          x: {
+                            display: '.($bShowRaster ? 'true' : 'false').',
+                            stacked: true,
+                          },
+                          y: {
+                            display: '.($bShowRaster ? 'true' : 'false').',
+                            stacked: '.(count($aDatasets)>1 ? "true" : "false").',
+                            ticks: {
+                              // forces step size to be 50 units
+                              stepSize: 50
+                            }
+                          }
+                        }                        
                     }
                     
                 };
@@ -1810,7 +1905,106 @@ class backend extends crawler_base {
             </script>
         ';
     }
-    
+
+    /**
+     * 
+     * @param string|array  $sCounteritem  id or array of ids to render; with 
+     *                                     multiple ids its data will be stacked
+     * @return string
+     */
+    private function _getHistoryCounter($sCounteritem){
+
+        $sHtml='';
+        // ----- config 
+        $sColorDefault='getStyleRuleValue(\'color\', \'.chartcolor-1\')';
+        $sColorDefault2='getStyleRuleValue(\'color\', \'.chartcolor-2\')';
+        $sColorDefault3='getStyleRuleValue(\'color\', \'.chartcolor-3\')';
+        $sColorWarning='getStyleRuleValue(\'color\', \'.chartcolor-warning\')';
+        $sColorError='getStyleRuleValue(\'color\', \'.chartcolor-error\')';
+        $sColorOK='getStyleRuleValue(\'color\', \'.chartcolor-ok\')';
+
+        $aBarColors=array(
+            'countCrawlerErrors'=>$sColorError,
+            'countLargePages'=>$sColorWarning,
+            'countLongLoad'=>$sColorWarning,
+            'countShortDescr'=>$sColorWarning,
+            'countShortKeywords'=>$sColorWarning,
+            'countShortTitles'=>$sColorWarning,
+
+            'pages'=>$sColorDefault,
+            'ressources'=>$sColorDefault2,
+            // 'searches'=>$sColorDefault,
+
+            'responseheaderDeprecated'=>$sColorWarning,
+            'responseheaderKnown'=>$sColorOK,
+            'responseheaderNonStandard'=>$sColorWarning,
+            'responseheaderSecurity'=>$sColorOK,
+            'responseheaderUnknown'=>$sColorWarning,
+            'responseheaderUnwanted'=>$sColorWarning,
+            
+            'statusError'=>$sColorError,
+            'statusOk'=>$sColorOK,
+            'statusWarning'=>$sColorWarning,
+            'TotalErrors'=>$sColorError,
+            'TotalWarnings'=>$sColorWarning,
+
+        );
+        require_once 'counter.class.php';
+        $oCounter=new counter();
+        $oCounter->mysiteid($this->iSiteId);
+        
+        // read data
+        $bEnough=false;
+        $aCounterItems2Fetch=is_array($sCounteritem) ? $sCounteritem : [$sCounteritem];
+        foreach ($aCounterItems2Fetch as $sCItem){
+            $aPageHistory[$sCItem]=$oCounter->getCountersHistory($sCItem);
+            if(count($aPageHistory[$sCItem]) > 3){
+                $bEnough=true;
+            }
+        }
+        
+        if($bEnough){
+            
+            $aDatasets=[];
+            foreach($aPageHistory as $sCItem=>$aDataset){
+                
+                $aHistoryData=[
+                    'label'=>$this->lB('chart.'.$sCItem),
+                    'data'=>[],
+                ];
+                $sColor=isset($aBarColors[$sCItem]) ? $aBarColors[$sCItem] : $sColorDefault;
+
+                // 'getStyleRuleValue(\'color\', \'.chartcolor-error\')'
+                foreach($aDataset as $aDataitem){
+                    $aHistoryData['data'][]=array(
+                        'label'=> substr($aDataitem['ts'],0,10),
+                        // 'label'=>$sCItem,
+                        // 'label'=>'',
+                        'value'=>$aDataitem['value'],
+                        'color'=>$sColor,  
+                    );
+                }
+                $aDatasets[]=$aHistoryData;
+            }
+            
+            $sHtml.=''
+                . $this->lB('chart.historicalView').'<br><br>'
+                . '<div class="floatleft">'
+                    . $this->_getChart(array(
+                        'type'=>'bar',
+                        'datasets'=>$aDatasets,
+                        'label'=> array_keys($aPageHistory),
+                        'legend_display'=>count($aCounterItems2Fetch)>1,
+                    ))
+                . '</div>'
+
+                // . '<pre>getCountersHistory("'.$sCounteritem.'") returns<br>' . print_r($aPageHistory, 1) . '</pre>'
+
+                . '<div style="clear: left;"></div>'        
+                ; 
+        }
+        return $sHtml;
+    }    
     private function _getChartOfRange($sQuery, $sColumn, $iLimit) {
         $aTable = array();
         $aData = array();

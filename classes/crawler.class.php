@@ -650,6 +650,7 @@ class crawler extends crawler_base{
             }
             $bPause = true;
             $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()). ' ... ');
+            $this->cliprint('info', 'Urls left: ' . count($this->_getUrls2Crawl())."\n");
             
             foreach ($this->_getUrls2Crawl() as $sUrl) {
                 $rollingCurl->get($sUrl);
@@ -665,6 +666,7 @@ class crawler extends crawler_base{
                 ->execute()
                 ;
             $rollingCurl->prunePendingRequestQueue();
+            $this->cliprint('info', "prunePendingRequestQueue was done.\n");
             
         }
         

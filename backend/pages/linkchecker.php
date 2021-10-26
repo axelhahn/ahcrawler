@@ -47,6 +47,7 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
     $aChartItemsOfSection=array();
     $sBoxes='';
     $iCodeCount=0;
+    $sSection2=strtoupper($sSection[0]).substr($sSection, 1);
 
     if($aData['value']){
 
@@ -133,7 +134,9 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
             .'</div>'
                 . $sBoxes.'</ul>'
             . ($sLegende 
-                ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend($sLegende)
+                ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend($sLegende).'<br>'
+                    . $this->_getHistoryCounter(['status'.$sSection2])
+
                 : ''
             )
             . '<div style="clear: both;"></div>'
@@ -152,6 +155,7 @@ $sReturn.='<h3>'.$this->lB("linkchecker.check-links").'</h3>'
                 'type'=>'pie',
                 'data'=>$aChartItems
             ))
+            . $this->_getHistoryCounter(['statusError','statusWarning','statusOk','statusTodo'])
 
         . $sResResult
         ;

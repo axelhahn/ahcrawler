@@ -272,9 +272,10 @@ if(!$this->_configExists() ){
                 // .'<div style="clear: left;"></div>'
                 .''
                 .($aGlobal['_global']['pages']['value']
-                        ? '<div class="floatleft">'
+                        ? ''
+                        . '<div class="floatleft">'
                         . '<br>'
-                        . $this->lB('db-pages.time').'<br><br>'
+                        . $this->lB('home.hints.loadingtime-all-pages').'<br><br>'
                         . $this->_getChartOfRange(
                             'select time
                             from pages 
@@ -289,6 +290,7 @@ if(!$this->_configExists() ){
                 )
                 .($sHints
                      ?  '<h3>'.$this->lB('home.hints').'</h3>'
+                        . $this->_getHistoryCounter(['TotalWarnings','TotalErrors'])
                         .$sHints
                      : ''
                 )

@@ -3,7 +3,7 @@
     if(!defined('BACKEND')){
         define('BACKEND', false);
     } 
-
+    
     require_once(__DIR__ . "/classes/backend.class.php");
     
     $bIsBackend = preg_match('#\/backend\/#', $_SERVER["REQUEST_URI"]);
@@ -23,6 +23,42 @@
         header('Location: '.$sBackendRel.'/?page=installer');
         die();
     }
+    
+    // ----- INIT CACHE
+    $iSiteId=isset($_GET['siteid']) ? $_GET['siteid'] : (isset($_SESSION['siteid']) ? $_SESSION['siteid'] : false);
+    // $iSiteId=$oBackend->getSiteId();
+    $bUseCache=$bIsBackend && $iSiteId && $oBackend->isCacheable() && $_SERVER['REQUEST_METHOD']=='GET';
+    // $bUseCache=false;
+    if($bUseCache){
+        require_once(__DIR__ . "/classes/cache.class.php");
+        $sRefFile=__DIR__. '/data/indexlog-siteid-'.$iSiteId.'.log';
+        $aGetParams=$_GET;
+        unset($aGetParams['page']);
+        unset($aGetParams['siteid']);
+        unset($aGetParams['lang']);
+        $sCacheId='backend-page'
+                // .'|user='.$_SESSION['AUTH_USER']
+                // .'|template='...
+                .'|'.$oBackend->aAbout['product']
+                .'|'.$oBackend->aAbout['version']
+                .'|'.$oBackend->aAbout['date']
+                .'|siteid='.$iSiteId
+                .'|lang='.$oBackend->getLang()
+                .'|page='.$oBackend->getPage()
+                .'|more_get_params='.print_r($aGetParams, 1)
+                ;
+        // echo $sCacheId.'<br>'; // die();
+        $oCache = new AhCache($oBackend->getCacheModule(), $sCacheId);
+        if (!$oCache->isExpired()){
+            header("X-CACHE-DELIVERY: YES");
+            echo $oCache->read();
+            return true;
+            exit(0);
+        }
+    }
+    // ----- START PAGE
+    header("X-CACHE-DELIVERY: NO");
+    ob_start();
 
     require_once(__DIR__ . "/classes/cdnorlocal.class.php");
 
@@ -41,7 +77,7 @@
         "font-awesome/5.15.4",
         "jquery/3.6.0",
         // "Chart.js/2.9.4"
-        "Chart.js/3.5.1"
+        "Chart.js/3.6.0"
     ));
 
     // ----------------------------------------------------------------------
@@ -221,9 +257,9 @@
         ?>
     </body></html><?php
 
-    /*
     $sHtmldata= ob_get_contents();
     // ob_end_flush();
-    
-    $oCache->write($sHtmldata,3600);
-     */
+    if ($bUseCache){
+        $oCache->write($sHtmldata,30,$sRefFile);
+    }
+    // echo $sHtmldata;

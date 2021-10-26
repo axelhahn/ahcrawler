@@ -61,7 +61,7 @@ if(isset($_POST) && is_array($_POST) && count($_POST)){
         
     } catch (Exception $ex) {
         $sReturn.= $oRenderer->renderMessagebox($this->lB('setup.program.save.error.wrong-dbsettings'), 'error')
-            .(isset($oDbtest) ? print_r($oDbtest->error(), 1) : '')
+            .(isset($oDbtest) ? print_r($oDbtest->error, 1) : '')
         ;
     }
     

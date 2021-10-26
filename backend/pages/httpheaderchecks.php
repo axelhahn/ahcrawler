@@ -212,7 +212,8 @@ $sTiles='';
 
         $sWarnings.= ''
                 . '<h4 id="warnunknown">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')).'</h4>'
-                . $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning')
+                . $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning').'<br>'
+                . $this->_getHistoryCounter(['responseheaderUnknown'])
                 ;
         foreach($aUnknownheader as $sKey=>$aHeaderitem){
             $sTiles .= $oRenderer->renderTile('warning', $this->lB('httpheader.unknown.tile'), $aHeaderitem['var'], $aHeaderitem['value'])
@@ -234,7 +235,8 @@ $sTiles='';
         $iWarnings+=$iDeprecated;
         $sWarnings.= ''
             . '<h4 id="warndeprecated">'.$this->lB('httpheader.header.deprecated').'</h4>'
-            . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning')
+            . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning').'<br>'
+            . $this->_getHistoryCounter(['responseheaderDeprecated'])
             . '<ul>'
             ;
         foreach($aDepr as $sKey=>$aHeaderitem){
@@ -250,7 +252,9 @@ $sTiles='';
         $iWarnings+=$iUnwanted;
         $sWarnings.= ''
                 . '<h4 id="warnunwanted">'.str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')).'</h4>'
-                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning');
+                . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning').'<br>'
+                . $this->_getHistoryCounter(['responseheaderUnwanted'])
+                ;
         foreach($aWarnheader as $sKey=>$aHeaderitem){
             $sWarnings .= $oRenderer->renderTileBar(
                     $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
@@ -279,6 +283,7 @@ $sTiles='';
         $iWarnings+=$iNonStandard;
         $sWarnings.= ''
             . '<h4 id="warnnonstandard">'.$this->lB('httpheader.header.non-standard').'</h4>'
+            . $this->_getHistoryCounter(['responseheaderNonStandard'])
             . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.non-standard'), 'warning')
             . '<ul>'
             ;
@@ -398,6 +403,7 @@ $sReturn.= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</h
                 . $this->lB('httpheader.securityheaders.description').'<br>'
             . '</p>'
             . $this->_getHtmlchecksChart(count($aSecHeader), $iWarnSecHeader, $iErrorSecHeader)
+            . $this->_getHistoryCounter(['responseheaderSecurity'])
             . '<div style="clear: both;"></div>'
                 . ($sLegendeSecOk ? '<h4>'.$this->lB('httpheader.securityheaders.found').'</h4>'.$sLegendeSecOk : '')
                 . ($sLegendeSecMiss ? '<h4>'.$this->lB('httpheader.securityheaders.notfound').'</h4>'.$sLegendeSecMiss : '')
