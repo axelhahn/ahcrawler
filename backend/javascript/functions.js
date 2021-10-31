@@ -323,7 +323,7 @@ function hideModal(){
 
 /**
  * get css value by given property and selector
- * see https://stackoverflow.com/questions/16965515/how-to-get-a-style-attribute-from-a-css-class-by-javascript-jquery
+ * see used code base at https://stackoverflow.com/questions/16965515/how-to-get-a-style-attribute-from-a-css-class-by-javascript-jquery
  * 
  * @param {type} style
  * @param {type} selector
@@ -331,6 +331,7 @@ function hideModal(){
  * @returns {.sheet@arr;cssRules.style}
  */
 function getStyleRuleValue(style, selector, sheet) {
+    var oReturn=null;
     var sheets = typeof sheet !== 'undefined' ? [sheet] : document.styleSheets;
     for (var i = 0, l = sheets.length; i < l; i++) {
         var sheet = sheets[i];
@@ -339,7 +340,7 @@ function getStyleRuleValue(style, selector, sheet) {
             for (var j = 0, k = sheet.cssRules.length; j < k; j++) {
                 var rule = sheet.cssRules[j];
                 if (rule.selectorText && rule.selectorText.split(',').indexOf(selector) !== -1) {
-                    return rule.style[style];
+                    oReturn=rule.style[style];
                 }
             }
         } catch (e) {
@@ -348,7 +349,7 @@ function getStyleRuleValue(style, selector, sheet) {
             }
         }
     }
-    return null;
+    return oReturn;
 }
 
 // ----------------------------------------------------------------------
