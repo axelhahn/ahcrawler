@@ -16,6 +16,8 @@
 
     --tile-bg:radial-gradient(#fff,#c0d0d8);
     --tile-color:#789;
+
+    --context-head-bg:radial-gradient(#fff,#c0d0d8); /* is --tile-bg */
     
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
@@ -217,7 +219,7 @@ div.contextbox{
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--tile-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
+div.contextbox .head{background: var(--context-head-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
 div.contextbox .content{margin: 1em;}
 
 .hintextended{background:rgba(0,0,0,0.05); }
@@ -497,6 +499,9 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 {color: inherit;}
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active
 {color: inherit !important;}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	color: inherit !important;
+}
 
 .pure-table td{
     vertical-align: top;
@@ -565,7 +570,7 @@ div.pure-control-group > div > label:hover{opacity: 0.7; background: rgba(255,25
 --------------------------------------------------------------------------------
 */
 
-div.person{border: 1px solid rgba(0,0,0,.1); background: #fff; height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
+div.person{border: 1px solid rgba(0,0,0,.1); background: rgba(255,255,255,0.5); height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
 div.person .name{font-weight: bold;}
 
  @media print{

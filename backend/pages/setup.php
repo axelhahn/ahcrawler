@@ -578,6 +578,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixCrawler.'userAgent', 'label'=>$this->lB('setup.section.crawler.userAgent')))
                 . $oRenderer->oHtml->getTag('input', array(
+                    'type'=>'text',
                     'id'=>$sIdPrefixCrawler.'userAgent', 
                     'name'=>'options[crawler][userAgent]',
                     'size'=>$iSizeInInput,
@@ -829,6 +830,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'name', 'label'=>$this->lB('setup.section.database.name')))
                     . $oRenderer->oHtml->getTag('input', array(
+                        'type'=>'text',
                         'id'=>$sIdPrefixDb.'name', 
                         'name'=>'options[database][database_name]',
                         'size'=>$iSizeInInput,

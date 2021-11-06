@@ -1827,7 +1827,7 @@ class backend extends crawler_base {
                         label: \''.(isset($aDataset['label']) ? $aDataset['label'] : '').'\',
                         data: '.json_encode($dsData['values']).',
                         backgroundColor: '. str_replace('"', '', json_encode($dsData['colors'])).',
-                        borderWidth: 1,
+                        borderWidth: 0,
                         fill: false                    
                     }';
             }
