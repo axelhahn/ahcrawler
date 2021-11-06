@@ -1,7 +1,7 @@
 :root {
     --color-default:#567;
     --color-bg-default:#202428;
-    --color-bg-default:#222024;
+    --color-bg-default:#222028;
     --color-shadow-default:rgba(0,0,0,0.4);
     
     --color-border-active:#89a;
@@ -85,6 +85,10 @@ table.dataTable thead th:hover{background-color: #234; }
 div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,255,0.02);} 
 
 /* ----- custom elements ----- */
+#overlay div.divdialog {
+    background: #222024;
+    box-shadow: 0.1em 0.1em 2em #333, 0.5em 0.5em 3em #000;
+}
 
 .button-success,
 .button-error,
@@ -102,6 +106,11 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 
 .div-toggle{background: none;}
 .div-toggle-head a{background: rgba(255,255,255,0.03);}
+
+.divRessourceReport {background: none;}
+.divRessourceReport:hover {background: rgba(255,255,255,0.02);}
+.divRessourceAsLine {border-bottom: 1px solid #234; }
+.divRessourceAsLine:hover {background: rgba(0,0,0,0.1);}
 
 /* --- color for pie chart --- */
 
@@ -121,8 +130,7 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
     color: #111;
     opacity: 0.7;
 }
-
-#overlay div.divdialog {
-    background: #222024;
-    box-shadow: 0.1em 0.1em 2em #333, 0.5em 0.5em 3em #000;
-}
+.last-http-code-2xx {background:#102020;}
+.last-http-code-3xx{background:#fec;}
+.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#fdd;}
+.last-http-code-5xx {background:#ece;}
