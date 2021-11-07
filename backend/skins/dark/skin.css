@@ -84,6 +84,14 @@ table.dataTable thead th:hover{background-color: #234; }
 }
 div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,255,0.02);} 
 
+/* --- http response header tags ---  */
+.pure-table tr.cache{background: #334; color:rgba(255,255,255,0.4);}
+.pure-table tr.compression{background: #424; color:rgba(255,255,255,0.4);}
+.pure-table tr.non-standard{background: #543; color:rgba(255,255,255,0.4);}
+.pure-table tr.security{background: #343; color:rgba(255,255,255,0.4);}
+.pure-table tr.unknown{color:#444;}
+.pure-table tr.unwanted{background: #432; color:rgba(255,255,255,0.4);}
+
 /* ----- custom elements ----- */
 #overlay div.divdialog {
     background: #222024;
@@ -119,18 +127,24 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .chartcolor-ok{color:#153;}
 .chartcolor-todo{color:#333;}
 
-.chartcolor-1{color:#8ac;}
+.chartcolor-1{color:#245;}
 .chartcolor-2{color:#c8a;}
 .chartcolor-3{color:#ac8;}
 .chartcolor-4{color:#a8c;}
 .chartcolor-5{color:#eb6;}
+
+/* --- http status --- */
 
 .http-code {
     box-shadow: none;
     color: #111;
     opacity: 0.7;
 }
-.last-http-code-2xx {background:#102020;}
-.last-http-code-3xx{background:#fec;}
-.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#fdd;}
-.last-http-code-5xx {background:#ece;}
+.last-http-code-2xx {background:#143;}
+.last-http-code-3xx{background:#542;}
+.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#422;}
+.last-http-code-5xx {background:#535;}
+
+
+.divRessource {border: 1px solid rgba(255,255,255,0.1);}
+.divRessourceHead {background-color: #234;}
