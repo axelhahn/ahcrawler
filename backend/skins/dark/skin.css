@@ -62,7 +62,7 @@ div.contextbox .head{opacity: 1;}
 
 .pure-button{background: rgba(255,255,255,0.25); color:#999;}
 .pure-table{background:none; border-color: rgba(255,255,255,0.05);}
-.pure-table-horizontal th{background-color: #1a2028; color:var(--color-default)}
+.pure-table-horizontal th{background-color: #28242e; color:var(--color-default)}
 
 .pure-table tr:hover, table.dataTable tbody tr:hover{background: rgba(255,255,255,0.01);}
 .pure-table-horizontal td{border-bottom-width: 0;}
@@ -128,10 +128,10 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .chartcolor-todo{color:#333;}
 
 .chartcolor-1{color:#245;}
-.chartcolor-2{color:#c8a;}
-.chartcolor-3{color:#ac8;}
-.chartcolor-4{color:#a8c;}
-.chartcolor-5{color:#eb6;}
+.chartcolor-2{color:#534;}
+.chartcolor-3{color:#453;}
+.chartcolor-4{color:#435;}
+.chartcolor-5{color:#543;}
 
 /* --- http status --- */
 
