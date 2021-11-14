@@ -281,6 +281,7 @@
     "setup.section.backend": "Backend",
     "setup.section.backend.hint": "Settings for the backend",
     "setup.section.backend.lang": "Language in the backend",
+    "setup.section.backend.skin": "Look/ Skin",
     "setup.section.backend.menu": "Visibility of menu items",
     "setup.section.backend.debug": "Show debugging information<br>(for developers)",
     "setup.section.crawler": "Crawler defaults",

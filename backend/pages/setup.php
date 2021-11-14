@@ -272,6 +272,26 @@ foreach($this->getLanguages('backend') as $sLangOption=>$sLangname){
 }
 $aLangOptions[$sDefaultLang]['selected']='selected';
 
+// echo '<pre>'; print_r($this->getSkinsAvailable()); die();
+$aSkinOptions=array();
+// $sDefaultSkin=isset($aOptions['options']['skin']) ? $aOptions['options']['skin'] : 'default';
+$sDefaultSkin=$this->getSkin();
+$sSelectedSkin=false;
+foreach($this->getSkinsAvailable() as $sSkin=>$aInfos){
+    $aSkinOptions[$aInfos['label']]=array(
+        'value'=>$aInfos['label'],
+        'label'=>''
+            // .$aInfos['label'].' | '
+            .$sSkin
+            // .(isset($aInfos['description']) ? ' :: '. htmlentities($aInfos['description']) : '')
+            .(isset($aInfos['author']) ? ' ('. htmlentities($aInfos['author']).')' : '')
+        ,
+    );
+    $sSelectedSkin=($aInfos['label']===$sDefaultSkin ? $aInfos['label'] : $sSelectedSkin);
+}
+$aSkinOptions[$sSelectedSkin]['selected']='selected';
+// echo '<pre>'; print_r($aSkinOptions); // die();
+        
 $sMenuVisibility='';
 $sFrontendVisibility='';
 foreach ($this->_aMenu as $sItem=>$aSubItems) {
@@ -370,6 +390,15 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'name'=>'options[lang]',
                     // 'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
                     ), $aLangOptions)
+            . '</div>'
+
+        . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixOther.'skin', 'label'=>$this->lB('setup.section.backend.skin')))
+                . $oRenderer->oHtml->getFormSelect(array(
+                    'id'=>$sIdPrefixOther.'skin', 
+                    'name'=>'options[skin]',
+                    // 'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
+                    ), $aSkinOptions)
             . '</div>'
 
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'

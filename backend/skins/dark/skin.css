@@ -138,13 +138,17 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .http-code {
     box-shadow: none;
     color: #111;
-    opacity: 0.7;
+    opacity: 0.5;
 }
 .last-http-code-2xx {background:#143;}
 .last-http-code-3xx{background:#542;}
 .last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#422;}
 .last-http-code-5xx {background:#535;}
 
+.divRessourceReport.http-code-2xx {border-color: var(--status-color-ok);}
+.divRessourceReport.http-code-3xx{border-color: var(--status-color-warning);}
+.divRessourceReport.http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {border-color: var(--status-color-error);}
+.divRessourceReport.http-code-5xx {border-color: #b6b;}
 
 .divRessource {border: 1px solid rgba(255,255,255,0.1);}
 .divRessourceHead {background-color: #234;}

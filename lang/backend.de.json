@@ -290,6 +290,7 @@
     "setup.section.backend": "Backend",
     "setup.section.backend.hint": "Einstellungen f&uuml;r das Backend",
     "setup.section.backend.lang": "Sprache im Backend",
+    "setup.section.backend.skin": "Aussehen/ Skin",
     "setup.section.backend.menu": "Sichtbarkeit der Menu-Elemente",
     "setup.section.backend.customfooter": "Eigener Html-code am Dokument-Ende (zum Besuchertracking o.&auml;.)",
     "setup.section.backend.fordevelopers": "F&uuml;r Entwickler",
