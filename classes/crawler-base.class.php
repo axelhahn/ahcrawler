@@ -728,7 +728,7 @@ class crawler_base {
                 break;
 
             default:
-                echo __FUNCTION__ . ' - type ' . $this->aOptions['database']['type'] . ' was not implemented yet.<br><pre>';
+                echo __FUNCTION__ . ' - type ' . $this->aOptions['database']['database_type'] . ' was not implemented yet.<br><pre>';
                 print_r($this->aOptions['database']);
                 die();
         }
