@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2021-11-15: v0.150
+  * FIX: install from scratch was broken in 0.149
+  * ADDED: set skin in the settings
+  * ADDED: dark theme (work in progress)
+
 2021-10-26: v0.149
   * FIX: warning if missing iSiteid in counter.class.php
   * FIX: follow 30x redirects in link checker
