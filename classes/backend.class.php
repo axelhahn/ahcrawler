@@ -310,6 +310,15 @@ class backend extends crawler_base {
     // LOGIN
     // ----------------------------------------------------------------------
 
+    /**
+     * return if current backend page is cachable as boolean.
+     * it is false for
+     * - public pages
+     * - if option for caching is off
+     * - if debug is anbled
+     * - backend pages named in $_nonCachable
+     * @return bool
+     */
     public function isCacheable(){
         $_nonCachable=[
             'sslcheck',
@@ -321,6 +330,10 @@ class backend extends crawler_base {
             'setup',
             'vendor',
         ];
+        if ($this->_bIsPublic){
+            $this->logAdd(__METHOD__.' - page is public - ignore page cache' );
+            $bReturn=false;
+        }
         if(isset($this->aOptions['cache']) && !$this->aOptions['cache']){
             $this->logAdd(__METHOD__.' - cache is disabled - ignore page cache' );
             $bReturn=false;
@@ -959,6 +972,35 @@ class backend extends crawler_base {
         $sUrlJs='javascript/functions-'.$this->_sPage.'.js';
         $sPageJs=dirname(__DIR__).'/backend/'.$sUrlJs;
         return file_exists($sPageJs) ? $sUrlJs : '';
+    }
+    
+    /**
+     * get current skin; it is the string of the subdir 
+     * @since v0.150
+     * @return string
+     */
+    public function getSkin() {
+        return (isset($this->aOptions['skin']) && $this->aOptions['skin'])
+            ? $this->aOptions['skin']
+            : 'default'
+        ;
+    }
+    /**
+     * get an array with available skins (=names of subdirs in ./backend/skins/*)
+     * @since v0.150
+     * @return string
+     */
+    public function getSkinsAvailable() {
+        $aReturn=[];
+        foreach(glob(dirname(__DIR__).'/backend/skins/*') as $sSkinname){
+            if(is_dir($sSkinname)){
+                $aInfos = file_exists($sSkinname.'/info.json') ? json_decode(file_get_contents($sSkinname.'/info.json'), true) : ['name'=>''];
+                $aInfos['label']=basename($sSkinname);
+                $aReturn[$aInfos['name']]=$aInfos;
+            }
+        }
+        ksort($aReturn);
+        return $aReturn;
     }
     
     public function getStatus() {
@@ -1827,7 +1869,7 @@ class backend extends crawler_base {
                         label: \''.(isset($aDataset['label']) ? $aDataset['label'] : '').'\',
                         data: '.json_encode($dsData['values']).',
                         backgroundColor: '. str_replace('"', '', json_encode($dsData['colors'])).',
-                        borderWidth: 1,
+                        borderWidth: 0,
                         fill: false                    
                     }';
             }

@@ -16,6 +16,8 @@
 
     --tile-bg:radial-gradient(#fff,#c0d0d8);
     --tile-color:#789;
+
+    --context-head-bg:radial-gradient(#fff,#c0d0d8); /* is --tile-bg */
     
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
@@ -30,7 +32,6 @@
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
-    --chart-background_OLD: linear-gradient(-7deg, #cce,#e0f0ff 20%,#fff 60%,#ffe8d0 90%,#fda);
     --chart-background: none;
     --chart-border:5px solid #fff;
 }
@@ -193,7 +194,7 @@ p.pageHint{
     padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 6em; 
 }
 p.pageHint:before{content: ':: ';}
-h3{ color:#679; font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
+h3{ color:#567; font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
 h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
 h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 
@@ -218,7 +219,7 @@ div.contextbox{
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--tile-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
+div.contextbox .head{background: var(--context-head-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
 div.contextbox .content{margin: 1em;}
 
 .hintextended{background:rgba(0,0,0,0.05); }
@@ -494,6 +495,13 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
     background-color:#abc; color:#343;
 }
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate
+{color: inherit;}
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover, .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active
+{color: inherit !important;}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+	color: inherit !important;
+}
 
 .pure-table td{
     vertical-align: top;
@@ -528,7 +536,7 @@ div.pure-control-group > div > label:hover{opacity: 0.7; background: rgba(255,25
 #selectProject span {display: inline-block; margin: 1em 0.2em 1em 0 ;}
 #selectProject select{font-size: 110%; font-weight: bold; background: none;  color: var(--color-default); border-width: 0px; opacity: 0.6;}
 #selectProject select option {font-size: 90%; font-weight: normal;padding: 0.4em;}
-#selectProject select:hover{background: #fff; opacity: 1;}
+#selectProject select:hover{background: rgba(255,255,255,0.7);}
 
 .pure-control-group div {vertical-align: top; display: inline-block; min-width: 36em;}
 .insertimage {background: rgba(0,0,0,0.05); border: 3px dashed rgba(0,0,0,0.2); display: inline-block; max-width: 30em; padding: 1em; }
@@ -562,7 +570,7 @@ div.pure-control-group > div > label:hover{opacity: 0.7; background: rgba(255,25
 --------------------------------------------------------------------------------
 */
 
-div.person{border: 1px solid rgba(0,0,0,.1); background: #fff; height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
+div.person{border: 1px solid rgba(0,0,0,.1); background: rgba(255,255,255,0.5); height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
 div.person .name{font-weight: bold;}
 
  @media print{

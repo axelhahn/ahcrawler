@@ -43,6 +43,7 @@
                 .'|'.$oBackend->aAbout['version']
                 .'|'.$oBackend->aAbout['date']
                 .'|siteid='.$iSiteId
+                .'|skin='.$oBackend->getSkin()
                 .'|lang='.$oBackend->getLang()
                 .'|page='.$oBackend->getPage()
                 .'|more_get_params='.print_r($aGetParams, 1)
@@ -115,7 +116,7 @@
     // ----------------------------------------------------------------------
     // GENERATE CONTENT
     // ----------------------------------------------------------------------
-    
+
     $sHtmlHead=''
         
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/pure-min.css") . "\n"
@@ -135,8 +136,7 @@
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/chart.min.js") . "\n"
             .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
-            .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/default/skin.css">'
-            // .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/dark/skin.css">'
+            .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/'.$oBackend->getSkin().'/skin.css">'
 
             ;
     
