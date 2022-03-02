@@ -657,6 +657,8 @@
     "about.thanks.medoo": "<strong>Medoo<\/strong><br>The lightest PHP database framework to accelerate development",
     "about.thanks.pure": "<strong>Yahoo Pure.CSS<\/strong><br>A set of small, responsive CSS modules that you can use in every web project.",
     "about.thanks.rollingcurl": "<strong>Rolling-curl<\/strong><br>Efficient non-blocking multi-curl library for PHP",
+    "about.phpinfo": "PHP information",
+    "about.phpinfo-hint": "The table shows the installed PHP version and installed PHP modules.",
     "update.welcome.label": "Welcome to the Software updater!",
     "update.welcome.description": "The following assistent guides you through the update process.<br>Let's start with the version comparison.",
     "update.welcome.available-yes": "There is an update to version %s available. Follow the assistent to update the software.",

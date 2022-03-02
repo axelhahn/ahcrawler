@@ -15,6 +15,7 @@ $oInstaller=new ahwi(array(
 $aRequirements=$oInstaller->getRequirements();
 echo '<pre>'. print_r($aRequirements, 1).'</pre>';
  */
+require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
 
 $sReturn = '';
 
@@ -36,7 +37,55 @@ $aIcons=array(
 $sPeople='';
 
 $oRenderer=new ressourcesrenderer($this->_sTab);
+if(BACKEND==true){
+    // ----------------------------------------------------------------------
+    // requirements
+    // ----------------------------------------------------------------------
+    $oInstaller=new ahwi(array(
+        'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
+        'source'=>'',
+        'installdir'=>'',
+        'tmpzip'=>'',
+        'checks'=>$this->aAbout['requirements'],
+    ));
+    $aErr=$oInstaller->getRequirementErrors();
+    $aRequirements=$oInstaller->getRequirements();
+    /*
+    $aTableReq=array(
+        array(
+            $this->lB('installer.requirement.test'),
+            $this->lB('installer.requirement.result'),
+        )
+    );
+    $aTableReq=[];
+     * 
+     */
+    $aAllMods=get_loaded_extensions(false);
+    asort($aAllMods);        
+    if(isset($aRequirements['phpversion'])){
+        $aTableReq[]=array(
+            sprintf($this->lB('installer.requirement.phpversion'), $aRequirements['phpversion']['required']),
+            ($aRequirements['phpversion']['result'] 
+                ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok') .' ('.$aRequirements['phpversion']['value'].')'
+                : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail') .' ('.$aRequirements['phpversion']['value'].')'
+            ),
+        );
+    }
 
+    foreach ($aAllMods as $sPhpModule){
+        $aTableReq[]=array(
+            sprintf($this->lB('installer.requirement.phpextension'), $sPhpModule),
+            (isset($aRequirements['phpextensions'][$sPhpModule])
+                ? ($aRequirements['phpextensions'][$sPhpModule]['result'] 
+                    ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok')
+                    : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail')
+                    )
+                : ''
+                )
+        );
+    }
+}
+        
 if (isset($this->aAbout['thanks'])){
     foreach ($this->aAbout['thanks'] as $sSection=>$aPeople ){
         if(count($aPeople)){
@@ -131,5 +180,13 @@ $sReturn.=''
                     array($this->lB('about.thanks.rollingcurl'), '<a href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'),
                     array($this->lB('about.thanks.pure'), '<a href="https://purecss.io/">https://purecss.io/</a>'),
                 )
-        );
+        )
+        .(isset($aTableReq) && count($aTableReq) 
+            ? 
+                '<h3>' . $this->lB('about.phpinfo') . '</h3>'
+                . '<p>' . $this->lB('about.phpinfo-hint') . '</p>'
+                .$this->_getSimpleHtmlTable($aTableReq,1) 
+            : ''
+         )
+        ;
 return $sReturn;
