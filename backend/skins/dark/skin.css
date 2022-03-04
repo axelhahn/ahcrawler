@@ -1,7 +1,7 @@
 :root {
     --color-default:#567;
     --color-bg-default:#202428;
-    --color-bg-default:#222028;
+    --color-bg-default:#242630;
     --color-shadow-default:rgba(0,0,0,0.4);
     
     --color-border-active:#89a;
@@ -16,11 +16,11 @@
     --context-head-bg:radial-gradient(#303840,#456);
     
     --status-bg-error:radial-gradient(#422,#844);
-    --status-bg-error-flat:#844;
+    --status-bg-error-flat:rgb(114, 59, 59);
     --status-bg-warning:radial-gradient(#432,#863);
-    --status-bg-warning-flat:#863;
+    --status-bg-warning-flat:rgb(83, 68, 45);
     --status-bg-ok:radial-gradient(#133,#354);
-    --status-bg-ok-flat:#354;
+    --status-bg-ok-flat:rgb(45, 71, 58);
     --status-bg-todo:radial-gradient(#303030,#202020);
     
     --status-color-error:#c88;
@@ -30,39 +30,53 @@
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --chart-background_V: linear-gradient(-7deg, #080810,#102030 20%,#345 60%,#234 90%,#123);
-    --chart-background: none;
+    --chart-background: rgba(0,0,0,0.1);
     --chart-border:5px solid #222;
 }
 a{color:#568;}
 body, .contextbox{
 	color: var(--color-default);
-        background: var(--color-bg-default) url('bg_main.png') fixed;
+    background: var(--color-bg-default) url('bg_main.png') fixed;
+    background: var(--color-bg-default) fixed;
 }
-h2{}
+h2{box-shadow: none; color:#789;}
 h3{border-top-color: rgba(255,255,255,0.1); }
 h4 {border-bottom: 1px dashed #444;}
 hr {border-bottom: 2px dotted #444;}
 input, option, select, textarea{background: rgba(255,255,255,0.3); border-color: var(--color-bg-default );}
 
-pre{background: rgba(0,0,0,0.6);}
+pre{background: rgba(0,0,0,0.1); }
+.message pre{ color: rgba(0,0,0,0.8); }
+div.contextbox .head{color: rgba(255,255,255,0.4);opacity: 1;}
 
-ul.tiles a.tile:hover{
+ul.tiles a.tile:hover, a.childitem:hover{
     box-shadow: 0 0 5px #000, 0 0 1em #468;
 }
+a.childitem{
+    color:var(--color-default);
+}
+a.childitem:hover{
+    background: none;
+}
 
-div.contextbox .head{opacity: 1;}
 
 /* ----- override pure elements ----- */
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:#123;}
 .header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:#123;}
-.header .pure-menu-list .pure-menu-list .pure-menu-link-active {
-	background: #456;
+.header .pure-menu-list .pure-menu-list .pure-menu-link-active,
+    .pure-menu a:active{
+	__background: #456 !important;
 	border-color: var(--color-default);
+}
+
+.pure-menu-link i {
+	color: #89a;
 }
 
 .pure-button{background: rgba(255,255,255,0.25); color:#999;}
 .pure-table{background:none; border-color: rgba(255,255,255,0.05);}
-.pure-table-horizontal th{background-color: #28242e; color:var(--color-default)}
+.pure-table-horizontal th{background-color: #283040; color:var(--color-default)}
+.pure-table-horizontal th:hover{background-color: #304050;}
 
 .pure-table tr:hover, table.dataTable tbody tr:hover{background: rgba(255,255,255,0.01);}
 .pure-table-horizontal td{border-bottom-width: 0;}
@@ -77,7 +91,7 @@ div.contextbox .head{opacity: 1;}
 
 table.dataTable tbody tr{background: none;}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc{background-color: #234; color:#789;}
-table.dataTable thead th:hover{background-color: #234; }
+table.dataTable thead th:hover{background-color: #304050;}
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
         background: rgba(255,255,255,0.25); color:#999;
@@ -97,6 +111,7 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
     background: #222024;
     box-shadow: 0.1em 0.1em 2em #333, 0.5em 0.5em 3em #000;
 }
+.pure-button {background: #283040;}
 
 .button-success,
 .button-error,
@@ -108,7 +123,7 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 }
 
 .button-success {background: rgb(40, 144, 90); /* this is a green */}
-.button-error {background: rgb(150, 40, 40); /* this is a maroon */}
+.button-error {background: rgb(170, 60, 60); /* this is a maroon */}
 .button-warning {background: rgb(223, 117, 20); /* this is an orange */}
 .button-secondary {background: rgb(40, 110, 140); /* this is a light blue */}
 
@@ -133,6 +148,11 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .chartcolor-4{color:#435;}
 .chartcolor-5{color:#543;}
 
+.piechart {
+	border: none;
+	box-shadow: none;
+	background: var(--chart-background);
+}
 /* --- http status --- */
 
 .http-code {
@@ -152,3 +172,11 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 
 .divRessource {border: 1px solid rgba(255,255,255,0.1);}
 .divRessourceHead {background-color: #234;}
+
+div.person {
+    background: rgba(0,0,0,0.1);
+}
+
+img.profile {
+    opacity: 0.8;
+}
