@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.150',
-        'date' => '2021-11-15',
+        'version' => '0.151-dev',
+        'date' => '2022-03-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -79,6 +79,7 @@ class crawler_base {
         'database' => array(
             'database_type' => 'sqlite',
             'database_file' => '__DIR__/data/ahcrawl.db',
+            'error' => PDO::ERRMODE_EXCEPTION,
         ),
         'auth' => array(
         ),
@@ -536,6 +537,7 @@ class crawler_base {
         }
         $this->logAdd(__METHOD__.'() read from file');
         $aUserConfig = json_decode(file_get_contents($this->_getConfigFile()), true);
+        // $aUserConfig = json_decode(include($this->_getConfigFile()), true);
         if (!$aUserConfig || !is_array($aUserConfig) || !count($aUserConfig)) {
             die("ERROR: json file is invalid. Aborting");
         }        
@@ -814,9 +816,11 @@ class crawler_base {
             $this->oDB = new Medoo\Medoo($this->_getRealDbConfig($this->aOptions['database']));
         } catch (Exception $ex) {
             $this->logAdd(__METHOD__.'() ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.', 'error');
+            // $this->oDB = false;
             $this->oDB = false;
-            return false;
+            echo 'CRITICAL ERROR: Unable to connect the database. Maybe the initial settings / credentials are wrong or the database is offline.<br><br>';
             // die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
+            return false;
         }
         // if (!$this->_checkDbResult()) {
         if (!$this->oDB) {
@@ -1309,6 +1313,9 @@ class crawler_base {
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
         
         $this->_initDB();
+        if (!$this->oDB){
+            return false;
+        }
 
         if ($iSiteId && isset($aOptions['profiles'][$iSiteId])) {
             $this->iSiteId = $iSiteId;
@@ -1553,8 +1560,8 @@ class crawler_base {
      * @return array
      */
     public function setLangBackend($sLang = false) {
-        // TODO: why id made this? 
-        // $this->setSiteId(false);
+        // TODO: why id call this? --> to load profile and set lang
+        $this->setSiteId(false);
         return $this->_getLangData('backend', $sLang);
     }
 
