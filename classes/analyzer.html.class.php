@@ -204,7 +204,7 @@ class analyzerHtml {
 
     /**
      * callback function for rollingCurl
-     * @param string  $response  content
+     * @param object  $response  content
      * @param array   $info      http reposnse header
      */
     public function processResponse($response) {
