@@ -487,6 +487,12 @@ class backend extends crawler_base {
             $aKeys=array_keys($this->_aMenu);
             $sPage = $aKeys[0];
         }
+
+        // if a page makes a db request for a profile
+        if(!$this->iSiteId){
+            $this->setSiteId($this->_getTab());
+        }
+
         $sFilename=dirname(__DIR__).'/backend/pages/'.($this->_bIsPublic ? 'public_' : '').$sPage.'.php';
         if(!file_exists($sFilename)){
             $sPage='error404';

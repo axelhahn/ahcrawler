@@ -957,10 +957,16 @@ class crawler_base {
          * @return integer
          */
         public function getHtmlchecksCount($sKey, $iMinLength){
-            $aTmp = $this->oDB->query('
-                    select count(*) count from pages 
-                    where siteid='.$this->iSiteId.' and errorcount=0 and length('.$sKey.')<'.$iMinLength
-                )->fetchAll(PDO::FETCH_ASSOC);
+            if(!$this->iSiteId){
+                echo __METHOD__.' Warning: iSiteId is not set.'.PHP_EOL;
+                return false;
+            }
+            $sSql='select count(*) count 
+            from pages 
+            where 
+            siteid='.$this->iSiteId.' and errorcount=0 and length('.$sKey.')<'.$iMinLength;
+            // echo "DEBUG: ".__METHOD__." - sql=$sSql<br>";
+            $aTmp = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
             return isset($aTmp[0]['count']) ? $aTmp[0]['count'] : false;
         }
         /**
