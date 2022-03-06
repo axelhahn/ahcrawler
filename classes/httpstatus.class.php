@@ -273,6 +273,11 @@ class httpstatus {
         return $this->_http_code;
     }
 
+    /**
+     * get redirect url from header
+     * TODO: if the redirect is a relative url it won't be expanded to a full url
+     * @return string
+     */
     public function getRedirect(){
         if (!$this->isRedirect()){
             return false;

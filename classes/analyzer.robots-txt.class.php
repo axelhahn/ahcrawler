@@ -179,8 +179,8 @@ class analyzerHtml {
 
     /**
      * callback function for rollingCurl
-     * @param string  $response  content
-     * @param array   $info      http reposnse header
+     * @param object  $response  content
+     * @param array   $info      http reponse header
      */
     public function processResponse($response) {
         $url = $response->getUrl();
