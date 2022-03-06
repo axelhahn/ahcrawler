@@ -254,7 +254,7 @@ class ressourcesrenderer extends crawler_base {
             $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'" '
                     . 'class="'.implode(' ', array_values($aEntry['tags'])).'"'
                     . '>'
-                    . '<td>'.(strstr($aEntry['var'], '_') ? '' : $aEntry['var']) . '</td>'
+                    . '<td>'.(strstr($aEntry['var'], '_') ? '' : htmlentities($aEntry['var'])) . '</td>'
                     . '<td style="max-width: 30em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
                     . '<td>' . $sIcon    .'</td>'
                     . '<td>' . $sComment .'</td>'
@@ -1186,17 +1186,17 @@ class ressourcesrenderer extends crawler_base {
             
             $sReturn.=''
                     .$this->renderToggledContent(
-                    $this->lB('httpheader.data'),
-                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
-                        .(isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
-                            ? '<br><a href="../?page=httpheaderchecks&urlbase64='.base64_encode($aItem['url']).'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
-                            : ''
-                         )
+                        $this->lB('httpheader.data'),
+                        $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
+                            .(isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
+                                ? '<br><a href="../?page=httpheaderchecks&urlbase64='.base64_encode($aItem['url']).'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
+                                : ''
+                            )
+                            
+                        ,
                         
-                    ,
-                    
-                    false
-            );
+                        false
+                    );
         }
         
 

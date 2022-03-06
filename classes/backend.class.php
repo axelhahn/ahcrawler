@@ -487,6 +487,12 @@ class backend extends crawler_base {
             $aKeys=array_keys($this->_aMenu);
             $sPage = $aKeys[0];
         }
+
+        // if a page makes a db request for a profile
+        if(!$this->iSiteId){
+            $this->setSiteId($this->_getTab());
+        }
+
         $sFilename=dirname(__DIR__).'/backend/pages/'.($this->_bIsPublic ? 'public_' : '').$sPage.'.php';
         if(!file_exists($sFilename)){
             $sPage='error404';
@@ -1680,17 +1686,20 @@ class backend extends crawler_base {
     }
     
     /**
-     * prettify table output: limit a string to a mximum and insert space
+     * prettify table output: limit a string to a maximum and insert space
      * @param string  $sVal   string
      * @param int     $iMax   max length
      * @return string
      */
     private function _prettifyString($sVal, $iMax = 500) {
-        $sVal = str_replace(',', ', ', $sVal);
-        $sVal = str_replace(',  ', ', ', $sVal);
+        if($sVal){
+            $sVal = str_replace(',', ', ', $sVal);
+            $sVal = str_replace(',  ', ', ', $sVal);
+            return (strlen($sVal) > $iMax) ? '<textarea class="pure-input" cols="100" rows="10">'.$sVal . '</textarea><br>' : htmlentities($sVal);
+        }
+        return '';
         // $sVal = htmlentities($sVal);
         // return (strlen($sVal) > $iMax) ? substr($sVal, 0, $iMax) . '<span class="more"></span>' : $sVal;
-        return (strlen($sVal) > $iMax) ? '<textarea class="pure-input" cols="100" rows="10">'.$sVal . '</textarea><br>' : htmlentities($sVal);
     }
 
     /**

@@ -45,7 +45,7 @@ if(!$iUrls){
                 . '<form action="" method="get" class="pure-form">'
                     . '<input type="hidden" name="page" value="searchindextester">'
                     . '<input type="hidden" name="action" value="search">'
-                    . '<input type="hidden" name="siteid" value="' . $this->_sTab . '">'
+                    . '<input type="hidden" name="siteid" value="' . $this->iSiteId . '">'
 
                     . $o->renderLabelSearch().' '. $o->renderInput(array('size'=>100))
                     . '<button class="pure-button button-success">' . $this->_getIcon('button.search') . $o->lF('btn.search.label') . '</button> '

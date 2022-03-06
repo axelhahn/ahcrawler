@@ -10,6 +10,12 @@
 
 ----------------------------------------------------------------------
 
+2022-03-06: v0.151
+  * FIX: switch back to language en within content
+  * UPDATE: dark theme (work in progress)
+  * UPDATE: about page shows PHP version and modules
+  * UPDATE: PHP8.1 compatibility
+
 2021-11-15: v0.150
   * FIX: install from scratch was broken in 0.149
   * ADDED: set skin in the settings
