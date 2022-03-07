@@ -34,7 +34,7 @@ class crawler_base {
     public $aAbout = array(
         'product' => 'ahCrawler',
         'version' => '0.151',
-        'date' => '2022-03-06',
+        'date' => '2022-03-07',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -784,19 +784,32 @@ class crawler_base {
                             . 'ON <'.$sTable.'> '
                             . '( <'.implode('>, <', $aIndexItems[1]).'> )'
                             ;
-                    if (!$this->oDB->query($sqlIndex)) {
-                        /*
-                        echo 'DATABASE - CREATION OF INDEX FAILED :-/<pre>'
+                    try{
+                        if (!$this->oDB->query($sqlIndex)) {
+                            /*
+                            echo 'DATABASE - CREATION OF INDEX FAILED :-/<pre>'
+                                    . 'sql: '.$this->oDB->last()."\n\n"
+                                    . 'pre generated code for medoo:<br>'.htmlentities($sqlIndex) . "\n"
+                                . '</pre><br>'
+                                .print_r($this->oDB->error, 1)
+                                .print_r($this->oDB->errorInfo, 1)
+                                ;
+                            die();
+                            * 
+                            */
+                        }
+                    } catch (Exception $ex) {
+                        $this->logAdd(__METHOD__.'() ERROR: CREATION OF INDEX FAILED<pre>'
                                 . 'sql: '.$this->oDB->last()."\n\n"
                                 . 'pre generated code for medoo:<br>'.htmlentities($sqlIndex) . "\n"
                             . '</pre><br>'
                             .print_r($this->oDB->error, 1)
                             .print_r($this->oDB->errorInfo, 1)
-                            ;
-                        die();
-                         * 
-                         */
+                        )
+                        ;
+                        return false;
                     }
+
                 }
             }
             // /indexes
