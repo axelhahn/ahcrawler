@@ -489,7 +489,7 @@ class backend extends crawler_base {
         }
 
         // if a page makes a db request for a profile
-        if(!$this->iSiteId){
+        if(!$this->iSiteId && !$this->_bIsPublic){
             $this->setSiteId($this->_getTab());
         }
 
