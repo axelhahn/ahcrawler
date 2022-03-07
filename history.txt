@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2022-03-06: v0.151
+2022-03-07: v0.151
   * FIX: switch back to language en within content
   * UPDATE: dark theme (work in progress)
   * UPDATE: about page shows PHP version and modules
