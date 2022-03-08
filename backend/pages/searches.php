@@ -70,7 +70,7 @@ if (count($aLastSearches)) {
     $aKeys=false;
     foreach ($aLastSearches as $aRow) {
         $aTmp = unserialize($aRow['searchset']);
-        $sSubdir = (isset($aTmp['subdir']) && $aTmp['subdir']) ? $aTmp['subdir'] : '%'
+        $sSubdir = (isset($aTmp['subdir']) && $aTmp['subdir']) ? $aTmp['subdir'] : ''
         ;
 
         foreach ($aRow as $key => $value) {
