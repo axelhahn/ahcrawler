@@ -10,6 +10,11 @@
 
 ----------------------------------------------------------------------
 
+2022-03-16: v0.152
+  * FIX: repeat search on page search terms - top N
+  * FIX: do not abort if creation of database index failes
+  * ADDED: update a git instance
+
 2022-03-07: v0.151
   * FIX: switch back to language en within content
   * UPDATE: dark theme (work in progress)
