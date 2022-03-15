@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.152_dev',
-        'date' => '2022-03-xx',
+        'version' => '0.152',
+        'date' => '2022-03-16',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -444,7 +444,7 @@ class crawler_base {
      * return value of a $_POST or $_GET variable if it exists
      * 
      * @param string  $sVarname      name of post or get variable (POST has priority)
-     * @param regex   $sRegexMatch   set a regex that must match
+     * @param string  $sRegexMatch   set a regex that must match
      * @param string  $sType         force type: false|int
      * @return type
      */
@@ -1225,7 +1225,7 @@ class crawler_base {
      * delete database tables for crawled data. as a reminder: this deletes
      * all data for *all* defined profiles.
      * 
-     * @param type    $aItems  array with these keys as flags:
+     * @param array   $aItems    array with these keys as flags:
      *                           searchindex => true|false
      *                           ressources => true|false
      *                           searches => true|false
