@@ -17,6 +17,8 @@
  * ));
  * print_r($oUpdate->getUpdateInfos());
  * 
+ * source: https://github.com/axelhahn/ahwebinstall
+ * 
  * @author Axel Hahn
  */
 class ahwiupdatecheck {

@@ -8,6 +8,8 @@
  * 
  * STATUS: alpha - do not use yet
  * 
+ * source: https://github.com/axelhahn/ahwebinstall
+ * 
  * @author Axel Hahn
  */
 
@@ -117,8 +119,8 @@ class ahwi {
      * helper function after exracting zip file: skip a single subdir
      * (like zips in github)
      * 
-     * @param type $sSubdir
-     * @param type $aEntries
+     * @param string  $sSubdir
+     * @param array   $aEntries
      */
     protected function _moveIfSingleSubdir($sSubdir, $aEntries) {
         $sTargetPath = $this->aCfg['installdir'];
@@ -394,7 +396,31 @@ class ahwi {
         }
         return true;
     }
-    
+
+    /**
+     * detect vcs repository in install target to prevent 
+     * http download + unzip which could 
+     * @param  string  optional: subdir to detect in approot, eg. '.git'; default: false: detect git and svn
+     * @return boolean|array
+     */
+    function vcsDetect($sType=false){
+        $aReturn=[];
+        $aDetect=$sType ? [$sType] : ['.git', '.svn'];
+        foreach($aDetect as $sVcsType){
+            $aReturn[$sVcsType]=is_dir($this->aCfg['installdir'].'/'.$sVcsType);
+        }
+        return $sType ? $aReturn[$sType] : $aReturn;
+    }
+
+    /**
+     * detect git repository in install target to prevent 
+     * http download + unzip which and run git pull instead.
+     * @return boolean
+     */
+    function vcsDetectGit(){
+        return $this->vcsDetect('.git');
+    }
+
     /**
      * verify checksum of download data
      * @param string  $md5OfData  md5 hash (see method download())
