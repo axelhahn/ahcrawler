@@ -396,13 +396,13 @@ class crawler_base {
 
     /**
      * array for language texts
-     * @var type 
+     * @var array 
      */
     protected $aLang = array();
 
     /**
      * user agent for the crawler 
-     * @var type 
+     * @var string 
      */
     protected $sUserAgent = false;
 
@@ -807,7 +807,7 @@ class crawler_base {
                             .print_r($this->oDB->errorInfo, 1)
                         )
                         ;
-                        return false;
+                        // return false;
                     }
 
                 }
@@ -1507,14 +1507,15 @@ class crawler_base {
     }
     
     /**
+     * UNUSED
      * get array of ahwi-updater
      * @return type
      */
     public function setupRemoveUnwanted(){
-        foreach($thisaDefaultOptions['updater']['toremove']['files'] as $sFile){
+        foreach($this->aDefaultOptions['updater']['toremove']['files'] as $sFile){
             unlink($sFile);
         }
-        foreach($thisaDefaultOptions['updater']['toremove']['dirs'] as $sDir){
+        foreach($this->aDefaultOptions['updater']['toremove']['dirs'] as $sDir){
             unlink($sDir);
         }
         return true;
