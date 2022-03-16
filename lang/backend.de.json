@@ -719,6 +719,7 @@
     "update.gitpull.description": "Mit dem Kommando [git pull] wird die Software nun aktualisiert.",
     "update.gitpull.ok": "OK, die Aktualisierung wurde erfolgreich beendet.",
     "update.gitpull.failed": "Fehler: Das Update mit [git pull] ist fehlgeschlagen.",
+    "update.gitpull.no-git-cli": "Fehler: das Kommandozeilentool [git] wurde nicht gefunden.",
     "update.info.label": "Informationen zum Ablauf",
     "update.info.description": "Eine kurze Beschreibung, wie das Update abl&auml;uft.",
     "update.steps": "Die Aktualisierung erfolgt in wenigen Schritten. Es geht wie folgt weiter:",

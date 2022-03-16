@@ -112,7 +112,7 @@ if($oCli->getvalue('check')
 
 
 // ----- start / force update
-echo PHP_EOL.'Starting Installer...'.PHP_EOL.PHP_EOL;
+echo PHP_EOL;
 $oInstaller=new ahwi(array(
     'product'=>$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'],
     'source'=>$oCheck->getDownloadUrl(),
@@ -122,15 +122,33 @@ $oInstaller=new ahwi(array(
     'checks'=>$oCrawler->aAbout['requirements'],
 ));
 
-if(!$oInstaller->download(true)){
-    echo 'ERROR: download failed :-/'.PHP_EOL;
-    exit(2);
-}
+$bIsGit=$oInstaller->vcsDetect('git');
+if(!$bIsGit){
+    echo 'Starting Installer...'.PHP_EOL.PHP_EOL;
+    if(!$oInstaller->download(true)){
+        echo 'ERROR: download failed :-/'.PHP_EOL;
+        exit(2);
+    }
 
-echo PHP_EOL;
-if(!$oInstaller->install()){
-    echo 'ERROR: installation failed :-/'.PHP_EOL;
-    exit(3);
+    echo PHP_EOL;
+    if(!$oInstaller->install()){
+        echo 'ERROR: installation failed :-/'.PHP_EOL;
+        exit(3);
+    }
+} else {
+    echo 'Starting git pull ...'.PHP_EOL.PHP_EOL;
+    $aResult=$oInstaller->vcsUpdate('git');
+    if($aResult===false){
+        echo 'ERROR: git cli client not detected locally'.PHP_EOL;
+        exit(4);
+    } else {
+        $iRc=$aResult[0];
+        echo implode(PHP_EOL, $aResult[1]).PHP_EOL;
+        if ($iRc!=0){
+            echo 'ERROR: update with git failed :-/'.PHP_EOL;
+            exit(5);
+        }
+    }
 }
 
 

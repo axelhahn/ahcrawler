@@ -25,7 +25,10 @@ $oInstaller=new ahwi(array(
     'checks'=>$this->aAbout['requirements'],
 ));
 
-$bIsGit=$oInstaller->vcsDetectGit();
+// to get all known vcs:
+// $aTmpVcs=$oInstaller->vcsDetect();
+
+$bIsGit=$oInstaller->vcsDetect('git');
 $aSteps=$bIsGit 
     ? array(
         'welcome',
@@ -162,17 +165,22 @@ switch ($sStepName) {
             break;
     case 'gitpull':
         // $aUpdateInfos=getUpdateInfos(true);
-            ob_start();
-            exec('cd "'.$sTargetPath.'"; pwd; git pull', $aOutput, $iRc);
-            ob_end_clean();
-            $sOutput=implode('<br>', $aOutput);
-            if ($iRc==0){
-                $sReturn.=$this->lB('update.gitpull.ok')
-                    . '<br><br>'
-                    . $sBtnBack.$sBtnNext.$sScriptContinue
-                    ;
+            $aResult=$oInstaller->vcsUpdate('git');
+            if($aResult===false){
+                // wrong vcs or git not detected locally
+                $sReturn.=$sBtnBack.$this->lB('update.gitpull.no-git-cli');
+
             } else {
-                $sReturn.=$sBtnBack.$this->lB('update.gitpull.failed');
+                $iRc=$aResult[0];
+                $sOutput=implode('<br>', $aResult[1]);
+                if ($iRc==0){
+                    $sReturn.=$this->lB('update.gitpull.ok')
+                        . '<br><br>'
+                        . $sBtnBack.$sBtnNext.$sScriptContinue
+                        ;
+                } else {
+                    $sReturn.=$sBtnBack.$this->lB('update.gitpull.failed');
+                }
             }
         break;
         
