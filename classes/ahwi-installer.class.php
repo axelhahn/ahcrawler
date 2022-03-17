@@ -8,6 +8,8 @@
  * 
  * STATUS: alpha - do not use yet
  * 
+ * source: https://github.com/axelhahn/ahwebinstall
+ * 
  * @author Axel Hahn
  */
 
@@ -26,6 +28,20 @@ class ahwi {
     protected $aErrors = array();
     protected $aChecks = array();
 
+    protected $aVcs=[
+        'git'=>[
+            'label'=>'Git',
+            'dir'=>'.git',
+            'check'=>'git --version',
+            'update'=>'git pull',
+        ],
+        'svn'=>[
+            'label'=>'Subversion',
+            'dir'=>'.svn',
+            'check'=>'svn --version',
+            'update'=>'svn up',
+        ],
+    ];
     // ----------------------------------------------------------------------
     // METHODS
     // ----------------------------------------------------------------------
@@ -117,8 +133,8 @@ class ahwi {
      * helper function after exracting zip file: skip a single subdir
      * (like zips in github)
      * 
-     * @param type $sSubdir
-     * @param type $aEntries
+     * @param string  $sSubdir
+     * @param array   $aEntries
      */
     protected function _moveIfSingleSubdir($sSubdir, $aEntries) {
         $sTargetPath = $this->aCfg['installdir'];
@@ -394,7 +410,57 @@ class ahwi {
         }
         return true;
     }
-    
+
+    /**
+     * detect vcs repository in install target to prevent damage of repository data
+     * with a given type it returns a bool ... without type you get an array
+     * of all known vcs types as key and bool as value (for its existance).
+     * @param  string  optional: subdir to detect in approot, eg. '.git'; default: false: detect git and svn
+     * @return boolean|array
+     */
+    function vcsDetect($sType=false){
+        $aReturn=[];
+        foreach($this->aVcs as $sVcs=>$aVcsType){
+            $aReturn[$sVcs]=is_dir($this->aCfg['installdir'].'/'.$aVcsType['dir']);
+        }
+        return $sType ? $aReturn[$sType] : $aReturn;
+    }
+
+    /**
+     * update current installation with git|...
+     * @param  string  subdir of vcs, ie. ".git" for git
+     * @return boolean
+     */
+    function vcsUpdate($sType){
+
+        // do we have a command set for given type?
+        if(!isset($this->aVcs[$sType])){
+            return false;
+        }
+
+        // does a subdir exist in install root
+        if (!$this->vcsDetect($sType)){
+            return false;
+        }
+
+        // check existance of vcs cli tool
+        $sTargetPath = $this->aCfg['installdir'];
+        exec($this->aVcs[$sType]['check'], $aOutput1, $iRc1);
+        if($iRc1!==0){
+            return [$iRc1, $aOutput1];
+        }
+
+        // remark: command1 && command2 is valid for win and linux
+        // but MS Windows needs cd /d ... to switch the drive letter
+        $sCcmd='cd '
+            .(PHP_OS_FAMILY=='Windows' ? '/d ' : '')
+            .'"'.$sTargetPath.'"'
+            .' && ' . $this->aVcs[$sType]['update']
+            ;
+        exec($sCcmd, $aOutput2, $iRc2);
+        return [$iRc2, array_merge($aOutput1, $aOutput2)];
+    }
+
     /**
      * verify checksum of download data
      * @param string  $md5OfData  md5 hash (see method download())

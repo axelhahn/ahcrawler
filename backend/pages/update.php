@@ -3,13 +3,9 @@
  * page about
  */
 $oRenderer=new ressourcesrenderer();
-$aSteps=array(
-    'welcome',
-    'info',
-    'download',
-    'extract',
-);
+
 $sReturn = '';
+
 
 require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
 $sApproot=dirname(dirname(__DIR__));
@@ -29,7 +25,24 @@ $oInstaller=new ahwi(array(
     'checks'=>$this->aAbout['requirements'],
 ));
 
+// to get all known vcs:
+// $aTmpVcs=$oInstaller->vcsDetect();
 
+$bIsGit=$oInstaller->vcsDetect('git');
+$aSteps=$bIsGit 
+    ? array(
+        'welcome',
+        'gitinfo',
+        'gitpull',
+    )
+    : array(
+        'welcome',
+        'info',
+        'download',
+        'extract',
+    )
+
+;
 
 $sStepName=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
 $bAutoContinue=$this->_getRequestParam('docontinue') ? (int)$this->_getRequestParam('docontinue') : false;
@@ -94,7 +107,6 @@ switch ($sStepName) {
                     )
                     . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
                     . '<br>'
-                    . '<div>'
                 :  
                     $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
                     .'<br>'
@@ -109,36 +121,70 @@ switch ($sStepName) {
                                 'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
                             )).'<br><br><br><br><br>'
                         : ''
-                    )
-                    . '<div>'
-        
+                    )        
              )
+             . '<div>'
+             
+                // --- buttons 
+                . $this->_getButton(array(
+                    'href' => '?',
+                    'class' => $sCssBtnHome,
+                    'label' => 'button.home',
+                    'popup' => false
+                ))
+                . ' '
+                . $this->_getButton(array(
+                    'href' => $sNextUrl,
+                    'class' => $sCssBtnContinue,
+                    'label' => 'button.continue',
+                    'popup' => false
+                ))
+                . ' '
+                .$this->_getButton(array(
+                    'href' => $sNextUrl.'&docontinue=1',
+                    'class' => $sCssBtnContinue,
+                    'label' => 'button.updatesinglestep',
+                    'popup' => false
+                ))
             
-            // --- buttons 
-            . $this->_getButton(array(
-                'href' => '?',
-                'class' => $sCssBtnHome,
-                'label' => 'button.home',
-                'popup' => false
-            ))
-            . ' '
-            . $this->_getButton(array(
-                'href' => $sNextUrl,
-                'class' => $sCssBtnContinue,
-                'label' => 'button.continue',
-                'popup' => false
-            ))
-            . ' '
-            .$this->_getButton(array(
-                'href' => $sNextUrl.'&docontinue=1',
-                'class' => $sCssBtnContinue,
-                'label' => 'button.updatesinglestep',
-                'popup' => false
-            ))
+            
             . '</div>'
             . '</p>'
             ;
         break;
+
+    // ---------- GIT
+    case 'gitinfo':
+            $sReturn .= ''
+                . '<p>'
+                . $this->lB('update.gitinfo.steps')
+                . '</p>'
+                .'<br>'
+                . $sBtnBack.$sBtnNext.$sScriptContinue
+                ;
+            break;
+    case 'gitpull':
+        // $aUpdateInfos=getUpdateInfos(true);
+            $aResult=$oInstaller->vcsUpdate('git');
+            if($aResult===false){
+                // wrong vcs or git not detected locally
+                $sReturn.=$sBtnBack.$this->lB('update.gitpull.no-git-cli');
+
+            } else {
+                $iRc=$aResult[0];
+                $sOutput=implode('<br>', $aResult[1]);
+                if ($iRc==0){
+                    $sReturn.=$this->lB('update.gitpull.ok')
+                        . '<br><br>'
+                        . $sBtnBack.$sBtnNext.$sScriptContinue
+                        ;
+                } else {
+                    $sReturn.=$sBtnBack.$this->lB('update.gitpull.failed');
+                }
+            }
+        break;
+        
+    // ---------- DOWNLOAD ZIP AND EXTRACT
     case 'info':
         $sReturn .= ''
             . '<p>'
@@ -189,9 +235,9 @@ switch ($sStepName) {
             }
         break;
 
-
     default:
-        break;
+        $sReturn.='UNKNOWN STEP: ['.htmlentities($sStepName).']<br>';
+    break;
 }
 
 $sReturn.=$sOutput ? '<br><br><hr><br>'.$this->lB('update.output').':<br><pre class="output">'.$sOutput.'</pre>' : '';

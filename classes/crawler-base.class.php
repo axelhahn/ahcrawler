@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.151',
-        'date' => '2022-03-07',
+        'version' => '0.152',
+        'date' => '2022-03-17',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -396,13 +396,13 @@ class crawler_base {
 
     /**
      * array for language texts
-     * @var type 
+     * @var array 
      */
     protected $aLang = array();
 
     /**
      * user agent for the crawler 
-     * @var type 
+     * @var string 
      */
     protected $sUserAgent = false;
 
@@ -444,7 +444,7 @@ class crawler_base {
      * return value of a $_POST or $_GET variable if it exists
      * 
      * @param string  $sVarname      name of post or get variable (POST has priority)
-     * @param regex   $sRegexMatch   set a regex that must match
+     * @param string  $sRegexMatch   set a regex that must match
      * @param string  $sType         force type: false|int
      * @return type
      */
@@ -807,7 +807,7 @@ class crawler_base {
                             .print_r($this->oDB->errorInfo, 1)
                         )
                         ;
-                        return false;
+                        // return false;
                     }
 
                 }
@@ -1225,7 +1225,7 @@ class crawler_base {
      * delete database tables for crawled data. as a reminder: this deletes
      * all data for *all* defined profiles.
      * 
-     * @param type    $aItems  array with these keys as flags:
+     * @param array   $aItems    array with these keys as flags:
      *                           searchindex => true|false
      *                           ressources => true|false
      *                           searches => true|false
@@ -1507,14 +1507,15 @@ class crawler_base {
     }
     
     /**
+     * UNUSED
      * get array of ahwi-updater
      * @return type
      */
     public function setupRemoveUnwanted(){
-        foreach($thisaDefaultOptions['updater']['toremove']['files'] as $sFile){
+        foreach($this->aDefaultOptions['updater']['toremove']['files'] as $sFile){
             unlink($sFile);
         }
-        foreach($thisaDefaultOptions['updater']['toremove']['dirs'] as $sDir){
+        foreach($this->aDefaultOptions['updater']['toremove']['dirs'] as $sDir){
             unlink($sDir);
         }
         return true;

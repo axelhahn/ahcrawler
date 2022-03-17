@@ -17,7 +17,7 @@
     --tile-bg:radial-gradient(#fff,#c0d0d8);
     --tile-color:#789;
 
-    --context-head-bg:radial-gradient(#fff,#c0d0d8); /* is --tile-bg */
+    --context-head-bg:#89a;
     
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
@@ -202,6 +202,7 @@ h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 
 hr{border: 0; border-bottom: 2px dotted #ddd;}
 iframe{position: fixed; bottom: -3em; height: 1em; border: none;}
 pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
+code{background: #e0e4ea; padding: 0.2em;}
 
 pre.logdata div:hover{
     background: rgba(0,0,0,0.05);
@@ -219,7 +220,7 @@ div.contextbox{
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--context-head-bg); font-weight: bold; opacity: 0.7; padding: 1em;}
+div.contextbox .head{background: var(--context-head-bg); color:#fff; font-weight: bold; padding: 1em;}
 div.contextbox .content{margin: 1em;}
 
 .hintextended{background:rgba(0,0,0,0.05); }
@@ -376,7 +377,8 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 0.5em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
 .piechart-pie{width: 24em;}
 .floatright{float: right; margin: 0 0 1em 2em;}
-.floatleft{float: left; margin: 0 2em 1em 0;}
+.floatleft{float: left; margin: 0 2em 1em 0; max-width: 38em;}
+
 .chartcolor-error{color:#d88;}
 .chartcolor-warning{color:#eb6;}
 .chartcolor-ok{color:#7a5;}

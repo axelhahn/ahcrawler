@@ -68,7 +68,7 @@ class crawler extends crawler_base{
 
     /**
      * array of extensions to skip in found links (in targets of a href="")
-     * @var string
+     * @var array
      */
     private $aSkipExtensions = array(
         // documents
@@ -133,7 +133,7 @@ class crawler extends crawler_base{
 
     /**
      * max age of last crawling date
-     * @var type 
+     * @var integer
      */
     private $_iMaxAllowedAgeOfLastIndex = 604800; // 1 week
     // public $_iMaxAllowedAgeOfLastIndex=86400;  // 1 day
@@ -367,7 +367,7 @@ class crawler extends crawler_base{
     /**
      * get the urls that are known to be crawled (their count can increase
      * during crawl process by analysing links in pages)
-     * @return type
+     * @return array
      */
     private function _getUrls2Crawl() {
         // echo __FUNCTION__."()\n";
@@ -383,7 +383,7 @@ class crawler extends crawler_base{
 
     /**
      * output helper for indexer: show count of urls, crawled urls und how many are left
-     * @return type
+     * @return string
      */
     private function _getCrawlStat() {
         // echo __FUNCTION__."()\n";
@@ -716,8 +716,8 @@ class crawler extends crawler_base{
      * helper function: get a value from html header
      * called in _preparePageForIndex()
      * 
-     * @param type $sHtml
-     * @param type $sItem
+     * @param string $sHtml  html code of adocument
+     * @param type $sItem    head item to fetch
      * @return boolean|array
      */
     private function _getMetaHead($sHtml, $sItem) {

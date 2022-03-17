@@ -45,7 +45,7 @@ h4 {border-bottom: 1px dashed #444;}
 hr {border-bottom: 2px dotted #444;}
 input, option, select, textarea{background: rgba(255,255,255,0.3); border-color: var(--color-bg-default );}
 
-pre{background: rgba(0,0,0,0.1); }
+code,pre{background: rgba(0,0,0,0.1); }
 .message pre{ color: rgba(0,0,0,0.8); }
 div.contextbox .head{color: rgba(255,255,255,0.4);opacity: 1;}
 
