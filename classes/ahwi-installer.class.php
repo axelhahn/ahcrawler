@@ -32,6 +32,7 @@ class ahwi {
         'git'=>[
             'label'=>'Git',
             'dir'=>'.git',
+            'file'=>'.git',
             'check'=>'git --version',
             'update'=>'git pull',
         ],
@@ -421,15 +422,22 @@ class ahwi {
     function vcsDetect($sType=false){
         $aReturn=[];
         foreach($this->aVcs as $sVcs=>$aVcsType){
-            $aReturn[$sVcs]=is_dir($this->aCfg['installdir'].'/'.$aVcsType['dir']);
+            $aReturn[$sVcs]=false;
+            if(isset($aVcsType['dir'])){
+                $aReturn[$sVcs]=is_dir($this->aCfg['installdir'].'/'.$aVcsType['dir']);
+            }
+            if(!$aReturn[$sVcs] && isset($aVcsType['file'])){
+                $aReturn[$sVcs]=is_file($this->aCfg['installdir'].'/'.$aVcsType['file']);
+            }
         }
         return $sType ? $aReturn[$sType] : $aReturn;
     }
 
     /**
-     * update current installation with git|...
+     * update current installation with git|... and return an array with
+     * return code and array of output lines
      * @param  string  subdir of vcs, ie. ".git" for git
-     * @return boolean
+     * @return array
      */
     function vcsUpdate($sType){
 
@@ -455,7 +463,7 @@ class ahwi {
         $sCcmd='cd '
             .(PHP_OS_FAMILY=='Windows' ? '/d ' : '')
             .'"'.$sTargetPath.'"'
-            .' && ' . $this->aVcs[$sType]['update']
+            .' && ' . $this->aVcs[$sType]['update'].' 2>&1'
             ;
         exec($sCcmd, $aOutput2, $iRc2);
         return [$iRc2, array_merge($aOutput1, $aOutput2)];
