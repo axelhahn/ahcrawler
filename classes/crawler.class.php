@@ -430,7 +430,7 @@ class crawler extends crawler_base{
             return false;
         }
         if ($oHttpstatus->isRedirect()) {
-            $sNewUrl=$oHttpstatus->getRedirect();
+            $sNewUrl=$oHttpstatus->getRedirect($url);
             $this->cliprint('cli', "REDIRECT: $url ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus()." -> ".$sNewUrl.".\n");
             if ($sNewUrl){
                 $this->_addUrl2Crawl($sNewUrl, true);
