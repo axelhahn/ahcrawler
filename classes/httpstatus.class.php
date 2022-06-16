@@ -275,10 +275,9 @@ class httpstatus {
 
     /**
      * get redirect url from header
-     * TODO: if the redirect is a relative url it won't be expanded to a full url
      * @return string
      */
-    public function getRedirect(){
+    public function getRedirect($sDocUrl=false){
         if (!$this->isRedirect()){
             return false;
         }
@@ -287,7 +286,11 @@ class httpstatus {
             print_r($this->_responseInfo);
             return false;
         }
-        return $this->_responseInfo['redirect_url'];
+        // return $this->_responseInfo['redirect_url'];
+        
+        require_once('analyzer.html.class.php');
+        $oHtml=new analyzerHtml();
+        return $oHtml->getFullUrl($this->_responseInfo['redirect_url'], $sDocUrl);
     }
     
     /**
