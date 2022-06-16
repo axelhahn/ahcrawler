@@ -194,7 +194,7 @@ if(isset($_POST['action'])){
             // ----- fix array values
             $aArrays=array(
                 'output'=>array('customfooter'),
-                'searchindex'=>array('regexToRemove'),
+                'searchindex'=>array('regexToRemove', 'defaultUrls'),
             );
             foreach($aArrays as $sIndex1=>$aSubArrays){
                 foreach($aSubArrays as $sIndex2){
@@ -642,6 +642,18 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'rows'=>isset($aOptions['options']['searchindex']['regexToRemove']) && is_array($aOptions['options']['searchindex']['regexToRemove']) && count($aOptions['options']['searchindex']['regexToRemove']) ? count($aOptions['options']['searchindex']['regexToRemove'])+1 : 3 ,
                     // 'label'=>$sValueSearchCategories,
                     'label'=> implode("\n", $aOptions['options']['searchindex']['regexToRemove']),
+                    ), true)
+                . '</div>'
+
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixSearchindex.'defaultUrls', 'label'=>$this->lB('setup.section.searchindex.defaultUrls')))
+                . $oRenderer->oHtml->getTag('textarea', array(
+                    'id'=>$sIdPrefixSearchindex.'defaultUrls', 
+                    'name'=>'options[searchindex][defaultUrls]',
+                    'cols'=>$iColsInTA,
+                    'rows'=>isset($aOptions['options']['searchindex']['defaultUrls']) && is_array($aOptions['options']['searchindex']['defaultUrls']) && count($aOptions['options']['searchindex']['defaultUrls']) ? count($aOptions['options']['searchindex']['defaultUrls'])+1 : 3 ,
+                    // 'label'=>$sValueSearchCategories,
+                    'label'=> implode("\n", $aOptions['options']['searchindex']['defaultUrls']),
                     ), true)
                 . '</div>'
 
