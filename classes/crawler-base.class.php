@@ -1054,7 +1054,10 @@ class crawler_base {
 
         if(!$sPage){
             foreach($aPagesArray as $sMyPage){
-                $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
+                $aTmpCounters=$this->getStatusCounters($sMyPage);
+                if($aTmpCounters){
+                        $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
+                } 
             }
             // create counters of all found errors and warnings
             $aReturn['TotalErrors']=0;
@@ -1068,9 +1071,15 @@ class crawler_base {
             
             // add warning if a counter is zero
             foreach($aWarnIfZero as $sCounterId){
-                $aReturn['TotalWarnings']+=($aReturn[$sCounterId] ? 0 : 1 );
+                $aReturn['TotalWarnings']+=isset($aReturn[$sCounterId])  
+                        ? ($aReturn[$sCounterId] ? 0 : 1 )  
+                        : 0
+                        ;
             }
-            $aReturn['TotalWarnings']+=($aReturn['responseheaderVersionStatus']==='warning' ? 1 : 0);
+            $aReturn['TotalWarnings']+=isset($aReturn['responseheaderVersionStatus'])  
+                    ? ($aReturn['responseheaderVersionStatus']==='warning' ? 1 : 0)
+                    : 0
+                    ;
             
             return $aReturn;
         }
