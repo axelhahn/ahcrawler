@@ -520,7 +520,7 @@ class backend extends crawler_base {
         $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
         $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
-        if ($this->_sTab && $this->_sTab!=='add' && $_SESSION['siteid']!==$this->_sTab) {
+        if ($this->_sTab && $this->_sTab!=='add' && $_SESSION && $_SESSION['siteid']!==$this->_sTab) {
             session_start();
             $_SESSION['siteid']=$this->_sTab;
             session_write_close();
