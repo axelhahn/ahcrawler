@@ -274,10 +274,10 @@ class httpstatus {
     }
 
     /**
-     * get redirect url from header
+     * get redirect url from http response header
      * @return string
      */
-    public function getRedirect($sDocUrl=false){
+    public function getRedirect(){
         if (!$this->isRedirect()){
             return false;
         }
@@ -286,11 +286,7 @@ class httpstatus {
             print_r($this->_responseInfo);
             return false;
         }
-        // return $this->_responseInfo['redirect_url'];
-        
-        require_once('analyzer.html.class.php');
-        $oHtml=new analyzerHtml();
-        return $oHtml->getFullUrl($this->_responseInfo['redirect_url'], $sDocUrl);
+        return $this->_responseInfo['redirect_url'];
     }
     
     /**
