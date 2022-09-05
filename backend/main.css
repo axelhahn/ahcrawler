@@ -5,24 +5,35 @@
 **/
 :root {
     --color-bg-default:#f8f8f8;
-    --color-default:#345;
+    --color-default:#222;
+    --color-h1:#346;
+    --color-h2:#457;
+    --color-h3:#68a;
+    --color-h4:#8ac;
     --color-shadow-default:rgba(200,200,200,1);
 
-    --color-pacman: #abc;
+    --color-pacman: #bcd;
+
+    --color-childitem-i: #568;
+    --color-childitem-title: #68a;
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
     --color-border-click:#cde;
 
-    --navi-bg-l1-active:#505568;
-    --navi-bg-l2-active:#808490;
     --navi-bg-on-hover:#c0d0dc;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
-    --tile-bg:radial-gradient(#fff,#c0d0d8);
+    --navi-bg-l1-active:#568;
+    --navi-bg-l2-active:#78a;
+
+    --tile-bg:radial-gradient(#fff,#c0d0dc);
     --tile-color:#789;
 
-    --context-head-bg:#89a;
+    --context-head-bg:#78a;
+
+    --pagehint-bg:#f0e8d0;
+    --pagehint-bg:#d0e8d0;
     
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
@@ -39,6 +50,14 @@
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --chart-background: none;
     --chart-border:5px solid #fff;
+
+    --table-head-bg: #aaa;
+    --table-head-color: #eee;
+    --table-head-hover-bg: #89b;
+    --table-head-hover-color: #eee;
+    --table-head-select-bg: #78a;
+    --table-head-select-color: #eee;
+
 }
 .sidebar{
     	position: fixed;
@@ -60,7 +79,7 @@
     margin-bottom: 3em;
 }
 
-.brand-title,.brand-title a {color:#678; text-decoration: none; }
+.brand-title,.brand-title a {color:var(--color-h1); text-decoration: none; }
 .brand-title{
     background: rgba(140,160,200,0.1); 
     border: 0px solid;
@@ -174,14 +193,14 @@ a.hoverinfos{text-decoration: none; border-bottom: 1px dashed;}
 a.hoverinfos span{position: absolute; margin-left: -5em; margin-top: 1em; display: none; background:#fda; border: 1px solid #ddd; padding: 0.5em;}
 a.hoverinfos:hover span{display: block;}
 
-h1{ background:#cde; margin:0 0 1em; border-top-left-radius: 0.5em;}
+h1{ background:#cde; color:var(--color-h1); margin:0 0 1em; border-top-left-radius: 0.5em;}
 
 h2{
     border-bottom: 1px dotted; 
     font-size: 3em; 
     padding: 0.2em 0em 0.2em 0.3em; 
     margin: 0 0 0 -0.3em; 
-    color: #678; 
+    color:var(--color-h2);
     position: fixed; 
     display: block; 
     width: 100%;
@@ -192,16 +211,17 @@ h2{
     text-shadow: 1px 1px 1px var(--color-shadow-default), 0.25em 0.25em 0.2em var(--color-shadow-default);
 }
 p.pageHint{
-    background:rgba(0,0,0,0.03);
+    
+    background:var(--pagehint-bg);
     _border-left: 10px solid rgba(0,0,0,0.05);
     font-size: 110%; 
     border-bottom-left-radius: 0.5em;
     padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 6em; 
 }
 p.pageHint:before{content: ':: ';}
-h3{ color:#567; font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
+h3{ color:var(--color-h3); font-size: 170%; border-top: 2px dotted #ccc; padding-top: 1em; margin: 2em 0 1.5em;}
 h3:first-of-type{ border-top: 0px solid #fca; margin: 0 0 1.5em;}
-h4{ color: #678; font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
+h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed #eee; margin: 2.5em 0 0.5em;}
 
 
 hr{border: 0; border-bottom: 2px dotted #ddd;}
@@ -212,9 +232,9 @@ code{background: #e0e4ea; padding: 0.2em;}
 pre.logdata div:hover{
     background: rgba(0,0,0,0.05);
 }
-pre.logdata h3{display: inline-block; margin: 0; }
+pre.logdata h3, pre.logdata h4{display: inline-block; margin: 0; }
 pre.logdata .message-cli{opacity: 0.7;}
-
+pre.logdata .message{border: none; margin:0;}
 
 /* --- context box --- */
 div.contextbox{
@@ -222,10 +242,11 @@ div.contextbox{
     float: right;
     margin: 0 0 2em 2em;
     box-shadow: 0 0 1em var(--color-shadow-default);
+    border-top-left-radius: 1em;
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--context-head-bg); color:#fff; font-weight: bold; padding: 1em;}
+div.contextbox .head{background: var(--context-head-bg); color:#fff; font-weight: bold; padding: 1em;border-top-left-radius: 1em;}
 div.contextbox .content{margin: 1em;}
 
 .hintextended{background:rgba(0,0,0,0.05); }
@@ -253,9 +274,10 @@ a.childitem{
     /*
     background: linear-gradient(#fff, #e0e4ea);
     background: #fff;
+    color:#666;
     */
     border-radius: 1em;
-    color:#666;
+    color:var(--color-default);
     display: block;
     float: left;
     height: 8em;
@@ -272,9 +294,9 @@ a.childitem:hover{
     
 }
 a.childitem:focus{box-shadow: none;}
-a.childitem i{color: #789; font-size: 300%; min-height: 1em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
+a.childitem i{color: var(--color-childitem-i); font-size: 300%; min-height: 1em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
 a.childitem:hover i{color: #fff;text-shadow: 2px 2px 6px rgba(0,0,0,0.4);}
-a.childitem strong{color: #567; font-size: 130%; display: block; min-height: 3em; margin-top: 0.2em;}
+a.childitem strong{color: var(--color-childitem-title); font-size: 130%; display: block; min-height: 3em; margin-top: 0.2em;}
 
 
 /* --- tiles --- */
@@ -497,10 +519,10 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 
 /* --- tables --- */
 .pure-table{background:#fff;}
-.pure-table-horizontal th{background-color:#789; color:#eee; text-align: left;}
-.pure-table-horizontal th:hover{background-color:#89a; color:#eee;}
+.pure-table-horizontal th{background-color:var(--table-head-bg); color:var(--table-head-color); text-align: left;}
+.pure-table-horizontal th:hover{background-color:var(--table-head-hover-bg); color:var(--table-head-hover-color);}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
-    background-color:#abc; color:#343;
+    background-color:var(--table-head-select-bg); color:var(--table-head-select-color);
 }
 .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate
 {color: inherit;}
