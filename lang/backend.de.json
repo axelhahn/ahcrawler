@@ -363,6 +363,8 @@
     "crawlerlog.full": "Komplettes Logfile anzeigen",
     "crawlerlog.lines": "Zeige Zeilen %s - %s (von %s ges.)",
     "crawlerlog.linestotal": "Anzahl Zeilen ges.: %s",
+    "crawlerlog.loglevel-all": "Zur Debug-Ansicht: alle Meldungen",
+    "crawlerlog.loglevel-filter": "Zur gefilterten Ansicht",
     "rawdata": "Rohdaten",
     "status.overview": "Zusammenfassung",
     "status.search": "Test-Suche im Suchindex",

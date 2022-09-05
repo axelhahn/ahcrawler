@@ -15,12 +15,33 @@ $iLines2Show=$iLines2Show ? $iLines2Show : $iLinesPerPageDefault;
 $iPage=$this->_getRequestParam('logpage', false, 'int');
 $iPage=$iPage ? $iPage : 1;
 
+$aFilter=[
+    'cli'=>false,
+    'info'=>false,
+    'ok'=>false,
+    'warning'=>true,
+    'error'=>true,
+];
+
 if($this->_getRequestParam('full')){
     $iLines2Show=0;
 }
+if($this->_getRequestParam('loglevel')){
+    $aFilter=[
+        'cli'=>true,
+        'info'=>true,
+        'ok'=>true,
+        'warning'=>true,
+        'error'=>true,
+    ];
+}
 
 
-$sLogs=$this->logfileToHtml($iLines2Show, $iPage);
+$sLogs=$this->logfileToHtml(array_merge([
+    'linesperpage'=>$iLines2Show,
+    'page'=>$iPage
+    ], $aFilter)
+);
 
 $sHtml.=''        
     .$this->_getNavi2($this->_getProfiles(), false, '')

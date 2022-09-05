@@ -350,6 +350,8 @@
     "crawlerlog.full": "Show complete Log",
     "crawlerlog.lines": "Showing lines %s - %s (of %s total)",
     "crawlerlog.linestotal": "Lines total: %s",
+    "crawlerlog.loglevel-all": "Debug view: all messages",
+    "crawlerlog.loglevel-filter": "filtered view",
     "rawdata": "Raw data",
     "status.overview": "Overview",
     "status.search": "Search test",
