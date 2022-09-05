@@ -1,12 +1,17 @@
 
 # AH CRAWLER #
 
-## DESCRIPTION ## 
+## Description ## 
 
 This is free software and Open Source 
 GNU General Public License (GNU GPL) version 3
 
 AhCrawler is a search engine for your website and analytics tool.
+
+👤 Author: Axel Hahn
+🧾 Source: <https://github.com/axelhahn/ahcrawler/>
+📜 License: GNU GPL 3.0
+📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>
 
 It is written in PHP and consists of
 - crawler (spider) and indexer
@@ -17,20 +22,19 @@ It is written in PHP and consists of
   - http response header check
   - linkchecker (http status check of all links, css, images, ...)
 
-It runs with PHP 7 and higher (up to PHP 8.0).
+It runs with PHP 7 and higher (up to PHP 8.1).
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
 
-This software has BETA status.
-You can preview it ... but let me do some more work :-)
+This is not a version 1.x yet ... let me do some more work :-)
 
 ![Screenshot: backend](https://www.axel-hahn.de/assets/projects/ahcrawler/03-analyse.png)
 
 
-## INSTALLATION ##
+## Installation ##
 see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 
 
-## FEATURES ##
+## Features ##
 
 - Free software and Open Source.
 - you can install it on your location. 
@@ -39,7 +43,8 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 - multi language support (backend and frontend)
 - built in web updater
 
-### spider ###
+### Spider ###
+
 - respects exclude rules in
   - robots.txt
   - x-robots http header
@@ -50,14 +55,16 @@ see the docs https://www.axel-hahn.de/docs/ahcrawler/get_started.htm
 - rebuild full index or update a single url (i.e. to be triggered by a cms)
 - uses http2 (if possible)
 
-### search for your website ###
+### Search for your website ###
+
 - search with OR or AND
 - search in language (requires lang attribute in your html tags)
 - search in a given subfolder only
 - several methods for pre defined forms or for fully customized form
 - stores users searchterms for a statistics
 
-### website analyzer ###
+### Website analyzer ###
+
 - check of http reponse header for 
   - unknown headers
   - unwanted headers

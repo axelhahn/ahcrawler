@@ -258,6 +258,7 @@ class backend extends crawler_base {
             if (!isset($_SESSION)) {
                 session_name('ahcrawler');
                 session_start();
+                session_write_close();
             }
         }
         
@@ -403,12 +404,15 @@ class backend extends crawler_base {
      * @return boolean
      */
     private function _setUser($sNewUser) {
+        session_start();
         if (!$sNewUser) {
             // ... means: logoff
-            unset($_SESSION['AUTH_USER']);
+            // unset($_SESSION['AUTH_USER']);
+            session_destroy();
             return false;
         }
         $_SESSION['AUTH_USER'] = $sNewUser;
+        session_write_close();
         return $_SESSION['AUTH_USER'];
     }
 
@@ -516,32 +520,11 @@ class backend extends crawler_base {
         $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
         $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
-        if ($this->_sTab && $this->_sTab!=='add') {
-            /*
-            setcookie(
-                "tab", 
-                $this->_sTab, 
-                array(
-                    'expires'=>time() + 60*60*8,
-                    'path'=>'/',
-                    'domain'=>$_SERVER["HTTP_HOST"],
-                    'secure'=>isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] ? true : false,
-                    'httponly'=>true,
-                    'samesite'=>'Strict',
-                )
-            );
-             * 
-             */
+        if ($this->_sTab && $this->_sTab!=='add' && $_SESSION && $_SESSION['siteid']!==$this->_sTab) {
+            session_start();
             $_SESSION['siteid']=$this->_sTab;
+            session_write_close();
         }
-        /*
-        if (!$this->_sTab && array_key_exists('tab', $_COOKIE)) {
-            // header('location: '.$_SERVER['REQUEST_URI'].'&siteid='.$_COOKIE['tab']);
-            // $this->_sTab = $_COOKIE['tab'];
-            $this->_sTab = $_SESSION['siteid'];
-        }
-         * 
-         */
 
         if (!$this->_sTab) {
             $aTmp = array_keys($this->_getProfiles());

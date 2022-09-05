@@ -274,8 +274,7 @@ class httpstatus {
     }
 
     /**
-     * get redirect url from header
-     * TODO: if the redirect is a relative url it won't be expanded to a full url
+     * get redirect url from http response header
      * @return string
      */
     public function getRedirect(){

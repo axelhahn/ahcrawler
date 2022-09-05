@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.152',
-        'date' => '2022-03-17',
+        'version' => '0.153',
+        'date' => '2022-09-06',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1054,7 +1054,10 @@ class crawler_base {
 
         if(!$sPage){
             foreach($aPagesArray as $sMyPage){
-                $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
+                $aTmpCounters=$this->getStatusCounters($sMyPage);
+                if($aTmpCounters){
+                        $aReturn=array_merge($aReturn, $this->getStatusCounters($sMyPage));
+                } 
             }
             // create counters of all found errors and warnings
             $aReturn['TotalErrors']=0;
@@ -1068,9 +1071,15 @@ class crawler_base {
             
             // add warning if a counter is zero
             foreach($aWarnIfZero as $sCounterId){
-                $aReturn['TotalWarnings']+=($aReturn[$sCounterId] ? 0 : 1 );
+                $aReturn['TotalWarnings']+=isset($aReturn[$sCounterId])  
+                        ? ($aReturn[$sCounterId] ? 0 : 1 )  
+                        : 0
+                        ;
             }
-            $aReturn['TotalWarnings']+=($aReturn['responseheaderVersionStatus']==='warning' ? 1 : 0);
+            $aReturn['TotalWarnings']+=isset($aReturn['responseheaderVersionStatus'])  
+                    ? ($aReturn['responseheaderVersionStatus']==='warning' ? 1 : 0)
+                    : 0
+                    ;
             
             return $aReturn;
         }
@@ -1808,74 +1817,208 @@ class crawler_base {
         return false;
     }
     
+
     /**
-     * read log file and get html code for page crawlerlog
-     * @return string
+     * read log file and get array of log lines
+     * returns something like this:
+     * Array
+     * (
+     *     [file] => /var/www/ahcrawler/public_html/data/indexlog-siteid-4.log
+     *     [lines_total] => 7003
+     *     [lines] => 124
+     *     [skip] => 0
+     *     [options] => Array
+     *         (
+     *             [cli] => 
+     *             [info] => 
+     *             [waring] => 1
+     *             [error] => 1
+     *             [linesperpage] => 5000
+     *             [page] => 1
+     *         )
+     * 
+     *     [data] => Array
+     *         (
+     *             [0] => Array
+     *                 (
+     *                     [count] => 1
+     *                     [ts] => 2022-09-01_22:14:32
+     *                     [loglevel] => error
+     *                     [message] => ERROR: 404 https://www.xing.com/app/user?op=share;url=https://jb2018.iml.unibe.ch/editorial
+     *                 )
+     *              ...
+     *     )
+     * 
+     * @param  $aOptions  array  options array
+     *                           - linesperpage {int}   max number of lines per page
+     *                           - page         {int}   number of current page
+     *                           - cli          {bool}  false
+     *                           - info         {bool}  false
+     *                           - warning      {bool}  true
+     *                           - error        {bool}  true
+     * @return array
      */
-    public function logfileToHtml($iLimitLines=0, $iPage=1){
-        $sReturn='';
+    public function getLogs($aOptions){
+        $_aFilter=array_merge([
+            'cli'=>false,
+            'info'=>false,
+            'ok'=>false,
+            'warning'=>true,
+            'error'=>true,
+        ], $aOptions);
+
+        $iLimitLines=isset($aOptions['linesperpage']) ? (int)$aOptions['linesperpage'] : 0;
+        $iPage=isset($aOptions['page']) ? (int)$aOptions['page']:1;
+
+        $aReturn=[
+            'file'=>$this->sLogFilename,
+            'options'=>$_aFilter,
+            'loglevels'=>[],
+            'stats'=>[],
+            'data'=>[],
+        ];
+
         $iCounter=0;
-        
-        // check params
-        $iLimitLines=(int)$iLimitLines; $iLimitLines=$iLimitLines?$iLimitLines:0;
-        $iPage=(int)$iPage; $iPage=$iPage?$iPage:1;
+        $iSkip=0;
+        $aLevels=[];        
         
         $iStartLine=($iPage-1)*$iLimitLines + 1;
         $iEndLine=($iPage)*$iLimitLines;
         
         if($this->sLogFilename && file_exists($this->sLogFilename)){
             foreach(file($this->sLogFilename) as $line) {
-                $iCounter++;
-                if($iLimitLines 
-                    && ($iCounter < $iStartLine || $iCounter>$iEndLine)
-                ){
-                    continue;
-                }
+
                 $aResult=array();
                 if(strstr($line, '==========')){
                     $line=preg_replace('/========== (.*)/', '<h3 id="'.'action-'.md5($line).'">$1</h3>', $line);
                 }
                 preg_match_all('/(^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}:[0-9]{2}:[0-9]{2})\ *([a-z]*)\ *(.*)/', $line, $aResult);
                 // echo '<pre>'.print_r($aResult,1).'</pre>';
-                if(isset($aResult[3][0])){
-                    $sReturn.=($sReturn ? '</div>' : '') . '<div class="message-'.$aResult[2][0].'">'.$aResult[1][0].'  '.sprintf('%-8s', $aResult[2][0]).' '.$aResult[3][0];
+
+                $_sLogLevel=$aResult[2][0];
+                $_bShow=false;
+                if (isset($_aFilter[$_sLogLevel]) && $_aFilter[$_sLogLevel]){
+                    $_bShow=true;
+                }
+
+                if(!isset($aReturn['loglevels'][$_sLogLevel])){
+                    $aReturn['loglevels'][$_sLogLevel]=1;
                 } else {
-                    $sReturn.=$line;
+                    $aReturn['loglevels'][$_sLogLevel]++;
                 }
-            }
-            
-            // ----- navi
-            
-            $sNavi='';
-            
-            $sUrl=$_SERVER['REQUEST_URI'];
-            $sUrl=preg_replace('|&logpage=[0-9]*|', '', $sUrl);
-            $sUrl=preg_replace('|&full=[0-9]*|'    , '', $sUrl);
-            if($iLimitLines){
-                $iLastPage=round($iCounter/$iLimitLines + 0.5);
-                if($iLastPage>1 || $iPage>$iLastPage){
-                    for($i=1; $i<=$iLastPage; $i++){
-                        $sNavi.='<a href="'.$sUrl.'&logpage='.$i.'" class="pure-button'.($iPage==$i ? ' button-secondary' : '').'">'.$i.'</a> ';
+
+                if($_bShow){
+                    $iCounter++;
+                    if($iLimitLines 
+                        && ($iCounter < $iStartLine || $iCounter>$iEndLine)
+                    ){
+                        $iSkip++;
+                    } else {
+
+                        $aReturn['data'][]=[
+                            'count'=>$iCounter,
+                            'ts'=>$aResult[1][0],
+                            'loglevel'=>$_sLogLevel,
+                            'message'=>$aResult[3][0]
+                        ]; //=.'<div class="message message-'.$_sLogLevel.'">'.$aResult[1][0].'  '.sprintf('%-8s', $_sLogLevel).' '.$aResult[3][0];
                     }
-                    $sNavi.=$iLastPage>1 ? '<a href="'.$sUrl.'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> ' : '';
                 }
-                $sNavi.=$sNavi ? '<br><br>' : '';
-                $sNavi.=($iStartLine==1 && $iEndLine >= $iCounter
-                        ? sprintf($this->lB('crawlerlog.linestotal'), $iCounter)
-                        : sprintf($this->lB('crawlerlog.lines'), $iStartLine, min($iEndLine, $iCounter), $iCounter)
-                        ).'<br>';
-            } else {
-                $sNavi.='<a href="'.$sUrl.'" class="pure-button button-secondary"> << '.$this->lB('button.back').' </a><br><br>'
-                        .sprintf($this->lB('crawlerlog.linestotal'), $iCounter).'<br>'
-                    ;
+                if($iLimitLines && ($iCounter > $iEndLine)){
+                    continue;
+                }
             }
-            
-            $sReturn=$sReturn 
-                    ?  $sNavi
-                        . '<pre class="logdata">'.$sReturn.'</pre>'
-                        . $sNavi
-                    : $sNavi;
+            $aReturn['stats']=[
+                'loglines_total'=>count(file($this->sLogFilename)),
+                'loglines_filtered'=>$iCounter  ,
+                'lines_per_page'=>$iLimitLines,
+                'line_from'=>$iStartLine,
+                'line_to'=>$iEndLine,
+                'lines_on_page'=>count($aReturn['data']),
+                'skip'=>$iSkip,
+                'pages'=>$iLimitLines ? round($iCounter/$iLimitLines + 0.5) : 1,
+            ];
+            ksort($aReturn['loglevels']);
+        } else {
+            $aReturn['error']='Logfile was not found.';
         }
+        return $aReturn;
+    }
+
+    /**
+     * read log file and get html code for page crawlerlog
+     * @param  $aOptions  array  options array
+     *                           - linesperpage {int}   max number of lines per page
+     *                           - page         {int}   number of current page
+     *                           - cli          {bool}  false
+     *                           - info         {bool}  false
+     *                           - warnings     {bool}  true
+     *                           - error        {bool}  true
+     * @return string
+     */
+    public function logfileToHtml($aOptions){
+        $sReturn='';
+
+
+        $aLogs=$this->getLogs($aOptions);
+        
+        // DEBUG: show options and stats
+        // $aTmp=$aLogs; unset($aTmp['data']); $sReturn.= print_r($aTmp, 1);
+        
+        if(isset($aLogs['error']) && $aLogs['error']){
+            return $sReturn;
+        }
+
+
+        foreach ($aLogs['data'] as $aLogline){
+            $sReturn.='<div class="message message-'.$aLogline['loglevel'].'">'.$aLogline['ts'].'  '.sprintf('%-8s', $aLogline['loglevel']).' '.$aLogline['message'].'</div>';
+        }
+
+        $sNavi='';
+        
+        $sUrl=$_SERVER['REQUEST_URI'];
+        $sUrl=preg_replace('|&logpage=[0-9]*|', '', $sUrl);
+        $sUrl=preg_replace('|&full=[0-9]*|'    , '', $sUrl);
+
+        $iLimitLines=$aLogs['stats']['lines_per_page'];
+        $iLinesTotal=$aLogs['stats']['loglines_total'];
+        $iCounter=$aLogs['stats']['loglines_filtered'];
+
+        if($iLinesTotal!=$iCounter){
+            $sUrl=preg_replace('|&loglevel=.*|'    , '', $sUrl);
+            $sNavi.='<br><a href="'.$sUrl.'&loglevel=all" class="pure-button">'.$this->lB('crawlerlog.loglevel-all').' </a><br>';
+        } else {
+            $sNavi.='<br><a href="'.$sUrl.'&loglevel=" class="pure-button">'.$this->lB('crawlerlog.loglevel-filter').' </a><br><br>';
+        }
+
+        if($iLimitLines){
+            // $sNavi.='<br>';
+            $iPage=$aLogs['options']['page'];
+            $iLastPage=$aLogs['stats']['pages'];
+            if($iLastPage>1 || $iPage>$iLastPage){
+                for($i=1; $i<=$iLastPage; $i++){
+                    $sNavi.='<a href="'.$sUrl.'&logpage='.$i.'" class="pure-button'.($iPage==$i ? ' button-secondary' : '').'">'.$i.'</a> ';
+                }
+                $sNavi.=$iLastPage>1 ? '<a href="'.$sUrl.'&full=1" class="pure-button">'.$this->lB('crawlerlog.full').'</a> ' : '';
+            }
+            $sNavi.=$sNavi ? '<br><br>' : '';
+            $iStartLine=$aLogs['stats']['line_from'];
+            $iEndLine=$aLogs['stats']['line_to'];
+
+            $sNavi.=($iStartLine==1 && $iEndLine >= $iCounter
+                    ? sprintf($this->lB('crawlerlog.linestotal'), $iCounter)
+                    : sprintf($this->lB('crawlerlog.lines'), $iStartLine, min($iEndLine, $iCounter), $iCounter)
+                    ).'<br>';
+        } else {
+            $sNavi.='<a href="'.$sUrl.'" class="pure-button button-secondary"> << '.$this->lB('button.back').' </a><br><br>'
+                    .sprintf($this->lB('crawlerlog.linestotal'), $iCounter).'<br>'
+                ;
+        }
+        
+        $sReturn=$sReturn 
+                ?  $sNavi
+                    . '<pre class="logdata">'.$sReturn.'</pre>'
+                    . $sNavi
+                : $sNavi;
         return $sReturn;
     }
 }

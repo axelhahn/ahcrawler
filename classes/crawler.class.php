@@ -82,6 +82,7 @@ class crawler extends crawler_base{
         // images
         'gif',
         'jpg',
+        'jpeg',
         'png',
         // audio
         'm4a',
@@ -321,9 +322,10 @@ class crawler extends crawler_base{
         }
 
         $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')$/i';
-        if (preg_match($sSkipExtensions, $sUrl)) {
+        $sUrlPath=parse_url($sUrl, PHP_URL_PATH); 
+        if (preg_match($sSkipExtensions, $sUrlPath)) {
             // $this->cliprint('cli', $bDebug ? "... SKIP by extension: $sUrl\n" : "");
-            $this->cliprint('cli', "... SKIP by extension: $sUrl\n");
+            $this->cliprint('cli', "... SKIP by extension: $sUrlPath from $sUrl\n"); 
             return false;
         }
 
@@ -408,16 +410,17 @@ class crawler extends crawler_base{
      * @param type $info
      * @return boolean
      */
-    public function processResponse($response) {
+    public function processResponse(&$response) {
         $url = $response->getUrl();
         // list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
         $aTmp=explode("\r\n\r\n", $response->getResponseText(), 2);
         $sHttpHeader=$aTmp[0];
-        $sHttpBody=isset($aTmp[1]) ? $aTmp[1] : false;
 
         $info = $response->getResponseInfo();
         $info['_responseheader']=$sHttpHeader;
-        
+
+        unset($response);
+
         $oHttpstatus=new httpstatus($info);
         
         $this->_iUrlsCrawled++;
@@ -430,7 +433,8 @@ class crawler extends crawler_base{
             return false;
         }
         if ($oHttpstatus->isRedirect()) {
-            $sNewUrl=$oHttpstatus->getRedirect();
+            $oHtml=new analyzerHtml();
+            $sNewUrl=$oHtml->getFullUrl($oHttpstatus->getRedirect(), $url);
             $this->cliprint('cli', "REDIRECT: $url ".$oHttpstatus->getHttpcode()." - ".$oHttpstatus->getStatus()." -> ".$sNewUrl.".\n");
             if ($sNewUrl){
                 $this->_addUrl2Crawl($sNewUrl, true);
@@ -441,6 +445,7 @@ class crawler extends crawler_base{
             switch ($oHttpstatus->getContenttype()) {
                 case 'text/html':
                     // $this->cliprint('cli', "Analyzing html code of $url ... \n");
+                    $sHttpBody=isset($aTmp[1]) ? $aTmp[1] : false;
                     $this->_processHtmlPage($sHttpBody, $info);
                     break;
                 default:
@@ -816,7 +821,7 @@ class crawler extends crawler_base{
                         }
                     } 
                     catch(Exception $e) {
-                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] seems to be wrong. ', error);
+                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] seems to be wrong. ', $e);
                     }
                 }
             }

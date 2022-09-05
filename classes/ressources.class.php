@@ -728,7 +728,8 @@ class ressources extends crawler_base {
             );
         }
         if ($oHttpstatus->isRedirect()) {
-            $sNewUrl = $oHttpstatus->getRedirect();
+            $oHtml=new analyzerHtml();
+            $sNewUrl=$oHtml->getFullUrl($oHttpstatus->getRedirect(), $url);
             $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " -> " . $sNewUrl . "\n");
             $aRelItem = array(
                 'id' => $iId,
