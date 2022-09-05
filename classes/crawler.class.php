@@ -821,7 +821,7 @@ class crawler extends crawler_base{
                         }
                     } 
                     catch(Exception $e) {
-                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] seems to be wrong. ', error);
+                        $this->logAdd(__METHOD__.'() - regex ['.$sRegex.'] seems to be wrong. ', $e);
                     }
                 }
             }
