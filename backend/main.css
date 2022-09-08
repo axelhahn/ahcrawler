@@ -8,21 +8,21 @@
     --color-default:#222;
     --color-h1:#346;
     --color-h2:#457;
-    --color-h3:#68a;
-    --color-h4:#8ac;
+    --color-h3:#457;
+    --color-h4:#679;
     --color-shadow-default:rgba(200,200,200,1);
 
     --color-pacman: #bcd;
 
     --color-childitem-i: #568;
-    --color-childitem-title: #68a;
+    --color-childitem-title: #69a;
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
     --color-border-click:#cde;
 
     --navi-bg-on-hover:#c0d0dc;
-    --navi-bg-on-hover:rgba(120,130,138,0.1);
+    --navi-bg-on-hover:rgba(160,170,190,0.1);
 
     --navi-bg-l1-active:#568;
     --navi-bg-l2-active:#78a;
@@ -34,7 +34,8 @@
 
     --pagehint-bg:#f0e8d0;
     --pagehint-bg:#d0e8d0;
-    
+    --pagehint-bg:#d0e8e0;
+
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
     --status-bg-ok:radial-gradient(#fff,#ac8);
@@ -196,9 +197,9 @@ a.hoverinfos:hover span{display: block;}
 h1{ background:#cde; color:var(--color-h1); margin:0 0 1em; border-top-left-radius: 0.5em;}
 
 h2{
-    border-bottom: 1px dotted; 
+    border-bottom: 0px dotted; 
     font-size: 3em; 
-    padding: 0.2em 0em 0.2em 0.3em; 
+    padding: 0.2em 0em 0.2em 0.5em; 
     margin: 0 0 0 -0.3em; 
     color:var(--color-h2);
     position: fixed; 
@@ -208,7 +209,7 @@ h2{
     text-shadow: 1px 1px 1px #fff, 0.25em 0.25em 0.2em #ddd;
     background: var(--color-bg-default);
     box-shadow: 0 1em 1em var(--color-shadow-default);
-    text-shadow: 1px 1px 1px var(--color-shadow-default), 0.25em 0.25em 0.2em var(--color-shadow-default);
+    text-shadow: 2px 2px 5px var(--color-shadow-default);
 }
 p.pageHint{
     
@@ -270,7 +271,7 @@ footer{position: fixed; background: rgba(0,0,0,0.05); bottom: 0; padding: 0.5em 
 /* --- tiles --- */
 
 a.childitem{
-    border: 1px solid rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.07);
     /*
     background: linear-gradient(#fff, #e0e4ea);
     background: #fff;
