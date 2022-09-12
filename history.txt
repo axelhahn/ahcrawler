@@ -10,6 +10,9 @@
 
 ----------------------------------------------------------------------
 
+2022-09-xx: v0.154
+  * UPDATE: css of default theme
+
 2022-09-06: v0.153
   * FIX: add support of git repo outside approot
   * FIX: php error on if a project was not crawled
