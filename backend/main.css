@@ -4,6 +4,8 @@
 
 **/
 :root {
+    --border1: rgba(0,0,0,0.1);
+
     --color-bg-default:#f8f8f8;
     --color-a:#35a;
     --color-default:#222;
@@ -20,6 +22,7 @@
 
     --color-childitem-i: #568;
     --color-childitem-title: #69a;
+    --color-childitem-border: rgba(0,0,0,0.07);
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
@@ -37,14 +40,22 @@
     --navi-icon-color-active:#fff;
 
     --tile-bg:radial-gradient(#fff,#c0ccdc);
-    --tile-color:#789;
+    --tile-color:#78a;
+    --tile-border-color:var(--border1);
+    --tile-shadow-hover:0 0 5px #fff, 0 0 1em #aaa;;
 
     --brand-title-bg: rgba(140,160,200,0.1);
     --context-head-bg:#78a;
+    --context-head-fg:#fff;
 
     --pagehint-bg:#f0e8d0;
     --pagehint-bg:#d0e8d0;
     --pagehint-bg:#d0e8e0;
+
+    --statusbar-bg: #cde;
+    --extended-bg: rgba(0,0,0,0.05);
+
+    --footer-bg: rgba(0,0,0,0.05);
 
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
     --status-bg-error-flat:#ebb;
@@ -77,6 +88,22 @@
     --table-head-select-color: #cde;
 
     --actionbox-bg: rgba(140,160,180,0.1);
+
+    --toggle-bg: rgba(255,255,255,0.5);
+    --toggle-border: rgba(0,0,0,0.3);
+
+    --toggle-head-a-bg: rgba(0,0,0,0.05);
+    --toggle-head-a-border: rgba(0,0,0,0);
+    --toggle-head-a-color: #78a;
+    --toggle-head-a-hover-bg: rgba(0,0,0,0.2);
+    --toggle-head-a-hover-border: var(--border1);
+    --toggle-head-a-open-color: #a00;
+
+    --div-bar-border: var(--border1);
+
+    --http-status-redirect-bg:radial-gradient(#fec,#fc8);
+    --http-status-redirect-color:#975;
+
 }
 .sidebar{
     position: fixed;
@@ -241,13 +268,6 @@ iframe{position: fixed; bottom: -3em; height: 1em; border: none;}
 pre{font-size: 80%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 code{background: #e0e4ea; padding: 0.2em;}
 
-pre.logdata div:hover{
-    background: rgba(0,0,0,0.05);
-}
-pre.logdata h3, pre.logdata h4{display: inline-block; margin: 0; }
-pre.logdata .message-cli{opacity: 0.7;}
-pre.logdata .message{border: none; margin:0;}
-
 /* --- context box --- */
 div.contextbox{
     position: relative;
@@ -258,16 +278,18 @@ div.contextbox{
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--context-head-bg); color:#fff; font-weight: bold; padding: 1em;border-top-left-radius: 1em;}
+div.contextbox .head{background: var(--context-head-bg); color:var(--context-head-fg); font-weight: bold; padding: 1em;border-top-left-radius: 1em;}
 div.contextbox .content{margin: 1em;}
 
-.hintextended{background:rgba(0,0,0,0.05); }
-.extended{background:rgba(0,0,0,0.05); }
+/* --- setup page: extended areas for pro features --- */
+
+.hintextended{background: var(--extended-bg); }
+.extended{background: var(--extended-bg);}
 
 /* --- status for running actions --- */
 
 #divStatus{
-    background:#cde;
+    background:var(--statusbar-bg);
     display: none;
     overflow: hidden;
     padding: 0.5em;
@@ -278,11 +300,20 @@ div.contextbox .content{margin: 1em;}
 }
 .actions-crawler>div{display: none;}
 
-footer{position: fixed; background: rgba(0,0,0,0.05); bottom: 0; padding: 0.5em 1em; right: 0;}
+footer{position: fixed; background: var(--footer-bg); bottom: 0; padding: 0.5em 1em; right: 0;}
+
+/* --- page log messaged --- */
+pre.logdata div:hover{
+    background: rgba(0,0,0,0.05);
+}
+pre.logdata h3, pre.logdata h4{display: inline-block; margin: 0; }
+pre.logdata .message-cli{opacity: 0.7;}
+pre.logdata .message{border: none; margin:0;}
+
 /* --- tiles --- */
 
 a.childitem{
-    border: 1px solid rgba(0,0,0,0.07);
+    border: 1px solid var(--color-childitem-border);
     /*
     background: linear-gradient(#fff, #e0e4ea);
     background: #fff;
@@ -300,14 +331,10 @@ a.childitem{
     width: 19%;
 }
 a.childitem:hover{
-    background: var(--navi-bg-on-hover);
-    /* border-color: #fff; */
-    box-shadow: 0 0 1em var(--color-shadow-default);
-    
+    box-shadow: 0 0 .5em var(--color-shadow-default);    
 }
 a.childitem:focus{box-shadow: none;}
 a.childitem i{color: var(--color-childitem-i); font-size: 300%; min-height: 1em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
-a.childitem:hover i{color: #fff;text-shadow: 2px 2px 6px rgba(0,0,0,0.4);}
 a.childitem strong{color: var(--color-childitem-title); font-size: 130%; display: block; min-height: 3em; margin-top: 0.2em;}
 
 
@@ -319,7 +346,7 @@ ul.tiles{
 }
 ul.tiles a.tile{
     background: var(--tile-bg);
-    border: 2px outset rgba(0,0,0,0.1); 
+    border: 2px outset var(--tile-border-color); 
     border-radius: 0.5em;
     box-shadow: 1px 1px 5px var(--color-shadow-default);
     color: var(--tile-color);
@@ -334,7 +361,7 @@ ul.tiles a.tile{
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
-    border: 2px solid rgba(0,0,0,0.1); 
+    border: 2px solid var(--tile-border-color); 
     cursor: default;
 }
 
@@ -342,24 +369,24 @@ ul.tiles a.tile strong{
     font-size: 200%;
 }
 ul.tiles a.tile:hover{
-    box-shadow: 0 0 5px #fff, 0 0 1em #aaa;
+    box-shadow: var(--tile-shadow-hover)
 }
 
+/* ----- Image of ebsite in context sidebar ----- */
 img.profile{
-    border: 0.0em solid #fff;
-    box-shadow: 0 0 0em #ccc;
     border-radius: 0.5em;
     padding: 0;
     max-width: 100%;
 }
 
+/* ----- toggle boxes for help/ legends) ----- */
 .div-toggle-head{
     padding: 0em;
 }
 .div-toggle-head a{
-    background: rgba(0,0,0,0.05);
-    border: 1px solid rgba(0,0,0,0);
-    color:#789;
+    background: var(--toggle-head-a-bg);
+    border: 1px solid var(--toggle-head-a-border);
+    color:var(--toggle-head-a-color);
     display: block;
     font-weight: bold;
     margin-bottom: 1px;
@@ -368,8 +395,8 @@ img.profile{
     transition: all 1s;
 }
 .div-toggle-head a:hover{
-    border: 1px solid rgba(0,0,0,0.2);
-    background: rgba(0,0,0,0.1);
+    background: var(--toggle-head-a-hover-bg);
+    border: 1px solid var(--toggle-head-a-hover-border);
 }
 .div-toggle-head a:after{
     float: right;
@@ -378,12 +405,12 @@ img.profile{
     content: " + ";
 }
 .div-toggle-head a.open:after{
-    color:#a00;
+    color:var(--toggle-head-a-open-color);
     transform: rotate(135deg);
 }
 .div-toggle{
-    background: rgba(255,255,255,0.5);
-    border: 1px dotted rgba(0,0,0,0.3);
+    background: var(--toggle-bg);
+    border: 1px dotted var(--toggle-border);
     border-top: none;
     padding: 1em;
     margin-bottom: 2em;
@@ -391,7 +418,7 @@ img.profile{
 
 
 .bar{width: 100%; border:none;}
-.bar div{border-right: 1px solid rgba(0,0,0,0.1); text-align:center; padding: 1em 0;}
+.bar div{border-right: 1px solid var(--div-bar-border); text-align:center; padding: 1em 0;}
 
 .bar .bar-errors,   ul.tiles li a.error,   ul.error   a.tile, span.error,   tr.error, td.error{ background:var(--status-bg-error); color:var(--status-color-error);}
 .bar .bar-warnings, ul.tiles li a.warning, ul.warning a.tile, span.warning, tr.warning, td.warning{ background:var(--status-bg-warning); color:var(--status-color-warning);}
@@ -401,9 +428,9 @@ img.profile{
 span.error,   tr.error,   td1.error{   background:var(--status-bg-error-flat);}
 span.warning, tr.warning, td1.warning{ background:var(--status-bg-warning-flat);}
 
-span.redirect{background:#fec; background: radial-gradient(#fec,#fc8); color:#975;}
+span.redirect{background: var(--http-status-redirect-bg); color:var(--http-status-redirect-color);}
 
-div.warning{border-radius: 0.5em; border: 2px solid rgba(0,0,0,0.2); background: #fec; color:#975; padding: 1em;}
+div.warning{border-radius: 0.5em; border: var(--boxes-border); background: #fec; color:#975; padding: 1em;}
 div.message{border-radius: 0.5em; border: var(--boxes-border); padding: 0.2em 1em; margin: 0.5em 0;}
 
 div.message-ok,      span.ok,      tr.ok,      td1.ok      { background:var(--status-bg-ok-flat);      color:var(--status-color-ok);}
@@ -603,6 +630,11 @@ div.pure-control-group > div > label:hover{opacity: 0.7; background: rgba(255,25
 #overlay #dialogcontent{
     padding: 2em;
     
+}
+/* --- Debug container --- */
+.debugcontainer{
+    position: absolute; top: 1000em; z-index: 200;
+    padding: 1em; background: #f8f8f8;
 }
 /* 
 --------------------------------------------------------------------------------
