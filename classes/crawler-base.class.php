@@ -1309,7 +1309,7 @@ class crawler_base {
     public function logRender(){
         $aOptions = $this->_loadConfigfile();
         if($this->_oLog && isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
-            return '<div style="position: absolute; left: 20em; top: 1000em;">'.$this->_oLog->render().'</div>';
+            return '<div class="debugcontainer">'.$this->_oLog->render().'</div>';
         }
         return false;
     }
