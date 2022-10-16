@@ -354,6 +354,11 @@ if (isset($aOptions['options']['cache']) && $aOptions['options']['cache']==false
     unset($aCbNocache['checked']);
 }
 
+$sSubmit=(isset($aOptionDefaults['options']['searchindex'])
+    ? $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+    : $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
+);
+
 $sReturn.=(!isset($_SERVER['HTTPS'])
             ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning')
             : ''
@@ -536,11 +541,11 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'value'=>'',
                     ), false)
                 . '</div>'
-
             // ------------------------------------------------------------
             // setup options - crawler
             // ------------------------------------------------------------
             
+            . $sSubmit
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-spinner')) 
                 . ' '.$this->lB('setup.section.crawler')
@@ -660,7 +665,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             // setup options - search result weights
             // ------------------------------------------------------------
-            
+            .$sSubmit            
             . '<h3>'
                 . ' '.$this->lB('setup.section.search')
             .'</h3>'
@@ -697,7 +702,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - analysis constants
             // ------------------------------------------------------------
             $sReturn.=''
-                    . '<h3>'
+                .$sSubmit
+                . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.analysis')
             .'</h3>'
@@ -785,6 +791,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             // setup options - public services without login
             // ------------------------------------------------------------
+            .$sSubmit
             .'<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-newspaper-o')) 
                 . ' '.$this->lB('setup.section.public-services')
@@ -814,6 +821,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // setup options - database
             // ------------------------------------------------------------
         
+            .$sSubmit
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-database')) 
                 . ' '.$this->lB('setup.section.database')
@@ -929,11 +937,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             // ------------------------------------------------------------
             // submit
             // ------------------------------------------------------------
-            . '<br><hr><br>'
-            .(isset($aOptionDefaults['options']['searchindex'])
-                ? $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
-                : $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
-            )
+            .$sSubmit
 
             /*
             . '<h3>'
