@@ -9,6 +9,8 @@
     --DEFAULT-mark-ok: rgb(61, 151, 95);
     --DEFAULT-mark-error: rgb(177, 86, 86);
     --DEFAULT-mark-warning: rgb(216, 124, 38);
+
+    --DEFAULT-darken-10: rgba(0,0,0,0.1);
     
     --border1: rgba(0,0,0,0.1);
 
@@ -27,8 +29,9 @@
     --color-pacman: #69a;
 
     --color-childitem-i: #808890;
+    --color-childitem-i: #568;
     --color-childitem-title: #589;
-    --color-childitem-border: rgba(0,0,0,0.07);
+    --color-childitem-border: var(--DEFAULT-darken-10);
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
@@ -93,7 +96,7 @@
     --http-status-redirect-color:#975;
 
     /* --- icons --- */
-    --ico-security-color:#0c6;
+    --ico-security-color:#493;
     --ico-http-color:#083;
     --ico-unknown-color:#aaa;
     --ico-error-color:#e66;
@@ -410,13 +413,15 @@ div.contextbox .content{margin: 1em;}
 
 footer{position: fixed; background: var(--footer-bg); bottom: 0; padding: 0.5em 1em; right: 0;}
 
-/* --- page log messaged --- */
+/* --- page log messages --- */
 pre.logdata div:hover{
-    background: rgba(0,0,0,0.05);
+    background: var(--DEFAULT-darken-10);
 }
 pre.logdata h3, pre.logdata h4{display: inline-block; margin: 0; }
 pre.logdata .message-cli{opacity: 0.7;}
 pre.logdata .message{border: none; margin:0;}
+
+pre span.linenumber{background: var(--DEFAULT-darken-10); display: inline-block; padding: 0.2em 0.5em; text-align: center; width: 1.7em; }
 
 /* --- tiles --- */
 
@@ -579,6 +584,8 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
     ressources 
 --------------------------------------------------------------------------------
 */
+.text-on-markedelement{color: var(--DEFAULT-markedelement-color);}
+
 .http-code{padding: 0.05em 0.5em; background: var(--http-code-bg); color:var(--http-code-color); box-shadow: 0 0 0.2em var(--http-code-color); min-width: 3em; display: inline-block;}
 .http-code-todo,.http-code-{background: var(--http-code-todo-bg);}
 .http-code--1 {background: var(--http-code--1-bg);}

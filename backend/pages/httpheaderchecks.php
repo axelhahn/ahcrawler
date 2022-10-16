@@ -218,7 +218,7 @@ if (is_array($aUnknownheader) && count($aUnknownheader)) {
             : ''
             // .'<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>'
         ;
-        $sLegendeUnknown .= '<li>' . '<pre>[' . $aHeaderitem['line'] . '] ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sLegendeUnknown .= '<li>' . '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
     }
     $sWarnings .= ''
         . $oRenderer->renderTileBar($sTiles)
@@ -237,7 +237,7 @@ if ($iDeprecated) {
         . $this->_getHistoryCounter(['responseheaderDeprecated'])
         . '<ul>';
     foreach ($aDepr as $sKey => $aHeaderitem) {
-        $sWarnings .= '<li><pre>[' . $aHeaderitem['line'] . '] ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
     }
     $sWarnings .= '</ul><br>';
 }
@@ -260,11 +260,11 @@ if (is_array($aWarnheader) && count($aWarnheader)) {
         $sLegendeWarn .= '<li>'
             . $this->lB('httpheader.' . strtolower($aHeaderitem['var']) . '.description')
             . (isset($aHeaderitem['regex']['unwantedregex'])
-                ? '<pre>[' . $aHeaderitem['line'] . '] ' . $aHeaderitem['var'] . ': '
+                ? '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': '
                 . preg_replace('/(' . $aHeaderitem['regex']['unwantedregex'] . ')/i', '<span class="error">$1</span>', $aHeaderitem['value'])
                 . '</pre>'
                 // .'<code>'.print_r($aHeaderitem['regex']['unwantedregex'], 1).'</code>'
-                : '<pre>[' . $aHeaderitem['line'] . '] ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>'
+                : '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>'
             )
             . '<br>'
             . '</li>';
@@ -291,7 +291,7 @@ if ($iNonStandard) {
                 . '</li>'
                 ;
             */
-        $sWarnings .= '<li><pre>[' . $aHeaderitem['line'] . '] ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
     }
     $sWarnings .= '</ul><br>';
 }
@@ -343,13 +343,12 @@ foreach ($aSecHeader as $sVar => $aData) {
             . $oRenderer->renderMessagebox($sVar, $bHasBadValue ? 'warning' : 'ok')
             // . $oRenderer->renderShortInfo($aData ? 'found': 'miss') . ' <strong>' . $sVar. '</strong><br>'
             . $this->lB('httpheader.' . $sVar . '.description') . '<br>'
+            . '<pre><span class="linenumber">' . $aData['line'] . '</span> '
             . ($bHasBadValue
-                ? '<pre>'
-                // . print_r($aData, 1)
-                . preg_replace('/(' . $aData['regex']['badvalueregex'] . '[a-z0-9]*)/i', '<span class="error">$1</span>', $aData['value'])
-                . '</pre>'
-                : '<pre>[' . $aData['line'] . '] ' . $aData['var'] . ': ' . $aData['value'] . '</pre>'
+                ?  preg_replace('/(' . $aData['regex']['badvalueregex'] . '[a-z0-9]*)/i', '<span class="error">$1</span>', $aData['value'])
+                : $aData['var'] . ': ' . $aData['value']
             )
+            . '</pre>'
             . '<br>';
     } else {
         // $sSecMiss.='<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>';
