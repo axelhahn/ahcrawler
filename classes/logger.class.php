@@ -6,10 +6,10 @@
  * 
  * Source: https://github.com/axelhahn/ahlogger
  * 
- * USAGE:
- * (1) Trigger a message with add() to add a marker
+ * USAGE:<br>
+ * (1) Trigger a message with add() to add a marker<br>
  * (2) The render() method lists all items in a table with time since start
- *     and the delta to the last message. 
+ *     and the delta to the last message. <br>
  * 
  * @author www.axel-hahn.de
  */
