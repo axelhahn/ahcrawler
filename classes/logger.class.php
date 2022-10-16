@@ -208,7 +208,7 @@ class logger {
                     '<td>' . $aLogentry["counter"] . '</td>' .
                     '<td>' . $aLogentry["level"] . '</td>' .
                     '<td>' . $aLogentry["timer"] . '</td>' .
-                    '<td>' . $this->_getBar($aLogentry["delta"], $aData["maxtime"]*1000). $aLogentry["delta"] .' ms</td>' .
+                    '<td>' . $this->_getBar($aLogentry["delta"], $aData["maxtime"]*1000). $aLogentry["delta"] .' ms'.($aLogentry["delta"]==$aData['maxtime']*1000 ? ' ⏱️' : '').'</td>' .
                     '<td>' . $this->_getBar($aLogentry["memory"], $aData["maxmem"]) . $aLogentry["memory"] .' MB'. '</td>' .
                     '<td>' . $aLogentry["message"] . '</td>' .
                     '</tr>';
