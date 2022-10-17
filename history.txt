@@ -10,8 +10,11 @@
 
 ----------------------------------------------------------------------
 
-2022-09-xx: v0.154
+2022-10-xx: v0.154
   * UPDATE: css of default theme
+  * UPDATE: link details show switch from secure https to unsecure http
+  * UPDATE: resource details disable http ok links
+  * FIX: http header of a failed page in detail page
 
 2022-09-06: v0.153
   * FIX: add support of git repo outside approot
