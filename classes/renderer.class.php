@@ -457,10 +457,7 @@ class ressourcesrenderer extends crawler_base {
          * 
          */
         if (array_key_exists($iIdRessource, $aUrllist)){
-            return $sReturn .=' <span class="error">'
-                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
-                . '</span>'
-                ;
+            return $sReturn .= $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
         $oStatus=new httpstatus($aRessourceItem['http_code']);
         $bIsRedirect=($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
@@ -511,10 +508,7 @@ class ressourcesrenderer extends crawler_base {
         $sReturn = '';
 
         if (array_key_exists($iIdRessource, $aUrllist)){
-            return $sReturn . ' <span class="error">'
-                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
-                . '</span>'
-                ;
+            return $sReturn . $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
         $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
         $aUrllist[$iIdRessource]=true;
