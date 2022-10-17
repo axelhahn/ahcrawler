@@ -11,6 +11,9 @@
     --DEFAULT-mark-warning: rgb(216, 124, 38);
 
     --DEFAULT-darken-10: rgba(0,0,0,0.1);
+    --DEFAULT-darken-7: rgba(0,0,0,0.07);
+    --DEFAULT-darken-5: rgba(0,0,0,0.05);
+    --DEFAULT-darken-2: rgba(0,0,0,0.02);
     
     --border1: rgba(0,0,0,0.1);
 
@@ -41,6 +44,8 @@
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --brand-title-bg: rgba(140,160,200,0.1);
+
+    --button-bg: #e0e4e8;
     --button-text-color: var(--DEFAULT-markedelement-color);
     --button-textshadow-color: rgba(0, 0, 0, 0.4);
     --button-success-bg: var(--DEFAULT-mark-ok);
@@ -145,7 +150,7 @@
 
     --resource-report-bg:#fff;
     --resource-report-border:#eee;
-    --resource-report-hover-bg:#eee;
+    --resource-report-hover-bg:var(--DEFAULT-darken-2);
     --resource-report-border:#888;
 
     --status-bg-error:radial-gradient(#f8f0f0,#eaa);
@@ -190,7 +195,7 @@
 
     --table-tr-marked-bg:#cde;
 
-    --tile-bg:radial-gradient(#fff,#c0ced8);
+    --tile-bg:radial-gradient(#fff,#c0cbd8);
     --tile-color:#789;
     --tile-border-color:var(--border1);
     --tile-shadow-hover:0 0 5px #fff, 0 0 1em #aaa;;
@@ -198,10 +203,10 @@
     --toggle-bg: rgba(255,255,255,0.5);
     --toggle-border: rgba(0,0,0,0.3);
 
-    --toggle-head-a-bg: rgba(0,0,0,0.05);
+    --toggle-head-a-bg: var(--DEFAULT-darken-5);
     --toggle-head-a-border: rgba(0,0,0,0);
     --toggle-head-a-color: #78a;
-    --toggle-head-a-hover-bg: rgba(0,0,0,0.2);
+    --toggle-head-a-hover-bg: var(--DEFAULT-darken-10);
     --toggle-head-a-hover-border: var(--border1);
     --toggle-head-a-open-color: #a00;
 
@@ -320,6 +325,7 @@ body, .contextbox, .piechart{
     box-shadow:  0.1em 0.1em 0.1em #aaa; 
     border: 1px solid rgba(0, 0, 0, 0.1);
     */
+    background: var(--button-bg);
 }
 .pure-button:hover {
     /*
