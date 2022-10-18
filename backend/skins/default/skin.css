@@ -1,13 +1,20 @@
 /**
 
-    MAIN CSS
+    SKIN CSS FOR THEME DEFAULT
 
 **/
+
+/*
+    Overrides of defined colors
+
+:root{
+    --DEFAULT-markedelement-color: #0ff;     
+}
+*/
+
 body, .contextbox, .piechart{
-	color: var(--color-default);
-        background: var(--color-bg-default) url('bg_main.png') fixed;
+    background-image: url('bg_main.png');
 }
 h2{
-
-    box-shadow: 0 1em 1em #fff; 
+    box-shadow: 0 0.7em 1em #fff; 
 }

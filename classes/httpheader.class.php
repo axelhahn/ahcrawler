@@ -312,13 +312,12 @@ class httpheader {
         if ($aTmp && is_array($aTmp) && count($aTmp)) {
             foreach ($aTmp as $sLine) {
                 if (!$sLine) {
-                    continue;
+                    break;
                 }
                 $this->_aHeader[] = $this->_splitHeaderLine($sLine);
+                $this->_sHeader .= $sLine . "\r\n";
             }
-            // $this->_aHeader=$aTmp;
         }
-        $this->_sHeader = $sHeader . "\r\n";
         $this->_aParsedHeader = $this->parseHeaders();
 
         return $this->_aHeader;

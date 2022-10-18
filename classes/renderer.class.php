@@ -457,13 +457,12 @@ class ressourcesrenderer extends crawler_base {
          * 
          */
         if (array_key_exists($iIdRessource, $aUrllist)){
-            return $sReturn .=' <span class="error">'
-                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
-                . '</span>'
-                ;
+            return $sReturn .= $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
         $oStatus=new httpstatus($aRessourceItem['http_code']);
         $bIsRedirect=($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
+        $lastProt=parse_url($sLastUrl, PHP_URL_SCHEME);
+        $nowProt=parse_url($aRessourceItem['url'], PHP_URL_SCHEME);
         $sReturn .= ''
                 // . ' #'.$iIdRessource.' '.$iLevel.' '
                 . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
@@ -472,7 +471,7 @@ class ressourcesrenderer extends crawler_base {
                         ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
                         : ''
                     )
-                    . ($aRessourceItem['url']==str_replace('https://', 'http://',  $sLastUrl)
+                    . ($lastProt=='https' && $nowProt=='http'
                         ? $this->renderMessagebox($this->lB("linkchecker.https-to-http"), 'warning')
                         : ''
                     )
@@ -509,10 +508,7 @@ class ressourcesrenderer extends crawler_base {
         $sReturn = '';
 
         if (array_key_exists($iIdRessource, $aUrllist)){
-            return $sReturn . ' <span class="error">'
-                . sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url'])
-                . '</span>'
-                ;
+            return $sReturn . $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
         $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
         $aUrllist[$iIdRessource]=true;
@@ -1063,7 +1059,7 @@ class ressourcesrenderer extends crawler_base {
         if(count($aHttpStatus)>0){
             ksort($aHttpStatus);
             foreach($aHttpStatus as $sHttpStatusgroup=>$iStatusCount){
-                $sCss='http-code-'.implode(' http-code-',explode('-', $sHttpStatusgroup));
+                $sCss='text-on-markedelement http-code-'.implode(' http-code-',explode('-', $sHttpStatusgroup));
                 $sFilter.=''
                         . '<a href="#" class="pure-button '.$sCss.'" '
                         . 'onclick="$(this).toggleClass(\''.$sCss.'\'); $(\'div.'.$sDivClass.'.group-'.$sHttpStatusgroup.'\').toggle(); return false;"'
@@ -1192,9 +1188,7 @@ class ressourcesrenderer extends crawler_base {
                                 ? '<br><a href="../?page=httpheaderchecks&urlbase64='.base64_encode($aItem['url']).'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
                                 : ''
                             )
-                            
                         ,
-                        
                         false
                     );
         }

@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.153',
-        'date' => '2022-09-06',
+        'version' => '0.154',
+        'date' => '2022-10-18',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1309,7 +1309,7 @@ class crawler_base {
     public function logRender(){
         $aOptions = $this->_loadConfigfile();
         if($this->_oLog && isset($aOptions['options']['debug']) && $aOptions['options']['debug']){
-            return '<div style="position: absolute; left: 20em; top: 1000em;">'.$this->_oLog->render().'</div>';
+            return '<div class="debugcontainer">'.$this->_oLog->render().'</div>';
         }
         return false;
     }

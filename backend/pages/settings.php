@@ -2,4 +2,4 @@
 /**
  * page settings
  */
-return $this->_renderChildItems($this->_aMenu['settings']);
+return '<br><br><br><br>'.$this->_renderChildItems($this->_aMenu['settings']);

@@ -234,6 +234,14 @@ if(isset($_POST['action'])){
 // ----------------------------------------------------------------------
 // MAIN
 // ----------------------------------------------------------------------
+$sSubmit='<br><br>'
+. ($this->_sTab==='add'
+    ? $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
+    : $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+        // .' '
+        // .$oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 'class'=>'pure-button button-error', 'name'=>'action', 'value'=>'deleteprofile'))
+)
+;
 
 $sReturn.=$this->_getNavi2($this->_getProfiles(), true, '?page=home')
         .(!isset($_SERVER['HTTPS'])
@@ -366,6 +374,7 @@ $sReturn.='
             // ------------------------------------------------------------
             // search index
             // ------------------------------------------------------------
+            . $sSubmit
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('profile.section.searchindex')
@@ -509,6 +518,7 @@ $sReturn.='
             // search frontend
             // ------------------------------------------------------------
             
+            . $sSubmit
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                 . ' '.$this->lB('profile.section.frontend')
@@ -545,8 +555,8 @@ $sReturn.='
             // ------------------------------------------------------------
             // ressources scan
             // ------------------------------------------------------------
-            
-                . '<h3>'
+            . $sSubmit
+            . '<h3>'
                     // . $oRenderer->oHtml->getTag('i', array('class'=>'fa fa-user')) 
                     . ' '.$this->lB('profile.section.ressources')
                 .'</h3>'
@@ -589,14 +599,12 @@ $sReturn.='
             // submit
             // ------------------------------------------------------------
             . '<br><hr><br>'
+            . $sSubmit
+
             . ($this->_sTab==='add'
-                ? 
-                    $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'))
-                : 
-                    $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
-                    .' '
-                    .$oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 'class'=>'pure-button button-error', 'name'=>'action', 'value'=>'deleteprofile'))
-            )
+                    ? '' : ' ' . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 'class'=>'pure-button button-error', 'name'=>'action', 'value'=>'deleteprofile'))
+                    
+                )
         
             .'</form>'
         
