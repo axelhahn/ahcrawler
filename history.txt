@@ -10,8 +10,8 @@
 
 ----------------------------------------------------------------------
 
-2022-10-xx: v0.154
-  * UPDATE: css of default theme
+2022-10-18: v0.154
+  * UPDATE: css of default theme: move all colors into variables to simplify custom skins
   * UPDATE: link details show switch from secure https to unsecure http
   * UPDATE: resource details disable http ok links
   * FIX: http header of a failed page in detail page
