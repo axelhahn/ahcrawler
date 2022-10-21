@@ -658,7 +658,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     'cols'=>$iColsInTA,
                     'rows'=>isset($aOptions['options']['searchindex']['defaultUrls']) && is_array($aOptions['options']['searchindex']['defaultUrls']) && count($aOptions['options']['searchindex']['defaultUrls']) ? count($aOptions['options']['searchindex']['defaultUrls'])+1 : 3 ,
                     // 'label'=>$sValueSearchCategories,
-                    'label'=> implode("\n", $aOptions['options']['searchindex']['defaultUrls']),
+                    'label'=> isset($aOptions['options']['searchindex']['defaultUrls']) ? implode("\n", $aOptions['options']['searchindex']['defaultUrls']) : '',
                     ), true)
                 . '</div>'
 
