@@ -57,6 +57,8 @@ if(!$iUrls){
                         .($o->getSearchLang(false)       ? $o->renderLabelLang()       .': '.$o->renderSelectLang().' '       : '')
                         . '<br>'
                         . $o->renderLabelMode() .': '. $o->renderSelectMode(array('class'=>'form-control'))
+                        .'<br><br>'
+                        . $this->lB('status.search.contentselect') . ': ' . $o->renderSelectContentTable(array('class'=>'form-control'))
                     . '</div>'
                 . '</form>'
             . '</div>'
@@ -83,30 +85,39 @@ if(!$iUrls){
                 // echo '<pre>'.print_r($aItem, 1); die();
                 $iCounter ++;
                 $sResult = '';
+                $aMatches=[];
                 foreach ($aItem['results'] as $sWord => $aMatchTypes) {
-                    $sResult.='<br>'.$this->_getIcon('button.search').'<strong>' . $sWord . '</strong> ...<br>';
+                    $sResult.=''.$this->_getIcon('button.search').'<strong>' . $sWord . '</strong> ...<br><br>';
                     foreach ($aMatchTypes as $sType => $aHits) {
-                        $sMatches = '';
                         foreach ($aHits as $sWhere => $aValues) {
                             if ($aValues[0]) {
-                                $sMatches.='<nobr style="text-align: right; display: block;">&nbsp;&nbsp;- <strong>' . $aValues[0] . '</strong> x ' . $sWhere . ' (' . $aValues[0] . 'x'.$aValues[1].'=<strong>'.($aValues[0]*$aValues[1]).'</strong>)</nobr>';
+                                $aMatches[]=[
+                                    $sType,
+                                    '<strong>' . $aValues[0] . '</strong> x in',
+                                    '[' . $sWhere . ']',
+                                    $aValues[1],
+                                    $aValues[0] . ' x '.$aValues[1],
+                                    '<strong>'.($aValues[0]*$aValues[1]).'</strong>'
+                                ];
                             }
                         }
-                        if ($sMatches) {
-                            $sResult.='<br>* '.$sType . ':<br>' . $sMatches;
-                        }
                     }
+                    if (count($aMatches)) {
+                        $sResult.=$this->_getSimpleHtmlTable($aMatches);
+                    }
+                    $sResult.='<br>';
                 }
                 $aTable[] = array(
                     'id' => $iCounter,
-                    'ranking' => '<strong>'.$iRanking . '</strong> ('.round($iRanking/$iMaxRanking*100).'%)<br>' . $sResult . '</span>',
+                    'ranking' => '<strong>'.$iRanking . '</strong> ('.round($iRanking/$iMaxRanking*100).'%)<br><!-- ' . $sResult . '--></span>',
                     'summary' => $this->_getSimpleHtmlTable(array(
                             // array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
-                            array('title', '<strong>' . $aItem['title'] . '</strong>'),
-                            array('url', str_ireplace('','',$aItem['url'])),
-                            array('lang', $aItem['lang']),
-                            array('description', $aItem['description']),
-                            array('keywords', $aItem['keywords']),
+                            array($this->lB('db-pages.title'), '<strong>' . $aItem['title'] . '</strong>'),
+                            array($this->lB('db-pages.url'), str_ireplace('','',$aItem['url'])),
+                            array($this->lB('db-pages.lang'), $aItem['lang']),
+                            array($this->lB('db-pages.description'), $aItem['description']),
+                            array($this->lB('db-pages.keywords'), $aItem['keywords']),
+                            array($this->lB('db-search.ranking'), $sResult),
                             // array('content', $this->_prettifyString($aItem['content'], 400)),
                         ))
                     ,
@@ -135,6 +146,14 @@ if(!$iUrls){
     }
     $sReturn.=''
         . $this->_getHtmlTable($aTable,'db-search.')
+
+        . '<br>'
+        . $oRenderer->renderToggledContent(
+            $this->lB('status.search.ranking.legend'),
+            $this->lB('setup.section.search.hint')
+                . '<pre>'.print_r($this->aOptions['searchindex']['rankingWeights'], 1).'</pre>',
+            false
+      )
         // . (($iResults > 3) ? '<br>' . $sForm : '')
         // . '<br>'
         /*

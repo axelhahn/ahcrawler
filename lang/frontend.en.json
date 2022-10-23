@@ -18,6 +18,8 @@
     "label.searchmode-and": "strict: all searchterms are a must (AND)",
     "label.searchmode-or": "more results: minimum one of the searchterms must be found (OR)",
     "label.searchmode-phrase": "exact: several words as a phrase",
+    "label.search-in-content": "Search index (visible text; like search in a website)",
+    "label.search-in-response": "Html code",
     
     "searchout.results": "Search results",
     "searchout.nohit": "No result :-/",
