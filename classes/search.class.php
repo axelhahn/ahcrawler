@@ -203,6 +203,7 @@ class ahsearch extends crawler_base {
      * @return array
      */
     public function search($q, $aOptions = array()) {
+        $sContentDbColumn='content'; // could switch to "response"
         $aResult=array();
         if (!$this->iSiteId) {
             // echo "ABORT - keine this->iSiteId = ".$this->iSiteId."<br>";
@@ -219,7 +220,7 @@ class ahsearch extends crawler_base {
         }
         
         // get GET / POST values from a sent form
-        foreach(array('subdir', 'lang', 'mode') as $sOptionKey){
+        foreach(array('subdir', 'lang', 'mode', 'contentcolumn') as $sOptionKey){
             $sVal=$this->getQueryValue($sOptionKey);
             if ($sVal){
                 $aOptions[$sOptionKey]=$sVal;
@@ -246,6 +247,11 @@ class ahsearch extends crawler_base {
             // remove '%' ... it is added below in 'url[~]' => $aOptions['url'],
             // $aOptions['url'] = str_replace('%', '', $aOptions['url']);
         }
+        // added in v0.155
+        if (isset($aOptions['contentcolumn']) && $aOptions['contentcolumn']) {
+            $sContentDbColumn = $aOptions['contentcolumn'];
+        }
+
         $sPhrase=$this->_replaceSearchterm4Sql($q);
         if($aOptions['mode']==='PHRASE'){
             $aQuery['OR'] = array(
@@ -253,7 +259,7 @@ class ahsearch extends crawler_base {
                 'description[~]' =>$sPhrase,
                 'keywords[~]' => $sPhrase,
                 'url[~]' => $sPhrase,
-                'content[~]' => $sPhrase,
+                $sContentDbColumn.'[~]' => $sPhrase,
             );
             $aOptions['mode']='AND';
         } else {
@@ -264,7 +270,7 @@ class ahsearch extends crawler_base {
                     'description[~]' => $sPhrase,
                     'keywords[~]' => $sPhrase,
                     'url[~]' => $sPhrase,
-                    'content[~]' => $sPhrase,
+                    $sContentDbColumn.'[~]' => $sPhrase,
                 );
             }
         }
@@ -282,7 +288,7 @@ class ahsearch extends crawler_base {
         
         $aDbitems = $this->oDB->select(
                 'pages', 
-                array('id', 'url', 'lang', 'title', 'description', 'keywords', 'content', 'ts'), 
+                array('id', 'url', 'lang', 'title', 'description', 'keywords', $sContentDbColumn.'(content)', 'ts'), 
                 array(
                     'AND' => $aSelect,
                     // LIMIT on db can miss best ranked items 
@@ -640,6 +646,16 @@ class ahsearch extends crawler_base {
             $this->lF('label.searchmode-or')=>'OR',
             $this->lF('label.searchmode-phrase')=>'PHRASE',
         ), 'mode', $aAttributes);
+    }
+    /**
+     * get html code for content table selection
+     * @return string
+     */
+    public function renderSelectContentTable($aAttributes=array()){
+        return $this->_renderSelect(array(
+            $this->lF('label.search-in-content')=>'content',
+            $this->lF('label.search-in-response')=>'response',
+        ), 'contentcolumn', $aAttributes);
     }
 
     /**

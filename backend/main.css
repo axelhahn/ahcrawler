@@ -153,9 +153,9 @@
     --resource-report-hover-bg:var(--DEFAULT-darken-2);
     --resource-report-border:#888;
 
-    --status-bg-error:radial-gradient(#f8f0f0,#eaa);
+    --status-bg-error:radial-gradient(#f8f0f0,#daa);
     --status-bg-error-flat:#ebb;
-    --status-bg-ok:radial-gradient(#fff,#aca);
+    --status-bg-ok:radial-gradient(#fff,#acb);
     --status-bg-ok-flat:#cdc;
     --status-bg-warning:radial-gradient(#fff,#eb8);
     --status-bg-warning-flat:#fdb;
@@ -366,7 +366,6 @@ h2{
     z-index:100;    
     background: var(--color-bg-default);
     box-shadow: 0 0.8em 1em var(--color-shadow-default);
-    text-shadow: 2px 2px 5px var(--color-shadow-default);
 }
 p.pageHint{
     background:var(--pagehint-bg);
