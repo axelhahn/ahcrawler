@@ -10,7 +10,7 @@
 
 ----------------------------------------------------------------------
 
-2022-10-xx: v0.155
+2022-10-23: v0.155
   * FIX: php error in setup on missing defaultUrls
   * UPDATE: deselect OK status buttons on linked resources only
   * UPDATE: backend search additionally can search in html response
