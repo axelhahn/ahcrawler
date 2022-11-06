@@ -406,7 +406,7 @@ class crawler_base {
      */
     protected $sUserAgent = false;
 
-    protected $sCcookieFilename = false;
+    protected $sCookieFilename = false;
     
     /**
      * filename of indexer log actions
@@ -666,8 +666,8 @@ class crawler_base {
             CURLOPT_SSL_VERIFYPEER => false,
             // CURLOPT_SSL_VERIFYSTATUS => false,
             // v0.22 cookies
-            CURLOPT_COOKIEJAR => $this->sCcookieFilename,
-            CURLOPT_COOKIEFILE => $this->sCcookieFilename,
+            CURLOPT_COOKIEJAR => $this->sCookieFilename,
+            CURLOPT_COOKIEFILE => $this->sCookieFilename,
             CURLOPT_TIMEOUT => $this->aOptions['crawler']['timeout'],
         );
         if($this->_getCurlCanHttp2()){
@@ -1350,7 +1350,7 @@ class crawler_base {
             $this->aProfileSaved = $aOptions['profiles'][$iSiteId];
 
             // @since v0.22 
-            $this->sCcookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
+            $this->sCookieFilename = dirname(__DIR__).'/data/cookiefile-siteid-'.$iSiteId.'.txt';
 
             // @since v0.135
             $this->sLogFilename = dirname(__DIR__).'/data/indexlog-siteid-'.$iSiteId.'.log';

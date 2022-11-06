@@ -18,10 +18,10 @@ $this->setSiteId($this->_sTab);
 if (isset($_POST['action'])) {
     // echo '<pre>' . print_r($_POST, 1) . '</pre>';
     if (
-            isset($_POST['action']) && $_POST['action'] === "deletecookie" && isset($_POST['profile']) && $_POST['profile'] == $this->_sTab && $this->sCcookieFilename && file_exists($this->sCcookieFilename)
+            isset($_POST['action']) && $_POST['action'] === "deletecookie" && isset($_POST['profile']) && $_POST['profile'] == $this->_sTab && $this->sCookieFilename && file_exists($this->sCookieFilename)
     ) {
-        echo "TODO: remove cookies in " . $this->sCcookieFilename . "<br>";
-        unlink($this->sCcookieFilename);
+        echo "TODO: remove cookies in " . $this->sCookieFilename . "<br>";
+        unlink($this->sCookieFilename);
     }
 }
 
@@ -29,7 +29,7 @@ if (isset($_POST['action'])) {
 // COOKIES
 // ----------------------------------------------------------------------
 
-$aCookies = $oHttpheader->parseCookiefile($this->sCcookieFilename);
+$aCookies = $oHttpheader->parseCookiefile($this->sCookieFilename);
 $iCookieCount = count($aCookies['cookies']);
 $sReturn .= ''
         . '<h3>' . sprintf($this->lB('cookies.headline'), $iCookieCount) . '</h3>'
@@ -43,7 +43,7 @@ if ($iCookieCount) {
     $sReturn .= ''
         . $oRenderer->renderTileBar(
             $oRenderer->renderTile($iCookieCount ? '' : 'ok', $this->lB('cookies.count'), $iCookieCount, '', '')
-            // . $oRenderer->renderTile('', $this->lB('cookies.since'), $oRenderer->hrAge(filectime($this->sCcookieFilename)), date('Y-m-d H:i', filectime($this->sCcookieFilename)), '')
+            // . $oRenderer->renderTile('', $this->lB('cookies.since'), $oRenderer->hrAge(filectime($this->sCookieFilename)), date('Y-m-d H:i', filectime($this->sCookieFilename)), '')
         )
         .'<div style="clear: both;"></div>'
     ;
