@@ -596,6 +596,13 @@ class httpheader {
     /**
      * get array with cookie data from curl cookie file
      * https://stackoverflow.com/questions/410109/php-reading-a-cookie-file
+     * array(
+     *      'metainfos' => array(
+     *          'file' => {string} filename
+     *      ),
+     *      'cookies' => {array} list of cookies,
+     *      'error' => {string} on error only: one of NOT_READABLE|NOT_FOUND 
+     *  );
      * 
      * @param string $sFile  filename of cookie file
      * @return array
@@ -607,7 +614,7 @@ class httpheader {
             ),
             'cookies' => array(),
         );
-        if (file_exists($sFile)) {
+        if (is_readable($sFile)) {
             $lines = explode(PHP_EOL, file_get_contents($sFile));
 
             foreach ($lines as $line) {
@@ -647,6 +654,11 @@ class httpheader {
                     $aReturn['cookies'][$cookie['domain'] . '/' . $cookie['name']] = $cookie;
                 }
             }
+        } else {
+            $aReturn['error']=file_exists($sFile)
+                ? 'NOT_READABLE'
+                : 'NOT_FOUND'
+            ;
         }
         ksort($aReturn['cookies']);
         return $aReturn;

@@ -30,13 +30,14 @@ if (isset($_POST['action'])) {
 // ----------------------------------------------------------------------
 
 $aCookies = $oHttpheader->parseCookiefile($this->sCcookieFilename);
+$iCookieCount = count($aCookies['cookies']);
 $sReturn .= ''
-        . '<h3>' . sprintf($this->lB('cookies.headline'), count($aCookies['cookies'])) . '</h3>'
+        . '<h3>' . sprintf($this->lB('cookies.headline'), $iCookieCount) . '</h3>'
         . '<p>' . $this->lB('cookies.hint') . '</p>'
 ;
 
-if (file_exists($this->sCcookieFilename)) {
-    $iCookieCount = count($aCookies['cookies']);
+if ($iCookieCount) {
+    // $iCookieCount = count($aCookies['cookies']);
     // . $this->renderTile('',            $this->lB('ressources.age-scan'), $this->hrAge(date("U", strtotime($dateLast))), $dateLast, '')
 
     $sReturn .= ''
@@ -83,11 +84,14 @@ if (file_exists($this->sCcookieFilename)) {
                 . $oRenderer->oHtml->getTag('button', array('label' => $this->_getIcon('button.delete') . $this->lB('button.delete'), 'class' => 'pure-button button-error', 'name' => 'action', 'value' => 'deletecookie'))
                 . '</form>'
         ;
+    }
+} else {
+    if(isset($aCookies['error']) && $aCookies['error']){
+        $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.file.'.$aCookies['error']), 'error');
     } else {
         $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.nocookie'), 'ok');
     }
-} else {
-    $sReturn .= $oRenderer->renderMessagebox($this->lB('cookies.nofile'), 'warning');
+    
 }
 
 // ----------------------------------------------------------------------
