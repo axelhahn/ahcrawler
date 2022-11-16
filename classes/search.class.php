@@ -428,6 +428,20 @@ class ahsearch extends crawler_base {
     }
 
     /**
+     * mark tags in a given texr
+     * @param  string  $sText  Text to handle
+     * @param  array   $aTags  list of tags to mark
+     */
+    private function _marktags($sText, $aTags){
+        $iWord=0;
+        $sReturn=strip_tags($sText);
+        foreach($aTags as $sWord){
+            $iWord++;
+            $sReturn= preg_replace('/('.$sWord.')/i', '<mark class="mark-'.$iWord.'">$1</mark>', $sReturn);
+        }
+        return $sReturn;
+    }
+    /**
      * reorder search result by getting weight and ranking; ordered by most
      * relevant item
      * @param array   $aData  searchresult from $this->search()
@@ -439,6 +453,7 @@ class ahsearch extends crawler_base {
         if (!is_array($aData) || !count($aData)) {
             return $aReturn;
         }
+        $iFirstContent=-1;
         $aSearchwords = explode(" ", $q);
         foreach ($aData as $aItem) {
             $iCount = 0;
@@ -458,15 +473,31 @@ class ahsearch extends crawler_base {
                 // Wortes (Übereinstimmung, am Anfang, irgendwo) suchen und 
                 // deren Anzahl Treffer mit dem Ranking-Faktor multiplizieren 
                 foreach (array('title', 'description', 'keywords', 'url', 'content') as $sCol) {
-                    // echo "DEBUG: $sWord ... $sWordRegex ... in ".$aItem[$sCol]."<br>";
                     foreach ($this->_countHits($sWordRegex, $aItem[$sCol]) as $sKey => $iHits) {
                         $iCount+=$iHits * $this->_aRankCounter[$sKey][$sCol];
                         $aResults[$sWord][$sKey][$sCol] = array($iHits, $this->_aRankCounter[$sKey][$sCol]);
                     }
                 }
+                // echo "DEBUG: Position von $sWord: ".strpos($aItem['content'], $sWord).'<br>';
+                $iMyPos=stripos($aItem['content'], $sWord);
+                if($iMyPos!==false){
+                    $iFirstContent=$iFirstContent===-1
+                        ? $iMyPos
+                        : min($iFirstContent, $iMyPos);
+                }
             }
+            $iFirstContent=$iFirstContent ? $iFirstContent : 0;
+
             $aItem['url'] = $sUrl;
             $aItem['results'] = $aResults;
+            $aItem['weight'] = $iCount;
+            $aItem['contenthit'] = $iFirstContent;
+            $aItem['preview'] = substr($aItem['content'], max(0,$iFirstContent-150), 300);
+            foreach (array('title', 'description', 'keywords', 'url', 'preview') as $sCol) {
+                $aItem['html_'.$sCol] = $this->_markTags($aItem[$sCol], $aSearchwords);
+            }
+
+            unset($aItem['content']);
             $aReturn[$iCount][] = $aItem;
         }
         if (count($aReturn)) {
