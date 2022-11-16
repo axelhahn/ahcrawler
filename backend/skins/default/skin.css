@@ -12,7 +12,7 @@
 }
 */
 
-body, .contextbox, .piechart{
+body, .contextbox, .piechart, h2{
     background-image: url('bg_main.png');
 }
 h2{
