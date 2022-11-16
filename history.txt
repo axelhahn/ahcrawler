@@ -18,6 +18,7 @@
   * UPDATE: search result - contains html elememts for preview with marks
   * UPDATE: search result - full content data were removed: added a preview snippet
   * UPDATE: show clear message if a cookie file exists but is not readable (no permissions)
+  * UPDATE: public search - highlight searchterms in title, url, ...
 
 2022-10-23: v0.155
   * FIX: php error in setup on missing defaultUrls
