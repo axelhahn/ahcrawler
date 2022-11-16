@@ -10,6 +10,15 @@
 
 ----------------------------------------------------------------------
 
+2022-11-xx: v0.156
+  * UPDATE: search index - hide newest and oldest data it delta is below 1d
+  * UPDATE: unify display: search index url is linked to details; showing url has same button like in resources
+  * UPDATE: search index - detail page contains http response header
+  * UPDATE: search index - word list on detail page is a toggled content element now
+  * UPDATE: search result - contains html elememts for preview with marks
+  * UPDATE: search result - full content data were removed: added a preview snippet
+  * UPDATE: show clear message if a cookie file exists but is not readable (no permissions)
+
 2022-10-23: v0.155
   * FIX: php error in setup on missing defaultUrls
   * UPDATE: deselect OK status buttons on linked resources only
