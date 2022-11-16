@@ -437,7 +437,7 @@ class ahsearch extends crawler_base {
         $sReturn=strip_tags($sText);
         foreach($aTags as $sWord){
             $iWord++;
-            $sReturn= preg_replace('/('.$sWord.')/i', '<mark class="mark-'.$iWord.'">$1</mark>', $sReturn);
+            $sReturn= preg_replace('@'.$sWord.'@i', '<mark class="mark'.$iWord.'">\\0</mark>', $sReturn);
         }
         return $sReturn;
     }
@@ -492,12 +492,14 @@ class ahsearch extends crawler_base {
             $aItem['results'] = $aResults;
             $aItem['weight'] = $iCount;
             $aItem['contenthit'] = $iFirstContent;
-            $aItem['preview'] = substr($aItem['content'], max(0,$iFirstContent-150), 300);
+            $iStart=max(0,$iFirstContent-150);
+            $aItem['preview'] = ($iStart ? '...' : '' )
+                .substr($aItem['content'], max(0,$iFirstContent-150), 300).'...';
+
             foreach (array('title', 'description', 'keywords', 'url', 'preview') as $sCol) {
                 $aItem['html_'.$sCol] = $this->_markTags($aItem[$sCol], $aSearchwords);
             }
-
-            unset($aItem['content']);
+            // unset($aItem['content']);
             $aReturn[$iCount][] = $aItem;
         }
         if (count($aReturn)) {
@@ -763,11 +765,13 @@ class ahsearch extends crawler_base {
                 .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
                 .searchresult .bar span{float: right}
                 .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
+               
+                .searchresult .mark1{background:#fea;}
+                .searchresult .mark2{background:#dfd;}
+                .searchresult .mark3{background:#ddf;}
+                .searchresult .mark4{background:#fdf;}
+                .searchresult .mark5{background:#fcc;}
 
-                .searchresult .mark1{background:#fd3;}
-                .searchresult .mark2{background:#3f3;}
-                .searchresult .mark3{background:#f88;}
-                .searchresult .mark4{background:#ccf;}
             </style>
             <!-- /css -->
             ';
@@ -829,7 +833,7 @@ class ahsearch extends crawler_base {
                     </div>
                     <a href="{{URL}}">{{TITLE}}</a> <span class="date">{{AGE}}</span><br>
 
-                    <div class="url">{{URL}}</div>
+                    <div class="url">{{URL2}}</div>
                     <div class="detail">{{DETAIL}}</div>
                 </div>'
                 ;
@@ -862,54 +866,19 @@ class ahsearch extends crawler_base {
                         $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
                         $sAge = $sAge > 1 ? sprintf($this->lF('searchout.days'), $sAge) : $this->lF('searchout.today');
 
-                        $sDetail = '';
-                        // $sDetail.= '<pre>'.print_r($aItem['results'],true) . '</pre>';
-                        //echo "<pre>" . print_r($aItem,1 ) . "</pre>";
-                        $aPreviews = array();
-                        $aSearchwords = explode(" ", $q);
-                        foreach ($aSearchwords as $sWord) {
-
-                            $iLastPos = 0;
-                            $iSurround = 30;
-                            while (!stripos($aItem['content'], $sWord, $iLastPos) === false) {
-                                $iLastPos = stripos($aItem['content'], $sWord, $iLastPos);
-                                $aPreviews[$iLastPos] = substr($aItem['content'], $iLastPos - $iSurround, ($iSurround * 4 + strlen($sWord)));
-                                $iLastPos++;
-                            }
-                        }
-                        ksort($aPreviews);
-                        // echo "<pre>" . print_r($aPreviews,1 ) . "</pre>";
-
-                        if (count($aPreviews)) {
-                            $iPreview = 0;
-                            foreach ($aPreviews as $sPreview) {
-                                $iPreview++;
-                                if ($iPreview > 1) {
-                                    $iMore = count($aPreviews) - $iPreview;
-                                    $sDetail.=sprintf($this->lF('searchout.n-more-hits'), $iMore);
-                                    break;
-                                }
-                                $sDetail.='...' . $sPreview . '...<br>';
-                            }
-                        }
-                        $iWord = 0;
-                        foreach ($aSearchwords as $sWord) {
-                            $iWord++;
-                            $sClass = "mark${iWord}";
-                            $sDetail = preg_replace('@' . $sWord . '@i', '<span class="' . $sClass . '">\\0</span>', $sDetail);
-                        }
-
                         $sResults.=str_replace(
-                            array('{{URL}}', '{{TITLE}}', '{{DESCRIPTION}}', '{{KEYWORDS}}', '{{LANG}}', '{{PERCENT}}', '{{AGE}}', '{{DETAIL}}'), 
+                            array('{{URL}}', '{{URL2}}', '{{TITLE}}', '{{DESCRIPTION}}', '{{KEYWORDS}}', '{{LANG}}', '{{PERCENT}}', '{{AGE}}', '{{DETAIL}}'), 
                             array(
                                 $aItem['url'],
-                                $aItem['title'],
-                                $aItem['description'],
-                                $aItem['keywords'],
+                                $aItem['html_url'],
+                                $aItem['html_title'],
+                                $aItem['html_description'],
+                                $aItem['html_keywords'],
                                 $aItem['lang'],
                                 round($iRanking / $iMaxRanking * 100), 
                                 $sAge,
-                                $sDetail,
+                                // $sDetail,
+                                $aItem['html_preview'],
                             ), 
                             $sTplResults
                         );
