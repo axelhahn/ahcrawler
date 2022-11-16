@@ -37,6 +37,7 @@ if(!$iUrls){
     $o = new ahsearch($this->_sTab);
     
     $aResult = $o->search($sQuery);
+    // echo '<pre>'.print_r($aResult, 1).'</pre>';
 
     $sForm = '<h3>'.$this->lB('status.search').'</h3>'
             . '<p>'.$this->lB('status.search.hint').'</p>'
@@ -112,32 +113,24 @@ if(!$iUrls){
                     'ranking' => '<strong>'.$iRanking . '</strong> ('.round($iRanking/$iMaxRanking*100).'%)<br><!-- ' . $sResult . '--></span>',
                     'summary' => $this->_getSimpleHtmlTable(array(
                             // array('title', '<strong><a href="' . $aItem['url'] . '" target="_blank">' . $aItem['title'] . '</a></strong>'),
-                            array($this->lB('db-pages.title'), '<strong>' . $aItem['title'] . '</strong>'),
-                            array($this->lB('db-pages.url'), str_ireplace('','',$aItem['url'])),
-                            array($this->lB('db-pages.lang'), $aItem['lang']),
-                            array($this->lB('db-pages.description'), $aItem['description']),
-                            array($this->lB('db-pages.keywords'), $aItem['keywords']),
-                            array($this->lB('db-search.ranking'), $sResult),
-                            // array('content', $this->_prettifyString($aItem['content'], 400)),
+                            array($this->_getIcon('title').$this->lB('db-pages.title'), ''
+                                // . '<a href="' . $aItem['url'] . '" target="_blank" style="float: right;" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
+                                . '<strong>' . $aItem['html_title'] . '</strong>'),
+                            // array($this->lB('db-pages.url'), str_ireplace('','',$aItem['url'])),
+                            array($this->_getIcon('url').$this->lB('db-pages.url'), ''
+                                .'<a href="./?page=searchindexstatus&id='.(int)$aItem['id'].'">'.$aItem['html_url'].'</a><br><br>' 
+                                .$aItem['html_preview']
+                            ),
+                            array($this->_getIcon('lang').$this->lB('db-pages.lang'), $aItem['lang']),
+                            array($this->_getIcon('description').$this->lB('db-pages.description'), $aItem['html_description']),
+                            array($this->_getIcon('keywords').$this->lB('db-pages.keywords'), $aItem['html_keywords']),
+                            array($this->_getIcon('ranking').$this->lB('db-search.ranking'), $sResult),
                         ))
                     ,
-                    // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
-                    'actions' => $this->_getButton(array(
-                        'href' => $aItem['url'],
-                        'class' => 'pure-button',
-                        'popup' => false,
-                        'target' => '_blank',
-                        'label' => 'button.openurl'
-                     ))
-                    . ' '
-                    .$this->_getButton(array(
-                        'href' => './?page=searchindexstatus&id='.(int)$aItem['id'],
-                        'class' => 'pure-button',
-                        'popup' => false,
-                        'target' => '_top',
-                        'label' => 'button.view'
-                     ))
-
+                        // 'search.ranking' => '<a href="#" onclick="return false;" class="hoverinfos">' . $iRanking . '<span>' . $sResult . '<!-- <pre>' . print_r($aItem['results'], 1) . '</pre>--></span></a>',
+                    'actions' => ''
+                        . '<a href="' . $aItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
+                    
                 );
             }
         }

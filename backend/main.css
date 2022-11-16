@@ -364,8 +364,7 @@ h2{
     display: block; 
     width: 100%;
     z-index:100;    
-    background: var(--color-bg-default);
-    box-shadow: 0 0.8em 1em var(--color-shadow-default);
+    _box-shadow: 0 0.8em 1em var(--color-shadow-default);
 }
 p.pageHint{
     background:var(--pagehint-bg);
@@ -695,9 +694,19 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 }
 
 .pure-table td .key{color: var(--table-td-key-color); font-style: italic;}
-.pure-table td .key2{color:--table-td-key2-color);font-style: italic;}
+.pure-table td .key2{color:var(--table-td-key2-color);font-style: italic;}
 .pure-table td .value{color: var(--table-td-value-color);}
 .pure-table td .value:before,.pure-table td .value:after{content:'"'}
+
+/* ---  test search ---  */
+.td-summary > table.pure-table{width: 100%;}
+._td-summary > table.pure-table > tbody > tr > td {width: 15px;}
+
+mark.mark-1{background:#fea;}
+mark.mark-2{background:#dfd;}
+mark.mark-3{background:#ddf;}
+mark.mark-4{background:#fdf;}
+mark.mark-5{background:#fdd;}
 
 /* --- ssl checks ---  */
 

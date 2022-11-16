@@ -135,6 +135,7 @@ class backend extends crawler_base {
             'url'=>'fas fa-link', 
             'title'=>'fas fa-chevron-right', 
             'description'=>'fas fa-chevron-right', 
+            'lang'=>'fas fa-comment', 
             'label'=>'fas fa-chevron-right', 
             'icon'=>'far fa-image', 
             'errorcount'=>'fas fa-bolt', 
@@ -1690,24 +1691,31 @@ class backend extends crawler_base {
      * @param array  $aResult          result of a select query
      * @param string $sLangTxtPrefix   langtext prefix
      * @param string $sTableId         value of id attribute for the table
+     * @param bool   $bShowLegend      flag: show a legend box below the table
      * @return string
      */
     private function _getSearchindexTable($aResult, $sLangTxtPrefix = '', $sTableId=false, $bShowLegend=true) {
         $aTable = array();
+        $oRenderer=new ressourcesrenderer($this->_sTab);
         foreach ($aResult as $aRow) {
             $sId = $aRow['id'];
             unset($aRow['id']);
             foreach ($aRow as $sKey => $sVal) {
                 $aRow[$sKey] = $this->_prettifyString($sVal);
             }
-            $aRow['url']=str_replace('/', '/&shy;', $aRow['url']);
-            $aRow['actions'] = $this->_getButton(array(
+            $sUrl=$aRow['url'];
+            $aRow['url']='<a href="./?'.$_SERVER['QUERY_STRING'].'&id='.$sId . '">'.str_replace('/', '/&shy;', $aRow['url']).'</a>';
+            $aRow['actions'] = ''
+                . '<a href="'.$sUrl.'" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>';
+                /*
+                $this->_getButton(array(
                 // 'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
                 'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$sId,
                 'popup' => false,
                 'class' => 'pure-button',
                 'label' => 'button.view'
             ));
+                */
             $aTable[] = $aRow;
         }
         $aKeys=array_keys($aResult[0]);
