@@ -838,7 +838,7 @@ class ahsearch extends crawler_base {
             $aData = $this->search($q, $aSet);
 
             // $iHits = $this->getCountOfSearchresults($aData);
-            $iHits = $aData['meta']['result_count'];
+            $iHits = isset($aData['meta']['result_count']) ? $aData['meta']['result_count'] : 0;
             
             // LIMIT output ... maybe add a paging?
             while(count($aData['data'])>$iLimit){

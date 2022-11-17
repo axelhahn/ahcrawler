@@ -66,7 +66,7 @@ if(!$iUrls){
             ;
 
     // $iResults = $o->getCountOfSearchresults($aResult);
-    $iResults = $aResult['meta']['result_count'];
+    $iResults = isset($aResult['meta']['result_count']) ? $aResult['meta']['result_count'] : 0;
     $sReturn .= ''
             . $sForm
             . ($sQuery ? '<p>' . $this->lB('searches.results') . ': <strong>' . $iResults . '</strong><p>' : '');
