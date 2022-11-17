@@ -203,6 +203,7 @@ class ahsearch extends crawler_base {
      * @return array
      */
     public function search($q, $aOptions = array()) {
+        $iTimerStart=microtime(true);
         $sContentDbColumn='content'; // could switch to "response"
         $aResult=array();
         if (!$this->iSiteId) {
@@ -285,6 +286,7 @@ class ahsearch extends crawler_base {
         if (isset($aOptions['lang']) && $aOptions['lang']){
             $aSelect['lang']=$aOptions['lang'];
         }
+        $iTimerStartQuery=microtime(true);
         
         $aDbitems = $this->oDB->select(
                 'pages', 
@@ -300,6 +302,7 @@ class ahsearch extends crawler_base {
         echo 'DEBUG: Query = ' . $this->oDB->last() . '<br>';
         echo "DEBUG aOptions = <pre>" . print_r($aOptions, 1) ."</pre><br>"; 
          */
+        $iTimerStartRanking=microtime(true);
         if (is_array($aDbitems) && count($aDbitems)) {
             $aResult = $this->_reorderByRanking($aDbitems, $q);
             /*
@@ -308,8 +311,26 @@ class ahsearch extends crawler_base {
             } 
             */
         }
-        // echo "DEBUG ".__METHOD__."() ".count($aResult)."<br>";
-        return $aResult;
+        $iTimerEnd=microtime(true);
+        $aTimers = [
+            'prepare'=>($iTimerStartQuery-$iTimerStart)*1000,
+            'dbquery'=>($iTimerStartRanking-$iTimerStartQuery)*1000,
+            'sorting'=>($iTimerEnd-$iTimerStartRanking)*1000,
+            'total'=>($iTimerEnd-$iTimerStart)*1000,
+        ];
+
+        $aReturn=[
+            'meta' => [
+                'query' => $q,
+                'options' => $aOptions,
+                'timers' => $aTimers,
+                'result_count' => $this->getCountOfSearchresults($aResult),
+            ],
+            'data' => $aResult,
+        ];
+        // echo "DEBUG ".__METHOD__."() <pre>".print_r($aReturn, 1)."</pre>"; die();
+
+        return $aReturn;
     }
 
     /**
@@ -434,10 +455,11 @@ class ahsearch extends crawler_base {
      */
     private function _marktags($sText, $aTags){
         $iWord=0;
-        $sReturn=strip_tags($sText);
+        // $sReturn=strip_tags($sText);
+        $sReturn=$sText;
         foreach($aTags as $sWord){
             $iWord++;
-            $sReturn= preg_replace('@'.$sWord.'@i', '<mark class="mark'.$iWord.'">\\0</mark>', $sReturn);
+            $sReturn= preg_replace('@('.$sWord.')@i', '<mark class="mark'.$iWord.'">\1</mark>', $sReturn);
         }
         return $sReturn;
     }
@@ -449,13 +471,13 @@ class ahsearch extends crawler_base {
      * @return array
      */
     private function _reorderByRanking($aData, $q) {
-        $aReturn = array();
+        $aReturn = [];
         if (!is_array($aData) || !count($aData)) {
             return $aReturn;
         }
-        $iFirstContent=-1;
         $aSearchwords = explode(" ", $q);
         foreach ($aData as $aItem) {
+            $iFirstContent=-1;
             $iCount = 0;
             $sUrl = $aItem['url'];
 
@@ -466,8 +488,12 @@ class ahsearch extends crawler_base {
             $aItem['url'] = str_replace('.php', '', $aItem['url']);
             // echo '['.$aItem['url']."]<br>";
             $aResults = array();
+            $aWords = [];
+            $sHitsByWord='';
             foreach ($aSearchwords as $sWord) {
 
+                $aWords[$sWord]=0;
+                $aResults[$sWord]=[];
                 $sWordRegex= preg_replace('/([^a-zA-Z0-9])/', '\\\$1', $sWord);
                 // in den einzelnen Spalten nach Anzahl Vorkommen des
                 // Wortes (Übereinstimmung, am Anfang, irgendwo) suchen und 
@@ -476,29 +502,47 @@ class ahsearch extends crawler_base {
                     foreach ($this->_countHits($sWordRegex, $aItem[$sCol]) as $sKey => $iHits) {
                         $iCount+=$iHits * $this->_aRankCounter[$sKey][$sCol];
                         $aResults[$sWord][$sKey][$sCol] = array($iHits, $this->_aRankCounter[$sKey][$sCol]);
+                        if($iCount){
+                            $aWords[$sWord]+=$iHits;
+                        }
                     }
                 }
                 // echo "DEBUG: Position von $sWord: ".strpos($aItem['content'], $sWord).'<br>';
+
+
                 $iMyPos=stripos($aItem['content'], $sWord);
                 if($iMyPos!==false){
                     $iFirstContent=$iFirstContent===-1
                         ? $iMyPos
                         : min($iFirstContent, $iMyPos);
                 }
+
+                // add searchterm in found words list
+                $sHitsByWord.=($sHitsByWord ? ' ... ': '' ) 
+                    .($aWords[$sWord] 
+                        ? $sWord.' ('.$aWords[$sWord].')'
+                        :'<del>'.$sWord.'</del>'
+                    );
             }
             $iFirstContent=$iFirstContent ? $iFirstContent : 0;
 
+            // update search result item
             $aItem['url'] = $sUrl;
             $aItem['results'] = $aResults;
             $aItem['weight'] = $iCount;
-            $aItem['contenthit'] = $iFirstContent;
-            $iStart=max(0,$iFirstContent-150);
-            $aItem['preview'] = ($iStart ? '...' : '' )
-                .substr($aItem['content'], max(0,$iFirstContent-150), 300).'...';
+            $aItem['terms'] = $aWords;
+            $aItem['weight'] = $iCount;
 
-            foreach (array('title', 'description', 'keywords', 'url', 'preview') as $sCol) {
+            $iStart=max(0,$iFirstContent-10);
+            $aItem['preview'] = ($iStart ? '...' : '' )
+                .substr($aItem['content'], $iStart, 300).'...';
+            $aItem['hits_per_term'] = $sHitsByWord;
+
+            // add mark tags for found search terms
+            foreach (array('title', 'description', 'keywords', 'url', 'preview', 'hits_per_term') as $sCol) {
                 $aItem['html_'.$sCol] = $this->_markTags($aItem[$sCol], $aSearchwords);
             }
+            
             // unset($aItem['content']);
             $aReturn[$iCount][] = $aItem;
         }
@@ -762,10 +806,12 @@ class ahsearch extends crawler_base {
                 .searchresult .date{color:#fa3; font-style: italic; font-size: 80%;}
                 .searchresult .url{color:#393;}
                 .searchresult .detail{color:#888;}
-                .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #eee; float: right; margin-right: 1em; color:#888; }
+                .searchresult .bar{width: 20%; height: 3em; border-top: 1px solid #ddd; float: right; margin-right: 1em; color:#888; }
                 .searchresult .bar span{float: right}
                 .searchresult .bar2{background:#e0f0ea; height: 1.5em; }
+                .searchresult .bar2{background:#ced; height: 1.5em; }
                
+                .searchresult del mark{background: none !important;}
                 .searchresult .mark1{background:#fea;}
                 .searchresult .mark2{background:#dfd;}
                 .searchresult .mark3{background:#ddf;}
@@ -791,11 +837,12 @@ class ahsearch extends crawler_base {
             }
             $aData = $this->search($q, $aSet);
 
-            $iHits = $this->getCountOfSearchresults($aData);
+            // $iHits = $this->getCountOfSearchresults($aData);
+            $iHits = $aData['meta']['result_count'];
             
             // LIMIT output ... maybe add a paging?
-            while(count($aData)>$iLimit){
-                array_pop($aData);
+            while(count($aData['data'])>$iLimit){
+                array_pop($aData['data']);
             } 
 
             // echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
@@ -821,20 +868,23 @@ class ahsearch extends crawler_base {
             $sTplHead=isset($aParams['head']) 
                 ? $aParams['head'] 
                 : (isset($aParams['result']) ? '' : $sCss ) . '
-                    <strong>{{RESULTS}}</strong><br><br>
+                    <strong>{{RESULTS}}</strong> ({{TOTALTIME}})<br><br>
                     <p>{{HITS}}</p>
                 '
                 ;
-            $sTplResults=isset($aParams['result']) ? $aParams['result'] : '
+            $sTplResult=isset($aParams['result']) ? $aParams['result'] : '
                 <div class="searchresult">
                     <div class="bar">
                         <span>{{PERCENT}}%</span>
                         <div class="bar2" style="width: {{PERCENT}}%">&nbsp;</div>
                     </div>
-                    <a href="{{URL}}">{{TITLE}}</a> <span class="date">{{AGE}}</span><br>
+                    <a href="{{URL}}">{{COUNTER}} / {{HITCOUNT}}) {{HTML_TITLE}}</a> <span class="date">{{AGE}}</span><br>
 
-                    <div class="url">{{URL2}}</div>
-                    <div class="detail">{{DETAIL}}</div>
+                    <div class="url">{{HTML_URL}}</div>
+                    <div class="detail">
+                        {{HTML_DETAIL}}<br>
+                        &gt; {{HTML_TERMS}}
+                    </div>
                 </div>'
                 ;
                 
@@ -850,37 +900,53 @@ class ahsearch extends crawler_base {
                 } else {
                     $sInsHits=sprintf($this->lF('searchout.hits'), $iHits);
                 }
-                
+                $aMappingSearch=[
+                    '{{RESULTS}}' => $sInsResults,
+                    '{{HITS}}' => $sInsHits,
+                    '{{HITCOUNT}}' => $iHits,
+                    '{{TOTALTIME}}' => sprintf("%01.1f", $aData['meta']['timers']['total']) . " ms",
+                ];
                 $sHead=str_replace(
-                    array('{{RESULTS}}', '{{HITS}}'), 
-                    array($sInsResults, $sInsHits),
+                    array_keys($aMappingSearch),
+                    array_values($aMappingSearch),
                     $sTplHead
                 );
                 
                 $iMaxRanking = false;
-                foreach ($aData as $iRanking => $aDataItems) {
+                $iCounter=0;
+                foreach ($aData['data'] as $iRanking => $aDataItems) {
                     if (!$iMaxRanking) {
                         $iMaxRanking = $iRanking ? $iRanking : 1;
                     }
                     foreach ($aDataItems as $aItem) {
                         $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
                         $sAge = $sAge > 1 ? sprintf($this->lF('searchout.days'), $sAge) : $this->lF('searchout.today');
+                        $iCounter++;
+                        $aMappingSearchterm=[
+                            '{{COUNTER}}'          => $iCounter,
+                            '{{URL}}'              => $aItem['url'],
+                            '{{TITLE}}'            => $aItem['title'],
+                            '{{DESCRIPTION}}'      => $aItem['description'],
+                            '{{KEYWORDS}}'         => $aItem['keywords'],
+                            '{{DETAIL}}'           => $aItem['preview'],
+                            '{{TERMS}}'            => $aItem['hits_per_term'],
+
+                            '{{LANG}}'             => $aItem['lang'],
+                            '{{PERCENT}}'          => round($iRanking / $iMaxRanking * 100), 
+                            '{{AGE}}'              => $sAge,
+
+                            '{{HTML_URL}}'         => $aItem['html_url'],
+                            '{{HTML_TITLE}}'       => $aItem['html_title'],
+                            '{{HTML_DESCRIPTION}}' => $aItem['html_description'],
+                            '{{HTML_KEYWORDS}}'    => $aItem['html_keywords'],
+                            '{{HTML_DETAIL}}'      => $aItem['html_preview'],
+                            '{{HTML_TERMS}}'       => $aItem['html_hits_per_term'],
+                        ];
 
                         $sResults.=str_replace(
-                            array('{{URL}}', '{{URL2}}', '{{TITLE}}', '{{DESCRIPTION}}', '{{KEYWORDS}}', '{{LANG}}', '{{PERCENT}}', '{{AGE}}', '{{DETAIL}}'), 
-                            array(
-                                $aItem['url'],
-                                $aItem['html_url'],
-                                $aItem['html_title'],
-                                $aItem['html_description'],
-                                $aItem['html_keywords'],
-                                $aItem['lang'],
-                                round($iRanking / $iMaxRanking * 100), 
-                                $sAge,
-                                // $sDetail,
-                                $aItem['html_preview'],
-                            ), 
-                            $sTplResults
+                            array_keys(array_merge($aMappingSearchterm, $aMappingSearch)),
+                            array_values(array_merge($aMappingSearchterm, $aMappingSearch)),
+                            $sTplResult
                         );
                     }
                 }

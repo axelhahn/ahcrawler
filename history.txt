@@ -18,7 +18,14 @@
   * UPDATE: search result - contains html elememts for preview with marks
   * UPDATE: search result - full content data were removed: added a preview snippet
   * UPDATE: show clear message if a cookie file exists but is not readable (no permissions)
-  * UPDATE: public search - highlight searchterms in title, url, ...
+  * UPDATE: public search - highlight searchterms in title, url, description, keywords, preview ...
+                          - added variable for hits per term or which term was not found
+                          - added meta information including timers and request data
+                          - added {{TOTALTIME}} (time in ms for search) and {{HITCOUNT}} (number of search results) in head template
+                          - added {{COUNTER}} in search result template for number of search result item
+                          - output template: added html placeholders to show data with and without marked searchterm hits
+                            eg. {{TITLE}} and {{HTML_TITLE}}
+                          - placeholders from head can be used in search result template too
 
 2022-10-23: v0.155
   * FIX: php error in setup on missing defaultUrls

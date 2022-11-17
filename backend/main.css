@@ -702,11 +702,11 @@ table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
 .td-summary > table.pure-table{width: 100%;}
 ._td-summary > table.pure-table > tbody > tr > td {width: 15px;}
 
-mark.mark-1{background:#fea;}
-mark.mark-2{background:#dfd;}
-mark.mark-3{background:#ddf;}
-mark.mark-4{background:#fdf;}
-mark.mark-5{background:#fdd;}
+mark.mark1{background:#fea;}
+mark.mark2{background:#dfd;}
+mark.mark3{background:#ddf;}
+mark.mark4{background:#fdf;}
+mark.mark5{background:#fcc;}
 
 /* --- ssl checks ---  */
 

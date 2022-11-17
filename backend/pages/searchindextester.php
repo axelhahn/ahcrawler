@@ -65,7 +65,8 @@ if(!$iUrls){
             . '</div>'
             ;
 
-    $iResults = $o->getCountOfSearchresults($aResult);
+    // $iResults = $o->getCountOfSearchresults($aResult);
+    $iResults = $aResult['meta']['result_count'];
     $sReturn .= ''
             . $sForm
             . ($sQuery ? '<p>' . $this->lB('searches.results') . ': <strong>' . $iResults . '</strong><p>' : '');
@@ -76,7 +77,7 @@ if(!$iUrls){
     $iMaxRanking = false;
 
     if ($sQuery && $iResults) {
-        foreach ($aResult as $iRanking => $aDataItems) {
+        foreach ($aResult['data'] as $iRanking => $aDataItems) {
             if (!$iMaxRanking) {
                 $iMaxRanking = $iRanking ? $iRanking : 1;
             }
@@ -86,8 +87,8 @@ if(!$iUrls){
                 // echo '<pre>'.print_r($aItem, 1); die();
                 $iCounter ++;
                 $sResult = '';
-                $aMatches=[];
                 foreach ($aItem['results'] as $sWord => $aMatchTypes) {
+                    $aMatches=[];
                     $sResult.=''.$this->_getIcon('button.search').'<strong>' . $sWord . '</strong> ...<br><br>';
                     foreach ($aMatchTypes as $sType => $aHits) {
                         foreach ($aHits as $sWhere => $aValues) {
@@ -103,9 +104,7 @@ if(!$iUrls){
                             }
                         }
                     }
-                    if (count($aMatches)) {
-                        $sResult.=$this->_getSimpleHtmlTable($aMatches);
-                    }
+                    $sResult.=count($aMatches) ? $this->_getSimpleHtmlTable($aMatches) : '--<br>';
                     $sResult.='<br>';
                 }
                 $aTable[] = array(
@@ -119,7 +118,8 @@ if(!$iUrls){
                             // array($this->lB('db-pages.url'), str_ireplace('','',$aItem['url'])),
                             array($this->_getIcon('url').$this->lB('db-pages.url'), ''
                                 .'<a href="./?page=searchindexstatus&id='.(int)$aItem['id'].'">'.$aItem['html_url'].'</a><br><br>' 
-                                .$aItem['html_preview']
+                                .$aItem['html_preview'].'<br><br>'
+                                .$aItem['html_hits_per_term'].'<br>'
                             ),
                             array($this->_getIcon('lang').$this->lB('db-pages.lang'), $aItem['lang']),
                             array($this->_getIcon('description').$this->lB('db-pages.description'), $aItem['html_description']),
