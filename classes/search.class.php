@@ -878,7 +878,7 @@ class ahsearch extends crawler_base {
                         <span>{{PERCENT}}%</span>
                         <div class="bar2" style="width: {{PERCENT}}%">&nbsp;</div>
                     </div>
-                    <a href="{{URL}}">{{COUNTER}} / {{HITCOUNT}}) {{HTML_TITLE}}</a> <span class="date">{{AGE}}</span><br>
+                    <a href="{{URL}}">({{COUNTER}}) {{HTML_TITLE}}</a> <span class="date">{{AGE}}</span><br>
 
                     <div class="url">{{HTML_URL}}</div>
                     <div class="detail">
@@ -904,7 +904,7 @@ class ahsearch extends crawler_base {
                     '{{RESULTS}}' => $sInsResults,
                     '{{HITS}}' => $sInsHits,
                     '{{HITCOUNT}}' => $iHits,
-                    '{{TOTALTIME}}' => sprintf("%01.1f", $aData['meta']['timers']['total']) . " ms",
+                    '{{TOTALTIME}}' => sprintf($this->lF('searchout.totaltime'), $aData['meta']['timers']['total']),
                 ];
                 $sHead=str_replace(
                     array_keys($aMappingSearch),

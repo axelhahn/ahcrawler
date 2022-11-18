@@ -67,9 +67,25 @@ if(!$iUrls){
 
     // $iResults = $o->getCountOfSearchresults($aResult);
     $iResults = isset($aResult['meta']['result_count']) ? $aResult['meta']['result_count'] : 0;
+    $aTimerTable=[];
+    if(isset($aResult['meta'])){
+        foreach (array_keys($aResult['meta']['timers']) as $sTimekey){
+            $aTimerTable[]=[$this->lB('status.search.timers.'.$sTimekey), sprintf("%01.3f", $aResult['meta']['timers'][$sTimekey]) . " ms"];
+        }
+    }
     $sReturn .= ''
             . $sForm
-            . ($sQuery ? '<p>' . $this->lB('searches.results') . ': <strong>' . $iResults . '</strong><p>' : '');
+            . ($sQuery 
+                ? '<p>' 
+                        . $this->lB('searches.results') . ': <strong>' . $iResults . '</strong>'
+                        // . print_r($aResult['meta'], 1)
+                    .'<p>'
+                    . $oRenderer->renderToggledContent(
+                        $this->lB('status.search.timers'),
+                        $this->_getSimpleHtmlTable($aTimerTable),
+                        true
+                    )
+                : '');
 
     $aTable = array();
 
