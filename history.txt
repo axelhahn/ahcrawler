@@ -26,6 +26,8 @@
                           - output template: added html placeholders to show data with and without marked searchterm hits
                             eg. {{TITLE}} and {{HTML_TITLE}}
                           - placeholders from head can be used in search result template too
+  * UPDATE: internal search - show times to prepare, database search, sorting results and total time
+  * ADDED: Textareas with placeholders: on double click the default value is editable
 
 2022-10-23: v0.155
   * FIX: php error in setup on missing defaultUrls
