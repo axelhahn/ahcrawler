@@ -386,11 +386,24 @@ function updateStatus(sUrl){
         });
         
 }
+
+/**
+ * prepare textarea: add double click event that adds the placeholder 
+ * value if the value is empty (= to copy the default value and make it
+ * editable)
+ * @returns {undefined}
+ */
+function initTextareas(){
+    $('.pure-control-group textarea').dblclick(function(){
+        if ($(this).attr('placeholder') && $(this).val()==='' ){
+            $(this).val($(this).attr('placeholder'));
+        }
+    }); 
+}
+
 // ----------------------------------------------------------------------
 // init
 // ----------------------------------------------------------------------
-
-
 
 window.addEventListener('load', function() {
 
@@ -402,6 +415,8 @@ window.addEventListener('load', function() {
     initSelectProject();
     
     initBase64Input('e_url', 'urlbase64');
+
+    initTextareas();
 
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');
