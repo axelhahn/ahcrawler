@@ -46,7 +46,8 @@ if ($iPageId) {
         $aTableInfos = array();
         $aTableWords = array();
         $aTable = array();
-        $sBackUrl="?page=searchindexstatus&siteid=".$this->_sTab;
+        // $sBackUrl="?page=searchindexstatus&siteid=".$this->_sTab;
+        $sBackUrl="javascript:history.back();";
         $sBaseUrl=$sBackUrl."&id=".$iPageId;
         
         // --- general infos
