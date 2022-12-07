@@ -1,0 +1,34 @@
+{
+    "id": "english",
+
+    "btn.search.label": "Search",
+    "label.searchterm": "Term(s)",
+    "label.searchoptions": "Extended options",
+    
+    "input.search.placeholder": "Searchterm ...",
+    "input.search.title": "Searchterm (minimum 2 chars)",
+    
+    "label.searchhelp": "Type one or more words - or part of a word. These must exits in a page (or title, description, keywords). Multiple searchterms will be connected with the given search method.",
+    "label.searchsubdir": "Where to search...",
+    "label.searchsubdir-none": "Everywhere ... in the whole website",
+    "label.searchlang": "Language",
+    "label.searchlang.title": "Language",
+    "label.searchlang-none": "any",
+    "label.searchmode": "Search mode",
+    "label.searchmode-and": "strict: all searchterms are a must (AND)",
+    "label.searchmode-or": "more results: minimum one of the searchterms must be found (OR)",
+    "label.searchmode-phrase": "exact: several words as a phrase",
+    "label.search-in-content": "Search index (visible text; like search in a website)",
+    "label.search-in-response": "Html code",
+    
+    "searchout.results": "Search results",
+    "searchout.nohit": "No result :-/",
+    "searchout.too-many-hits": "Remark: You get a lot of hits. You should add one more term for your search.",
+    "searchout.n-more-hits": "... %s more hit(s) in the content",
+    "searchout.hits": "Results: <strong>%s</strong>",
+    "searchout.totaltime": "needed %01.1f ms",
+    "searchout.days": "%s day(s)",
+    "searchout.today": "today",
+    
+    "about.infostring": "OpenSource search engine and website analytics"
+}
