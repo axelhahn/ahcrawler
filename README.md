@@ -8,10 +8,10 @@ GNU General Public License (GNU GPL) version 3
 
 AhCrawler is a search engine for your website and analytics tool.
 
-👤 Author: Axel Hahn
-🧾 Source: <https://github.com/axelhahn/ahcrawler/>
-📜 License: GNU GPL 3.0
-📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>
+👤 Author: Axel Hahn\
+🧾 Source: <https://github.com/axelhahn/ahcrawler/>\
+📜 License: GNU GPL 3.0\
+📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>\
 
 It is written in PHP and consists of
 - crawler (spider) and indexer
