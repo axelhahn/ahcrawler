@@ -1,0 +1,28 @@
+# TARGET: docker/.env
+# ======================================================================
+#
+# values to be used in docker-composer.yml
+# {{generator}}
+#
+# ======================================================================
+
+# ----- application
+APP_NAME={{APP_NAME}}
+
+# ----- ports mapped to outside docker
+DB_PORT={{DB_PORT}}
+APP_PORT={{APP_PORT}}
+
+APPROOT={{APPROOT}}
+WEBROOT={{WEBROOT}}
+LOCALROOT={{LOCALROOT}}
+
+# ----- database settings
+MYSQL_RANDOM_ROOT_PASSWORD={{MYSQL_RANDOM_ROOT_PASSWORD}}
+MYSQL_ALLOW_EMPTY_PASSWORD={{MYSQL_ALLOW_EMPTY_PASSWORD}}
+MYSQL_ROOT_PASS={{MYSQL_ROOT_PASS}}
+MYSQL_USER={{APP_NAME}}
+MYSQL_PASS={{MYSQL_PASS}}
+MYSQL_DB={{APP_NAME}}
+
+# ======================================================================
