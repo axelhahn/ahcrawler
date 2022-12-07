@@ -10,7 +10,12 @@
 
 ----------------------------------------------------------------------
 
-2022-11-xx: v0.156
+2022-12-xx: v0.156
+
+IMPORTANT:
+The filestructure was changed.
+see the file docs/80_Changelog/10_Last_changes.md
+
   * UPDATE: search index - hide newest and oldest data it delta is below 1d
   * UPDATE: unify display: search index url is linked to details; showing url has same button like in resources
   * UPDATE: search index - detail page contains http response header

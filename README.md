@@ -11,7 +11,10 @@ AhCrawler is a search engine for your website and analytics tool.
 👤 Author: Axel Hahn\
 🧾 Source: <https://github.com/axelhahn/ahcrawler/>\
 📜 License: GNU GPL 3.0\
-📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>\
+📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>
+
+⚠️ **Important notice**:
+In version **v0.156** the filestructure was changed. See [Changelog](docs/80_Changelog/10_Last_changes.md)
 
 It is written in PHP and consists of
 - crawler (spider) and indexer
@@ -22,10 +25,12 @@ It is written in PHP and consists of
   - http response header check
   - linkchecker (http status check of all links, css, images, ...)
 
-It runs with PHP 7 and higher (up to PHP 8.1).
+It runs with PHP 7.3 and higher (up to PHP 8.1).
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
 
 This is not a version 1.x yet ... let me do some more work :-)
+
+## Screenshot ## 
 
 ![Screenshot: backend](https://www.axel-hahn.de/assets/projects/ahcrawler/03-analyse.png)
 
