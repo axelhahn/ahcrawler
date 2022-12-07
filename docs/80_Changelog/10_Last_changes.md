@@ -6,8 +6,15 @@
 
 **Important note:**
 
-The folder structure was changed! The files of the software were moved to public_html subfolder.
+This is a large update!
+
+The folder structure was changed: The files of the software and web ui were moved to "public_html" subfolder. This update will break installations that were initialized with a `git pull`.
+
 If you installed the software with git then you need to change the webserver config.
+
+The reason is: I added my local dev environment (rootless docker) and rewrote the current help with markdown files and added it too.
+
+Finally there were changes in the code to improve the search and to unify backend layout elements.
 
 * 🟢 ADDED: docker development environment 
 * 🟢 ADDED: docs folder with markdown help
