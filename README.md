@@ -3,10 +3,10 @@
 
 ## Description ## 
 
+AhCrawler is a search engine for your website and analytics tool.
+
 This is free software and Open Source 
 GNU General Public License (GNU GPL) version 3
-
-AhCrawler is a search engine for your website and analytics tool.
 
 👤 Author: Axel Hahn\
 🧾 Source: <https://github.com/axelhahn/ahcrawler/>\
@@ -14,8 +14,10 @@ AhCrawler is a search engine for your website and analytics tool.
 📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>
 
 ⚠️ **Important notice**:
-In version **v0.156** the filestructure was changed. See [Changelog](docs/80_Changelog/10_Last_changes.md)
+In version **v0.156** the filestructure was changed. 
+--> See [Upgrade to v0.156](docs/00_⚠️_Upgrade_to_v0156.md)
 
+- - - 
 It is written in PHP and consists of
 - crawler (spider) and indexer
 - search for your website

@@ -3,7 +3,7 @@
     "author": "Axel Hahn",
     "tagline": "ahCrawler is a set to implement your own search on your website and an analyzer for your web content.",
     "ignore": {
-        "files": ["v*.md"],
+        "files": ["v*.md", "hints_Upgrade*"],
         "folders": ["_archive"]
     },
     "html": {
