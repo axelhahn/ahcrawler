@@ -1,0 +1,65 @@
+# ======================================================================
+#
+# AHCRAWLER
+#
+# adapted source: https://www.bornfight.com/blog/blog-lamp-docker-setup-with-php-8-and-mariadb-for-symfony-projects/
+#
+# (1) see .env for set variables
+# (2) run "docker-compose up" to startup
+# 
+# ======================================================================
+version: '3.9'
+
+networks:
+  ahcrawler-network:
+
+services:
+
+  # ---------- app server: apache httpd + php
+  ahcrawler-web:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    container_name: '${APP_NAME}-server'
+    ports:
+      - '${APP_PORT}:80'
+    working_dir: ${WEBROOT}
+    # environment:
+    #   - 'DATABASE_URL=mysql://${MYSQL_USER}:${MYSQL_PASS}@db_server:3306/${MYSQL_DB}?serverVersion=10.5'
+    volumes:
+      # - ../:/var/www/${APP_NAME}
+      - ../:/var/www/${APP_NAME}
+      - ./server/apache/sites-enabled:/etc/apache2/sites-enabled
+      - ./server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+    depends_on:
+      ahcrawler-db:
+        condition: service_healthy
+    networks:
+      - ahcrawler-network
+
+
+  # ---------- database server: mariadb
+  ahcrawler-db:
+    # image: mariadb:10.5.9
+    image: mariadb:10.4.21
+    container_name: '${APP_NAME}-db'
+    # restart: always
+    ports:
+      - '${DB_PORT}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${MYSQL_ROOT_PASS}'
+      MYSQL_USER: '${MYSQL_USER}'
+      MYSQL_PASSWORD: '${MYSQL_PASS}'
+      MYSQL_DATABASE: '${MYSQL_DB}'
+    volumes:
+      # - ./db_data:/var/lib/mysql
+      - ./db/mariadb/my.cnf:/etc/mysql/conf.d/my.cnf
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      retries: 5
+    networks:
+      - ahcrawler-network
+
+# volumes:
+#   db_data:

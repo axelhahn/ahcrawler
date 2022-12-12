@@ -1,0 +1,26 @@
+{
+    "title": "ahCrawler",
+    "author": "Axel Hahn",
+    "tagline": "ahCrawler is a set to implement your own search on your website and an analyzer for your web content.",
+    "ignore": {
+        "files": ["v*.md", "hints_Upgrade*"],
+        "folders": ["_archive"]
+    },
+    "html": {
+        "auto_toc": true,
+        "auto_landing": false,
+        "date_modified": false,
+        "jump_buttons": true,
+        "edit_on_github": "axelhahn/ahcrawler/tree/master/docs",
+        "edit_on_": {
+            "name": "Gitlab",
+            "basepath": "https://git-repo.iml.unibe.ch/iml-open-source/__PROJECT__/tree/master/docs"
+        },
+        "links": {
+            "Git Repo": "https://github.com/axelhahn/ahcrawler/",
+            "Axels Docs": "https://www.axel-hahn.de/docs/"
+        },
+        "theme": "daux-blue",
+        "search": true
+    }
+}
