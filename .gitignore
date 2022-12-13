@@ -1,5 +1,4 @@
 public_html/config/crawler.config.json.bak
-public_html/backend/get.php
 public_html/config/crawler.config.json
 public_html/data/*.txt
 public_html/data/*.db
