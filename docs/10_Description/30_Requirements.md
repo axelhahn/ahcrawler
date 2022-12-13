@@ -4,8 +4,8 @@ The tool is designed to run on a local machine, a vm or your own server.
 
 * any webserver plus PHP 
 * PHP: 
-  * version 7.3+ up 8.1 as module (mod_php) or PHP-FPM service
-  * php-curl (could be included in php-common)
+  * version 7.3+ up to 8.1 as module (mod_php) or PHP-FPM service
+  * php-curl (could be included in php-common in some distros)
   * php-pdo and database extension (sqlite or mysql)
   * php-mbstring
   * php-xml
