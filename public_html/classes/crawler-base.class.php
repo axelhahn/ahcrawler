@@ -754,9 +754,9 @@ class crawler_base {
             foreach ($aSettings['columns'] as $field => $type) {
                 $sColumnType= str_replace(array_keys($aDb), array_values($aDb), $type);
                 $sqlTable .= ($sqlTable ? ",\n" : '')
-                        ."    <$field> ${sColumnType}";
+                        ."    <$field> {$sColumnType}";
             }
-            $sql = "CREATE TABLE IF NOT EXISTS <${sTable}> (\n" . $sqlTable . "\n)\n" . $aDb['createAppend'];
+            $sql = "CREATE TABLE IF NOT EXISTS <{$sTable}> (\n" . $sqlTable . "\n)\n" . $aDb['createAppend'];
             if (!$this->oDB->query($sql)) {
                 echo 'DATABASE - CREATION OF TABLES FAILED :-/<pre>'
                         . 'sql: '.$this->oDB->last()."\n"
@@ -1268,7 +1268,7 @@ class crawler_base {
                 
                 $sql = (int)$iSiteId 
                         ? "DELETE FROM <".$sTable."> WHERE siteid=".(int)$iSiteId .";"
-                        : "DROP TABLE IF EXISTS <${sTable}>;"
+                        : "DROP TABLE IF EXISTS <{$sTable}>;"
                         ;
                 // for CLI output
                 echo "DEBUG: $sql\n";
