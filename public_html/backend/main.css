@@ -476,7 +476,6 @@ ul.tiles a.tile{
     padding: 0.5em;
     text-align: center;
     text-decoration: none;
-    transition: all 0.1s;
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
@@ -490,7 +489,7 @@ ul.tiles a.tile strong{
 }
 ul.tiles a.tile:hover{
     box-shadow: var(--tile-shadow-hover);
-    margin: 0.1em 0.9em 0.9em 0.1em;
+    margin: 0.05em 0.95em 0.95em 0.05em;
 }
 
 /* ----- Image of ebsite in context sidebar ----- */
