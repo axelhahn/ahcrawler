@@ -7,6 +7,7 @@
 # 2021-11-nn  v1.0 <axel.hahn@iml.unibe.ch>
 # 2022-07-19  v1.1 <axel.hahn@iml.unibe.ch>  support multiple dirs for setfacl
 # 2022-07-19  v1.2 <www.axel-hahn.de>        use docker-compose -p "$APP_NAME"
+# 2022-12-18  v1.3 <www.axel-hahn.de>        add -p "$APP_NAME" in other docker commands
 # ======================================================================
 
 cd $( dirname $0 )
@@ -15,7 +16,7 @@ cd $( dirname $0 )
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
 
-_version="1.2"
+_version="1.3"
 
 # ----------------------------------------------------------------------
 # FUNCTIONS
@@ -189,7 +190,7 @@ function _showContainers(){
     local bLong=$1
     h2 CONTAINERS
     if [ -z "$bLong" ]; then
-        docker-compose ps
+        docker-compose -p "$APP_NAME" ps
     else
         docker ps | grep $APP_NAME
     fi
@@ -291,17 +292,17 @@ while true; do
                 echo "  $frontendurl"
             else
                 echo "ERROR: docker-compose up failed :-/"
-                docker-compose logs | tail
+                docker-compose -p "$APP_NAME" logs | tail
             fi
             echo
 
             _wait
             ;;
         s)
-            docker-compose stop
+            docker-compose -p "$APP_NAME" stop
             ;;
         r)
-            docker-compose rm -f
+            docker-compose -p "$APP_NAME" rm -f
             ;;
         c)
             docker ps
