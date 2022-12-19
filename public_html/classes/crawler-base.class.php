@@ -1696,7 +1696,7 @@ class crawler_base {
         if (!$oStatus->startAction($sMsgId, $iProfile)) {
             $this->clicolor('error');
             $oStatus->showStatus();
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         $this->cliprint('info', __METHOD__."\n"); sleep(1);

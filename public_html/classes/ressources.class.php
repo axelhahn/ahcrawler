@@ -97,7 +97,7 @@ class ressources extends crawler_base {
         $this->cliprint('info', "========== Resources cleanup".PHP_EOL);
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         $this->cliprint('info', "Flushing resources...\n");
@@ -391,7 +391,7 @@ class ressources extends crawler_base {
         $this->cliprint('info', "========== Add searchindex items\n");
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         if (!$this->iSiteId) {
@@ -650,7 +650,7 @@ class ressources extends crawler_base {
     /**
      * get the urls that are known to be crawled (their count can increase
      * during crawl process by analysing links in pages)
-     * @return type
+     * @return array
      */
     private function _getUrls2Crawl() {
         // echo __FUNCTION__."()\n";
@@ -816,7 +816,7 @@ class ressources extends crawler_base {
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         $sMsgId = 'ressources-profile-' . $this->iSiteId;
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
 
@@ -826,7 +826,7 @@ class ressources extends crawler_base {
                         'siteid' => $this->iSiteId,
                         'OR' => array(
                             'rescan' => 1,
-                            'http_code' => 0,
+                            'http_code[<]' => 1,
                             'http_code[>=]' => 500,
                         ),
                     ),

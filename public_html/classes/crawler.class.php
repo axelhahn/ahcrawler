@@ -520,10 +520,10 @@ class crawler extends crawler_base{
         if (!$bMissesOnly){
             $this->logfileDelete();
         }
-        $this->cliprint('info', "========== Searchindex".PHP_EOL);
+        $this->cliprint('info', "========== Searchindex - ".($bMissesOnly ? 'UPDATE misssing pages' : 'REINDEX').PHP_EOL);
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         
