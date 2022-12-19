@@ -195,10 +195,11 @@
 
     --table-tr-marked-bg:#cde;
 
-    --tile-bg:radial-gradient(#fff,#c0cbd8);
-    --tile-color:#789;
+    --tile-bg:radial-gradient(#fff,#b8c0d2);
+    --tile-color:#78a;
     --tile-border-color:var(--border1);
-    --tile-shadow-hover:0 0 5px #fff, 0 0 1em #aaa;;
+    --tile-shadow-hover: 3px 3px 5px var(--color-shadow-default);
+    --tile-shadow:0 0 3px #fff, 0 0 1em var(--color-shadow-default);
 
     --toggle-bg: rgba(255,255,255,0.5);
     --toggle-border: rgba(0,0,0,0.3);
@@ -465,7 +466,7 @@ ul.tiles a.tile{
     background: var(--tile-bg);
     border: 2px outset var(--tile-border-color); 
     border-radius: 0.5em;
-    box-shadow: 1px 1px 5px var(--color-shadow-default);
+    box-shadow: var(--tile-shadow);
     color: var(--tile-color);
     display: block;
     float: left;
@@ -475,18 +476,21 @@ ul.tiles a.tile{
     padding: 0.5em;
     text-align: center;
     text-decoration: none;
+    transition: all 0.1s;
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
     border: 2px solid var(--tile-border-color); 
     cursor: default;
+    margin: 0 1em 1em 0;
 }
 
 ul.tiles a.tile strong{
     font-size: 200%;
 }
 ul.tiles a.tile:hover{
-    box-shadow: var(--tile-shadow-hover)
+    box-shadow: var(--tile-shadow-hover);
+    margin: 0.1em 0.9em 0.9em 0.1em;
 }
 
 /* ----- Image of ebsite in context sidebar ----- */
