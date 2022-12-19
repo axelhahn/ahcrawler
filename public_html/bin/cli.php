@@ -280,6 +280,7 @@ foreach ($aProfileIds as $sSiteId){
                 case "resources":
                     $oRes=new ressources();
                     $oRes->setSiteId($sSiteId);
+                    $oRes->crawlRessoures();
                     $oRes->crawlRessoures('GET');
                     break;
                 default:
