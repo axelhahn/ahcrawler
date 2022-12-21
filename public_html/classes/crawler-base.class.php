@@ -14,7 +14,7 @@ require_once 'httpheader.class.php';
  * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
  * ____________________________________________________________________________ 
  * Free software and OpenSource * GNU GPL 3
- * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/
  * 
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
@@ -38,7 +38,7 @@ class crawler_base {
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
-        'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
+        'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
         'requirements' => array(
             'phpversion'=>'7.3',
