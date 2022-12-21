@@ -2,6 +2,14 @@
 
 ### 2022
 
+#### 2022-12-xx: v0.157
+
+* ↗️ UPDATE: ahlogger - logger with enabled debug in the backend is compatible to PHP 8.2
+* ↗️ UPDATE: update Medoo (database lib) to v2.1.7
+* ↗️ UPDATE: update resource scan starts with head requests (it uses less resources)
+* ↗️ UPDATE: local docker environment (internal stuff for development)
+
+
 #### 2022-12-12: v0.156
 
 **Important note:**
