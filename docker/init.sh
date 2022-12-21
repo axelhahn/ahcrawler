@@ -6,8 +6,9 @@
 # ----------------------------------------------------------------------
 # 2021-11-nn  v1.0 <axel.hahn@iml.unibe.ch>
 # 2022-07-19  v1.1 <axel.hahn@iml.unibe.ch>  support multiple dirs for setfacl
-# 2022-07-19  v1.2 <www.axel-hahn.de>        use docker-compose -p "$APP_NAME"
+# 2022-11-16  v1.2 <www.axel-hahn.de>        use docker-compose -p "$APP_NAME"
 # 2022-12-18  v1.3 <www.axel-hahn.de>        add -p "$APP_NAME" in other docker commands
+# 2022-12-20  v1.4 <axel.hahn@unibe.ch>      replace fgrep with grep -F
 # ======================================================================
 
 cd $( dirname $0 )
@@ -16,7 +17,7 @@ cd $( dirname $0 )
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
 
-_version="1.3"
+_version="1.4"
 
 # ----------------------------------------------------------------------
 # FUNCTIONS
@@ -90,7 +91,7 @@ function _removeGitdata(){
 function _fix_no-db(){
     local _file=$1
     if [ $DB_ADD = false ]; then
-        typeset -i local iStart=$( cat ${_file} | fgrep -n "$CUTTER_NO_DATABASE" | cut -f 1 -d ':' )-1
+        typeset -i local iStart=$( cat ${_file} | grep -Fn "$CUTTER_NO_DATABASE" | cut -f 1 -d ':' )-1
         if [ $iStart -gt 0 ]; then
             sed -ni "1,${iStart}p" ${_file}
         fi
