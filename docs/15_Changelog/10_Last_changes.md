@@ -9,6 +9,7 @@
 * ↗️ UPDATE: update Medoo (database lib) to v2.1.7
 * ↗️ UPDATE: update resource scan starts with head requests (it uses less resources)
 * ↗️ UPDATE: local docker environment (internal stuff for development)
+* ↗️ UPDATE: css - clickable tile with soft shadow animation
 
 #### 2022-12-12: v0.156
 
