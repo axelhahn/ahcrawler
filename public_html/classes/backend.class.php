@@ -514,14 +514,14 @@ class backend extends crawler_base {
      * find the current tab from url param siteid=... 
      * or take the first id of given array (of profiles)
      * It returns 0..N (id of profile) or a string (of allowed GET param)
-     * 
+     * @param  bool            $bAllowSpecialSiteids  flag: allow next to site ids "all" and "add" as value; default: false (=no)
      * @return string|integer
      */
     private function _getTab($bAllowSpecialSiteids=false) {
         $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
         $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
-        if ($this->_sTab && $this->_sTab!=='add' && $_SESSION && $_SESSION['siteid']!==$this->_sTab) {
+        if ($this->_sTab && $this->_sTab!=='add' && isset($_SESSION['siteid']) && $_SESSION['siteid']!==$this->_sTab) {
             session_start();
             $_SESSION['siteid']=$this->_sTab;
             session_write_close();
