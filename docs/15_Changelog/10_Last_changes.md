@@ -4,11 +4,11 @@
 
 #### 2022-12-xx: v0.157
 
+* 🟢 ADDED: support for multiple values of a column (OR) ... linkchecker shows button for all http status codes of a section
 * ↗️ UPDATE: ahlogger - logger with enabled debug in the backend is compatible to PHP 8.2
 * ↗️ UPDATE: update Medoo (database lib) to v2.1.7
 * ↗️ UPDATE: update resource scan starts with head requests (it uses less resources)
 * ↗️ UPDATE: local docker environment (internal stuff for development)
-
 
 #### 2022-12-12: v0.156
 
@@ -74,9 +74,3 @@ Finally there were changes in the code to improve the search and to unify backen
 * ↗️ UPDATE: jquery 3.6.0 --> jquery 3.6.1
 * ↗️ UPDATE: pure 2.0.6 --> pure 2.1.0
 * ↗️ UPDATE: chartjs 3.6.0 --> chartjs 3.9.1
-
-#### 2022-03-17: v0.152
-
-* 💣 FIX: repeat search on page search terms - top N
-* 💣 FIX: do not abort if creation of database index failes
-* 🟢 ADDED: update detects a git instance and starts a git pull or download+unzip
