@@ -895,8 +895,17 @@ class crawler_base {
         $sWhere = '';
         if (is_array($aFilter) && count($aFilter)) {
             foreach ($aFilter as $sColumn => $value) {
-                $sWhere .= ($sWhere ? 'AND ' : '')
-                        . $sColumn . ' ' . ( $value === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
+                $sWhere .= ($sWhere ? 'AND ' : '');
+                if(is_array($value)){
+                    $sValueitems='';
+                    foreach($value as $singlevalue){
+                        $sValueitems .= ($sValueitems ? 'OR ' : '')
+                            . $sColumn . ' ' . ( $singlevalue === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($singlevalue)) . ' ';
+                    }
+                    $sWhere .= '( '.$sValueitems.'  ) ';
+                } else {
+                    $sWhere .= $sColumn . ' ' . ( $value === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
+                }
             }
         }
         $sSql = "SELECT $sRow, count(*) as count "
@@ -933,7 +942,7 @@ class crawler_base {
      * 
      * @param string  $sTable   name of database table (pages|ressources)
      * @param array   $aFilter  array with column name and value to filter
-     * @return array
+     * @return string
      */
     public function getLastTsRecord($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
@@ -950,7 +959,7 @@ class crawler_base {
      * 
      * @param string  $sTable   name of database table (pages|ressources)
      * @param array   $aFilter  array with column name and value to filter
-     * @return array
+     * @return integer
      */
     public function getRecordCount($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
