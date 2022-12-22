@@ -27,7 +27,7 @@
     --color-h4:#8ab;
     --color-h4-border-bottom:#eee;
     --color-hr:#ddd;
-    --color-shadow-default:rgba(200,200,200,1);
+    --color-shadow-default:rgba(180,180,180,1);
 
     --color-pacman: #69a;
 
@@ -198,8 +198,8 @@
     --tile-bg:radial-gradient(#fff,#b8c0d2);
     --tile-color:#78a;
     --tile-border-color:var(--border1);
-    --tile-shadow-hover: 3px 3px 5px var(--color-shadow-default);
-    --tile-shadow:0 0 3px #fff, 0 0 1em var(--color-shadow-default);
+    --tile-shadow-hover: 1px 1px 2px var(--color-shadow-default);
+    --tile-shadow:-2px -2px 5px #fff, 0 0 0.9em var(--color-shadow-default);
 
     --toggle-bg: rgba(255,255,255,0.5);
     --toggle-border: rgba(0,0,0,0.3);
@@ -476,6 +476,7 @@ ul.tiles a.tile{
     padding: 0.5em;
     text-align: center;
     text-decoration: none;
+    transition: box-shadow 0.2s;
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
