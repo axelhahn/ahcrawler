@@ -63,10 +63,18 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
             $sResResult.=''
                     . '<h3 id="h3-'.$sSection.'">'.$this->lB('linkchecker.found-http-'.$sSection) . ' (' .$aData['value'].')</h3>'
                     . '<p>'.$this->lB('linkchecker.found-http-'.$sSection.'-hint').'</p>'
-                    . '<ul class="tiles '.$sSection.'">'
                     ;
 
-
+            $sBoxes.= count($aData['_data']) > 1
+                ? $oRenderer->renderTile(
+                    $sSection,
+                    $this->lB('linkchecker.found-http-'.$sSection),
+                    $aData['value'],
+                    (floor($aData['value']/$iRessourcesCount*1000)/10).'%',
+                    '?page=ressources&siteid='.$this->_sTab.'&showreport=1&showtable=0&filteritem[]=http_code&filtervalue[]='.implode(',',array_keys($aData['_data'])).'#restable'
+                )
+                : '';
+        
             if($sSection==='warning' && $iExternal){
                 $aChartItemsOfSection[]=array(
                     'label'=>$this->lB('linkchecker.found-http-external'),
@@ -126,13 +134,16 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
             }
         }
         $sResResult.=''
-            . '<div class="floatright">'
-                . $this->_getChart(array(
-                    'type'=>'pie',
-                    'data'=>$aChartItemsOfSection
-                ))
-            .'</div>'
-                . $sBoxes.'</ul>'
+            . (count($aData['_data']) > 1
+                ? '<div class="floatright">'
+                    . $this->_getChart(array(
+                        'type'=>'pie',
+                        'data'=>$aChartItemsOfSection
+                    ))
+                .'</div>'
+                : ''
+                )
+            . $oRenderer->renderTileBar($sBoxes, $sSection)
             . ($sLegende 
                 ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend($sLegende).'<br>'
                     . $this->_getHistoryCounter(['status'.$sSection2])
