@@ -825,7 +825,7 @@ class backend extends crawler_base {
                 . (isset($aLink['hint']) ? ' title="' . $aLink['hint'].'"' : '')
                 . '>'
                 . (isset($aLink['icon']) ? '<i class="'.$aLink['icon'].'"></i> ' : '')
-                . '<strong>'.$aLink['title'].'</strong>'
+                . (isset($aLink['title']) ? '<strong>'.$aLink['title'].'</strong>' : '')
                 . (isset($aLink['text']) ? $aLink['text'] : '')
             . '</a>'
             ;
@@ -2199,7 +2199,7 @@ class backend extends crawler_base {
         }
 
 
-    private function _getRessourceSummary($aRessourcelist, $bLinkRessource=false){
+    private function _UNUSED__getRessourceSummary($aRessourcelist, $bLinkRessource=false){
         $sReturn='';
         // $aFilter=array('ressourcetype','type', 'content_type', 'http_code');
         $aFilter=array('type', 'content_type', 'http_code');
