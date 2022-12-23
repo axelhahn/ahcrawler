@@ -445,8 +445,9 @@ a.childitem{
     margin: 0 1em 1em 0;
     padding: 1em;
     text-decoration: none;
-    min-width: 14em;
+    min-width: 12em;
     width: 19%;
+    width: 16%;
 }
 a.childitem:hover{
     box-shadow: 0 0 .5em var(--color-shadow-default);
