@@ -1904,7 +1904,7 @@ class crawler_base {
                 preg_match_all('/(^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}:[0-9]{2}:[0-9]{2})\ *([a-z]*)\ *(.*)/', $line, $aResult);
                 // echo '<pre>'.print_r($aResult,1).'</pre>';
 
-                $_sLogLevel=$aResult[2][0];
+                $_sLogLevel=isset($aResult[2][0]) ? $aResult[2][0] : '';
                 $_bShow=false;
                 if (isset($_aFilter[$_sLogLevel]) && $_aFilter[$_sLogLevel]){
                     $_bShow=true;
