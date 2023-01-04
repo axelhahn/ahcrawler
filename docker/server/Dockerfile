@@ -9,7 +9,7 @@ FROM php:8.1-apache
 RUN apt-get update && apt-get install -y git unzip zip
 
 # WORKDIR /var/www/ahcrawler/public_html
-WORKDIR {{APPROOT}}
+WORKDIR /var/www/ahcrawler
 
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
