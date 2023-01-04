@@ -368,7 +368,7 @@ function updateStatus(sUrl){
         .then(res => res.text())
         .then(data => {
             oDiv.innerHTML=data;
-            oDiv.style.display=data ? 'inline' : 'none';
+            oDiv.style.display=data ? 'block' : 'none';
             if(oDiv.innerHTML){
                 indexer_was_started=true;
                 $('.actions-crawler .running').show();

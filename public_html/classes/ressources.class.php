@@ -155,7 +155,7 @@ class ressources extends crawler_base {
                 );
         if ($sHeaderJson) {
 
-            $a['content_type'] = str_replace(array('"', ' '), array('', ''), strtolower($this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
+            $a['content_type'] = str_replace(array('"', ' '), array('', ''), strtolower(''.$this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
             $a['http_code'] = (is_int($this->_getHeaderVarFromJson($sHeaderJson, 'http_code')) ? $this->_getHeaderVarFromJson($sHeaderJson, 'http_code') : -1 );
             $a['total_time'] = $this->_getHeaderVarFromJson($sHeaderJson, 'total_time') ? (int) ($this->_getHeaderVarFromJson($sHeaderJson, 'total_time') * 1000) / 1 : false;
             $a['size_download'] = (int) $this->_getHeaderVarFromJson($sHeaderJson, 'size_download') / 1;
@@ -860,6 +860,9 @@ class ressources extends crawler_base {
         $this->cliprint('info', "--- Starting http $sHttpMethod requests - $iSimultanous parallel".PHP_EOL);
         $rollingCurl = new \RollingCurl\RollingCurl();
         $aCurlOpt=$this->_getCurlOptions();
+        if($sHttpMethod=="GET"){
+            $aCurlOpt[CURLOPT_HTTPHEADER][]='Range: bytes=0-1023';
+        }
         // $aCurlOpt[CURLOPT_NOBODY]=true; // means: fetch the ressponse header only
         
         $rollingCurl
@@ -871,12 +874,13 @@ class ressources extends crawler_base {
             $iUrlsTotal=count($this->_aUrls2Crawl);
             $sStatusPrefix=(100-round($iUrlsLeft*100/$iUrlsTotal)).'%: '.$iUrlsLeft . '  of '.$iUrlsTotal.' urls left';
             if ($bPause && $this->iSleep) {
-                $this->touchLocking($sStatusPrefix.'; sleep ' . $this->iSleep . 's');
+                $this->touchLocking($this->_getStatus_urls_left($iUrlsTotal, $iUrlsLeft).'; sleep ' . $this->iSleep . 's');
                 $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
-            $this->touchLocking($sStatusPrefix);
+            // $this->touchLocking($sStatusPrefix);
+            $this->touchLocking($this->_getStatus_urls_left($iUrlsTotal, $iUrlsLeft));
             $this->cliprint('info', $sStatusPrefix."\n");
             $self = $this;
             foreach ($this->_getUrls2Crawl() as $sUrl) {
@@ -884,11 +888,12 @@ class ressources extends crawler_base {
             }
 
             $rollingCurl
-                ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
+                ->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self, $sHttpMethod) {
                         $self->processResponse($request);
                         $iUrlsLeft=count($this->_getUrls2Crawl());
                         $iUrlsTotal=count($this->_aUrls2Crawl);
-                        $self->touchLocking((100-round($iUrlsLeft*100/$iUrlsTotal)) . '%: ' .$iUrlsLeft . '  of '.$iUrlsTotal.' urls left; processing ' . $request->getUrl());
+                        // $self->touchLocking((100-round($iUrlsLeft*100/$iUrlsTotal)) . '%: ' .$iUrlsLeft . '  of '.$iUrlsTotal.' urls left; processing ' . $request->getUrl());
+                        $self->touchLocking($this->_getStatus_urls_left($iUrlsTotal, $iUrlsLeft) . ' '.$sHttpMethod.' ' . $request->getUrl());
                         $rollingCurl->clearCompleted();
                     })
                 ->execute()

@@ -258,8 +258,12 @@ class httpstatus {
     // GETTER :: status with value
     // ----------------------------------------------------------------------
     
+    /**
+     * get content type from http response header ;
+     * @return string
+     */
     public function getContenttype(){
-        if (!$this->_responseInfo){
+        if(!isset($this->_responseInfo['content_type'])){
             return false;
         }
         return preg_replace('/\;.*$/', '', $this->_responseInfo['content_type']);

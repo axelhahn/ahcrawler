@@ -34,7 +34,7 @@ class crawler_base {
     public $aAbout = array(
         'product' => 'ahCrawler',
         'version' => '0.157-dev',
-        'date' => '2022-12-??',
+        'date' => '2023-01-??',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -415,6 +415,12 @@ class crawler_base {
     protected $sLogFilename = false;
     protected $_oLog = false;
     
+    /**
+     * data in lock file during running indexer
+     * @var array
+     */
+    protected $aStatus = [];
+
     // ----------------------------------------------------------------------
 
     /**
@@ -646,6 +652,23 @@ class crawler_base {
     }
 
 
+    /**
+     * get html code for a progressbar during running resouce scan
+     * @param  integer  $iUrlsTotal  count of urls total (=100%)
+     * @param  integer  $iUrlsLeft   count of urls left
+     * @return string
+     */
+    protected function _getStatus_urls_left($iUrlsTotal, $iUrlsLeft=false){
+        $iPercent=100-round($iUrlsLeft*100/$iUrlsTotal);
+        return '<div class="bar"><div class="progress" style="width: '.$iPercent.'%;"></div>'
+        .$iPercent . '%: ' .$iUrlsLeft . '  of '.$iUrlsTotal.' urls left'
+        .'</div> '
+        ;
+    }
+
+    /**
+     * get array with curl default options
+     */
     protected function _getCurlOptions(){
         $aReturn=array(
             CURLOPT_HEADER => true,
