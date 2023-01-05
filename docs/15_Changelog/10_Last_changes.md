@@ -2,7 +2,7 @@
 
 ### 2023
 
-#### 2023-01-xx: v0.157
+#### 2023-01-06: v0.157
 
 * 🟢 ADDED: support for multiple values of a column (OR) ... linkchecker shows button for all http status codes of a section
 * ↗️ UPDATE: ahlogger - logger with enabled debug in the backend is compatible to PHP 8.2
