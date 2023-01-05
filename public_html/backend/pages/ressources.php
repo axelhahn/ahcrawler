@@ -55,10 +55,21 @@ $aFilterItems=$this->_getRequestParam('filteritem');
 if ($aFilterItems){
     $aFilterValues=$this->_getRequestParam('filtervalue');
     for ($i=0; $i<count($aFilterItems); $i++){
-        $aWhere[$aFilterItems[$i]]=($aFilterValues[$i]==='') ? null : $aFilterValues[$i];
+        $value=($aFilterValues[$i]==='') ? null : $aFilterValues[$i];
+        if(strstr($value, ",")){
+            foreach(explode(',', $value) as $singlevalue){
+                $aWhere[$aFilterItems[$i]][]=$singlevalue;
+            }
+            // $aWhere[$aFilterItems[$i]]=($aFilterValues[$i]==='') ? null : $aFilterValues[$i];
+        } else {
+            $aWhere[$aFilterItems[$i]]=($aFilterValues[$i]==='') ? null : $aFilterValues[$i];
+        }
         $aUrl[]=array('filteritem'=>$aFilterItems[$i], 'filtervalue'=>$aFilterValues[$i]);
     }
 }
+
+// $sReturn.= '<pre>'.print_r($aWhere, 1).'</pre>';
+
 // -- get list of all data
 // total count
 $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->_sTab));

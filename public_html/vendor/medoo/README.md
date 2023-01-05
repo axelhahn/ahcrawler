@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <a href="https://github.com/laravel/framework/actions"><img alt="Build Status" src="https://github.com/catfan/Medoo/actions/workflows/php.yml/badge.svg"></a>
+    <a href="https://github.com/catfan/Medoo/actions"><img alt="Build Status" src="https://github.com/catfan/Medoo/actions/workflows/php.yml/badge.svg"></a>
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="Total Downloads" src="https://poser.pugx.org/catfan/medoo/downloads"></a>
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="Latest Stable Version" src="https://poser.pugx.org/catfan/medoo/v/stable"></a>
     <a href="https://packagist.org/packages/catfan/medoo"><img alt="License" src="https://poser.pugx.org/catfan/medoo/license"></a>
@@ -23,7 +23,7 @@
 
 * **Compatible** - Supports MySQL, MSSQL, SQLite, MariaDB, PostgreSQL, Sybase, Oracle, and more.
 
-* **Friendly** - Works well with every PHP framework, like Laravel, Codeigniter, Yii, Slim, and framework that are supporting singleton extension or composer.
+* **Friendly** - Works well with every PHP framework, like Laravel, Codeigniter, Yii, Slim, and frameworks that are supporting singleton extension or composer.
 
 * **Free** - Under the MIT license, you can use it anywhere, whatever you want.
 
@@ -35,7 +35,7 @@ PHP 7.3+ and installed PDO extension.
 
 ### Install via composer
 
-Add Medoo to composer.json configuration file.
+Add Medoo to the composer.json configuration file.
 ```
 $ composer require catfan/medoo
 ```
@@ -61,7 +61,6 @@ $database = new Medoo([
     'password' => 'your_password'
 ]);
 
-// Enjoy
 $database->insert('account', [
     'user_name' => 'foo',
     'email' => 'foo@bar.com'
@@ -88,7 +87,7 @@ For starting a new pull request, please make sure it's compatible with other dat
 
 Run `phpunit tests` for unit testing and `php-cs-fixer fix` for fixing code style.
 
-Each commit is started with `[fix]`, `[feature]` or `[update]` tag to indicate the change.
+Each commit should start with `[fix]`, `[feature]` or `[update]` tag to indicate the change.
 
 Please keep it simple and keep it clear.
 
@@ -101,3 +100,7 @@ Medoo is under the MIT license.
 * Official website: [https://medoo.in](https://medoo.in)
 
 * Documentation: [https://medoo.in/doc](https://medoo.in/doc)
+
+* Twitter: [https://twitter.com/MedooPHP](https://twitter.com/MedooPHP)
+
+* Open Collective: [https://opencollective.com/medoo](https://opencollective.com/medoo)

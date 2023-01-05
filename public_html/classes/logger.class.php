@@ -1,10 +1,14 @@
 <?php
 
 /**
+ * ----------------------------------------------------------------------
+ * 
  * Debug logging during a client request.
  * So you can measure any action find bottlenecks in your code.
  * 
- * Source: https://github.com/axelhahn/ahlogger
+ * Licence: GNU GPL 3.0
+ * Source:  https://github.com/axelhahn/ahlogger
+ * Docs:    https://www.axel-hahn.de/docs/ahlogger/
  * 
  * USAGE:<br>
  * (1) Trigger a message with add() to add a marker<br>
@@ -12,12 +16,43 @@
  *     and the delta to the last message. <br>
  * 
  * @author www.axel-hahn.de
+ * 
+ * ----------------------------------------------------------------------
+ * 2016-02-26  init
+ * 2016-11-19  add memory usage
+ * (...)
+ * 2022-09-25  add memory tracking, add cli renderer 
+ * 2022-09-27  css updates
+ * 2022-10-02  add emoji chars 
+ * 2022-10-16  mark longest action with an icon 
+ * 2022-12-15  make it compatible to PHP 8.2; add doc + comments
+ * ----------------------------------------------------------------------
  */
 class logger {
 
+    /**
+     * @var {array} array of added messages
+     */
     protected $aMessages = [];
+    
+    /**
+     * @var {bool} flag: show debug infos? default: false
+     */
     protected $bShowDebug = false;
+
+    /**
+     * @var {int} memory usage on start
+     */
     protected $_iMemStart = false;
+
+    /**
+     * @var {string} dynamic prefix for used css - it is set in the cronstructor
+     */
+    protected $sCssPrefix = '';
+
+    // ----------------------------------------------------------------------
+    // CONSTRUCTOR
+    // ----------------------------------------------------------------------
 
     /**
      * constuctor
@@ -31,6 +66,10 @@ class logger {
         $this->sCssPrefix='debug-'.md5(microtime(true));
         return true;
     }
+
+    // ----------------------------------------------------------------------
+    // PUBLIC METHODS
+    // ----------------------------------------------------------------------
 
     /**
      * add a logging message
@@ -76,6 +115,16 @@ class logger {
         }
     }
 
+    /**
+     * helper function: prepare array of added massages before output
+     * - detect warnings and errors
+     * - detect needed time for each action
+     * - detect longest action
+     * - detect maximum of memory usage
+     * - calculate total time
+     * 
+     * @return array
+     */
     protected function _prepareRendering(){
         $iMem=memory_get_usage();
         $this->add('<hr>');

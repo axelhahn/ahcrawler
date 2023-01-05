@@ -21,7 +21,7 @@ require_once 'cache.class.php';
  * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
  * ____________________________________________________________________________ 
  * Free software and OpenSource * GNU GPL 3
- * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/
  * 
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
@@ -514,14 +514,14 @@ class backend extends crawler_base {
      * find the current tab from url param siteid=... 
      * or take the first id of given array (of profiles)
      * It returns 0..N (id of profile) or a string (of allowed GET param)
-     * 
+     * @param  bool            $bAllowSpecialSiteids  flag: allow next to site ids "all" and "add" as value; default: false (=no)
      * @return string|integer
      */
     private function _getTab($bAllowSpecialSiteids=false) {
         $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
         $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd.$sAll ? $sAdd.$sAll : $this->_getRequestParam('siteid', false, 'int');
-        if ($this->_sTab && $this->_sTab!=='add' && $_SESSION && $_SESSION['siteid']!==$this->_sTab) {
+        if ($this->_sTab && $this->_sTab!=='add' && isset($_SESSION['siteid']) && $_SESSION['siteid']!==$this->_sTab) {
             session_start();
             $_SESSION['siteid']=$this->_sTab;
             session_write_close();
@@ -825,7 +825,7 @@ class backend extends crawler_base {
                 . (isset($aLink['hint']) ? ' title="' . $aLink['hint'].'"' : '')
                 . '>'
                 . (isset($aLink['icon']) ? '<i class="'.$aLink['icon'].'"></i> ' : '')
-                . '<strong>'.$aLink['title'].'</strong>'
+                . (isset($aLink['title']) ? '<strong>'.$aLink['title'].'</strong>' : '')
                 . (isset($aLink['text']) ? $aLink['text'] : '')
             . '</a>'
             ;
@@ -2199,7 +2199,7 @@ class backend extends crawler_base {
         }
 
 
-    private function _getRessourceSummary($aRessourcelist, $bLinkRessource=false){
+    private function _UNUSED__getRessourceSummary($aRessourcelist, $bLinkRessource=false){
         $sReturn='';
         // $aFilter=array('ressourcetype','type', 'content_type', 'http_code');
         $aFilter=array('type', 'content_type', 'http_code');

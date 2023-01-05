@@ -14,7 +14,7 @@ require_once 'httpheader.class.php';
  * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
  * ____________________________________________________________________________ 
  * Free software and OpenSource * GNU GPL 3
- * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/
  * 
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
@@ -33,12 +33,12 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.156',
-        'date' => '2022-12-12',
+        'version' => '0.157',
+        'date' => '2023-01-06',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
-        'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/index.htm',
+        'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
         'requirements' => array(
             'phpversion'=>'7.3',
@@ -415,6 +415,12 @@ class crawler_base {
     protected $sLogFilename = false;
     protected $_oLog = false;
     
+    /**
+     * data in lock file during running indexer
+     * @var array
+     */
+    protected $aStatus = [];
+
     // ----------------------------------------------------------------------
 
     /**
@@ -646,6 +652,23 @@ class crawler_base {
     }
 
 
+    /**
+     * get html code for a progressbar during running resouce scan
+     * @param  integer  $iUrlsTotal  count of urls total (=100%)
+     * @param  integer  $iUrlsLeft   count of urls left
+     * @return string
+     */
+    protected function _getStatus_urls_left($iUrlsTotal, $iUrlsLeft=false){
+        $iPercent=100-round($iUrlsLeft*100/$iUrlsTotal);
+        return '<div class="bar"><div class="progress" style="width: '.$iPercent.'%;"></div>'
+        .$iPercent . '%: ' .$iUrlsLeft . '  of '.$iUrlsTotal.' urls left'
+        .'</div> '
+        ;
+    }
+
+    /**
+     * get array with curl default options
+     */
     protected function _getCurlOptions(){
         $aReturn=array(
             CURLOPT_HEADER => true,
@@ -754,9 +777,9 @@ class crawler_base {
             foreach ($aSettings['columns'] as $field => $type) {
                 $sColumnType= str_replace(array_keys($aDb), array_values($aDb), $type);
                 $sqlTable .= ($sqlTable ? ",\n" : '')
-                        ."    <$field> ${sColumnType}";
+                        ."    <$field> {$sColumnType}";
             }
-            $sql = "CREATE TABLE IF NOT EXISTS <${sTable}> (\n" . $sqlTable . "\n)\n" . $aDb['createAppend'];
+            $sql = "CREATE TABLE IF NOT EXISTS <{$sTable}> (\n" . $sqlTable . "\n)\n" . $aDb['createAppend'];
             if (!$this->oDB->query($sql)) {
                 echo 'DATABASE - CREATION OF TABLES FAILED :-/<pre>'
                         . 'sql: '.$this->oDB->last()."\n"
@@ -895,8 +918,17 @@ class crawler_base {
         $sWhere = '';
         if (is_array($aFilter) && count($aFilter)) {
             foreach ($aFilter as $sColumn => $value) {
-                $sWhere .= ($sWhere ? 'AND ' : '')
-                        . $sColumn . ' ' . ( $value === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
+                $sWhere .= ($sWhere ? 'AND ' : '');
+                if(is_array($value)){
+                    $sValueitems='';
+                    foreach($value as $singlevalue){
+                        $sValueitems .= ($sValueitems ? 'OR ' : '')
+                            . $sColumn . ' ' . ( $singlevalue === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($singlevalue)) . ' ';
+                    }
+                    $sWhere .= '( '.$sValueitems.'  ) ';
+                } else {
+                    $sWhere .= $sColumn . ' ' . ( $value === "NULL" ? 'IS NULL' : '=' . $this->oDB->quote($value)) . ' ';
+                }
             }
         }
         $sSql = "SELECT $sRow, count(*) as count "
@@ -933,7 +965,7 @@ class crawler_base {
      * 
      * @param string  $sTable   name of database table (pages|ressources)
      * @param array   $aFilter  array with column name and value to filter
-     * @return array
+     * @return string
      */
     public function getLastTsRecord($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
@@ -950,7 +982,7 @@ class crawler_base {
      * 
      * @param string  $sTable   name of database table (pages|ressources)
      * @param array   $aFilter  array with column name and value to filter
-     * @return array
+     * @return integer
      */
     public function getRecordCount($sTable, $aFilter = array()) {
         // table row can contain lower capital letters and underscore
@@ -1268,7 +1300,7 @@ class crawler_base {
                 
                 $sql = (int)$iSiteId 
                         ? "DELETE FROM <".$sTable."> WHERE siteid=".(int)$iSiteId .";"
-                        : "DROP TABLE IF EXISTS <${sTable}>;"
+                        : "DROP TABLE IF EXISTS <{$sTable}>;"
                         ;
                 // for CLI output
                 echo "DEBUG: $sql\n";
@@ -1696,7 +1728,7 @@ class crawler_base {
         if (!$oStatus->startAction($sMsgId, $iProfile)) {
             $this->clicolor('error');
             $oStatus->showStatus();
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         $this->cliprint('info', __METHOD__."\n"); sleep(1);
@@ -1895,7 +1927,7 @@ class crawler_base {
                 preg_match_all('/(^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}:[0-9]{2}:[0-9]{2})\ *([a-z]*)\ *(.*)/', $line, $aResult);
                 // echo '<pre>'.print_r($aResult,1).'</pre>';
 
-                $_sLogLevel=$aResult[2][0];
+                $_sLogLevel=isset($aResult[2][0]) ? $aResult[2][0] : '';
                 $_bShow=false;
                 if (isset($_aFilter[$_sLogLevel]) && $_aFilter[$_sLogLevel]){
                     $_bShow=true;

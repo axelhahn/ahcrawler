@@ -13,7 +13,7 @@ require_once 'htmlelements.class.php';
  * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
  * ____________________________________________________________________________ 
  * Free software and OpenSource * GNU GPL 3
- * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/
  * 
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>

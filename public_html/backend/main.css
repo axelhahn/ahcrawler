@@ -27,7 +27,7 @@
     --color-h4:#8ab;
     --color-h4-border-bottom:#eee;
     --color-hr:#ddd;
-    --color-shadow-default:rgba(200,200,200,1);
+    --color-shadow-default:rgba(180,180,180,1);
 
     --color-pacman: #69a;
 
@@ -195,10 +195,11 @@
 
     --table-tr-marked-bg:#cde;
 
-    --tile-bg:radial-gradient(#fff,#c0cbd8);
-    --tile-color:#789;
+    --tile-bg:radial-gradient(#fff,#b8c0d2);
+    --tile-color:#78a;
     --tile-border-color:var(--border1);
-    --tile-shadow-hover:0 0 5px #fff, 0 0 1em #aaa;;
+    --tile-shadow-hover: 1px 1px 2px var(--color-shadow-default);
+    --tile-shadow:-2px -2px 5px #fff, 0 0 0.9em var(--color-shadow-default);
 
     --toggle-bg: rgba(255,255,255,0.5);
     --toggle-border: rgba(0,0,0,0.3);
@@ -409,10 +410,15 @@ div.contextbox .content{margin: 1em;}
     overflow: hidden;
     padding: 0.5em;
     left: 0.5em;bottom: 0.5em;
+    max-width: 90%;
+    height: 1.3em;
     position: fixed;
     z-index: 200;
     opacity: 0.8;
 }
+#divStatus .bar      {border: 1px solid var(--navi-bg-l1-active); width: 15em; position: relative; display: inline-block; text-align: center;}
+#divStatus .progress {background: var(--navi-bg-l1-active); height: 3px; padding: 0;}
+
 .actions-crawler>div{display: none;}
 
 footer{position: fixed; background: var(--footer-bg); bottom: 0; padding: 0.5em 1em; right: 0;}
@@ -444,8 +450,9 @@ a.childitem{
     margin: 0 1em 1em 0;
     padding: 1em;
     text-decoration: none;
-    min-width: 14em;
+    min-width: 12em;
     width: 19%;
+    width: 16%;
 }
 a.childitem:hover{
     box-shadow: 0 0 .5em var(--color-shadow-default);
@@ -465,7 +472,7 @@ ul.tiles a.tile{
     background: var(--tile-bg);
     border: 2px outset var(--tile-border-color); 
     border-radius: 0.5em;
-    box-shadow: 1px 1px 5px var(--color-shadow-default);
+    box-shadow: var(--tile-shadow);
     color: var(--tile-color);
     display: block;
     float: left;
@@ -475,18 +482,21 @@ ul.tiles a.tile{
     padding: 0.5em;
     text-align: center;
     text-decoration: none;
+    transition: box-shadow 0.2s;
 }
 ul.tiles a.tile.nonclickable,
 ul.tiles a.tile.nonclickable:hover{box-shadow: none;
     border: 2px solid var(--tile-border-color); 
     cursor: default;
+    margin: 0 1em 1em 0;
 }
 
 ul.tiles a.tile strong{
     font-size: 200%;
 }
 ul.tiles a.tile:hover{
-    box-shadow: var(--tile-shadow-hover)
+    box-shadow: var(--tile-shadow-hover);
+    margin: 0.05em 0.95em 0.95em 0.05em;
 }
 
 /* ----- Image of ebsite in context sidebar ----- */

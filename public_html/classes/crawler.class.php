@@ -16,7 +16,7 @@ require_once 'analyzer.html.class.php';
  * \__,_/_/ /_/\____/_/   \__,_/ |__/|__/_/\___/_/         
  * ____________________________________________________________________________ 
  * Free software and OpenSource * GNU GPL 3
- * DOCS https://www.axel-hahn.de/docs/ahcrawler/index.htm
+ * DOCS https://www.axel-hahn.de/docs/ahcrawler/
  * 
  * THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE <br>
  * LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR <br>
@@ -289,6 +289,7 @@ class crawler extends crawler_base{
         }
 
         $sPath = parse_url($sUrl, PHP_URL_PATH);
+        $sPath = $sPath ? $sPath : '/'; // FIX empty path and set it to "/"
 
         $bFound = $this->_checkRegexArray('include', $sUrl);
         if ($bFound) {
@@ -322,15 +323,15 @@ class crawler extends crawler_base{
         }
 
         $sSkipExtensions='/(\.'.implode('|\.', $this->aSkipExtensions).')$/i';
-        $sUrlPath=parse_url($sUrl, PHP_URL_PATH); 
-        if (preg_match($sSkipExtensions, $sUrlPath)) {
+
+        if (preg_match($sSkipExtensions, $sPath)) {
             // $this->cliprint('cli', $bDebug ? "... SKIP by extension: $sUrl\n" : "");
-            $this->cliprint('cli', "... SKIP by extension: $sUrlPath from $sUrl\n"); 
+            $this->cliprint('cli', "... SKIP by extension: $sPath from $sUrl\n"); 
             return false;
         }
 
         
-        $curr_depth = substr_count(str_replace("//", "/", parse_url($sUrl, PHP_URL_PATH)), "/");
+        $curr_depth = substr_count(str_replace("//", "/", $sPath), "/");
         if ($this->aProfileEffective['searchindex']['iDepth'] && $curr_depth > $this->aProfileEffective['searchindex']['iDepth']) {
             $this->cliprint('info', $bDebug ? "... don't adding $sUrl - max depth is ".$this->aProfileEffective['searchindex']['iDepth']."\n" : "");
             return false;
@@ -512,6 +513,8 @@ class crawler extends crawler_base{
      */
     public function run($bMissesOnly=false) {
 
+        // TODO: UNDO
+        // $bMissesOnly=false;
         $this->_iUrlsCrawled = 0;
         $this->iStartCrawl = date("U");
         
@@ -520,10 +523,10 @@ class crawler extends crawler_base{
         if (!$bMissesOnly){
             $this->logfileDelete();
         }
-        $this->cliprint('info', "========== Searchindex".PHP_EOL);
+        $this->cliprint('info', "========== Searchindex - ".($bMissesOnly ? 'UPDATE misssing pages' : 'REINDEX').PHP_EOL);
         $this->cliprint('info', 'starting point: '. __METHOD__.PHP_EOL);
         if (!$this->enableLocking(__CLASS__, 'index', $this->iSiteId)) {
-            $this->cliprint('error', "ABORT: the action is still running (".__METHOD__.")\n");
+            $this->cliprint('error', "ABORT: The crawler is still running (".__METHOD__.")\n");
             return false;
         }
         
@@ -648,24 +651,60 @@ class crawler extends crawler_base{
             ->setSimultaneousLimit((int)$this->aProfileEffective['searchindex']['simultanousRequests'])
             ;
         while (count($this->_getUrls2Crawl())) {
+            $aUrlsLeft=$this->_getUrls2Crawl();
             if ($bPause && $this->iSleep) {
                 $this->touchLocking('sleep ' . $this->iSleep . 's');
                 $this->cliprint('info', "sleep ..." . $this->iSleep . "s\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
-            $this->touchLocking('urls left ' . count($this->_getUrls2Crawl()). ' ... ');
-            $this->cliprint('info', 'Urls left: ' . count($this->_getUrls2Crawl())."\n");
+            // $this->touchLocking('urls left ' . count($aUrlsLeft). ' ... ');
+            // $this->cliprint('info', 'Urls left: ' . count($aUrlsLeft)."\n");
+            $this->touchLocking(__METHOD__.' looping...');
+            $this->cliprint('info', __METHOD__." looping...\n");
             
-            foreach ($this->_getUrls2Crawl() as $sUrl) {
-                $rollingCurl->get($sUrl);
-            }
+            // WIP: get data from database to get less response
+            //      for already stored (cached) data
+            $aNextUrls=array_flip($aUrlsLeft);
+            $aHeadersOfUrls=$this->oDB->select(
+                'pages', 
+                ['url', 'header', 'ts'], 
+                [
+                    'AND' => [
+                        'siteid' => $this->iSiteId,
+                        'url' => $aUrlsLeft,
+                        // 'header[~]' => 'etag: ',
+                    ],
+                ]
+                );
 
+            $aCurlDefaults=$this->_getCurlOptions();
+            // $aCurlHttpHeader=$aCurlDefaults[CURLOPT_HTTPHEADER];
+            // $aCurlHttpHeader=[];
+            foreach ($aHeadersOfUrls as $aUrlrow) {
+                preg_match("/etag\: ([a-z0-9-\.+_]*)/i", $aUrlrow['header'], $aEtagMatcher);
+                $aCurlOptions=$aCurlDefaults;
+                if(isset($aEtagMatcher[1])){
+                    $aCurlOptions[CURLOPT_HTTPHEADER][]='If-None-Match: "'.$aEtagMatcher[1].'"';
+                }
+                // $aCurlOpt[CURLOPT_HTTPHEADER][]='Range: bytes=0-200000';
+                $aCurlOptions[CURLOPT_HTTPHEADER][]='If-Modified-Since: '.date("D, j M Y H:i:s T", strtotime($aUrlrow['ts']));
+                $aNextUrls[$aUrlrow['url']]=$aCurlOptions;
+            }
+            // print_r($aNextUrls);sleep(1);
+
+            foreach ($aUrlsLeft as $sUrl) {
+                $rollingCurl->get(
+                    $sUrl,
+                    null,
+                    (isset($aNextUrls[$sUrl]) && is_array($aNextUrls[$sUrl]) ? $aNextUrls[$sUrl] : null),
+                );
+            }
             $rollingCurl->setCallback(function(\RollingCurl\Request $request, \RollingCurl\RollingCurl $rollingCurl) use ($self) {
                     // echo $request->getResponseText();
                     // echo "... content: " . substr($request->getResponseText(), 0 ,10) . " (...) \n";
                     $self->processResponse($request);
-                    $self->touchLocking('processing ' . $request->getUrl());
+                    $self->touchLocking('GET ' . $request->getUrl());
                     $rollingCurl->clearCompleted();
                 })
                 ->execute()
@@ -900,8 +939,7 @@ class crawler extends crawler_base{
             return false;
         }
         
-        // echo "add to index: ".$aData['url']."\n";
-        // first try: update - if it fails, then insert.
+        // $this->cliprint('debug', __METHOD__ . " ".$aData['header']['http_code']. ' ' . $aData['url']."\n");
         
         // $iPageId=$this->_getPageId($aData['url']);
         
@@ -917,9 +955,8 @@ class crawler extends crawler_base{
         }
         
         
-        if (count($aCurrent) && $aCurrent[0][$sFieldToCompare]) {
-        // if ($iPageId) {
-
+        if (count($aCurrent) /* && $aCurrent[0][$sFieldToCompare] */) {
+            // $this->cliprint('debug', __METHOD__ . " ".strlen($aCurrent[0][$sFieldToCompare]). ' bytes - in database ' . strlen($aData[$sFieldToCompare])." bytes\n");
             if ($aCurrent[0][$sFieldToCompare] == $aData[$sFieldToCompare]){
                 $this->cliprint('cli', 'NO CHANGE '.$aData['url']."\n");
             } else {

@@ -6,10 +6,10 @@ declare(strict_types=1);
  *
  * The Lightweight PHP Database Framework to Accelerate Development.
  *
- * @version 2.1.3
+ * @version 2.1.7
  * @author Angel Lai
  * @package Medoo
- * @copyright Copyright 2021 Medoo Project, Angel Lai.
+ * @copyright Copyright 2022 Medoo Project, Angel Lai.
  * @license https://opensource.org/licenses/MIT
  * @link https://medoo.in
  */
@@ -105,7 +105,7 @@ class Medoo
     protected $logs = [];
 
     /**
-     * Determine should log or not.
+     * Determine should log the query or not.
      *
      * @var bool
      */
@@ -119,7 +119,7 @@ class Medoo
     protected $testMode = false;
 
     /**
-     * The query string last generated in test mode.
+     * The last query string was generated in test mode.
      *
      * @var string
      */
@@ -133,7 +133,7 @@ class Medoo
     protected $debugMode = false;
 
     /**
-     * Determine should saving debug logging.
+     * Determine should save debug logging.
      *
      * @var bool
      */
@@ -234,9 +234,7 @@ class Medoo
         }
 
         $option = $options['option'] ?? [];
-        $commands = (isset($options['command']) && is_array($options['command'])) ?
-            $options['command'] :
-            [];
+        $commands = [];
 
         switch ($this->type) {
 
@@ -469,6 +467,10 @@ class Medoo
                 );
             }
 
+            if (isset($options['command']) && is_array($options['command'])) {
+                $commands = array_merge($commands, $options['command']);
+            }
+
             foreach ($commands as $value) {
                 $this->pdo->exec($value);
             }
@@ -478,7 +480,7 @@ class Medoo
     }
 
     /**
-     * Generate a new map key for placeholder.
+     * Generate a new map key for the placeholder.
      *
      * @return string
      */
@@ -659,7 +661,7 @@ class Medoo
         }
 
         $query = preg_replace_callback(
-            '/(([`\']).*?)?((FROM|TABLE|INTO|UPDATE|JOIN)\s*)?\<(([\p{L}_][\p{L}\p{N}@$#\-_]*)(\.[\p{L}_][\p{L}\p{N}@$#\-_]*)?)\>([^,]*?\2)?/u',
+            '/(([`\']).*?)?((FROM|TABLE|INTO|UPDATE|JOIN|TABLE IF EXISTS)\s*)?\<(([\p{L}_][\p{L}\p{N}@$#\-_]*)(\.[\p{L}_][\p{L}\p{N}@$#\-_]*)?)\>([^,]*?\2)?/u',
             function ($matches) {
                 if (!empty($matches[2]) && isset($matches[8])) {
                     return $matches[0];
@@ -744,8 +746,7 @@ class Medoo
         $map = [
             'NULL' => PDO::PARAM_NULL,
             'integer' => PDO::PARAM_INT,
-            // 'double' => PDO::PARAM_STR,
-            'double' => PDO::PARAM_INT,
+            'double' => PDO::PARAM_STR,
             'boolean' => PDO::PARAM_BOOL,
             'string' => PDO::PARAM_STR,
             'object' => PDO::PARAM_STR,
@@ -831,7 +832,7 @@ class Medoo
     }
 
     /**
-     * Implode where conditions.
+     * Implode the Where conditions.
      *
      * @param array $data
      * @param array $map
@@ -857,7 +858,7 @@ class Medoo
             $isIndex = is_int($key);
 
             preg_match(
-                '/([\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\[(?<operator>\>\=?|\<\=?|\=|\!\=?|\<\>|\>\<|\!?~|REGEXP)\])?([\p{L}_][\p{L}\p{N}@$#\-_\.]*)?/u',
+                '/([\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\[(?<operator>.*)\])?([\p{L}_][\p{L}\p{N}@$#\-_\.]*)?/u',
                 $isIndex ? $value : $key,
                 $match
             );
@@ -870,7 +871,7 @@ class Medoo
                 continue;
             }
 
-            if ($operator) {
+            if ($operator && $operator != '=') {
                 if (in_array($operator, ['>', '>=', '<', '<='])) {
                     $condition = "{$column} {$operator} ";
 
@@ -966,6 +967,8 @@ class Medoo
                 } elseif ($operator === 'REGEXP') {
                     $stack[] = "{$column} REGEXP {$mapKey}";
                     $map[$mapKey] = [$value, PDO::PARAM_STR];
+                } else {
+                    throw new InvalidArgumentException("Invalid operator [{$operator}] for column {$column} supplied.");
                 }
 
                 continue;
@@ -1166,7 +1169,7 @@ class Medoo
         array &$map,
         $join,
         &$columns = null,
-        array $where = null,
+        $where = null,
         $columnFn = null
     ): string {
         preg_match('/(?<table>[\p{L}_][\p{L}\p{N}@$#\-_]*)\s*\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\)/u', $table, $tableMatch);
@@ -1227,10 +1230,10 @@ class Medoo
     }
 
     /**
-     * Determine the array is with join syntax.
+     * Determine the array with join syntax.
      *
      * @param mixed $join
-     * @return string
+     * @return bool
      */
     protected function isJoin($join): bool
     {
@@ -1563,7 +1566,7 @@ class Medoo
      */
     public function drop(string $table): ?PDOStatement
     {
-        return $this->exec('DROP TABLE IF EXISTS ' . $this->tableQuote($this->prefix . $table));
+        return $this->exec('DROP TABLE IF EXISTS ' . $this->tableQuote($table));
     }
 
     /**
@@ -2222,7 +2225,11 @@ class Medoo
         ];
 
         foreach ($output as $key => $value) {
-            $output[$key] = @$this->pdo->getAttribute(constant('PDO::ATTR_' . $value));
+            try {
+                $output[$key] = $this->pdo->getAttribute(constant('PDO::ATTR_' . $value));
+            } catch (PDOException $e) {
+                $output[$key] = $e->getMessage();
+            }
         }
 
         $output['dsn'] = $this->dsn;

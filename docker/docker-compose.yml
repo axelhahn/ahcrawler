@@ -31,12 +31,25 @@ services:
       - ../:/var/www/${APP_NAME}
       - ./server/apache/sites-enabled:/etc/apache2/sites-enabled
       - ./server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      # start_period: 40s
+
     depends_on:
       ahcrawler-db:
         condition: service_healthy
     networks:
       - ahcrawler-network
 
+    user: ${DOCKER_USER_UID}
+
+    # --- 8< --- CUT-HERE-FOR-NO-DATABASE --- 8< ---
+    depends_on:
+      - ahcrawler-db
 
   # ---------- database server: mariadb
   ahcrawler-db:

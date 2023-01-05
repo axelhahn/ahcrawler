@@ -32,17 +32,30 @@ services:
       - ../:/var/www/${APP_NAME}
       - ./server/apache/sites-enabled:/etc/apache2/sites-enabled
       - ./server/php/php.ini:/usr/local/etc/php/conf.d/extra-php-config.ini
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      # start_period: 40s
+
     depends_on:
       {{APP_NAME}}-db:
         condition: service_healthy
     networks:
       - {{APP_NAME}}-network
 
+    user: ${DOCKER_USER_UID}
+
+    # --- 8< --- {{CUTTER_NO_DATABASE}} --- 8< ---
+    depends_on:
+      - {{APP_NAME}}-db
 
   # ---------- database server: mariadb
   {{APP_NAME}}-db:
     # image: mariadb:10.5.9
-    image: mariadb:10.4.21
+    image: {{MYSQL_IMAGE}}
     container_name: '${APP_NAME}-db'
     # restart: always
     ports:
