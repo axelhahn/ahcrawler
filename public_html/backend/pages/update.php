@@ -8,7 +8,7 @@ $sReturn = '';
 
 
 require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
-$sApproot=dirname(dirname(__DIR__));
+$sApproot=dirname(dirname(dirname(__DIR__)));
 
 
 $sZipfile = $sApproot.'/tmp/__latest.zip';
