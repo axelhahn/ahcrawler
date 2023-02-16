@@ -680,7 +680,7 @@
     "update.welcome.version-latest": "Latest version",
     "update.gitinfo.label": "Information",
     "update.gitinfo.description": "A short description what happens next.",
-    "update.gitinfo.steps": "An installation with Git was detected.<br>By executing <code>git pull<\/code> in the install directory the software will be updated (the same could be done manually too).",
+    "update.gitinfo.steps": "An installation with Git was detected.<br><br>By executing <code>git pull<\/code> in the install directory the software will be updated (the same could be done manually too).",
     "update.gitpull.label": "Get updated files",
     "update.gitpull.description": "The command [git pull] updates your installation.",
     "update.gitpull.ok": "OK, the update was successful.",
