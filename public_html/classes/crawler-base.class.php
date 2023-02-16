@@ -843,7 +843,6 @@ class crawler_base {
 
     /**
      * init database 
-     * @param type $aOptions
      */
     private function _initDB() {
         $this->logAdd(__METHOD__.'() start ... init with options <pre>'.print_r($this->aOptions['database'],1).'</pre>');
