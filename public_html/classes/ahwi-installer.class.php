@@ -34,7 +34,7 @@ class ahwi {
             'dir'=>'.git',
             'file'=>'.git',
             'check'=>'git --version',
-            'update'=>'git pull',
+            'update'=>'git pull --force',
         ],
         'svn'=>[
             'label'=>'Subversion',
