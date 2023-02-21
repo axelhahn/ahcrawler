@@ -2,6 +2,10 @@
 
 ### 2023
 
+#### 2023-02-21: v0.158
+
+* 💣 FIX: web updater and updater cronjob did not detect a git instance after directory change in v0.156
+
 #### 2023-01-06: v0.157
 
 * 🟢 ADDED: support for multiple values of a column (OR) ... linkchecker shows button for all http status codes of a section
@@ -65,17 +69,3 @@ Finally there were changes in the code to improve the search and to unify backen
 * ↗️ UPDATE: css of default theme: move all colors into variables to simplify custom skins
 * ↗️ UPDATE: link details show switch from secure https to unsecure http
 * ↗️ UPDATE: resource details disable http ok links
-
-
-#### 2022-09-06: v0.153
-
-* 💣 FIX: add support of git repo outside approot
-* 💣 FIX: php error on if a project was not crawled
-* 💣 FIX: relative redirect urls
-* ↗️ UPDATE: use session_write_close
-* ↗️ UPDATE: skips by extension
-* ↗️ UPDATE: reduce memory usage while crawling
-* ↗️ UPDATE: log viewer shows filtered view as default
-* ↗️ UPDATE: jquery 3.6.0 --> jquery 3.6.1
-* ↗️ UPDATE: pure 2.0.6 --> pure 2.1.0
-* ↗️ UPDATE: chartjs 3.6.0 --> chartjs 3.9.1

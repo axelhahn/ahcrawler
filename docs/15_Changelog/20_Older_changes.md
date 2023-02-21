@@ -2,6 +2,19 @@
 
 ### 2022
 
+#### 2022-09-06: v0.153
+
+* 💣 FIX: add support of git repo outside approot
+* 💣 FIX: php error on if a project was not crawled
+* 💣 FIX: relative redirect urls
+* ↗️ UPDATE: use session_write_close
+* ↗️ UPDATE: skips by extension
+* ↗️ UPDATE: reduce memory usage while crawling
+* ↗️ UPDATE: log viewer shows filtered view as default
+* ↗️ UPDATE: jquery 3.6.0 --> jquery 3.6.1
+* ↗️ UPDATE: pure 2.0.6 --> pure 2.1.0
+* ↗️ UPDATE: chartjs 3.6.0 --> chartjs 3.9.1
+
 #### 2022-03-17: v0.152
 
 * 💣 FIX: repeat search on page search terms - top N

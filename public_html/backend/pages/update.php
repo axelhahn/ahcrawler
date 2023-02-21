@@ -8,20 +8,24 @@ $sReturn = '';
 
 
 require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
-$sApproot=dirname(dirname(__DIR__));
 
-
-$sZipfile = $sApproot.'/tmp/__latest.zip';
-
-$sTargetPath = $sApproot;
-// $sTargetPath = $sApproot.'/tmp';
+$aDirs=[
+    'download'=>[
+        'root'=>dirname(dirname(__DIR__)),
+        'zip' =>dirname(dirname(__DIR__)).'/tmp/__latest.zip',
+    ],
+    'git'=>[
+        'root'=>dirname(dirname(dirname(__DIR__))),
+        'zip' =>false,
+    ]
+];
 
 $oInstaller=new ahwi(array(
     'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
     'source'=>$this->oUpdate->getDownloadUrl(),
     'md5'=>$this->oUpdate->getChecksumUrl(),
-    'installdir'=>$sTargetPath,
-    'tmpzip'=>$sZipfile,
+    'installdir'=>$aDirs['git']['root'],
+    'tmpzip'=>$aDirs['git']['zip'],
     'checks'=>$this->aAbout['requirements'],
 ));
 
@@ -29,20 +33,32 @@ $oInstaller=new ahwi(array(
 // $aTmpVcs=$oInstaller->vcsDetect();
 
 $bIsGit=$oInstaller->vcsDetect('git');
-$aSteps=$bIsGit 
-    ? array(
+if($bIsGit){
+    $aSteps=[
         'welcome',
         'gitinfo',
         'gitpull',
-    )
-    : array(
+    ];
+} else {
+    $oInstaller=new ahwi(array(
+        'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
+        'source'=>$this->oUpdate->getDownloadUrl(),
+        'md5'=>$this->oUpdate->getChecksumUrl(),
+        'installdir'=>$aDirs['download']['root'],
+        'tmpzip'=>$aDirs['download']['zip'],
+        'checks'=>$this->aAbout['requirements'],
+    ));
+    $sZipfile=$aDirs['download']['zip'];
+    $sTargetPath=$aDirs['download']['root'];
+    $aSteps=[
         'welcome',
         'info',
         'download',
         'extract',
-    )
+    ];
+}
 
-;
+// $sReturn.= '<pre>'.$oInstaller->dumpCfg().'</pre>';
 
 $sStepName=$this->_getRequestParam('doinstall') ? $this->_getRequestParam('doinstall') : $aSteps[0];
 $bAutoContinue=$this->_getRequestParam('docontinue') ? (int)$this->_getRequestParam('docontinue') : false;

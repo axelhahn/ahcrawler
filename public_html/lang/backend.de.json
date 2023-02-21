@@ -726,7 +726,7 @@
     "update.welcome.unusedLibs": "Hinweis: es gibt <strong>%s<\/strong> ungenutze Vendor-Bibliotheken, die man l&ouml;schen kann.",
     "update.gitinfo.label": "Informationen zum Ablauf",
     "update.gitinfo.description": "Eine kurze Beschreibung, wie das Update mit Git abl&auml;uft.",
-    "update.gitinfo.steps": "Es wurde eine Installation basierend auf Git erkannt.<br>Mit einem <code>git pull<\/code> im Installationsverzeichnis (was sich auch manuell ausf\u00fchren liesse) wird die Software aktualisiert.",
+    "update.gitinfo.steps": "Es wurde eine Installation basierend auf Git erkannt.<br><br>Mit einem <code>git pull<\/code> im Installationsverzeichnis (was sich auch manuell ausf\u00fchren liesse) wird die Software aktualisiert.",
     "update.gitpull.label": "Hole aktualisierte Dateien",
     "update.gitpull.description": "Mit dem Kommando [git pull] wird die Software nun aktualisiert.",
     "update.gitpull.ok": "OK, die Aktualisierung wurde erfolgreich beendet.",

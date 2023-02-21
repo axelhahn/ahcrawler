@@ -40,9 +40,16 @@ require_once(__DIR__ . '/../classes/cli.class.php');
 require_once(__DIR__ . '/../classes/ahwi-updatecheck.class.php');
 require_once(__DIR__ . '/../classes/ahwi-installer.class.php');
 
-$sApproot=dirname(__DIR__);
-$sZipfile = $sApproot.'/tmp/__latest.zip';
-$sTargetPath = $sApproot;
+$aDirs=[
+    'download'=>[
+        'root'=>dirname(__DIR__),
+        'zip' =>dirname(__DIR__).'/tmp/__latest.zip',
+    ],
+    'git'=>[
+        'root'=>dirname(dirname(__DIR__)),
+        'zip' =>false,
+    ]
+];
 
 $aParamDefs=array(
     'label' => 'AhCrawler :: Updater',
@@ -117,14 +124,22 @@ $oInstaller=new ahwi(array(
     'product'=>$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'],
     'source'=>$oCheck->getDownloadUrl(),
     'md5'=>$oCheck->getChecksumUrl(),
-    'installdir'=>$sTargetPath,
-    'tmpzip'=>$sZipfile,
+    'installdir'=>$aDirs['git']['root'],
+    'tmpzip'=>$aDirs['git']['zip'],
     'checks'=>$oCrawler->aAbout['requirements'],
 ));
 
 $bIsGit=$oInstaller->vcsDetect('git');
 if(!$bIsGit){
-    echo 'Starting Installer...'.PHP_EOL.PHP_EOL;
+    echo 'Starting Zip-Installer...'.PHP_EOL.PHP_EOL;
+    $oInstaller=new ahwi(array(
+        'product'=>$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'],
+        'source'=>$oCheck->getDownloadUrl(),
+        'md5'=>$oCheck->getChecksumUrl(),
+        'installdir'=>$aDirs['download']['root'],
+        'tmpzip'=>$aDirs['download']['zip'],
+        'checks'=>$oCrawler->aAbout['requirements'],
+    ));
     if(!$oInstaller->download(true)){
         echo 'ERROR: download failed :-/'.PHP_EOL;
         exit(2);

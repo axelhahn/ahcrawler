@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.157',
-        'date' => '2023-01-06',
+        'version' => '0.158',
+        'date' => '2023-02-21',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -843,7 +843,6 @@ class crawler_base {
 
     /**
      * init database 
-     * @param type $aOptions
      */
     private function _initDB() {
         $this->logAdd(__METHOD__.'() start ... init with options <pre>'.print_r($this->aOptions['database'],1).'</pre>');
