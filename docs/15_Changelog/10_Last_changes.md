@@ -2,7 +2,7 @@
 
 ### 2023
 
-#### 2023-02-xx: v0.158
+#### 2023-02-21: v0.158
 
 * 💣 FIX: web updater and updater cronjob did not detect a git instance after directory change in v0.156
 
