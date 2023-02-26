@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.158',
-        'date' => '2023-02-21',
+        'version' => '0.159-dev',
+        'date' => '2023-02-xx',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1746,12 +1746,18 @@ class crawler_base {
      * @param type $sMessage
      */
     public function touchLocking($sMessage) {
+        if(!isset($this->aStatus['messageid'])){
+            return false;
+        } 
         $oStatus = new status();
         $oStatus->updateAction($this->aStatus['messageid'], $sMessage);
     }
 
     public function disableLocking() {
         $this->cliprint('info', __METHOD__."\n"); sleep(1);
+        if(!isset($this->aStatus['messageid'])){
+            return false;
+        } 
         $oStatus = new status();
         $oStatus->finishAction($this->aStatus['messageid']);
         $this->aStatus = false;
