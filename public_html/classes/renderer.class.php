@@ -748,9 +748,11 @@ class ressourcesrenderer extends crawler_base {
 
         $unixTS = date("U", strtotime($aRessourceItem['ts']));
 
+        $sLink2Searchindex=$aRessourceItem['isSource'] ? '#TODO' : false;
 
         $sReturn.='<div class="divRessource">'
                 . '<div class="divRessourceHead">'
+                    /*
                     . '<span style="float: right;">'
                         . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
                             . $this->_getIcon('link-to-url')
@@ -760,7 +762,18 @@ class ressourcesrenderer extends crawler_base {
                     . ' '
                     . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
                     . '<br>'
-                    . '<strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
+                    */
+                    . '<br><strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
+                    . '&nbsp; <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
+                        . $this->_getIcon('link-to-url')
+                        . '</a>'
+                    .($sLink2Searchindex
+                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
+                        . $this->_getIcon('page')
+                        . '</a>'
+                        : ''
+                    )
+                    .'<br><br>'
                 . '</div>'
                 . '<div class="divRessourceContent">'
                 . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
@@ -1143,7 +1156,7 @@ class ressourcesrenderer extends crawler_base {
         // table on top
         // --------------------------------------------------
         
-        
+        /*
         $sReturn.=''
                 . '<table><tr>'
                     . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
@@ -1160,6 +1173,8 @@ class ressourcesrenderer extends crawler_base {
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 ;
+        */
+        $sReturn.=$this->renderRessourceItemAsBox($aItem).'<br>';
 
         // --------------------------------------------------
         // http header
