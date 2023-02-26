@@ -60,7 +60,7 @@ if ($iCookieCount) {
                 'secure' => ($aCookie['secure'] === 'TRUE' 
                                 ? '<span class="ok">' 
                                 // : ($aCookie['secure'] === 'FALSE' ? '<span class="warning">' : '<span>')
-                                : '<span>'
+                                : '<span class="warning">'
                         )
                         . $aCookie['secure']
                         .'</span>',
