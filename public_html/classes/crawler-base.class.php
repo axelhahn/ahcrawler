@@ -942,6 +942,19 @@ class crawler_base {
     }
     
     /**
+     * get id of corresponding table for the same url
+     * @param  string  $sUrl    url to search for
+     * @param  string  $sTable
+     * @return integer
+     */
+    public function getIdsByUrl($sUrl, $sTable){
+        $iReturn=0;
+        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl'";
+        $aData = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
+        return isset($aData[0]['id']) ? $aData[0]['id'] : false;
+    }
+
+    /**
      * get available languages for that exist language files
      * @param string  $sTarget  target; one of backend|frontend; default is backend
      * @return array

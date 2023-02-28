@@ -747,8 +747,9 @@ class ressourcesrenderer extends crawler_base {
         $aRessourceItem = $this->_extendRessourceItem($aRessourceItem);
 
         $unixTS = date("U", strtotime($aRessourceItem['ts']));
+        $iPageId=$this->getIdsByUrl($aRessourceItem['url'],'pages');
 
-        $sLink2Searchindex=$aRessourceItem['isSource'] ? '#TODO' : false;
+        $sLink2Searchindex=$aRessourceItem['isSource'] ? '?page=searchindexstatus&id='.$iPageId.'&siteid='.$aRessourceItem['siteid'] : false;
 
         $sReturn.='<div class="divRessource">'
                 . '<div class="divRessourceHead">'
@@ -764,15 +765,16 @@ class ressourcesrenderer extends crawler_base {
                     . '<br>'
                     */
                     . '<br><strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
-                    . '&nbsp; <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
-                        . $this->_getIcon('link-to-url')
-                        . '</a>'
+                    . ' '
                     .($sLink2Searchindex
-                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
+                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button">'
                         . $this->_getIcon('page')
                         . '</a>'
                         : ''
                     )
+                    .' <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
+                        . $this->_getIcon('link-to-url')
+                        . '</a>'
                     .'<br><br>'
                 . '</div>'
                 . '<div class="divRessourceContent">'

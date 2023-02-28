@@ -50,12 +50,18 @@ if ($iPageId) {
         $sBackUrl="javascript:history.back();";
         $sBaseUrl=$sBackUrl."&id=".$iPageId;
         
+        $iResId=$this->getIdsByUrl($aItem[0]['url'],'ressources');
+
         // --- general infos
         $aTableInfos=array(
             array(
                 $this->_getIcon('url').$this->lB('db-pages.url'), 
                 $aItem[0]['url']
                     . ' '
+                    .($iResId 
+                        ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"><i class="far fa-sticky-note"></i></a> ' 
+                        : ''
+                    )
                     . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
                     )
                 ,
