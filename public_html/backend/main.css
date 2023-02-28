@@ -156,7 +156,7 @@
     --status-bg-error:radial-gradient(#f8f0f0,#daa);
     --status-bg-error-flat:#ebb;
     --status-bg-ok:radial-gradient(#fff,#b0d0b8);
-    --status-bg-ok-flat: #b0d0b8;
+    --status-bg-ok-flat: #c0dcc8;
     --status-bg-warning:radial-gradient(#fff,#eb8);
     --status-bg-warning-flat:#fdb;
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
@@ -264,7 +264,7 @@ body, .contextbox, .piechart{
 
 /* --- menu left --- */
 .header .langnav{position: fixed; top: 1em; right: 2em;}
-.pure-menu{margin-left: 0.5em; width: 90%;}
+.pure-menu{margin-left: 0.5em; width: 95%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{}
 .header .pure-menu-link i{font-size: 130%;}
