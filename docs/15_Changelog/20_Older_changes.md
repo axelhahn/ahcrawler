@@ -2,6 +2,13 @@
 
 ### 2022
 
+#### 2022-10-18: v0.154
+
+* 💣 FIX: http header of a failed page in detail page
+* ↗️ UPDATE: css of default theme: move all colors into variables to simplify custom skins
+* ↗️ UPDATE: link details show switch from secure https to unsecure http
+* ↗️ UPDATE: resource details disable http ok links
+
 #### 2022-09-06: v0.153
 
 * 💣 FIX: add support of git repo outside approot
