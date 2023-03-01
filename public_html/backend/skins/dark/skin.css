@@ -17,13 +17,19 @@
     --color-border-click:#fc2;
     --color-border-click:#cde;
     
-    --navi-bg-l1-active:#505568;
-    --navi-bg-l2-active:#808490;
+    --sidebar-bg: #222;
+    --sidebar-bg: #1c1c20;
+    --sidebar-box-shadow: 0 0 2em #222;
+
+    --navi-bg-l1-active:#404850;
+    --navi-bg-l2-active:#505860;
     --navi-bg-on-hover:#c0d0dc;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
     --tile-bg:radial-gradient(#202028,#303840);
     --tile-color:#789;
+    --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
+    --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
     --context-head-bg:radial-gradient(#303840,#456);
     
@@ -63,9 +69,6 @@ code,pre{background: rgba(0,0,0,0.1); }
 .message pre{ color: rgba(0,0,0,0.8); }
 div.contextbox .head{color: rgba(255,255,255,0.4);opacity: 1;}
 
-ul.tiles a.tile:hover, a.childitem:hover{
-    box-shadow: 0 0 5px #000, 0 0 1em #468;
-}
 a.childitem{
     color:var(--color-default);
 }
@@ -75,8 +78,8 @@ a.childitem:hover{
 
 
 /* ----- override pure elements ----- */
-.header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:#123;}
-.header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:#123;}
+.header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:#89a;}
+.header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:#89a;}
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active,
     .pure-menu a:active{
 	border-color: var(--color-default);

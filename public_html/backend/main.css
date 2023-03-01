@@ -44,6 +44,10 @@
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --brand-title-bg: rgba(140,160,200,0.1);
+    --brand-title-bg: none;
+
+    --sidebar-bg: #fff;
+    --sidebar-box-shadow: 0 0 2em #e0ecf0;
 
     --button-bg: #e0e4e8;
     --button-bg: #d8dce0;
@@ -226,8 +230,10 @@ body, .contextbox, .piechart{
     position: fixed;
     top: 0px;
     bottom: 0px;
-    width: 17em;
+    width: 16em;
     z-index:100;
+    background: var(--sidebar-bg);
+    box-shadow: var(--sidebar-box-shadow);
 }
 
 #content{
@@ -245,7 +251,9 @@ body, .contextbox, .piechart{
     background: var(--brand-title-bg); 
     border-radius: 0;
     border-bottom-right-radius: 0.3em;
+    /*
     box-shadow: 0 0 0.5em var(--color-shadow-default);
+    */
     margin: 0 0 1em; padding: 0.2em;
 }
     #pacman {
