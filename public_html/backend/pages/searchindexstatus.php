@@ -19,7 +19,6 @@ $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
 
 
 
-
 $oCrawler = new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();
 if (!$iUrls) {
@@ -59,7 +58,9 @@ if ($iPageId) {
                 $aItem[0]['url']
                     . ' '
                     .($iResId 
-                        ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"><i class="far fa-sticky-note"></i></a> ' 
+                        ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
+                            . ' title="'.$this->lB('status.link-to-res').'"'
+                            . '>'.$oRenderer->_getIcon('switch-search-res').'</a> ' 
                         : ''
                     )
                     . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
@@ -134,13 +135,16 @@ if ($iPageId) {
         $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
         
         // print_r($aItem[0]);
-        return '<h3>' . $this->lB('status.detail') . '</h3>'
+        return $sReturn 
+                . '<h3>' . $this->lB('status.detail') . '</h3>'
+                /*
                 . $this->_getButton(array(
                     'href' => $sBackUrl,
                     'class' => 'button-secondary',
                     'popup' => false,
                     'label' => 'button.back'
                 )) . '<br><br>'
+                */
                 
                 // ---- basic page data
                 . '<h4>'.($aItem[0]['title'] ? $aItem[0]['title'] : $aItem[0]['url']).'</h4>'

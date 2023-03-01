@@ -103,6 +103,8 @@ class ressourcesrenderer extends crawler_base {
         'http-code-5xx' => 'fas fa-spinner',
         'http-code-9xx' => 'fas fa-bolt',
 
+        'switch-search-res' => 'fas fa-retweet',
+
         /*
         'ressources.showtable' => 'fa fa-table',
         'ressources.showreport' => 'far fa-file',
@@ -329,8 +331,8 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * render an value from the array by the given key
-     * @param type $sKey
-     * @param type $aArray
+     * @param string $sKey
+     * @param array  $aArray
      * @return boolean
      */
     private function _renderArrayValue($sKey, $aArray) {
@@ -767,9 +769,11 @@ class ressourcesrenderer extends crawler_base {
                     . '<br><strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
                     . ' '
                     .($sLink2Searchindex
-                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button">'
-                        . $this->_getIcon('page')
-                        . '</a>'
+                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
+                            . ' title="'.$this->lB('ressources.link-to-searchindex').'"' 
+                            . '>'
+                            . $this->_getIcon('switch-search-res')
+                            . '</a>'
                         : ''
                     )
                     .' <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
@@ -1272,7 +1276,7 @@ class ressourcesrenderer extends crawler_base {
      * get html code to draw a tile
      * 
      * @param string $sType       type; one of '' |'ok'|'error'
-     * @param strng  $sIntro      top text
+     * @param string $sIntro      top text
      * @param string $sCount      counter value
      * @param string $sFoot       footer text
      * @param string $sTargetUrl  linked url
