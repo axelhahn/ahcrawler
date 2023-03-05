@@ -27,7 +27,7 @@ It is written in PHP and consists of
   - http response header check
   - linkchecker (http status check of all links, css, images, ...)
 
-It runs with PHP 7.3 and higher (up to PHP 8.1).
+It runs on PHP - up to 8.1 (maybe it runs on PHP 7.3 - but this is an already outdated version).
 It uses PDO to store indexed data. So far sqlite and mysql were tested.
 
 This is not a version 1.x yet ... let me do some more work :-)

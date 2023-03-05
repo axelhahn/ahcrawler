@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.158',
-        'date' => '2023-02-21',
+        'version' => '0.159',
+        'date' => '2023-03-05',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -942,6 +942,19 @@ class crawler_base {
     }
     
     /**
+     * get id of corresponding table for the same url
+     * @param  string  $sUrl    url to search for
+     * @param  string  $sTable
+     * @return integer
+     */
+    public function getIdsByUrl($sUrl, $sTable){
+        $iReturn=0;
+        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl'";
+        $aData = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
+        return isset($aData[0]['id']) ? $aData[0]['id'] : false;
+    }
+
+    /**
      * get available languages for that exist language files
      * @param string  $sTarget  target; one of backend|frontend; default is backend
      * @return array
@@ -1746,12 +1759,18 @@ class crawler_base {
      * @param type $sMessage
      */
     public function touchLocking($sMessage) {
+        if(!isset($this->aStatus['messageid'])){
+            return false;
+        } 
         $oStatus = new status();
         $oStatus->updateAction($this->aStatus['messageid'], $sMessage);
     }
 
     public function disableLocking() {
         $this->cliprint('info', __METHOD__."\n"); sleep(1);
+        if(!isset($this->aStatus['messageid'])){
+            return false;
+        } 
         $oStatus = new status();
         $oStatus->finishAction($this->aStatus['messageid']);
         $this->aStatus = false;

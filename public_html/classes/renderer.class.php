@@ -103,6 +103,8 @@ class ressourcesrenderer extends crawler_base {
         'http-code-5xx' => 'fas fa-spinner',
         'http-code-9xx' => 'fas fa-bolt',
 
+        'switch-search-res' => 'fas fa-retweet',
+
         /*
         'ressources.showtable' => 'fa fa-table',
         'ressources.showreport' => 'far fa-file',
@@ -329,8 +331,8 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * render an value from the array by the given key
-     * @param type $sKey
-     * @param type $aArray
+     * @param string $sKey
+     * @param array  $aArray
      * @return boolean
      */
     private function _renderArrayValue($sKey, $aArray) {
@@ -747,10 +749,13 @@ class ressourcesrenderer extends crawler_base {
         $aRessourceItem = $this->_extendRessourceItem($aRessourceItem);
 
         $unixTS = date("U", strtotime($aRessourceItem['ts']));
+        $iPageId=$this->getIdsByUrl($aRessourceItem['url'],'pages');
 
+        $sLink2Searchindex=$aRessourceItem['isSource'] ? '?page=searchindexstatus&id='.$iPageId.'&siteid='.$aRessourceItem['siteid'] : false;
 
         $sReturn.='<div class="divRessource">'
                 . '<div class="divRessourceHead">'
+                    /*
                     . '<span style="float: right;">'
                         . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
                             . $this->_getIcon('link-to-url')
@@ -760,7 +765,21 @@ class ressourcesrenderer extends crawler_base {
                     . ' '
                     . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
                     . '<br>'
-                    . '<strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
+                    */
+                    . '<br><strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
+                    . ' '
+                    .($sLink2Searchindex
+                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
+                            . ' title="'.$this->lB('ressources.link-to-searchindex').'"' 
+                            . '>'
+                            . $this->_getIcon('switch-search-res')
+                            . '</a>'
+                        : ''
+                    )
+                    .' <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
+                        . $this->_getIcon('link-to-url')
+                        . '</a>'
+                    .'<br><br>'
                 . '</div>'
                 . '<div class="divRessourceContent">'
                 . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
@@ -1143,7 +1162,7 @@ class ressourcesrenderer extends crawler_base {
         // table on top
         // --------------------------------------------------
         
-        
+        /*
         $sReturn.=''
                 . '<table><tr>'
                     . '<td style="vertical-align: top; text-align: center; padding: 0 1em;">'
@@ -1160,6 +1179,8 @@ class ressourcesrenderer extends crawler_base {
                 . '</tr></table>'
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 ;
+        */
+        $sReturn.=$this->renderRessourceItemAsBox($aItem).'<br>';
 
         // --------------------------------------------------
         // http header
@@ -1255,7 +1276,7 @@ class ressourcesrenderer extends crawler_base {
      * get html code to draw a tile
      * 
      * @param string $sType       type; one of '' |'ok'|'error'
-     * @param strng  $sIntro      top text
+     * @param string $sIntro      top text
      * @param string $sCount      counter value
      * @param string $sFoot       footer text
      * @param string $sTargetUrl  linked url

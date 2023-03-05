@@ -663,6 +663,50 @@ class backend extends crawler_base {
     }
     
     /**
+     * helper for method getBreadcrumb to get html code for a breadcrumb navigation
+     * @param  array  $aNav    navigation items of a given lievel
+     * @param  string $sDelim  chars to delim breadcrumb links
+     * @return string
+     */
+    private function _getBreadcrumbitems($aNav, $sDelim){
+        $sNavi = '';
+        foreach ($aNav as $sItem=>$aSubItems) {
+            $sNaviNextLevel='';
+            if (isset($aSubItems['children']) && count($aSubItems['children'])){
+                $sNaviNextLevel.=$this->_getBreadcrumbitems($aSubItems['children'], $sDelim);
+            }
+            if(!$this->isNavitemHidden($sItem)){
+                $bHasActiveSubitem=strpos($sNaviNextLevel, 'pure-button');
+                $bIsActive=$this->_sPage == $sItem || $bHasActiveSubitem;
+
+                if($bIsActive){
+                    $sNavi.=$sDelim
+                        . $this->_getLink2Navitem($sItem)
+                        . ($bIsActive ? $sNaviNextLevel : '')
+                    ;
+                }
+            }
+        }        
+        return $sNavi;
+    }
+
+    /**
+     * get html code for a breadcrumb navigation
+     * @return string
+     */
+    public function getBreadcrumb(){
+        $sMyDelim='/';
+        $sNavi=$this->_getBreadcrumbitems($this->_aMenu, $sMyDelim);
+
+        // add HOME on non-home-level
+        $sHomeLink=$this->_getLink2Navitem(array_key_first($this->_aMenu));
+        if(!strstr($sNavi, $sHomeLink)){
+            $sNavi = $sMyDelim.$sHomeLink.$sNavi;
+        }
+        return '<div class="breadcrumb">'.$sNavi.'</div>';
+    }
+
+    /**
      * get languages
      * @param string $sLangobject
      * @return type

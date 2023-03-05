@@ -2,6 +2,14 @@
 
 ### 2023
 
+#### 2023-03-xx: v0.159
+
+* 🟢 ADDED: switch button between search index and resource detail page of the same url
+* 🟢 ADDED: breadcrumb navigation 
+* ↗️ UPDATE: simplify resource detail page
+* ↗️ UPDATE: mark all unsecure cookies
+* ↗️ UPDATE: css update of default theme
+
 #### 2023-02-21: v0.158
 
 * 💣 FIX: web updater and updater cronjob did not detect a git instance after directory change in v0.156
@@ -62,10 +70,3 @@ Finally there were changes in the code to improve the search and to unify backen
 * 💣 FIX: php error in setup on missing defaultUrls
 * ↗️ UPDATE: deselect OK status buttons on linked resources only
 * ↗️ UPDATE: backend search additionally can search in html response
-
-#### 2022-10-18: v0.154
-
-* 💣 FIX: http header of a failed page in detail page
-* ↗️ UPDATE: css of default theme: move all colors into variables to simplify custom skins
-* ↗️ UPDATE: link details show switch from secure https to unsecure http
-* ↗️ UPDATE: resource details disable http ok links
