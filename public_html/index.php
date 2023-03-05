@@ -163,7 +163,7 @@
                 ;
     } else {
         $sHtmlContent = $oBackend->getHead()
-            .$oBackend->getBreadcrumb()
+            .($bIsBackend ? $oBackend->getBreadcrumb() : '')
             .$oBackend->getContent()
             ; 
     }
