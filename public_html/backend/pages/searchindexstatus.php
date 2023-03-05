@@ -31,6 +31,7 @@ if (!$iUrls) {
 // detail view of a found page
 // ----------------------------------------------------------------------
 
+$sBackUrl="javascript:history.back();";
 
 $iPageId = $this->_getRequestParam('id', false, 'int');
 if ($iPageId) {
@@ -45,9 +46,8 @@ if ($iPageId) {
         $aTableInfos = array();
         $aTableWords = array();
         $aTable = array();
-        // $sBackUrl="?page=searchindexstatus&siteid=".$this->_sTab;
-        $sBackUrl="javascript:history.back();";
-        $sBaseUrl=$sBackUrl."&id=".$iPageId;
+        $sSelfUrl='?page=searchindexstatus&siteid='.$this->_sTab;
+        $sBaseUrl=$sSelfUrl."&id=".$iPageId;
         
         $iResId=$this->getIdsByUrl($aItem[0]['url'],'ressources');
 
