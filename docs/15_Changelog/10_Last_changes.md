@@ -5,6 +5,7 @@
 #### 2023-03-xx: v0.159
 
 * 🟢 ADDED: switch button between search index and resource detail page of the same url
+* 🟢 ADDED: breadcrumb navigation 
 * ↗️ UPDATE: simplify resource detail page
 * ↗️ UPDATE: mark all unsecure cookies
 * ↗️ UPDATE: css update of default theme
