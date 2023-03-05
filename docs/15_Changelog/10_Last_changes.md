@@ -2,7 +2,7 @@
 
 ### 2023
 
-#### 2023-03-xx: v0.159
+#### 2023-03-05: v0.159
 
 * 🟢 ADDED: switch button between search index and resource detail page of the same url
 * 🟢 ADDED: breadcrumb navigation 
