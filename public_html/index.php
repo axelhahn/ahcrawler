@@ -162,7 +162,10 @@
                 .$oRenderer->renderMessagebox($oBackend->lB('error.403.message'), 'warning')
                 ;
     } else {
-        $sHtmlContent = $oBackend->getHead().$oBackend->getContent(); 
+        $sHtmlContent = $oBackend->getHead()
+            .$oBackend->getBreadcrumb()
+            .$oBackend->getContent()
+            ; 
     }
     
     // ----------------------------------------------------------------------
