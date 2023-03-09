@@ -2,6 +2,12 @@
 
 ### 2022
 
+#### 2022-10-23: v0.155
+
+* 💣 FIX: php error in setup on missing defaultUrls
+* ↗️ UPDATE: deselect OK status buttons on linked resources only
+* ↗️ UPDATE: backend search additionally can search in html response
+
 #### 2022-10-18: v0.154
 
 * 💣 FIX: http header of a failed page in detail page

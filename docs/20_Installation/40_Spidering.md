@@ -5,7 +5,7 @@ You can call it without parameter to get a help ... or see page CLI.
 
 **Remark:**
 
-The crawling action can be triggered from the web gui. It has dependencies regarding requet timeout.
+The crawling action can be triggered from the web gui. It has dependencies regarding request timeout.
 
 Tat's why I recommend the command line or create cron job to atomate indexing tasks.
 

@@ -2,6 +2,12 @@
 
 ### 2023
 
+#### 2023-03-09: v0.160
+
+* 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
+* ↗️ UPDATE: css update of default theme
+* ↗️ UPDATE: fix php warnings in some classes
+
 #### 2023-03-05: v0.159
 
 * 🟢 ADDED: switch button between search index and resource detail page of the same url
@@ -64,9 +70,3 @@ Finally there were changes in the code to improve the search and to unify backen
     eg. {{TITLE}} and {{HTML_TITLE}}
   * placeholders from head can be used in search result template too
 * ↗️ UPDATE: internal search - show times to prepare, database search, sorting results and total time
-
-#### 2022-10-23: v0.155
-
-* 💣 FIX: php error in setup on missing defaultUrls
-* ↗️ UPDATE: deselect OK status buttons on linked resources only
-* ↗️ UPDATE: backend search additionally can search in html response

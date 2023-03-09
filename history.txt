@@ -138,7 +138,7 @@
 
 2020-12-30: v0.140
   * UPDATE: crawling processes
-  * UPDATE: cli action "update" uses GET requets to handle errors caused by
+  * UPDATE: cli action "update" uses GET requests to handle errors caused by
             denying http head requests
   * FIX: remove a var_dump output in crawling process
   * FIX: remove context box in about page
