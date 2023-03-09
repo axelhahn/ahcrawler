@@ -18,6 +18,7 @@
     --border1: rgba(0,0,0,0.1);
 
     --color-bg-default:#f8f8f8;
+    --color-bg-boxes:#f0f4f4;
     --color-a:#35a;
     --color-default:#444;
     --color-h1:#346;
@@ -27,14 +28,15 @@
     --color-h4:#8ab;
     --color-h4-border-bottom:#eee;
     --color-hr:#ddd;
-    --color-shadow-default:rgba(180,180,180,1);
+    --color-shadow-default:#c0d0d8;
 
     --color-pacman: #69a;
 
     --color-childitem-i: #808890;
     --color-childitem-i: #568;
+    --color-childitem-background: var(--color-bg-boxes);
+    --color-childitem-border: var(--DEFAULT-darken-5);
     --color-childitem-title: #589;
-    --color-childitem-border: var(--DEFAULT-darken-10);
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
@@ -374,7 +376,6 @@ h2{
     display: block; 
     width: 100%;
     z-index:100;    
-    _box-shadow: 0 0.8em 1em var(--color-shadow-default);
 }
 p.pageHint{
     background:var(--pagehint-bg);
@@ -398,7 +399,8 @@ div.contextbox{
     position: relative;
     float: right;
     margin: 0 0 2em 2em;
-    box-shadow: 0 0 1em var(--color-shadow-default);
+    background: var(--color-bg-boxes);
+    box-shadow: 0 0 2em var(--color-shadow-default);
     border-top-left-radius: 1em;
     margin-top: 1em;
     width: 30%;
@@ -446,6 +448,7 @@ pre span.linenumber{background: var(--DEFAULT-darken-10); display: inline-block;
 
 a.childitem{
     border: 1px solid var(--color-childitem-border);
+    background: var(--color-childitem-background);
     /*
     background: linear-gradient(#fff, #e0e4ea);
     background: #fff;
@@ -464,7 +467,7 @@ a.childitem{
     width: 16%;
 }
 a.childitem:hover{
-    box-shadow: 0 0 .5em var(--color-shadow-default);
+    box-shadow: 0 0 1em var(--color-shadow-default);
 }
 a.childitem:focus{box-shadow: none;}
 a.childitem i{color: var(--color-childitem-i); font-size: 300%; min-height: 1em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
@@ -575,7 +578,7 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 
 /* --- color for pie chart --- */
 
-.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 0.5em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
+.piechart{border: var(--chart-border); border-radius: 0.5em; box-shadow: 0 0 0.2em var(--color-shadow-default); width: 35em; padding: 1em; margin-bottom: 2em; background: #f8f8f8; background: var(--chart-background);}
 .piechart-pie{width: 24em;}
 .floatright{float: right; margin: 0 0 1em 2em;}
 .floatleft{float: left; margin: 0 2em 1em 0; max-width: 38em;}
