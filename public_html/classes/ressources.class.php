@@ -41,6 +41,12 @@ class ressources extends crawler_base {
     private $iStartCrawl = 0;
     private $iSleep = 0;
 
+    /**
+     * number of crawled urls
+     * @var integer
+     */
+    protected $_iUrlsCrawled = 0;
+
     // ----------------------------------------------------------------------
     /**
      * new crawler

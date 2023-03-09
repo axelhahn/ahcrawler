@@ -59,6 +59,18 @@ class sslinfo {
     
     protected $_iWarnBeforeExpiration = 30;
 
+    /**
+     * hostname
+     * @var string
+     */
+    protected $_sHost = false;
+
+    /**
+     * port number
+     * @var integer
+     */
+    protected $_iPort = false;
+
     # ----------------------------------------------------------------------
     # CONSTRUCT
     # ----------------------------------------------------------------------
