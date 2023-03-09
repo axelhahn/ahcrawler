@@ -6,6 +6,7 @@
 
 * 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
 * ↗️ UPDATE: css update of default theme
+* ↗️ UPDATE: fix php warnings in some classes
 
 #### 2023-03-05: v0.159
 
