@@ -804,7 +804,7 @@
     "httpcode.205.descr": "-",
     "httpcode.205.todo": "",
     "httpcode.206.label": "erfolgreich: Partial Content",
-    "httpcode.206.descr": "-",
+    "httpcode.206.descr": "OK: eine angefragte Teilmenge der Daten wurde erfolgreich geladen.",
     "httpcode.206.todo": "",
     "httpcode.207.label": "erfolgreich: Multi-Status",
     "httpcode.207.descr": "-",
