@@ -932,7 +932,7 @@ class ressources extends crawler_base {
         require_once 'counter.class.php';
         $oCounter=new counter();
         $oCounter->mysiteid($this->iSiteId);
-        $aCounterdata=$this->getStatusCounters();
+        $aCounterdata=$this->getStatusCounters(false, true); // 1st param: for all pages; 2nd: $bReset
         foreach($aCounterdata as $sKey=>$value){
             $this->cliprint('info', "add counter ... $sKey = $value\n");
             $oCounter->add($sKey, (string)$value);
