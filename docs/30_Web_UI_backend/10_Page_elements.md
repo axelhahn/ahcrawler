@@ -22,7 +22,10 @@ On top right is a button logoff to leave the application.
 
 ## Select project
 
-If you created multiple website profiles you can select between them in a dropdown form
+If you created multiple website profiles you can select between them in a dropdown.
+On the page where you can edit a profile there is an extra button to add a new profile.
+
+![Screenshot: Backend - select project](/images/usage-01-structure-02.png)
 
 ## Tiles
 
