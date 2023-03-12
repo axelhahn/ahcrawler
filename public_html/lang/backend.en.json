@@ -754,7 +754,7 @@
     "httpcode.205.descr": "-",
     "httpcode.205.todo": "",
     "httpcode.206.label": "successful: partial content",
-    "httpcode.206.descr": "-",
+    "httpcode.206.descr": "OK: a requested amount of data was loaded successfully.",
     "httpcode.206.todo": "",
     "httpcode.207.label": "successful: multi-status",
     "httpcode.207.descr": "-",

@@ -9,6 +9,7 @@
 # 2022-11-16  v1.2 <www.axel-hahn.de>        use docker-compose -p "$APP_NAME"
 # 2022-12-18  v1.3 <www.axel-hahn.de>        add -p "$APP_NAME" in other docker commands
 # 2022-12-20  v1.4 <axel.hahn@unibe.ch>      replace fgrep with grep -F
+# 2023-03-06  v1.5 <www.axel-hahn.de>        up with and without --build
 # ======================================================================
 
 cd $( dirname $0 )
@@ -17,7 +18,7 @@ cd $( dirname $0 )
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
 
-_version="1.4"
+_version="1.5"
 
 # ----------------------------------------------------------------------
 # FUNCTIONS
@@ -251,7 +252,8 @@ while true; do
         echo "  t - generate files from templates"
         echo "  T - remove generated files"
         echo
-        echo "  u - startup containers    docker-compose up -d"
+        echo "  u - startup containers    docker-compose ... up -d"
+        echo "  U - startup containers    docker-compose ... up -d --build"
         echo "  s - shutdown containers   docker-compose stop"
         echo "  r - remove containers     docker-compose rm -f"
         echo
@@ -286,9 +288,12 @@ while true; do
             _showInfos
             _wait
             ;;
-        u)
-            if docker-compose -p "$APP_NAME" --verbose up -d --remove-orphans --build; then
-                # test ! -z "${APP_ONSTARTUP}" && sleep 2 && docker exec -it appmonitor-server /bin/bash -c "${APP_ONSTARTUP}" 
+        u|U)
+            dockerUp="docker-compose -p "$APP_NAME" --verbose up -d --remove-orphans"
+            if [ "$action" = "U" ]; then
+                dockerUp+=" --build"
+            fi
+            if $dockerUp; then
                 echo "In a web browser:"
                 echo "  $frontendurl"
             else

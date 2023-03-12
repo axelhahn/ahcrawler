@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.159',
-        'date' => '2023-03-05',
+        'version' => '0.160',
+        'date' => '2023-03-09',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1049,10 +1049,10 @@ class crawler_base {
      * - insert counters after crawling to collect them for historical data
      * 
      * @staticvar array  $aStatusinfo  static "cahce" of return data
-     * @param string  $sPage  array of target page name; default: get infos for all targets
+     * @param string  $sPage  one of _global|htmlchecks|linkchecker|httpheaderchecks; default: get infos for all targets
      * @return array
      */
-    public function getStatusCounters($sPage=false, $bIgnoreCache=false){
+    public function getStatusCounters($sPage=false, $bReset=false){
         static $aStatuscounters;
         $aPagesArray=['_global', 'htmlchecks', 'linkchecker', 'httpheaderchecks'];
         $aWarnIfZero=[
@@ -1083,7 +1083,7 @@ class crawler_base {
             return $oCache->read();
         }
          */
-        if(!isset($aStatuscounters)){
+        if(!isset($aStatuscounters) || $bReset){
             $aStatuscounters=array();
         }
         if(!isset($aStatuscounters[$this->iSiteId])){

@@ -52,7 +52,7 @@ class counter extends crawler_base {
     
     /**
      * remove older counter values if older than N days
-     * @var type 
+     * @var integer
      */
     private $_iKeepDays = 90;
 

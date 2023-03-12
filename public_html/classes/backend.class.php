@@ -2231,68 +2231,7 @@ class backend extends crawler_base {
                 $sLegend=$Content;
             }
             return $oRenderer->renderToggledContent($this->lB('label.legend'),$sLegend, true);
-            /*
-            return ''
-            . '<div class="legendlabel div-toggle-head"><strong>'.$this->lB('label.legend').':</strong></div>'
-            . '<div class="legend">'
-                .$sLegend
-            .'</div>'
-            ;
-             * 
-             */
         }
-
-
-    private function _UNUSED__getRessourceSummary($aRessourcelist, $bLinkRessource=false){
-        $sReturn='';
-        // $aFilter=array('ressourcetype','type', 'content_type', 'http_code');
-        $aFilter=array('type', 'content_type', 'http_code');
-        $aCounter=array();
-        $aTable = array();
-        if (count($aRessourcelist)) {
-            
-            foreach ($aRessourcelist as $aRow) {
-                foreach ($aFilter as $sKey){
-                    if (!array_key_exists($sKey, $aCounter)){
-                        $aCounter[$sKey]=array();
-                    }
-                    if (!array_key_exists($aRow[$sKey], $aCounter[$sKey])){
-                        $aCounter[$sKey][$aRow[$sKey]]=0;
-                    }
-                    $aCounter[$sKey][$aRow[$sKey]]++;
-                    ksort($aCounter[$sKey]);
-                }
-                /*
-                    $aRow['actions'] = $this->_getButton(array(
-                        'href' => 'overlay.php?action=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab . '',
-                        'class' => 'button-secondary',
-                        'label' => 'button.view'
-                    ));
-                 * 
-                 */
-                    $sUrl=str_replace('/', '/&shy;', ($bLinkRessource
-                            ?'<a href="?action=ressourcedetail&id='.$aRow[$bLinkRessource].'&siteid='.$this->_getRequestParam('siteid', false, 'int').'">'.$aRow['url'].'</a>'
-                            :$aRow['url']
-                    ));
-                    
-                    $aRow['type'] = $oRenderer->renderArrayValue('type', $aRow);
-                    $aRow['http_code'] = $oRenderer->renderArrayValue('http_code', $aRow);
-                    // unset($aRow['id']);
-                    $aTable[] = array(
-                        $sUrl,
-
-                        $aRow['type'],
-                        $aRow['content_type'],
-                        $aRow['http_code'],
-                    );
-
-            }
-        } else {
-            $sReturn.=' :-/ ';
-        }
-        $sReturn.=$this->_getHtmlTable($aTable, "db-ressources.");
-        return $sReturn;
-    }
 
 
     // ----------------------------------------------------------------------
