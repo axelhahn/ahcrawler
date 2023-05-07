@@ -63,30 +63,30 @@ class cdnorlocal
      * url prefix of CDNs
      * @var array
      */
-    var $aCdnUrls = array(
-        'cdnjs.cloudflare.com' => array(
+    var $aCdnUrls = [
+        'cdnjs.cloudflare.com' => [
             'about' => '',
             'url' => 'https://cdnjs.cloudflare.com/ajax/libs/[PKG]/[VERSION]/[FILE]',
             'urlLatest' => 'https://cdnjs.cloudflare.com/ajax/libs/[PKG]/[VERSION]/[FILE]',
-        ),
+        ],
         /*
-        'cdn.jsdelivr.net'=>array(
+        'cdn.jsdelivr.net'=>[
             'about'=>'',
             'url'=>'https://cdn.jsdelivr.net/npm/[PKG]@[VERSION]/[FILE]',
-        ),
-        'unpkg.com'=>array(
+        ],
+        'unpkg.com'=>[
             'about'=>'',
             'url'=>'https://unpkg.com/[PKG]@[VERSION]/[FILE]',
-        ),
+        ],
          */
-    );
+    ];
     protected $_sCdn = false;
 
     /**
      * array of libs
      * @var array
      */
-    var $_aLibs = array();
+    var $_aLibs = [];
 
     // ----------------------------------------------------------------------
     // 
@@ -105,16 +105,16 @@ class cdnorlocal
     {
 
         if (is_array($aOptions)) {
-            if (array_key_exists('debug', $aOptions)) {
+            if (isset($aOptions['debug'])) {
                 $this->setDebug($aOptions['debug']);
             }
-            if (array_key_exists('vendorrelpath', $aOptions)) {
+            if (isset($aOptions['vendorrelpath'])) {
                 $this->setVendorWithRelpath($aOptions['vendorrelpath']);
             }
-            if (array_key_exists('vendordir', $aOptions)) {
+            if (isset($aOptions['vendordir'])) {
                 $this->setVendorDir($aOptions['vendordir'], 1);
             }
-            if (array_key_exists('vendorurl', $aOptions)) {
+            if (isset($aOptions['vendorurl'])) {
                 $this->setVendorUrl($aOptions['vendorurl']);
             }
         }
@@ -144,28 +144,29 @@ class cdnorlocal
      * dump current values
      * @return boolean
      */
-    public function dump(){
+    public function dump()
+    {
         echo '
-        <h2>Dump '.__CLASS__.'</h2>
+        <h2>Dump ' . __CLASS__ . '</h2>
 
         <h3>Basic values</h3>
         <ul>
-            <li>Version: <span class="value">'.$this->getVersion().'</span></li>
+            <li>Version: <span class="value">' . $this->getVersion() . '</span></li>
             <li>
-                Vendor DIR: <span class="value">'.$this->sVendorDir.'</span>
-                ('.(is_dir($this->sVendorDir) ? 'OK, exists' : 'Does not exist (yet)' ).')
+                Vendor DIR: <span class="value">' . $this->sVendorDir . '</span>
+                (' . (is_dir($this->sVendorDir) ? 'OK, exists' : 'Does not exist (yet)') . ')
             </li>
             <li>
-                Vendor Metadata cache: <span class="value">'.$this->sVendorDir.'/'.$this->sCdnMetadir.'</span>
-                ('.(is_dir($this->sVendorDir.'/'.$this->sCdnMetadir) ? 'OK, exists' : 'Does not exist (yet)' ).')
+                Vendor Metadata cache: <span class="value">' . $this->sVendorDir . '/' . $this->sCdnMetadir . '</span>
+                (' . (is_dir($this->sVendorDir . '/' . $this->sCdnMetadir) ? 'OK, exists' : 'Does not exist (yet)') . ')
             </li>
-            <li>Vendor URL: <span class="value">'.$this->sVendorUrl.'</span>
+            <li>Vendor URL: <span class="value">' . $this->sVendorUrl . '</span>
             </li>
-            <li>current CDN: <span class="value">'.$this->_sCdn.'</span></li>
+            <li>current CDN: <span class="value">' . $this->_sCdn . '</span></li>
         </ul>
 
         <h3>Libraries</h3>
-        <pre>this->getLibs(true) = '.print_r($this->getLibs(true), 1).'</pre>
+        <pre>this->getLibs(true) = ' . print_r($this->getLibs(true), 1) . '</pre>
         ';
 
         return true;
@@ -189,9 +190,9 @@ class cdnorlocal
         return $this->sVendorDir . '/' . $sRelUrl;
     }
     /**
-     * get a filename for a json info file to store metadata of a single library
+     * get a filename for a json info file to store/ read metadata of a single library
      * 
-     * @param  string  $sLibAndVersion  name of library + version, eg "jquery__3.6.4"
+     * @param  string  $sLibAndVersion  name of library + version, eg "jquery__3.2.1"
      * @return string
      */
     protected function _getLibMetaFile($sLibAndVersion)
@@ -227,7 +228,7 @@ class cdnorlocal
      */
     public function setCdn($sNewCdn)
     {
-        if (array_key_exists($sNewCdn, $this->aCdnUrls)) {
+        if (isset($this->aCdnUrls[$sNewCdn])) {
             $this->_sCdn = $sNewCdn;
             return true;
         }
@@ -302,24 +303,24 @@ class cdnorlocal
     public function addLib($sReldir, $sFile = false)
     {
         $this->_wd(__METHOD__ . "($sReldir,$sFile)");
-        if (!array_key_exists($sReldir, $this->_aLibs)) {
+        if (!isset($this->_aLibs[$sReldir])) {
             $this->_wd(__METHOD__ . " add $sReldir");
             $aTmp = preg_split('#\/#', $sReldir);
-            $this->_aLibs[$sReldir] = array(
+            $this->_aLibs[$sReldir] = [
                 'lib' => $aTmp[0],
                 'version' => $aTmp[1],
                 'relpath' => $sReldir,
                 'islocal' => !!$this->getLocalfile($sReldir),
                 'isunused' => false,
-                'files' => array(),
-            );
+                'files' => [],
+            ];
         } else {
             $this->_wd(__METHOD__ . " SORRY $sReldir was added already");
         }
         if ($sFile) {
-            $this->_aLibs[$sReldir]['files'][$sFile] = array(
+            $this->_aLibs[$sReldir]['files'][$sFile] = [
                 'islocal' => !!$this->getLocalfile($sReldir . '/' . $sFile)
-            );
+            ];
         }
         ksort($this->_aLibs);
         $this->_wd(__METHOD__ . " ... " . print_r($this->_aLibs, 1));
@@ -348,29 +349,29 @@ class cdnorlocal
      * @example 
      * 
      *   get used libs that are local:
-     *   <code>$oCdn->getFilteredLibs(array('islocal'=>1));</code>
+     *   <code>$oCdn->getFilteredLibs(['islocal'=>1]);</code>
      * 
      *   get used libs that are loaded from CDN:
-     *   <code>$oCdn->getFilteredLibs(array('islocal'=>0));</code>
+     *   <code>$oCdn->getFilteredLibs(['islocal'=>0]);</code>
      * 
      *   get unused libs that are still local (and can be deleted)
-     *   <code>$oCdn->getFilteredLibs(array('islocal'=>1, 'isunused'=>1))</code>
+     *   <code>$oCdn->getFilteredLibs(['islocal'=>1, 'isunused'=>1])</code>
      * 
      * @param array  $aFilter  array with filter items containing these keys:
      *                         - islocal   true|false; default is false
      *                         - isunused  true|false; default is false
      * @return array
      */
-    public function getFilteredLibs($aFilter = array())
+    public function getFilteredLibs($aFilter = [])
     {
         $this->_wd(__METHOD__ . "()");
-        $aReturn = array();
-        foreach (array('islocal', 'isunused') as $sKey) {
+        $aReturn = [];
+        foreach (['islocal', 'isunused'] as $sKey) {
             $aFilter[$sKey] = isset($aFilter[$sKey]) ? $aFilter[$sKey] : false;
         }
         foreach ($this->getLibs($aFilter['isunused']) as $sLibKey => $aItem) {
             $bAdd = true;
-            foreach (array('islocal', 'isunused') as $sFilterKey) {
+            foreach (['islocal', 'isunused'] as $sFilterKey) {
                 $bAdd = $bAdd && ($aFilter[$sFilterKey] == $aItem[$sFilterKey]);
             }
             if ($bAdd) {
@@ -397,13 +398,13 @@ class cdnorlocal
                 foreach (glob($this->sVendorDir . '/' . $sMyLib . '/*') as $sVersiondir) {
                     $sMyVersion = basename($sVersiondir);
                     if (!isset($aReturn[$sMyLib . '/' . $sMyVersion]) || $aReturn[$sMyLib . '/' . $sMyVersion]) {
-                        $aReturn[$sMyLib . '/' . $sMyVersion] = array(
+                        $aReturn[$sMyLib . '/' . $sMyVersion] = [
                             'lib' => $sMyLib,
                             'version' => $sMyVersion,
                             'relpath' => $sMyLib . '/' . $sMyVersion,
                             'islocal' => 1,
                             'isunused' => !isset($this->_aLibs[$sMyLib . '/' . $sMyVersion]),
-                        );
+                        ];
                     }
                 }
             }
@@ -470,7 +471,7 @@ class cdnorlocal
         if (!is_array($aLibs)) {
             return false;
         }
-        $this->_aLibs = array();
+        $this->_aLibs = [];
         foreach ($aLibs as $sReldir) {
             $this->addLib($sReldir);
         }
@@ -506,7 +507,6 @@ class cdnorlocal
 
     public function getFullCdnUrl($sRelUrl, $sCdn = false)
     {
-        $sReturn = '';
         if (!$sCdn) {
             $sCdn = $this->_sCdn;
         }
@@ -516,8 +516,8 @@ class cdnorlocal
             return false;
         }
         return str_replace(
-            array('[PKG]', '[VERSION]', '[FILE]'),
-            array($aSplits['pkg'], $aSplits['version'], $aSplits['file']),
+            ['[PKG]',         '[VERSION]',         '[FILE]'],
+            [$aSplits['pkg'], $aSplits['version'], $aSplits['file']],
             $this->aCdnUrls[$sCdn]['url']
         );
     }

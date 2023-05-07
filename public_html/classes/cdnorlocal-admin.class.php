@@ -26,7 +26,7 @@ class cdnorlocaladmin extends cdnorlocal
      */
     var $sUrlApiPackage = 'https://api.cdnjs.com/libraries/%s';
 
-    var $aLibs = array();
+    var $aLibs = [];
 
     // ----------------------------------------------------------------------
     // 
@@ -72,11 +72,11 @@ class cdnorlocaladmin extends cdnorlocal
         $bHasDoneRefresh = false;
         ini_set("memory_limit", "-1");
         $this->_wd(__METHOD__ . "($sLibrary, $bRefresh)");
-        if (!array_key_exists($sLibrary, $this->aLibs)) {
-            $this->aLibs[$sLibrary] = array();
+        if (!isset($this->aLibs[$sLibrary])) {
+            $this->aLibs[$sLibrary] = [];
         }
 
-        if (!array_key_exists('_cdn', $this->aLibs[$sLibrary])) {
+        if (!isset($this->aLibs[$sLibrary]['_cdn'])) {
 
             $aJson = false;
             // if(!$bRefresh){
@@ -96,7 +96,7 @@ class cdnorlocaladmin extends cdnorlocal
                 // }
             }
         }
-        if (!array_key_exists('_cdn', $this->aLibs[$sLibrary])) {
+        if (!isset($this->aLibs[$sLibrary]['_cdn'])) {
             $this->_wd(__METHOD__ . "($sLibrary) no _cdn");
             return false;
         }
@@ -126,7 +126,7 @@ class cdnorlocaladmin extends cdnorlocal
             $this->_wd(__METHOD__ . "($sLibrary, $sVersion) fetch $sApiUrl");
             $aJson = json_decode(file_get_contents($sApiUrl), 1);
 
-            if(is_array($aJson)){
+            if (is_array($aJson)) {
                 $this->_wd(__METHOD__ . "($sLibrary, $sVersion) store $sLibCachefile");
                 file_put_contents($sLibCachefile, json_encode($aJson, JSON_PRETTY_PRINT));
             }
@@ -209,7 +209,7 @@ class cdnorlocaladmin extends cdnorlocal
     {
         $aLicenses = $this->_getLibraryElement($sLibrary, 'licenses');
         if (!$aLicenses) {
-            $aLicenses = array();
+            $aLicenses = [];
         }
         $sLicense = $this->_getLibraryElement($sLibrary, 'license');
         if ($sLicense) {
@@ -249,7 +249,7 @@ class cdnorlocaladmin extends cdnorlocal
     public function getLibraryVersions($sLibrary, $iMax = false)
     {
         $this->getLibraryMetadata($sLibrary);
-        $aReturn = array();
+        $aReturn = [];
         if ($this->aLibs[$sLibrary]['_cdn']) {
             $iCount = 0;
             foreach ($this->aLibs[$sLibrary]['_cdn']->versions as $sVersion) {
@@ -291,26 +291,23 @@ class cdnorlocaladmin extends cdnorlocal
      */
     protected function _httpGet($aAssets)
     {
-        // Your URL array that hold links to files 
-        // $urls = array(); 
-
         // cURL multi-handle
         $mh = curl_multi_init();
 
         // This will hold cURLS requests for each file
-        $requests = array();
+        $requests = [];
 
-        $options = array(
+        $options = [
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_AUTOREFERER    => true,
             CURLOPT_USERAGENT      => 'cdnorlocal downloader (php curl)',
             CURLOPT_HEADER         => false,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_RETURNTRANSFER => true
-        );
+        ];
 
         //Corresponding filestream array for each file
-        $fstreams = array();
+        $fstreams = [];
 
         foreach ($aAssets as $aItem) {
 
@@ -398,15 +395,15 @@ class cdnorlocaladmin extends cdnorlocal
     protected function _reReadLibdirs()
     {
         $sLocaldir = $this->_getLocalfilename('');
-        $aReturn = array();
+        $aReturn = [];
         if (is_dir($sLocaldir)) {
             foreach (glob($sLocaldir . '*', GLOB_ONLYDIR) as $sLibdir) {
                 if (is_dir($sLibdir)) {
                     $sLib2test = basename($sLibdir);
                     foreach (glob($sLibdir . '/*', GLOB_ONLYDIR) as $sVersiondir) {
                         if (!preg_match('/_in_progressXXXX/', $sVersiondir)) {
-                            if (!array_key_exists($sLib2test, $aReturn)) {
-                                $aReturn[$sLib2test] = array();
+                            if (!isset($aReturn[$sLib2test])) {
+                                $aReturn[$sLib2test] = [];
                             }
                             $aReturn[$sLib2test][] = basename($sVersiondir);
                             $this->getLibraryMetainfos($sLib2test, basename($sVersiondir));
@@ -493,20 +490,20 @@ class cdnorlocaladmin extends cdnorlocal
         $aAssetDataFromCdn = $this->getLibraryMetainfos($sLibrary, $sVersion);
 
         $iFilesTotal = isset($aAssetDataFromCdn['files']) ? count($aAssetDataFromCdn['files']) : 0;
-        if(!$iFilesTotal){
+        if (!$iFilesTotal) {
             return false;
         }
         // $this->_putLibraryInfoFile($sLibrary);
 
         // --- get the first N files...
-        $aDownloads = array();
+        $aDownloads = [];
         foreach ($aAssetDataFromCdn['files'] as $sFilename) {
             if (!file_exists($sTmpdir . '/' . $sFilename) || !filesize($sTmpdir . '/' . $sFilename)) {
                 if (count($aDownloads) < $iMaxFiles) {
-                    $aDownloads[] = array(
+                    $aDownloads[] = [
                         'url' => $this->getFullCdnUrl($sRelUrl . '/' . $sFilename),
                         'file' => $sTmpdir . '/' . $sFilename,
-                    );
+                    ];
                 }
             }
         }
@@ -540,7 +537,7 @@ class cdnorlocaladmin extends cdnorlocal
                 . "<script>window.setTimeout('location.reload();', 2000);</script>";
             die();
         }
-        if($iFilesTotal) {
+        if ($iFilesTotal) {
             $this->_putLocalLibsFile();
         }
         echo "<script>window.setTimeout('location.reload();', 20);</script>";
@@ -585,7 +582,7 @@ class cdnorlocaladmin extends cdnorlocal
             return false;
         }
         foreach ($aData as $sLib => $aVersions) {
-            uasort($aVersions, array($this, '_orderByNewestVersion'));
+            uasort($aVersions, [$this, '_orderByNewestVersion']);
             $aData[$sLib] = $aVersions;
         }
         return $aData;
