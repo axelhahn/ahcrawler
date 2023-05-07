@@ -2,6 +2,13 @@
 
 ### 2023
 
+#### 2023-05-NN: v0.161
+
+* 💣 FIX: cdnorlocal because API reponse of Cdnjs was changed
+* ↗️ UPDATE: pure 2.1.0 --> 3.0.0
+* ↗️ UPDATE: jQuery 3.6.1 --> 3.6.4
+* ↗️ UPDATE: font-awesome 5.15.4 --> 6.4.0
+
 #### 2023-03-09: v0.160
 
 * 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong

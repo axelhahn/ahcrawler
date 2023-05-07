@@ -67,12 +67,14 @@ class backend extends crawler_base {
                 'bookmarklet'=>array(), 
                 'httpstatuscode'=>array(), 
                 'langedit'=>array(), 
+                // 'showicons'=>array(), // coming soon
                 'update'=>array(), 
             ),
         ),
         'settings'=>array(
             'children'=>array(
                 'setup'=>array(),
+                // 'userprofile'=>array(), // coming soon
                 'vendor'=>array(), 
             ),
         ),
@@ -93,151 +95,153 @@ class backend extends crawler_base {
     
     private $_aIcons= array(
         'menu'=>array(
-            'login'=>'fas fa-user-lock', 
-            'home'=>'fas fa-home', 
-            'settings'=>'fas fa-cogs', 
-            'setup'=>'fas fa-sliders-h', 
-            'profiles'=>'fas fa-globe-americas', 
-            'crawlerlog'=>'fas fa-file-alt', 
-            'vendor'=>'fas fa-box-open', 
-            'search'=>'fas fa-database', 
-            'crawler'=>'fas fa-flag', 
-            'searchindexstatus'=>'fas fa-flag', 
-            'searchindextester'=>'fas fa-search', 
-            'searches'=>'fas fa-chart-pie', 
+            'login'=>'fa-solid fa-user-lock', 
+            'home'=>'fa-solid fa-home', 
+            'settings'=>'fa-solid fa-cogs', 
+            'setup'=>'fa-solid fa-sliders-h', 
+            'profiles'=>'fa-solid fa-globe-americas', 
+            'crawlerlog'=>'fa-solid fa-file-alt', 
+            'vendor'=>'fa-solid fa-box-open', 
+            'search'=>'fa-solid fa-database', 
+            'crawler'=>'fa-solid fa-flag', 
+            'searchindexstatus'=>'fa-solid fa-flag', 
+            'searchindextester'=>'fa-solid fa-search', 
+            'searches'=>'fa-solid fa-chart-pie', 
             // 'analysis'=>'fa fa-newspaper-o', 
-            'analysis'=>'fas fa-chart-line', 
-            'sslcheck'=>'fas fa-shield-alt', 
-            'ressources'=>'far fa-file-code', 
-            'linkchecker'=>'fas fa-chart-pie', 
-            'linkchecker'=>'fas fa-link', 
+            'analysis'=>'fa-solid fa-chart-line', 
+            'sslcheck'=>'fa-solid fa-shield-alt', 
+            'ressources'=>'fa-regular fa-file-code', 
+            'linkchecker'=>'fa-solid fa-chart-pie', 
+            'linkchecker'=>'fa-solid fa-link', 
             'htmlchecks'=>'fab fa-html5', 
-            'httpheaderchecks'=>'far fa-flag', 
-            'cookies'=>'fas fa-cookie-bite', 
-            'checkurl'=>'fas fa-globe-americas', 
-            'ressourcedetail'=>'fas fa-map-marked', 
-            'tools'=>'fas fa-tools', 
-            'bookmarklet'=>'fas fa-bookmark', 
+            'httpheaderchecks'=>'fa-regular fa-flag', 
+            'cookies'=>'fa-solid fa-cookie-bite', 
+            'checkurl'=>'fa-solid fa-globe-americas', 
+            'ressourcedetail'=>'fa-solid fa-map-marked', 
+            'tools'=>'fa-solid fa-tools', 
+            'bookmarklet'=>'fa-solid fa-bookmark', 
             'httpstatuscode'=>'fab fa-font-awesome', 
-            'langedit'=>'far fa-comment', 
-            'about'=>'fas fa-info-circle', 
-            'update'=>'fas fa-cloud-download-alt', 
-            'project'=>'fas fa-book', 
+            'showicons'=>'fa-solid fa-icons', 
+            'langedit'=>'fa-regular fa-comment', 
+            'about'=>'fa-solid fa-info-circle', 
+            'update'=>'fa-solid fa-cloud-download-alt', 
+            'userprofile'=>'fa-solid fa-user', 
+            'project'=>'fa-solid fa-book', 
             
-            'logoff'=>'fas fa-power-off', 
+            'logoff'=>'fa-solid fa-power-off', 
         ),
         'cols'=>array(
-            '1'=>'far fa-comment', 
-            '2'=>'far fa-comment', 
-            'id'=>'fas fa-hashtag', 
-            'summary'=>'far fa-comment', 
-            'ranking'=>'fas fa-chart-bar', 
-            'url'=>'fas fa-link', 
-            'title'=>'fas fa-chevron-right', 
-            'description'=>'fas fa-chevron-right', 
-            'lang'=>'fas fa-comment', 
-            'label'=>'fas fa-chevron-right', 
-            'icon'=>'far fa-image', 
-            'errorcount'=>'fas fa-bolt', 
-            'keywords'=>'fas fa-key', 
-            'lasterror'=>'fas fa-bolt', 
-            'actions'=>'fas fa-check', 
-            'searchset'=>'fas fa-cube', 
-            'query'=>'fas fa-search', 
-            'results'=>'fas fa-bullseye', 
-            'count'=>'fas fa-thumbs-up', 
-            'host'=>'fas fa-laptop', 
-            'ua'=>'fas fa-paw', 
-            'referrer'=>'fas fa-link', 
-            'status'=>'far fa-flag', 
-            'todo'=>'fas fa-magic', 
-            'ts'=>'fas fa-calendar', 
-            'ressourcetype'=>'fas fa-cubes', 
-            'type'=>'fas fa-cloud', 
-            'content_type'=>'far fa-file-code', 
-            'http_code'=>'fas fa-retweet', 
-            'length'=>'fas fa-arrows-alt-h', 
+            '1'=>'fa-regular fa-comment', 
+            '2'=>'fa-regular fa-comment', 
+            'id'=>'fa-solid fa-hashtag', 
+            'summary'=>'fa-regular fa-comment', 
+            'ranking'=>'fa-solid fa-chart-bar', 
+            'url'=>'fa-solid fa-link', 
+            'title'=>'fa-solid fa-chevron-right', 
+            'description'=>'fa-solid fa-chevron-right', 
+            'lang'=>'fa-solid fa-comment', 
+            'label'=>'fa-solid fa-chevron-right', 
+            'icon'=>'fa-regular fa-image', 
+            'errorcount'=>'fa-solid fa-bolt', 
+            'keywords'=>'fa-solid fa-key', 
+            'lasterror'=>'fa-solid fa-bolt', 
+            'actions'=>'fa-solid fa-check', 
+            'searchset'=>'fa-solid fa-cube', 
+            'query'=>'fa-solid fa-search', 
+            'results'=>'fa-solid fa-bullseye', 
+            'count'=>'fa-solid fa-thumbs-up', 
+            'host'=>'fa-solid fa-laptop', 
+            'ua'=>'fa-solid fa-paw', 
+            'referrer'=>'fa-solid fa-link', 
+            'status'=>'fa-regular fa-flag', 
+            'todo'=>'fa-solid fa-magic', 
+            'ts'=>'fa-solid fa-calendar', 
+            'ressourcetype'=>'fa-solid fa-cubes', 
+            'type'=>'fa-solid fa-cloud', 
+            'content_type'=>'fa-regular fa-file-code', 
+            'http_code'=>'fa-solid fa-retweet', 
+            'length'=>'fa-solid fa-arrows-alt-h', 
             'size'=>'fa ', 
-            'time'=>'far fa-clock', 
-            'words'=>'fas fa-arrows-alt-h', 
+            'time'=>'fa-regular fa-clock', 
+            'words'=>'fa-solid fa-arrows-alt-h', 
             
-            'updateisrunning'=>'fas fa-spinner fa-spin', 
+            'updateisrunning'=>'fa-solid fa-spinner fa-spin', 
             
             // cookies
-            'domain'=>'fas fa-atlas', 
-            'path'=>'fas fa-folder', 
-            'name'=>'fas fa-tag ', 
-            'value'=>'fas fa-chevron-right', 
-            'httponly'=>'far fa-flag', 
-            'secure'=>'fas fa-shield-alt', 
-            'expiration'=>'far fa-clock', 
+            'domain'=>'fa-solid fa-atlas', 
+            'path'=>'fa-solid fa-folder', 
+            'name'=>'fa-solid fa-tag ', 
+            'value'=>'fa-solid fa-chevron-right', 
+            'httponly'=>'fa-regular fa-flag', 
+            'secure'=>'fa-solid fa-shield-alt', 
+            'expiration'=>'fa-regular fa-clock', 
             
         ),
         'res'=>array(
             /*
             
             // ressourcetype
-            'audio'=>'far fa-file-sound',
-            'css'=>'far fa-eyedropper',
-            'image'=>'far fa-file-image',
-            'link'=>'fas fa-link',
-            'page'=>'far fa-sticky-note',
+            'audio'=>'fa-regular fa-file-sound',
+            'css'=>'fa-regular fa-eyedropper',
+            'image'=>'fa-regular fa-file-image',
+            'link'=>'fa-solid fa-link',
+            'page'=>'fa-regular fa-sticky-note',
             // 'redirect'=>'fa fa-mail-forward',
-            'redirect'=>'fas fa-angle-double-right',
-            'script'=>'far fa-file-code',
+            'redirect'=>'fa-solid fa-angle-double-right',
+            'script'=>'fa-regular fa-file-code',
             
             // type
-            'internal'=>'fas fa-thumb-tack',
-            'external'=>'fas fa-globe-americas',
+            'internal'=>'fa-solid fa-thumb-tack',
+            'external'=>'fa-solid fa-globe-americas',
             
             // content_type/ MIME
             
             // http_code
-            'http-code-0'=>'fas fa-spinner',
-            'http-code-2xx'=>'fas fa-check',
-            'http-code-3xx'=>'fas fa-angle-double-right',
-            'http-code-4xx'=>'far fa-bolt',
-            'http-code-5xx'=>'fas fa-spinner',
+            'http-code-0'=>'fa-solid fa-spinner',
+            'http-code-2xx'=>'fa-solid fa-check',
+            'http-code-3xx'=>'fa-solid fa-angle-double-right',
+            'http-code-4xx'=>'fa-regular fa-bolt',
+            'http-code-5xx'=>'fa-solid fa-spinner',
              */
             
-            'filter'=>'fas fa-filter',
+            'filter'=>'fa-solid fa-filter',
 
-            'url'=>'fas fa-globe',
-            'docs'=>'fas fa-book',
-            'source'=>'fas fa-code',
+            'url'=>'fa-solid fa-globe',
+            'docs'=>'fa-solid fa-book',
+            'source'=>'fa-solid fa-code',
             
-            'ressources.showtable'=>'fas fa-table',
-            'ressources.showreport'=>'far fa-file',
-            'ressources.ignorelimit'=>'fas fa-unlock',
+            'ressources.showtable'=>'fa-solid fa-table',
+            'ressources.showreport'=>'fa-regular fa-file',
+            'ressources.ignorelimit'=>'fa-solid fa-unlock',
 
-            'ssl.type-none'=>'fas fa-lock-open',
-            'ssl.type-selfsigned'=>'fas fa-user-lock',
-            'ssl.type-Business SSL'=>'fas fa-lock',
-            'ssl.type-EV'=>'fas fa-shield-alt',
+            'ssl.type-none'=>'fa-solid fa-lock-open',
+            'ssl.type-selfsigned'=>'fa-solid fa-user-lock',
+            'ssl.type-Business SSL'=>'fa-solid fa-lock',
+            'ssl.type-EV'=>'fa-solid fa-shield-alt',
             
         ),
         'button'=>array(
-            'button.add' => 'fas fa-plus',
-            'button.back' => 'fas fa-chevron-left',
-            'button.close' => 'fas fa-times',
-            'button.continue' => 'fas fa-chevron-right',
-            'button.create' => 'far fa-star',
-            'button.delete' => 'fas fa-trash',
-            'button.down' => 'fas fa-arrow-down',
-            'button.download'=>'fas fa-cloud-download-alt', 
-            'button.edit' => 'fas fa-pencil-alt',
-            'button.help' => 'fas fa-question-circle',
-            'button.home' => 'fas fa-home',
-            'button.login' => 'fas fa-check',
-            'button.logoff' => 'fas fa-power-off',
-            'button.openurl' => 'fas fa-external-link-alt',
-            'button.refresh' => 'fas fa-sync',
-            'button.save' => 'fas fa-paper-plane',
-            'button.search' => 'fas fa-search',
-            'button.truncateindex' => 'fas fa-trash',
-            'button.up' => 'fas fa-arrow-up',
-            'button.updatesinglestep' => 'fas fa-chevron-right',
-            'button.view' => 'far fa-eye',
+            'button.add' => 'fa-solid fa-plus',
+            'button.back' => 'fa-solid fa-chevron-left',
+            'button.close' => 'fa-solid fa-times',
+            'button.continue' => 'fa-solid fa-chevron-right',
+            'button.create' => 'fa-regular fa-star',
+            'button.delete' => 'fa-solid fa-trash',
+            'button.down' => 'fa-solid fa-arrow-down',
+            'button.download'=>'fa-solid fa-cloud-download-alt', 
+            'button.edit' => 'fa-solid fa-pencil-alt',
+            'button.help' => 'fa-solid fa-question-circle',
+            'button.home' => 'fa-solid fa-home',
+            'button.login' => 'fa-solid fa-check',
+            'button.logoff' => 'fa-solid fa-power-off',
+            'button.openurl' => 'fa-solid fa-external-link-alt',
+            'button.refresh' => 'fa-solid fa-sync',
+            'button.save' => 'fa-solid fa-paper-plane',
+            'button.search' => 'fa-solid fa-search',
+            'button.truncateindex' => 'fa-solid fa-trash',
+            'button.up' => 'fa-solid fa-arrow-up',
+            'button.updatesinglestep' => 'fa-solid fa-chevron-right',
+            'button.view' => 'fa-regular fa-eye',
         ),
     );
     
@@ -248,7 +252,8 @@ class backend extends crawler_base {
     // ----------------------------------------------------------------------
     /**
      * new crawler
-     * @param integer  $iSiteId  site-id of search index
+     * @param integer  $iSiteId    site-id of search index
+     * @param boolean  $bIsPublic  flag: is public page; in backend it is set to false
      */
     public function __construct($iSiteId = false, $bIsPublic=false) {
         $this->_oLog=new logger();
@@ -308,6 +313,21 @@ class backend extends crawler_base {
         
         return true;
     }
+
+    /**
+     * get all icons as key value hash
+     * @return array
+     */
+    public function getIcons(){
+        $aReturn=[];
+        foreach($this->_aIcons as $sGroup => $aIcons){
+            foreach($aIcons as $sKey => $sClass){
+                $aReturn['backend --> '.$sGroup.'-->'.$sKey]=$sClass;
+            }
+        }
+        return $aReturn;
+    }
+
     // ----------------------------------------------------------------------
     // LOGIN
     // ----------------------------------------------------------------------

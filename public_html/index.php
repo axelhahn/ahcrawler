@@ -67,22 +67,22 @@
 
     global $oCdn;
     $oCdn=new axelhahn\cdnorlocal(array(
-        'vendorrelpath'=>($bIsBackend ? '..' :'' ) . '/vendor/cache',
-        // 'vendordir'=>__DIR__.'/vendor/cache',
-        // 'vendorurl'=>'../cache',
+        'vendordir'=>__DIR__.'/vendor/cache',
+        'vendorurl'=>($bIsBackend ? '..' :'') . '/vendor/cache',
         'debug'=>0,
         ));
-    $oCdn->setLibs(array(
-        "pure/2.1.0",
-        "datatables/1.10.21",
-        "font-awesome/5.15.4",
-        "jquery/3.6.1",
-        // "Chart.js/2.9.4"
-        "Chart.js/3.9.1"
-    ));
+
+    $oCdn->setLibs([
+        "pure/3.0.0",
+        "datatables.net/1.10.21",
+        "font-awesome/6.4.0",
+        "jquery/3.6.4",
+        "Chart.js/3.9.1" // available: "Chart.js/4.3.0"
+    ]);
+    // $oCdn->dump(); exit(0);
 
     // ----------------------------------------------------------------------
-    // F U N C T I O M S
+    // F U N C T I O N S
     // ----------------------------------------------------------------------
 
     /**
@@ -175,8 +175,20 @@
             ? $oBackend->getNavi() . ($bIsBackend ? '' : $oBackend->getLangNavi() )
             : ''
         ;
-    
-    
+
+    // get git branch name
+    $branchname = '';
+    $sHeadfile=__DIR__.'/../.git/HEAD';
+    if(file_exists($sHeadfile)){
+        $stringfromfile = file($sHeadfile, FILE_USE_INCLUDE_PATH);
+        $firstLine = $stringfromfile[0]; //get the string from the array
+        $explodedstring = explode("/", $firstLine, 3); //seperate out by the "/" in the string
+        $branchname = trim($explodedstring[2]);
+        if($branchname=='main' || $branchname=='master'){
+            $branchname='';
+        }
+        $branchname = $branchname ? '<br>('.$branchname.')' : '';
+    }
     
 ?><!doctype html>
 <html>
@@ -218,7 +230,7 @@
                     <div id="pacman">
                         <div>
                             r a w l e r<br>
-                            <span>v<?php echo $oBackend->aAbout['version']; ?></span>
+                            <span>v<?php echo $oBackend->aAbout['version'].$branchname; ?></span>
                         </div>
 
                     </div>

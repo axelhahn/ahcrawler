@@ -77,37 +77,37 @@ class ressourcesrenderer extends crawler_base {
          */
         
         // ressourcetype
-        'audio'=>'far fa-file-sound',
-        'css'=>'fas fa-eye-dropper',
-        'image'=>'far fa-file-image',
-        'link'=>'fas fa-link',
-        'media'=>'fas fa-photo-video',
-        'page'=>'far fa-sticky-note',
-        // 'redirect'=>'fas fa-angle-double-right',
-        'script'=>'far fa-file-code',
+        'audio'=>'fa-solid fa-volume-high',
+        'css'=>'fa-solid fa-eye-dropper',
+        'image'=>'fa-regular fa-file-image',
+        'link'=>'fa-solid fa-link',
+        'media'=>'fa-solid fa-photo-video',
+        'page'=>'fa-regular fa-sticky-note',
+        // 'redirect'=>'fa-solid fa-angle-double-right',
+        'script'=>'fa-regular fa-file-code',
 
         // type
-        'external'=>'fas fa-globe-americas',
-        'internal'=>'fas fa-thumbtack',
+        'external'=>'fa-solid fa-globe-americas',
+        'internal'=>'fa-solid fa-thumbtack',
         // content_type/ MIME
         //
-        'link-to-url' => 'fas fa-external-link-alt',
-        'blacklist' => 'far fa-eye-slash',
+        'link-to-url' => 'fa-solid fa-external-link-alt',
+        'blacklist' => 'fa-regular fa-eye-slash',
 
         // http_code
-        'http-code-' => 'far fa-hourglass',
-        'http-code-0xx' => 'fas fa-plug',
-        'http-code-2xx' => 'far fa-thumbs-up',
-        'http-code-3xx' => 'fas fa-share',
-        'http-code-4xx' => 'fas fa-bolt',
-        'http-code-5xx' => 'fas fa-spinner',
-        'http-code-9xx' => 'fas fa-bolt',
+        'http-code-' => 'fa-regular fa-hourglass',
+        'http-code-0xx' => 'fa-solid fa-plug',
+        'http-code-2xx' => 'fa-regular fa-thumbs-up',
+        'http-code-3xx' => 'fa-solid fa-share',
+        'http-code-4xx' => 'fa-solid fa-bolt',
+        'http-code-5xx' => 'fa-solid fa-spinner',
+        'http-code-9xx' => 'fa-solid fa-bolt',
 
-        'switch-search-res' => 'fas fa-retweet',
+        'switch-search-res' => 'fa-solid fa-retweet',
 
         /*
         'ressources.showtable' => 'fa fa-table',
-        'ressources.showreport' => 'far fa-file',
+        'ressources.showreport' => 'fa-regular fa-file',
         'ressources.ignorelimit' => 'fa fa-unlock',
 
         'button.close' => 'fa fa-close',
@@ -123,34 +123,34 @@ class ressourcesrenderer extends crawler_base {
          * 
          */
         
-        'ico.found' => 'fas fa-check',
-        'ico.miss' => 'fas fa-ban',
+        'ico.found' => 'fa-solid fa-check',
+        'ico.miss' => 'fa-solid fa-ban',
         
         // http response header
-        'ico.unknown' => 'fas fa-question-circle',
-        'ico.http' => 'fas fa-check',
-        'ico.non-standard' => 'far fa-check-circle',
-        'ico.security' => 'fas fa-lock',
-        'ico.obsolete' => 'fas fa-trash-alt',
-        'ico.deprecated' => 'fas fa-thumbs-down',
-        'ico.unwanted' => 'fas fa-exclamation-triangle',
-        'ico.badvalue' => 'fas fa-exclamation-triangle',
+        'ico.unknown' => 'fa-solid fa-question-circle',
+        'ico.http' => 'fa-solid fa-check',
+        'ico.non-standard' => 'fa-regular fa-check-circle',
+        'ico.security' => 'fa-solid fa-lock',
+        'ico.obsolete' => 'fa-solid fa-trash-alt',
+        'ico.deprecated' => 'fa-solid fa-thumbs-down',
+        'ico.unwanted' => 'fa-solid fa-exclamation-triangle',
+        'ico.badvalue' => 'fa-solid fa-exclamation-triangle',
 
-        'ico.tag'=>'fas fa-tag',
+        'ico.tag'=>'fa-solid fa-tag',
 
-        'ico.error' => 'fas fa-bolt',
-        'ico.ok' => 'fas fa-check',
-        'ico.warn' => 'fas fa-exclamation-triangle',
-        'ico.warning' => 'fas fa-exclamation-triangle',
+        'ico.error' => 'fa-solid fa-bolt',
+        'ico.ok' => 'fa-solid fa-check',
+        'ico.warn' => 'fa-solid fa-exclamation-triangle',
+        'ico.warning' => 'fa-solid fa-exclamation-triangle',
         
-        'ico.bookmarklet' => 'fas fa-expand-arrows-alt',
-        'ico.redirect' => 'fas fa-share',
-        'ico.filter'=>'fas fa-filter',
+        'ico.bookmarklet' => 'fa-solid fa-expand-arrows-alt',
+        'ico.redirect' => 'fa-solid fa-share',
+        'ico.filter'=>'fa-solid fa-filter',
 
-        'ico.toggle-off'=>'fas fa-toggle-off',
-        'ico.toggle-on'=>'fas fa-toggle-on',
+        'ico.toggle-off'=>'fa-solid fa-toggle-off',
+        'ico.toggle-on'=>'fa-solid fa-toggle-on',
         
-        'ico.reindex'=>'fas fa-redo',
+        'ico.reindex'=>'fa-solid fa-redo',
     );
     public $oHtml=false;
 
@@ -165,6 +165,18 @@ class ressourcesrenderer extends crawler_base {
             $this->_initRessource($iSiteId);
         }
         return true;
+    }
+
+    /**
+     * get all icons as key value hash
+     * @return array
+     */
+    public function getIcons(){
+        $aReturn=[];
+        foreach($this->_aIcons as $sKey => $sClass){
+            $aReturn['rendererer --> '.$sKey]=$sClass;
+        }
+        return $aReturn;
     }
 
     // ----------------------------------------------------------------------
