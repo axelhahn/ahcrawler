@@ -13,10 +13,6 @@ GNU General Public License (GNU GPL) version 3
 📜 License: GNU GPL 3.0\
 📗 Docs: see <https://www.axel-hahn.de/docs/ahcrawler/>
 
-⚠️ **Important notice**:
-In version **v0.156** the filestructure was changed. 
---> See [Upgrade to v0.156](docs/00_⚠️_Upgrade_to_v0156.md)
-
 - - - 
 It is written in PHP and consists of
 - crawler (spider) and indexer
