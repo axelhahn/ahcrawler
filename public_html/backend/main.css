@@ -236,6 +236,7 @@ body, .contextbox, .piechart{
     z-index:100;
     background: var(--sidebar-bg);
     box-shadow: var(--sidebar-box-shadow);
+    overflow: auto;
 }
 
 #content{
@@ -328,7 +329,7 @@ body, .contextbox, .piechart{
 #nav2 .pure-menu-link:focus{border-color:var(--color-border-click);}
 #nav2 .pure-menu-link-active, #nav2 .pure-menu-link-active:hover{background:#f8f8f8; background: #cde; background: var(--color-default); color:#fff; border-color:var(--color-border-active); }
 
-.breadcrumb{float: right;}
+.breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5);}
 .breadcrumb a{background: none;}
 
 .pure-button {
