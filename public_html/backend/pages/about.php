@@ -20,8 +20,8 @@ require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
 $sReturn = '';
 
 $aIcons=array(
-    'testing'=>'fas fa-stethoscope',
-    'translation'=>'fas fa-flag',
+    'testing'=>'fa-solid fa-stethoscope',
+    'translation'=>'fa-solid fa-flag',
 );
 
 /*
