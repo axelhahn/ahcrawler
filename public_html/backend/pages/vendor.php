@@ -47,15 +47,18 @@
         
         // --- download
         if ($sLib2download && $aLib['lib']===$sLib2download && !$aLib['islocal']){
-            // $sHtml.='downloading '.$sLib2download.'...<br>';
+            $sHtml.='downloading '.$sLib2download.'...<br>';
             $oCdnAdmin->downloadAssets($sLib2download, $aLib['version']);
             echo "<script>window.setTimeout('location.href=\"?&page=vendor\"', 20);</script>";
             // TODO re-enable $oCdn->setLibs($aEnv['vendor']);
         }
         // --- delete
-        if ($sLib2delete && $aLib['lib']===$sLib2delete && $aLib['islocal']){
+        if ($sLib2delete && $aLib['lib']===$sLib2delete 
+            && $aLib['islocal']
+            && $sVersion2delete==$aLib['version']
+        ){
             // $sHtml.='deleting '.$sLib2delete.'...<br>';
-            $oCdnAdmin->delete($sLib2delete, $sVersion2delete);
+            $oCdnAdmin->delete($sLib2delete, $sVersion2delete, $aLib['isunused']);
             echo "<script>window.setTimeout('location.href=\"?&page=vendor\"', 20);</script>";
             // TODO re-enable $oCdn->setLibs($aEnv['vendor']);
         }
