@@ -29,6 +29,7 @@
     // $iSiteId=$oBackend->getSiteId();
     $bUseCache=$bIsBackend && $iSiteId && $oBackend->isCacheable() && $_SERVER['REQUEST_METHOD']=='GET';
     // $bUseCache=false;
+    $sRefFile=false;
     if($bUseCache){
         require_once(__DIR__ . "/classes/cache.class.php");
         $sRefFile=__DIR__. '/data/indexlog-siteid-'.$iSiteId.'.log';
@@ -74,7 +75,7 @@
 
     $oCdn->setLibs([
         "pure/3.0.0",
-        "datatables.net/1.10.21",
+        "datatables/1.10.21",
         "font-awesome/6.4.0",
         "jquery/3.6.4",
         "Chart.js/3.9.1" // available: "Chart.js/4.3.0"
