@@ -39,9 +39,6 @@ services:
       retries: 5
       # start_period: 40s
 
-    depends_on:
-      ahcrawler-db:
-        condition: service_healthy
     networks:
       - ahcrawler-network
 
@@ -49,7 +46,8 @@ services:
 
     # --- 8< --- CUT-HERE-FOR-NO-DATABASE --- 8< ---
     depends_on:
-      - ahcrawler-db
+      ahcrawler-db:
+        condition: service_healthy
 
   # ---------- database server: mariadb
   ahcrawler-db:
