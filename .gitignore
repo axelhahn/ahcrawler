@@ -9,7 +9,11 @@ public_html/tmp/*.tmp
 .vscode/
 public_html/~cache/
 public_html/tmp/__latest.zip
-public_html/vendor/cache/*
+public_html/vendor/cache/Chart.js
+public_html/vendor/cache/datatables
+public_html/vendor/cache/font-awesome
+public_html/vendor/cache/jquery
+public_html/vendor/cache/pure
 public_html/vendor/vendor-updater.sh
 public_html/_update_release.php
 public_html/vendor/medoo/tests/AggregateTest.php
