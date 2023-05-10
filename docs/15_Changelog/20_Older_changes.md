@@ -1,5 +1,19 @@
 ## Changelog archive
 
+### 2023
+
+#### 2023-01-06: v0.157
+
+* 🟢 ADDED: support for multiple values of a column (OR) ... linkchecker shows button for all http status codes of a section
+* ↗️ UPDATE: ahlogger - logger with enabled debug in the backend is compatible to PHP 8.2
+* ↗️ UPDATE: update Medoo (database lib) to v2.1.7
+* ↗️ UPDATE: update resource scan starts with head requests (it uses less resources)
+* ↗️ UPDATE: local docker environment (internal stuff for development)
+* ↗️ UPDATE: css - clickable tile with soft shadow animation
+* ↗️ UPDATE: statusbar during index got a progress bar during indexing resources
+* ↗️ UPDATE: fix deprecated warning on empty strings in preg_match() or str_replace()
+
+
 ### 2022
 
 #### 2022-12-12: v0.156
