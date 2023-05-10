@@ -22,7 +22,7 @@ namespace axelhahn;
  * AND/ OR
  * https://unpkg.com/
  * 
- * @version 1.0.12
+ * @version 1.0.13
  * @author Axel Hahn
  * @link https://www.axel-hahn.de
  * @license GPL
@@ -32,7 +32,7 @@ namespace axelhahn;
 class cdnorlocal
 {
 
-    protected $sVersion = '1.0.12';
+    protected $sVersion = '1.0.13';
 
     /**
      * flag to show debugging infos (used in _wd method [write debug])
@@ -112,7 +112,7 @@ class cdnorlocal
                 $this->setVendorWithRelpath($aOptions['vendorrelpath']);
             }
             if (isset($aOptions['vendordir'])) {
-                $this->setVendorDir($aOptions['vendordir'], 1);
+                $this->setVendorDir($aOptions['vendordir']);
             }
             if (isset($aOptions['vendorurl'])) {
                 $this->setVendorUrl($aOptions['vendorurl']);

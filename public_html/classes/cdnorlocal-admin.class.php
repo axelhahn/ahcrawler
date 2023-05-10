@@ -10,7 +10,7 @@ require_once 'cdnorlocal.class.php';
  * admin functions to request API, download, read existing local downloads
  * This file is needed by admin/index.php only - NOT in your projects to publish
  *
- * @version 1.0.12
+ * @version 1.0.13
  * @author Axel Hahn
  * @link https://www.axel-hahn.de
  * @license GPL
@@ -128,6 +128,9 @@ class cdnorlocaladmin extends cdnorlocal
 
             if (is_array($aJson)) {
                 $this->_wd(__METHOD__ . "($sLibrary, $sVersion) store $sLibCachefile");
+                if(!is_dir(dirname($sLibCachefile))){
+                    mkdir(dirname($sLibCachefile));
+                }
                 file_put_contents($sLibCachefile, json_encode($aJson, JSON_PRETTY_PRINT));
             }
         } else {

@@ -1,0 +1,32 @@
+{
+    "name": "Chart.js",
+    "version": "3.9.1",
+    "rawFiles": [
+        "chart.esm.js",
+        "chart.esm.min.js",
+        "chart.js",
+        "chart.min.js",
+        "chart.mjs",
+        "helpers.esm.js",
+        "helpers.esm.min.js",
+        "helpers.mjs"
+    ],
+    "files": [
+        "chart.esm.js",
+        "chart.esm.min.js",
+        "chart.js",
+        "chart.min.js",
+        "chart.mjs",
+        "helpers.esm.js",
+        "helpers.esm.min.js",
+        "helpers.mjs"
+    ],
+    "sri": {
+        "chart.esm.js": "sha512-59oaQE+Oz94NSelkRzYEkfwlKDjUj7IWGPlZQJwWtHjbkYxwjnVgwDV3mCn\/Vg6CiLUVcdjZO+Kta2bjVemV3A==",
+        "chart.esm.min.js": "sha512-wp1TmWHEmHgERMuWw8Q0tCwFbZab0o6MjMS\/HceqShRObCHzIfTrZfjpMm1bTuqIVrQXd9SRhYt0V9hObySU\/g==",
+        "chart.js": "sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==",
+        "chart.min.js": "sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==",
+        "helpers.esm.js": "sha512-k1l60wcqxrkxs0F9M\/sCgvBepWeLTIyc1Od+wN5tC0VhsLgksryon9jdB73d9CXi2E5bJA1wxl4CuPsRDWwadw==",
+        "helpers.esm.min.js": "sha512-SFaZeQpMkYy2mMnrH53KqmTt13JaAZfhFO3J\/R5RhiOg6EXRbl4UJWSjPulMnhwaLELHrAl40WN9XwjPJHpjqQ=="
+    }
+}
