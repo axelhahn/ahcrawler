@@ -319,7 +319,7 @@ class analyzerHtml {
         $aPartsRelUrl = parse_url($sRelUrl);
 
         // if it has a scheme then it must be a full url
-        if (array_key_exists('scheme', $aPartsRelUrl)) {
+        if (isset($aPartsRelUrl['scheme'])) {
             return $sRelUrl;
         }
         if(!$sDocUrl){
@@ -340,9 +340,9 @@ class analyzerHtml {
                 $base = (($aPartsDoc['path'][strlen($aPartsDoc['path']) - 1]) !== '/') ? dirname($aPartsDoc['path']) . '/' : $aPartsDoc['path'];
                 $sPath = $this->url_remove_dot_segments($base . $sPath);
             } else {
-                $sPath = (array_key_exists('path', $aPartsRelUrl)) ? $aPartsRelUrl['path'] : $aPartsDoc['path'];
+                $sPath = isset($aPartsRelUrl['path']) ? $aPartsRelUrl['path'] : $aPartsDoc['path'];
                 if (strlen($sPath) && $sPath[0] != '/') {
-                    $base = array_key_exists('path', $aPartsDoc) ? mb_strrchr($aPartsDoc['path'], '/', TRUE, 'UTF-8') : '';
+                    $base = isset($aPartsDoc['path']) ? mb_strrchr($aPartsDoc['path'], '/', TRUE, 'UTF-8') : '';
                     $sPath = $base . '/' . $aPartsRelUrl['path'];
                 }
                 $sPath = str_replace('./', '', $sPath);
@@ -354,13 +354,13 @@ class analyzerHtml {
         
         $aPartsReturn = $aPartsRelUrl;
         foreach (['scheme', /* 'user', 'pass', */ 'host', 'port', /*'path' , 'query', 'fragment' */] as $sKey){
-            if(!array_key_exists($sKey, $aPartsReturn) && array_key_exists($sKey, $aPartsDoc)){
+            if(!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])){
                 $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
             }
         }
         
         // no host an no path $sRelUrl --> then it is a relative path and we add it from current document
-        if(!array_key_exists('host', $aPartsRelUrl) && !array_key_exists('path', $aPartsRelUrl)){
+        if(!isset($aPartsRelUrl['host']) && !isset($aPartsRelUrl['path'])){
             $aPartsReturn['path']=$aPartsDoc['path'];
         }
         
@@ -370,7 +370,7 @@ class analyzerHtml {
                 && $aPartsReturn['host']===$aPartsDoc['host']
                 ){
             foreach (['user', 'pass'] as $sKey){
-                if(!array_key_exists($sKey, $aPartsReturn) && array_key_exists($sKey, $aPartsDoc)){
+                if(!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])){
                     $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
                 }
             }
@@ -378,14 +378,14 @@ class analyzerHtml {
         
         // --- create url from target target parts
         $sUrl = $aPartsReturn['scheme'] . '://'
-                . (array_key_exists('user', $aPartsReturn) ? $aPartsReturn['user'].':' : '')
-                . (array_key_exists('pass', $aPartsReturn) ? $aPartsReturn['pass'].'' : '')
-                . ((array_key_exists('user', $aPartsReturn) || array_key_exists('pass', $aPartsReturn)) ? '@' : '')
+                . (isset($aPartsReturn['user'])     ? $aPartsReturn['user'].':' : '')
+                . (isset($aPartsReturn['pass'])     ? $aPartsReturn['pass'].'' : '')
+                . ((isset($aPartsReturn['user']) || isset($aPartsReturn['pass'])) ? '@' : '')
                 . $aPartsReturn['host']
-                . (array_key_exists('port', $aPartsReturn) ? ':'.$aPartsReturn['port'] : '')
-                . (array_key_exists('path', $aPartsReturn) ? $aPartsReturn['path'] : '')
-                . (array_key_exists('query', $aPartsReturn) ? '?'.$aPartsReturn['query'] : '')
-                . (array_key_exists('fragment', $aPartsReturn) ? '#'.$aPartsReturn['fragment'] : '')
+                . (isset($aPartsReturn['port'])     ? ':'.$aPartsReturn['port'] : '')
+                . (isset($aPartsReturn['path'])     ? $aPartsReturn['path'] : '')
+                . (isset($aPartsReturn['query'])    ? '?'.$aPartsReturn['query'] : '')
+                . (isset($aPartsReturn['fragment']) ? '#'.$aPartsReturn['fragment'] : '')
                 ;
         // echo "DEBUG: " . $sRelUrl . " -- " . print_r($aPartsRelUrl, 1) ." NEW \n". print_r($aPartsReturn, 1) . "\n--> $sUrl\n\n";
         return $sUrl;
@@ -411,21 +411,21 @@ class analyzerHtml {
         $aParse = parse_url($sHref);
         // print_r($aParse);
 
-        $scheme = array_key_exists('scheme', $aParse) ? $aParse['scheme'] : false;
+        $scheme = isset($aParse['scheme']) ? $aParse['scheme'] : false;
 
         switch ($scheme) {
             case false:
             case 'http':
             case 'https':
-                if (!array_key_exists('host', $aParse)) {
-                    if (array_key_exists('path', $aParse) || array_key_exists('query', $aParse)) {
+                if (!isset($aParse['host'])) {
+                    if (isset($aParse['path']) || isset($aParse['query'])) {
                         return 'internal';
                     }
-                    if (array_key_exists('fragment', $aParse)) {
+                    if (isset($aParse['fragment'])) {
                         return 'local';
                     }
                 }
-                $sHost = array_key_exists('host', $aParse) ? $aParse['host'] : false;
+                $sHost = isset($aParse['host']) ? $aParse['host'] : false;
                 if ($sHost) {
                     if ($sHost !== $this->_sDomain) {
                         return 'external';
@@ -458,7 +458,7 @@ class analyzerHtml {
             default:
                 break;
         }
-        return array_key_exists('scheme', $aParse) ? 'other::' . $aParse['scheme'] : 'other';
+        return isset($aParse['scheme']) ? 'other::' . $aParse['scheme'] : 'other';
     }
 
     /**
@@ -502,23 +502,23 @@ class analyzerHtml {
         // echo "\n" . __FUNCTION__ .  "($sHref)\n\n";
         $aReturn = [];
         $aUrl = parse_url($sHref);
-        if (!array_key_exists('scheme', $aUrl) || $aUrl['scheme'] != 'mailto') {
+        if (!isset($aUrl['scheme']) || $aUrl['scheme'] != 'mailto') {
             return false;
         }
 
         // find to address in mailto:[email] or mailto:[email]?...
-        if (array_key_exists('path', $aUrl)) {
+        if (isset($aUrl['path'])) {
             $aReturn['to'] = $aUrl['path'];
         } else {
             $aReturn['to'] = '';
         }
 
         // parse all behind '?'
-        if (array_key_exists('query', $aUrl)) {
+        if (isset($aUrl['query'])) {
             parse_str($aUrl['query'], $aParams);
             foreach (['to', 'cc', 'bcc', 'subject', 'body'] as $sKey) {
-                if (array_key_exists($sKey, $aParams) && $aParams[$sKey]) {
-                    $aReturn[$sKey] = (array_key_exists($sKey, $aReturn) && $aReturn[$sKey]) ? $aReturn[$sKey] . ',' . $aParams[$sKey] : $aParams[$sKey];
+                if (isset($aParams[$sKey]) && $aParams[$sKey]) {
+                    $aReturn[$sKey] = (isset($aReturn[$sKey]) && $aReturn[$sKey]) ? $aReturn[$sKey] . ',' . $aParams[$sKey] : $aParams[$sKey];
                 }
             }
         }
@@ -617,7 +617,7 @@ class analyzerHtml {
 
             $sKey=$sWord;
             if(strlen($sKey)>2){
-                if(!array_key_exists($sKey, $aWords)){
+                if(!isset($aWords[$sKey])){
                     $aWords[$sKey]=1;
                 } else {
                     $aWords[$sKey]++;
@@ -991,7 +991,7 @@ class analyzerHtml {
         $aReturn = $aArray;
         $bFound = false;
 
-        if (!array_key_exists('_url', $aNewItem)) {
+        if (!isset($aNewItem['_url'])) {
             // echo "missing _url: ". print_r($aNewItem, 1)."\n<br>";
             return false;
         }
