@@ -2,6 +2,10 @@
 
 ### 2023
 
+#### 2023-02-21: v0.158
+
+* 💣 FIX: web updater and updater cronjob did not detect a git instance after directory change in v0.156
+
 #### 2023-01-06: v0.157
 
 * 🟢 ADDED: support for multiple values of a column (OR) ... linkchecker shows button for all http status codes of a section
