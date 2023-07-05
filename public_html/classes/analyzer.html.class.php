@@ -53,7 +53,7 @@ class analyzerHtml {
     private $_sBaseHref = false;
     private $_sScheme = false;
     private $_sDomain = false;
-    private $_aHttpResponseHeader = array();
+    private $_aHttpResponseHeader = [];
 
     // ----------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ class analyzerHtml {
      */
     private function _getBaseHref(){
         $this->_sBaseHref = false;
-        $partsBaseHref=array();
+        $partsBaseHref=[];
         if (!$this->_oDom){
             return false;
         }
@@ -126,8 +126,8 @@ class analyzerHtml {
      * If you don't have the html source then use the method fetchUrl($sUrl)
      * 
      * @see fetchUrl($sUrl)
-     * @param sring  $sHtmlcode  html body
-     * @param string $sUrl       optional: url (used to generate full urls of internal links)
+     * @param string  $sHtmlcode  html body
+     * @param string  $sUrl       optional: url (used to generate full urls of internal links)
      * @return boolean
      */
     public function setHtml($sHtmlcode = false, $sUrl = false) {
@@ -143,7 +143,6 @@ class analyzerHtml {
             $this->_sScheme = $parts['scheme'];
             $this->_sDomain = $parts['host'];
         }
-        $this->_aReport = array();
 
         if(!$sHtmlcode){
             $this->_oDom = false;
@@ -173,11 +172,11 @@ class analyzerHtml {
     public function fetchUrl($sUrl) {
         require_once __DIR__ . './../vendor/rolling-curl/src/RollingCurl/RollingCurl.php';
         require_once __DIR__ . './../vendor/rolling-curl/src/RollingCurl/Request.php';
-        $this->_aHttpResponseHeader = array();
+        $this->_aHttpResponseHeader = [];
 
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
-        $rollingCurl->setOptions(array(
+        $rollingCurl->setOptions([
                     CURLOPT_FOLLOWLOCATION => true,
                     // CURLOPT_HEADER => true,
                     CURLOPT_RETURNTRANSFER => true,
@@ -185,7 +184,7 @@ class analyzerHtml {
                     CURLOPT_VERBOSE => false,
                     // TODO: this is unsafe .. better: let the user configure it
                     CURLOPT_SSL_VERIFYPEER => 0,
-                ))
+                ])
                 ->get($sUrl)
                 ->setCallback(function(\RollingCurl\Request $request) use ($self) {
                     $self->processResponse($request);
@@ -249,7 +248,7 @@ class analyzerHtml {
          */
         $headdata = $this->getHtmlHead();
 
-        $res = Array();
+        $res = [];
         if ($headdata != "") {
             if (preg_match("@<" . $sItem . " *>(.*?)<\/" . $sItem . "*>@si", $this->_sHtml, $regs)) {
                 return trim($regs[1]);
@@ -287,7 +286,7 @@ class analyzerHtml {
     private function url_remove_dot_segments($path) {
         // multi-byte character explode
         $inSegs = preg_split('!/!u', $path);
-        $outSegs = array();
+        $outSegs = [];
         foreach ($inSegs as $seg) {
             if ($seg == '' || $seg == '.')
                 continue;
@@ -313,7 +312,7 @@ class analyzerHtml {
      * it requres that the url of the document is known
      * @param string   $sRelUrl   url
      * @param string   $sDocUrl   optional: url of the current document to override
-     * @return url
+     * @return string
      */
     public function getFullUrl($sRelUrl, $sDocUrl=false) {
 
@@ -354,7 +353,7 @@ class analyzerHtml {
         // --- create parts for target url
         
         $aPartsReturn = $aPartsRelUrl;
-        foreach (array('scheme', /* 'user', 'pass', */ 'host', 'port', /*'path' , 'query', 'fragment' */) as $sKey){
+        foreach (['scheme', /* 'user', 'pass', */ 'host', 'port', /*'path' , 'query', 'fragment' */] as $sKey){
             if(!array_key_exists($sKey, $aPartsReturn) && array_key_exists($sKey, $aPartsDoc)){
                 $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
             }
@@ -370,7 +369,7 @@ class analyzerHtml {
                 $aPartsReturn['scheme']===$aPartsDoc['scheme']
                 && $aPartsReturn['host']===$aPartsDoc['host']
                 ){
-            foreach (array('user', 'pass') as $sKey){
+            foreach (['user', 'pass'] as $sKey){
                 if(!array_key_exists($sKey, $aPartsReturn) && array_key_exists($sKey, $aPartsDoc)){
                     $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
                 }
@@ -470,7 +469,7 @@ class analyzerHtml {
      * @return array
      */
     public function getValidUrlTypes() {
-        return array(
+        return [
             'local',
             'internal',
             'external',
@@ -478,7 +477,7 @@ class analyzerHtml {
             'mailto',
             'phone',
             'other',
-        );
+        ];
     }
 
     /**
@@ -501,7 +500,7 @@ class analyzerHtml {
      */
     private function _parseEmail($sHref) {
         // echo "\n" . __FUNCTION__ .  "($sHref)\n\n";
-        $aReturn = array();
+        $aReturn = [];
         $aUrl = parse_url($sHref);
         if (!array_key_exists('scheme', $aUrl) || $aUrl['scheme'] != 'mailto') {
             return false;
@@ -517,7 +516,7 @@ class analyzerHtml {
         // parse all behind '?'
         if (array_key_exists('query', $aUrl)) {
             parse_str($aUrl['query'], $aParams);
-            foreach (array('to', 'cc', 'bcc', 'subject', 'body') as $sKey) {
+            foreach (['to', 'cc', 'bcc', 'subject', 'body'] as $sKey) {
                 if (array_key_exists($sKey, $aParams) && $aParams[$sKey]) {
                     $aReturn[$sKey] = (array_key_exists($sKey, $aReturn) && $aReturn[$sKey]) ? $aReturn[$sKey] . ',' . $aParams[$sKey] : $aParams[$sKey];
                 }
@@ -611,7 +610,7 @@ class analyzerHtml {
      */
     public function getWords($sString) {
         $characterMap='À..ÿ'; // chars #192 .. #255
-        $aWords=array();
+        $aWords=[];
         foreach(str_word_count(
                 str_replace("'", '',$sString)
                 ,2,$characterMap) as $sWord ){
@@ -683,7 +682,7 @@ class analyzerHtml {
      * @return array
      */
     public function getCss() {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = $this->_oDom->getElementsByTagName('link');
@@ -693,12 +692,12 @@ class analyzerHtml {
                 ) {
                     $sHref = $element->getAttribute('href');
                     $sType = $this->getUrlType($sHref);
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'css',
                         'href' => $element->getAttribute('href'),
                         '_url' => $this->getFullUrl($element->getAttribute('href')),
                         'media' => $element->getAttribute('media'),
-                    ));
+                    ]);
                 }
             }
         }
@@ -711,7 +710,7 @@ class analyzerHtml {
      * @return array
      */
     public function getImages($sFilterByType = false) {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = $this->_oDom->getElementsByTagName('img');
@@ -722,7 +721,7 @@ class analyzerHtml {
                     if ($sFilterByType && $sFilterByType != $sType) {
                         continue;
                     }
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'image',
                         'href' => $sHref,
                         'alt' => $element->getAttribute('alt'),
@@ -730,7 +729,7 @@ class analyzerHtml {
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'img',
                         '_line' => $element->getLineNo(),
-                    ));
+                    ]);
                 }
             }
 
@@ -743,7 +742,7 @@ class analyzerHtml {
                     if ($sFilterByType && $sFilterByType != $sType) {
                         continue;
                     }
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'image',
                         'href' => $sHref,
                         'alt' => '',
@@ -751,7 +750,7 @@ class analyzerHtml {
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'link :: rel=image_src',
                         '_line' => $element->getLineNo(),
-                    ));
+                    ]);
                 }
             }
             
@@ -764,7 +763,7 @@ class analyzerHtml {
                     if ($sFilterByType && $sFilterByType != $sType) {
                         continue;
                     }
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'image',
                         'href' => $sHref,
                         'alt' => '',
@@ -772,7 +771,7 @@ class analyzerHtml {
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'meta :: property=og:image',
                         '_line' => $element->getLineNo(),
-                    ));
+                    ]);
                 }
             }
             // thumbs in <video poster="[...]" />
@@ -784,7 +783,7 @@ class analyzerHtml {
                     if ($sFilterByType && $sFilterByType != $sType) {
                         continue;
                     }
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'image',
                         'href' => $sHref,
                         'alt' => '',
@@ -792,7 +791,7 @@ class analyzerHtml {
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'video poster',
                         '_line' => $element->getLineNo(),
-                    ));
+                    ]);
                 }
             }
         }
@@ -805,10 +804,10 @@ class analyzerHtml {
      * @return array
      */
     public function getMedia($sFilterByType = false) {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
-            foreach(array('audio', 'video') as $sMediaTag){
+            foreach(['audio', 'video'] as $sMediaTag){
                 $allAudio = $this->_oDom->getElementsByTagName($sMediaTag);
                 // var_dump($allAudio);
                 foreach ($allAudio as $media) {
@@ -820,14 +819,14 @@ class analyzerHtml {
                             if ($sFilterByType && $sFilterByType != $sType) {
                                 continue;
                             }
-                            $this->_add2Array($aReturn[$sType], array(
+                            $this->_add2Array($aReturn[$sType], [
                                 'ressourcetype' => 'media',
                                 'href' => $sHref,
                                 'type' => $element->getAttribute('type'),
                                 '_url' => $this->getFullUrl($sHref),
                                 '_tag' => 'img',
                                 '_line' => $element->getLineNo(),
-                            ));
+                            ]);
                         }
                     }
                 }
@@ -841,7 +840,7 @@ class analyzerHtml {
      * @return array
      */
     public function getScripts($sFilterByType = false) {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = $this->_oDom->getElementsByTagName('script');
@@ -852,13 +851,13 @@ class analyzerHtml {
                     if ($sFilterByType && $sFilterByType != $sType) {
                         continue;
                     }
-                    $this->_add2Array($aReturn[$sType], array(
+                    $this->_add2Array($aReturn[$sType], [
                         'ressourcetype' => 'script',
                         'href' => $sHref,
                         '_url' => $this->getFullUrl($sHref),
                         '_tag' => 'script',
                         '_line' => $element->getLineNo(),
-                    ));
+                    ]);
                 }
             }
         }
@@ -873,7 +872,7 @@ class analyzerHtml {
      * @return array
      */
     public function _getNodesByTagAndAttribute($sTag, $sAttribute) {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = $this->_oDom->getElementsByTagName($sTag);
@@ -913,7 +912,7 @@ class analyzerHtml {
      * @return array
      */
     public function getLinks($sFilterByType = false, $bShowNofollow=true) {
-        $aReturn = array();
+        $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = array_merge(
@@ -955,7 +954,7 @@ class analyzerHtml {
                 if ($sType == "internal") {
                     $sUrl = preg_replace('/\#.*$/', '', $this->getFullUrl($sHref));
                 }
-                $aLink = array(
+                $aLink = [
                     'ressourcetype' => 'link',
                     'href' => $sHref,
                     // 'element' => $element,
@@ -964,7 +963,7 @@ class analyzerHtml {
                     '_tag' => $element->nodeName,
                     '_attribute' => $element->getAttribute('_attribute'),
                     '_line' => $element->getLineNo(),
-                );
+                ];
                 if ($sType == "mailto") {
                     $aEmail = $this->_parseEmail($sHref);
                     $sUrl = 'mailto:' . $aEmail['to'];
@@ -972,7 +971,7 @@ class analyzerHtml {
                     $aLink = array_merge($aLink, $aEmail);
                 }
 
-                foreach (array('rel', 'title', 'class', 'id') as $sAttr) {
+                foreach (['rel', 'title', 'class', 'id'] as $sAttr) {
                     if ($element->getAttribute($sAttr)) {
                         $aLink[$sAttr] = $element->getAttribute($sAttr);
                     }
@@ -1011,12 +1010,12 @@ class analyzerHtml {
             }
         }
         if (!$bFound) {
-            $aBase = array(
+            $aBase = [
                 'ressourcetype' => $aNewItem['ressourcetype'],
                 '_url' => $aNewItem['_url'],
                 'refcount' => 1,
                 'items' => array($aAddItem),
-            );
+            ];
             $aArray[] = $aBase;
         }
         return $aArray;
@@ -1046,14 +1045,14 @@ class analyzerHtml {
           echo "<hr>";
          * 
          */
-        return array(
-            'document' => array(
+        return [
+            'document' => [
                 'url' => $this->_sUrl,
                 'basehref' => $this->_sBaseHref,
                 'size' => strlen($this->_sHtml),
                 'isXml' => is_object($this->_oDom),
-            ),
-            'meta' => array(
+            ],
+            'meta' => [
                 'css' => $this->getCss(),
                 'description' => $this->getMetaDescription(),
                 'keywords' => $this->getMetaKeywords(),
@@ -1062,13 +1061,13 @@ class analyzerHtml {
                 'index' => $this->getMetaIndex(),
                 'scripts' => $this->getScripts(),
                 'title' => $this->getMetaTitle(),
-            ),
-            'body' => array(
+            ],
+            'body' => [
                 'images' => $this->getImages(),
                 'links' => $this->getLinks(),
                 'media' => $this->getMedia(),
-            )
-        );
+            ]
+        ];
     }
 
 }
