@@ -32,7 +32,7 @@ class ahwi {
         'git'=>[
             'label'=>'Git',
             'dir'=>'.git',
-            'file'=>'.git',
+            // 'file'=>'.git',
             'check'=>'git --version',
             'update'=>'git pull --force',
         ],

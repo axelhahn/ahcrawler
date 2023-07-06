@@ -2,6 +2,12 @@
 
 ### 2023
 
+#### 2023-07-06: v0.163
+
+* ↗️ UPDATE: ahCache class
+* ↗️ UPDATE: ah web updater classes
+* ↗️ UPDATE: html analyzer class
+
 #### 2023-05-09: v0.162
 
 * 💣 FIX: error with missing vendor cache dir
@@ -30,7 +36,3 @@
 * ↗️ UPDATE: simplify resource detail page
 * ↗️ UPDATE: mark all unsecure cookies
 * ↗️ UPDATE: css update of default theme
-
-#### 2023-02-21: v0.158
-
-* 💣 FIX: web updater and updater cronjob did not detect a git instance after directory change in v0.156
