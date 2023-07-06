@@ -140,8 +140,8 @@ class analyzerHtml {
         $this->_oDom = false;
         if ($sUrl) {
             $parts = parse_url($this->_sUrl);
-            $this->_sScheme = $parts['scheme'];
-            $this->_sDomain = $parts['host'];
+            $this->_sScheme = isset($parts['scheme']) ? $parts['scheme'] : false;
+            $this->_sDomain = isset($parts['host'])   ? $parts['host']   : false;
         }
 
         if(!$sHtmlcode){
@@ -271,33 +271,42 @@ class analyzerHtml {
             if (isset($res[1])){
                 $aUrl= parse_url($res[1]);
                 return ''
-                    . $aUrl['scheme'].'://'
-                    . (isset($aUrl['user']) ? $aUrl['user'].':'.$aUrl['passwort'].'@' : '' )
-                    . $aUrl['host']
-                    . (isset($aUrl['port']) ? ':'.$aUrl['port'] : '' )
-                    . (isset($aUrl['path']) ? $aUrl['path'] : '/' )
-                    . (isset($aUrl['query']) ? '?'.$aUrl['query'] : '' )
+                    . (isset($aUrl['scheme']) ? $aUrl['scheme'].'://' : '')
+                    . (isset($aUrl['user'])   ? $aUrl['user'].':'.$aUrl['passwort'].'@' : '' )
+                    . (isset($aUrl['host'])   ? $aUrl['host'] : '')
+                    . (isset($aUrl['port'])   ? ':'.$aUrl['port'] : '' )
+                    . (isset($aUrl['path'])   ? $aUrl['path'] : '/' )
+                    . (isset($aUrl['query'])  ? '?'.$aUrl['query'] : '' )
                     ;
             }
         }
         return false;
     }
 
+    /**
+     * helper function: cleanup /.. in a path and build the realpath of it
+     * used in getFullUrl()
+     * @param string  $path  path
+     * @return string
+     */
     private function url_remove_dot_segments($path) {
         // multi-byte character explode
         $inSegs = preg_split('!/!u', $path);
         $outSegs = [];
         foreach ($inSegs as $seg) {
-            if ($seg == '' || $seg == '.')
+            if ($seg == '' || $seg == '.'){
                 continue;
-            if ($seg == '..')
+            }
+            if ($seg == '..') {
                 array_pop($outSegs);
-            else
+            } else {
                 array_push($outSegs, $seg);
+            }
         }
         $outPath = implode('/', $outSegs);
-        if ($path[0] == '/')
+        if ($path[0] == '/') {
             $outPath = '/' . $outPath;
+        }
         // compare last multi-byte character against '/'
         if ($outPath != '/' 
             && (mb_strlen($path) - 1) == mb_strrpos($path, '/', 0, 'UTF-8'))
