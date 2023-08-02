@@ -773,7 +773,7 @@
     "httpcode.-1.todo": "Bitte warten Sie, bis die Abarbeitung erledigt ist. Gibt es in einigen Sekunden keinen Fortschritt, muss der Ressourcen-Index aktualisiert oder neu aufgebaut werden (Cronjob).",
     "httpcode.0.label": "nicht erreicht",
     "httpcode.0.descr": "Das Ziel wurde nicht erreicht. Dies ist kein offizieller Http Standard, sondern nur ein interner Code.",
-    "httpcode.0.todo": "Keine Daten erhalten, wenngleich der Host existiert. m&ouml;gliche Ursachen: der Webservice funktioniert derzeit nicht, Port geschlossen, Problem mit dem SSL-Zertifikat, Timeout der Verbindung ...",
+    "httpcode.0.todo": "Keine Daten erhalten, wenngleich der Host existiert. m&ouml;gliche Ursachen: der Webservice funktioniert derzeit nicht, Port geschlossen, Problem mit dem SSL-Zertifikat, Timeout der Verbindung ... Zur Unterst&uuml;tzung wird die Fehlermelung von Curl angezeigt.",
     "httpcode.1.label": "Unbekannter Host",
     "httpcode.1.descr": "Das Ziel wurde nicht erreicht, da der Host nicht (mehr) existiert. Ggf. gibt es auch ein Problem mit dem DNS\/ der Internet Anbindung. Dies ist kein offizieller Http Standard, sondern nur ein interner Code.",
     "httpcode.1.todo": "Pr&uuml;fen Sie, ob der Servername ist g&uuml;ltig ist. Es kann aber auch verschiedene andere Gr&uuml;nde haben: Netzwerk-Probleme, der DNS ist nicht erreichbar. Wenn der Host wirklich nicht mehr existiert, dann entfernen oder aktualisieren Sie den Link.",

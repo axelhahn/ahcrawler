@@ -725,7 +725,7 @@
     "httpcode.-1.todo": "Please wait. If there is no progress in a few seconds then the resource index must be updated or reindexed (by cronjob).",
     "httpcode.0.label": "not reached",
     "httpcode.0.descr": "The target was not reached. This is not an official Http standard code - it is just an internal one.",
-    "httpcode.0.todo": "No data were received. It can also have various reasons: web service is currently not working, port closed, problem with SSL,connection timed out, ...",
+    "httpcode.0.todo": "No data were received. It can also have various reasons: web service is currently not working, port closed, problem with SSL,connection timed out, ... For more information the curl error message is shown.",
     "httpcode.100.label": "Information: Continue.",
     "httpcode.100.descr": "The current request to the server has not yet been rejected.",
     "httpcode.100.todo": "",
