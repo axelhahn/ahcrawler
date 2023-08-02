@@ -924,6 +924,7 @@
     "httpheader.tag.httpversion": "Http version",
     "httpheader.tag.httpstatus": "Http status",
     "ressources.only-one": "There is a single ressource only. Just guessing: only the starting page was indexed and the content-encoding is not supported by the curl version on the server.",
+    "ressources.no-response": "No response from given url. Maybe the url is wrong or is not reachable at the moment.<br>Curl error: %s (code %s)",
     "status.indexer_is_running": "Please wait... the crawler is running...",
     "setup.section.backend.customfooter": "Custom html code at the body end (i.e. for user statistics)",
     "profile.ignoreNoindex": "Noindex",

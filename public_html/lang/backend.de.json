@@ -472,6 +472,7 @@
     "ressources.empty": "Der Job zum Crawlen der Ressourcen wurde noch nicht gestartet. Eine Analyse aller Links und Ressourcen steht daher noch aus.<br><pre>php [appdir]\/bin\/cli.php -a index -d ressources -p %s<\/pre>",
     "ressources.crawler-not-finished-yet": "Der Job zum Crawlen der Ressourcen wurde gestartet und ist noch nicht abgeschlossen. Bitte etwas Geduld...<br>Oder nochmals starten??<br><pre>php [appdir]\/bin\/cli.php -a index -d ressources -p %s<\/pre>",
     "ressources.hint-manyitems": "Es wurden viele Eintr&auml;ge gefunden. Aus Performance Gr&uuml;nden wird die Tabelle der Ressourcen (noch) nicht angezeigt.<br>Sie k&ouml;nnen oben den Filter weiter einschr&auml;nken oder die Tabelle doch anzeigen lassen.",
+    "ressources.no-response": "Kein Response von der angegebenen URL. Ggf. ist die URL falsch oder gerade nicht erreichbar.<br>Curl-Fehler: %s (Code %s)",
     "ressources.report.intro": "",
     "ressources.searchressourceid": "ID",
     "ressources.searchressourceid-hint": "Hinweis: Diese Seite wird von anderen Analyse-Seiten zur Detailansicht verlinkt. Diese Suche hier richtet sich eher an Sysadmins und Webmaster mit Datenbankzugriff.<br>\r\nFolgen Sie einem der nachfolgenden Links.",

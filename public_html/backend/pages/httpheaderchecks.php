@@ -68,8 +68,9 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
             }
         } else {
             $sReturn .= $oRenderer->renderMessagebox(
-                sprintf($this->lB('httpheader.result.no-response'), $aResponse['error'], $aResponse['errorcode'])
-            , 'error');
+                sprintf($this->lB('ressources.no-response'), $aResponse['error'], $aResponse['errorcode'])
+                , 'error'
+                );
         }
     }
     $sReturn .= '</form>';

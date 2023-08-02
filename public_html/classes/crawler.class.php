@@ -419,6 +419,10 @@ class crawler extends crawler_base{
 
         $info = $response->getResponseInfo();
         $info['_responseheader']=$sHttpHeader;
+        $info['_curlerror']=$response->getResponseError();
+        if ($info['_curlerror']) {
+            $info['_curlerrorcode']=$response->getResponseErrno();
+        };
 
         unset($response);
 
