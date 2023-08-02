@@ -1207,6 +1207,7 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         $sHeader=$aItem['header'] ? $aItem['header'] : $aItem['lasterror'];
         $aHeaderJson=json_decode($sHeader, 1);
+        // $sReturn.='<pre>'.print_r($aHeaderJson,1).'</pre>';
         if(isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']){
             $sReturn.=$this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error').'<br>';                    
         } else {
