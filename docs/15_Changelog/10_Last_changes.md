@@ -2,6 +2,11 @@
 
 ### 2023
 
+#### 2023-08-03: v0.164
+
+* 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
+* ↗️ UPDATE: add DOCKER_USER_UID in docker env
+
 #### 2023-07-06: v0.163
 
 * ↗️ UPDATE: ahCache class
@@ -28,11 +33,3 @@
   You can wait until currently wrong counter values are out of scope after 90d or you can execute `truncate counteritems` and `truncate counters` on the database to delete them.
 * ↗️ UPDATE: css update of default theme
 * ↗️ UPDATE: fix php warnings in some classes
-
-#### 2023-03-05: v0.159
-
-* 🟢 ADDED: switch button between search index and resource detail page of the same url
-* 🟢 ADDED: breadcrumb navigation 
-* ↗️ UPDATE: simplify resource detail page
-* ↗️ UPDATE: mark all unsecure cookies
-* ↗️ UPDATE: css update of default theme

@@ -415,10 +415,18 @@ class crawler extends crawler_base{
         $url = $response->getUrl();
         // list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
         $aTmp=explode("\r\n\r\n", $response->getResponseText(), 2);
-        $sHttpHeader=$aTmp[0];
+        $aHttpHeader=$aTmp[0];
 
         $info = $response->getResponseInfo();
-        $info['_responseheader']=$sHttpHeader;
+        $info['_responseheader']=$aHttpHeader;
+        $info = $response->getResponseInfo();
+        $info['_responseheader'] = $aHttpHeader;
+        if(!is_array($aHttpHeader) || !isset($aHttpHeader[0]) || !$aHttpHeader[0] ){
+            $info['_curlerror']=$response->getResponseError();
+            if ($info['_curlerror']) {
+                $info['_curlerrorcode']=$response->getResponseErrno();
+            };
+        }
 
         unset($response);
 

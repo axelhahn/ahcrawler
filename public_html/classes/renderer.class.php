@@ -33,20 +33,20 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * searchindex
-     * @var type 
+     * @var object 
      */
     protected $oCrawler = false;
 
     /**
      * ressource
-     * @var type 
+     * @var object
      */
     protected $oRes = false;
     
 
     /**
      * icons
-     * @var type 
+     * @var array 
      */
     private $_aIcons = array(
         /*
@@ -468,8 +468,8 @@ class ressourcesrenderer extends crawler_base {
                 ? $aRessourceItem['id_ressource_to']
                 : $aRessourceItem['id']
                 ;
-         * 
-         */
+        */
+
         if (array_key_exists($iIdRessource, $aUrllist)){
             return $sReturn .= $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
@@ -848,6 +848,13 @@ class ressourcesrenderer extends crawler_base {
                         . '</a> '
                     ;
         }
+        $sCurlError='';
+        if(isset($aResourceItem['lasterror'])){
+            $aErrData=json_decode($aResourceItem['lasterror'], 1);
+            if(isset($aErrData['_curlerror']) && $aErrData['_curlerror']){
+                $sCurlError .= $this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aErrData['_curlerror'], $aErrData['_curlerrorcode']), 'error');
+            }
+        }
         return '<div class="divRessourceAsLine'.($bUseLast ? ' last last-'.$this->_getCssClassesForHttpstatus($aResourceItem['http_code'], true) : '').'">'
                 . ' <span style="float: right; font-size: 70%;">'
                         . $sButtons
@@ -863,6 +870,7 @@ class ressourcesrenderer extends crawler_base {
                     ? $this->renderMessagebox(sprintf($this->lB("linkchecker.found-in-deny-list"), $this->oRes->isInDenyList($aResourceItem['url'])), 'ok')
                     : ''
                 )
+                .$sCurlError
                 
                 /*
                 . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
@@ -1199,12 +1207,9 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         $sHeader=$aItem['header'] ? $aItem['header'] : $aItem['lasterror'];
         $aHeaderJson=json_decode($sHeader, 1);
-        if(!isset($aHeaderJson['_responseheader'])){
-            $sReturn.=$this->renderMessagebox(
-                    ($sHeader ? 'INVALID HEADER DATA' : 'NO HEADER DATA'), 
-                    'error'
-                );
-            
+        // $sReturn.='<pre>'.print_r($aHeaderJson,1).'</pre>';
+        if(isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']){
+            $sReturn.=$this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error').'<br>';                    
         } else {
             $sReposneHeaderAsString= strlen($aHeaderJson['_responseheader'][0])!=1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
             

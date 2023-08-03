@@ -46,8 +46,9 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
     if ($sUrl && preg_match('#^http.*#', $sUrl)) {
 
         // ---------- request the url
-        $sResponse = $this->httpGet($sUrl, 1);
-        if ($sResponse) {
+        $aResponse = $this->httpGet($sUrl, 1);
+        if (!isset($aResponse['error'])) {
+            $sResponse=$aResponse['response'];
             $bShowResult = true;
 
             if (!preg_match('/^HTTP.*\ 200/', $sResponse)) {
@@ -66,7 +67,10 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
                 }
             }
         } else {
-            $sReturn .= $oRenderer->renderMessagebox($this->lB('httpheader.result.no-response'), 'error');
+            $sReturn .= $oRenderer->renderMessagebox(
+                sprintf($this->lB('ressources.no-response'), $aResponse['error'], $aResponse['errorcode'])
+                , 'error'
+                );
         }
     }
     $sReturn .= '</form>';

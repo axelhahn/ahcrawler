@@ -696,10 +696,16 @@ class ressources extends crawler_base {
         $url = $response->getUrl();
 
         // list($sHttpHeader, $sHttpBody)=explode("\r\n\r\n", $response->getResponseText(), 2);
-        $sHttpHeader=explode("\r\n\r\n", $response->getResponseText(), 1);
+        $aHttpHeader=explode("\r\n\r\n", $response->getResponseText(), 1);
         
         $info = $response->getResponseInfo();
-        $info['_responseheader'] = $sHttpHeader;
+        $info['_responseheader'] = $aHttpHeader;
+        if(!is_array($aHttpHeader) || !isset($aHttpHeader[0]) || !$aHttpHeader[0] ){
+            $info['_curlerror']=$response->getResponseError();
+            if ($info['_curlerror']) {
+                $info['_curlerrorcode']=$response->getResponseErrno();
+            };
+        }
 
         $oHttpstatus = new httpstatus($info);
 

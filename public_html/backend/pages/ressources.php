@@ -6,7 +6,7 @@
 $sReturn = '';
 $aCounter = array();
 $aFilter=array('http_code', 'ressourcetype','type', 'content_type');
-$aFields = array('id', 'url', 'siteid', 'http_code', 'ressourcetype', 'type', 'content_type');
+$aFields = array('id', 'url', 'siteid', 'http_code', 'ressourcetype', 'type', 'content_type', 'lasterror');
 
 $aLegendKeys=$aFields;
 unset($aLegendKeys[2]); // remove siteid
@@ -178,6 +178,7 @@ if ($iResCount) {
 
                 unset($aRow['id']);
                 unset($aRow['siteid']);
+                unset($aRow['lasterror']);
                 $aTable[] = $aRow;
             }
 

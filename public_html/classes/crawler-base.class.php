@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.163',
-        'date' => '2023-07-06',
+        'version' => '0.164',
+        'date' => '2023-08-03',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -700,12 +700,16 @@ class crawler_base {
     }
     
     /**
-     * make a single http(s) get request and return the response body
+     * make a single http(s) get request and return an array with the keys 
+     * - response: response body
+     * - error: curl error
+     * - errorcode
      * @param string   $url          url to fetch
      * @param boolean  $bHeaderOnly  optional: true=make HEAD request; default: false (=GET)
-     * @return string
+     * @return array
      */
     public function httpGet($url, $bHeaderOnly = false) {
+        $aReturn=[];
         $ch = curl_init($url);
         foreach ($this->_getCurlOptions() as $sCurlOption=>$sCurlValue){
             curl_setopt($ch, $sCurlOption, $sCurlValue);
@@ -715,8 +719,14 @@ class crawler_base {
             curl_setopt($ch, CURLOPT_NOBODY, 1);
         }
         $res = curl_exec($ch);
+        $aReturn['response']=$res;
+        if(!$res){
+            $aReturn['error']=curl_error($ch);
+            $aReturn['errorcode']=curl_errno($ch);
+        }
         curl_close($ch);
-        return ($res);
+        
+        return $aReturn;
     }
 
     /**
