@@ -178,6 +178,7 @@ if ($iResCount) {
 
                 unset($aRow['id']);
                 unset($aRow['siteid']);
+                unset($aRow['lasterror']);
                 $aTable[] = $aRow;
             }
 
