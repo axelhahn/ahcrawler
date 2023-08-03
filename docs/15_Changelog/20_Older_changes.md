@@ -36,8 +36,6 @@ This is a large update!
 
 The folder structure was changed: The files of the software and web ui were moved to "public_html" subfolder. This update will break installations that were initialized with a `git pull`.
 
---> See [Upgrade to v0.156](../00_%E2%9A%A0%EF%B8%8F_Upgrade_to_v0156.md)
-
 If you installed the software with git then you need to change the webserver config.
 
 The reason is: I added my local dev environment (rootless docker) and rewrote the current help with markdown files and added it too.
