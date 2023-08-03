@@ -33,20 +33,20 @@ class ressourcesrenderer extends crawler_base {
 
     /**
      * searchindex
-     * @var type 
+     * @var object 
      */
     protected $oCrawler = false;
 
     /**
      * ressource
-     * @var type 
+     * @var object
      */
     protected $oRes = false;
     
 
     /**
      * icons
-     * @var type 
+     * @var array 
      */
     private $_aIcons = array(
         /*
