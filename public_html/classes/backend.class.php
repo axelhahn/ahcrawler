@@ -67,6 +67,7 @@ class backend extends crawler_base {
                 'bookmarklet'=>array(), 
                 'httpstatuscode'=>array(), 
                 'langedit'=>array(), 
+                'counters'=>array(), 
                 // 'showicons'=>array(), // coming soon
                 'update'=>array(), 
             ),
@@ -123,6 +124,7 @@ class backend extends crawler_base {
             'httpstatuscode'=>'fab fa-font-awesome', 
             'showicons'=>'fa-solid fa-icons', 
             'langedit'=>'fa-regular fa-comment', 
+            'counters'=>'fa-solid fa-chart-simple', 
             'about'=>'fa-solid fa-info-circle', 
             'update'=>'fa-solid fa-cloud-download-alt', 
             'userprofile'=>'fa-solid fa-user', 
