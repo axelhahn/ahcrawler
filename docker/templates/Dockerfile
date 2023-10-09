@@ -2,7 +2,7 @@
 #
 # {{generator}}
 #
-FROM php:8.1-apache
+FROM php:{{APP_PHP_VERSION}}-apache
 
 # braucht der Crawler nicht:
 # RUN a2enmod rewrite
