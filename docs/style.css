@@ -1,13 +1,14 @@
 /*
 
     patch css elements of daux.io blue theme
-    version 2022-12-04
+    version 2023-10-09
 
 */
 
 :root {
 
     /* Axels Overrides */
+    --color-text: #567;
     --link-color: #37a;
     --brand-color: var(--color-secondary);
     --brand-background: var(--body-background);
@@ -24,6 +25,7 @@
     /* Axels custom values */
     --axel_bg-toc: var(--body-background);
     --axel_bg-toc-head: #f8f8f8;
+    --axel_color-toc:#89a;
 
     --axel_brand-background: none;
     --axel_brand-pre-background: #8ce;
@@ -34,13 +36,13 @@
     --axel_h1: #aaa;
     --axel_h1-bg: none;
     --axel_h1-bottom: 3px solid none;
-    --axel_h2: #27a;
+    --axel_h2: #123;
     --axel_h2-bg: #fafafa;
     --axel_h2-bottom: 2px solid #8ce;
-    --axel_h3: #838;
+    --axel_h3: #468;
     --axel_h3-bg: none;
     --axel_h3-bottom: 1px solid #ddd;
-    --axel_h4: #c74;
+    --axel_h4: #8ac;
     --axel_h4-bg: none;
     --axel_h4-bottom: 1px dashed #ddd;
 
@@ -59,7 +61,7 @@
 .dark {
 
     /* Axels Overrides */
-    --color-text: #c0c0c0;
+    --color-text: #789;
     --link-color: #6bd;
 
     --brand-color: var(--color-text);
@@ -87,13 +89,15 @@
     --axel_h1: #777;
     --axel_h1-bg: none;
     --axel_h1-bottom: none;
-    --axel_h2: #27a;
+    --axel_h2: #666;
     --axel_h2-bg: #282828;
     --axel_h2-bottom: 2px solid #256;
     --axel_h3: #838;
+    --axel_h3: #578;
     --axel_h3-bg: none;
     --axel_h3-bottom: 1px solid #333;
     --axel_h4: #c74;
+    --axel_h4: #689;
     --axel_h4-bg: none;
     --axel_h4-bottom: 1px dashed #333;
 
@@ -171,8 +175,9 @@ article nav{border-top: var(--axel-article-nav-border-top); margin: 8em 0 5em;}
 .optional{color:#888;}
 
 div.hero{background: var(--axel_hero_bg);border-radius: 2em; padding: 5em 2em;text-align: center;} 
-div.hero h2{color: var(--color-text); background: none; _border: none; text-align: center; font-size: 300%; margin: 0 0 2em;}
+div.hero h2{background: none; _border: none; text-align: center; font-size: 300%; margin: 0 0 2em;}
 div.hero p.center{text-align: center;}
+
 
 /* ---------- classes ---------- */
 
@@ -193,10 +198,11 @@ div.hero p.center{text-align: center;}
 
 .s-content .TableOfContentsContainer h4{
     background-color: var(--axel_bg-toc-head);
-    border-top-left-radius: 1em;
-	font-size: 1.1em;
+    border-top-left-radius: 0.7em;
+	font-size: 1.2em;
+    font-weight: bold;
     margin: 0;
-    padding: 0;
+    padding: 0.3em 0.7em;
 }
 
 .TableOfContentsContainer__content {
@@ -207,6 +213,9 @@ div.hero p.center{text-align: center;}
 ul.TableOfContents ul{
 	list-style-type: none;
     padding-left: 1em;
+}
+ul.TableOfContents a {
+	color: var(--axel_color-toc);
 }
 
 .EditOn a::before{
