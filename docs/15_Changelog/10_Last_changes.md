@@ -2,6 +2,8 @@
 
 ### 2023
 
+#### 2023-10-NN: v0.165
+
 * 🟢 ADDED: viewer page for all counters
 * ↗️ UPDATE: Medoo (AcCrawler is compatible with PGHP 8.2 with it)
 * ↗️ UPDATE: docker dev environment
@@ -30,10 +32,3 @@
 * ↗️ UPDATE: pure 2.1.0 --> 3.0.0
 * ↗️ UPDATE: jQuery 3.6.1 --> 3.6.4
 * ↗️ UPDATE: font-awesome 5.15.4 --> 6.4.0
-
-#### 2023-03-09: v0.160
-
-* 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
-  You can wait until currently wrong counter values are out of scope after 90d or you can execute `truncate counteritems` and `truncate counters` on the database to delete them.
-* ↗️ UPDATE: css update of default theme
-* ↗️ UPDATE: fix php warnings in some classes

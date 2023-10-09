@@ -2,6 +2,13 @@
 
 ### 2023
 
+#### 2023-03-09: v0.160
+
+* 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
+  You can wait until currently wrong counter values are out of scope after 90d or you can execute `truncate counteritems` and `truncate counters` on the database to delete them.
+* ↗️ UPDATE: css update of default theme
+* ↗️ UPDATE: fix php warnings in some classes
+
 #### 2023-03-05: v0.159
 
 * 🟢 ADDED: switch button between search index and resource detail page of the same url
