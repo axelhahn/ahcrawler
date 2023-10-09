@@ -2,6 +2,10 @@
 
 ### 2023
 
+* 🟢 ADDED: viewer page for all counters
+* ↗️ UPDATE: Medoo (AcCrawler is compatible with PGHP 8.2 with it)
+* ↗️ UPDATE: docker dev environment
+
 #### 2023-08-03: v0.164
 
 * 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
