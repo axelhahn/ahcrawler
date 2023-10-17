@@ -5,7 +5,8 @@
 #### 2023-10-NN: v0.165
 
 * 🟢 ADDED: viewer page for all counters
-* ↗️ UPDATE: Medoo (AcCrawler is compatible with PGHP 8.2 with it)
+* ↗️ UPDATE: Medoo (AcCrawler is compatible with PHP 8.2 with it)
+* ↗️ UPDATE: dark skin
 * ↗️ UPDATE: docker dev environment
 
 #### 2023-08-03: v0.164
