@@ -1,23 +1,23 @@
 :root {
     --color-default:#567;
+    --color-bg-boxes:#1c1c20;
     --color-h1:#68a;
-    --color-h2:#567;
-    --color-h3:#679;
-    --color-h4:#78b;
+    --color-h2: #962;
+    --color-h3:#477;
+    --color-h4:#747;
     --color-bg-default:#202428;
     --color-bg-default:#242630;
     --color-shadow-default:rgba(0,0,0,0.4);
     
     --color-pacman: #925;
 
-    --color-childitem-i: #567;
-    --color-childitem-title: #679;
+    --color-childitem-i: #477;
+    --color-childitem-title: #567;
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
     --color-border-click:#cde;
     
-    --sidebar-bg: #222;
     --sidebar-bg: #1c1c20;
     --sidebar-box-shadow: 0 0 2em #222;
 
@@ -31,9 +31,9 @@
     --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
     --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
-    --context-head-bg:radial-gradient(#303840,#456);
+    --context-head-bg:radial-gradient(#202028,#303840);
     
-    --pagehint-bg:rgba(255,255,255,0.03);
+    --pagehint-bg:rgba(0,0,0,0.2);
 
     --status-bg-error:radial-gradient(#422,#844);
     --status-bg-error-flat:rgb(114, 59, 59);
@@ -54,12 +54,11 @@
     --chart-border:5px solid #222;
 }
 a{color:#568;}
-body, .contextbox{
+body, .contextbox, h2{
 	color: var(--color-default);
-    background: var(--color-bg-default) url('bg_main.png') fixed;
-    background: var(--color-bg-default) fixed;
+    background-image: url('bg_main.png');
 }
-h2{box-shadow: none;}
+h2{box-shadow: none; color: var(--color-h2);}
 h3{border-top-color: rgba(255,255,255,0.1); }
 h4 {border-bottom: 1px dashed #444;}
 hr {border-bottom: 2px dotted #444;}
