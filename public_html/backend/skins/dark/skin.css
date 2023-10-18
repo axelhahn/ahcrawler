@@ -17,38 +17,46 @@
     --color-border-active:#89a;
     --color-border-click:#fc2;
     --color-border-click:#cde;
-    
-    --sidebar-bg: #1c1c20;
-    --sidebar-box-shadow: 0 0 2em #222;
 
+    --context-head-bg:radial-gradient(#202028,#283034);
+    
     --navi-bg-l1-active:#101010;
     --navi-bg-l2-active:#141414;
     --navi-bg-l3-active: #ccc;
     --navi-bg-on-hover:#0c0e0f;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
+    --sidebar-bg: #1c1c20;
+    --sidebar-box-shadow: 0 0 2em #222;
+
     --tile-bg:radial-gradient(#202028,#283034);
     --tile-color:none;
     --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
     --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
-    --context-head-bg:radial-gradient(#202028,#283034);
     
     --pagehint-bg:rgba(0,0,0,0.2);
 
     --status-bg-error:radial-gradient(#322,#422);
     --status-bg-error-flat:rgb(114, 59, 59);
-    --status-bg-warning:radial-gradient(#503020,#753);
+    --status-bg-warning:radial-gradient(#503020,#643);
     --status-bg-warning-flat:rgb(83, 68, 45);
     --status-bg-ok:radial-gradient(#283430,#354);
     --status-bg-ok-flat:rgb(45, 71, 58);
-    --status-bg-todo:radial-gradient(#303030,#202020);
+    --status-bg-todo:radial-gradient(#303030,#101010);
     
     --status-color-error:#c88;
     --status-color-warning:#b97;
-    --status-color-ok:#7a9;
-    --status-color-todo:#778;
+    --status-color-ok:#597;
+    --status-color-todo:#666;
     
+    --toggle-head-a-bg: var(--DEFAULT-darken-5);
+    --toggle-head-a-border: rgba(0,0,0,0);
+    --toggle-head-a-color: none;
+    --toggle-head-a-hover-bg: var(--DEFAULT-darken-2);
+    --toggle-head-a-hover-border: var(--border1);
+    --toggle-head-a-open-color: #a44;
+
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --chart-background_V: linear-gradient(-7deg, #080810,#102030 20%,#345 60%,#234 90%,#123);
     --chart-background: rgba(0,0,0,0.1);
@@ -91,7 +99,7 @@ a.childitem:hover{
 
 .pure-button{background: rgba(255,255,255,0.25); color:#999;}
 .pure-table{background:none; border-color: rgba(255,255,255,0.05);}
-.pure-table-horizontal th{background-color: #283040; color:var(--color-default)}
+.pure-table-horizontal th{background-color: #202830; color:var(--color-default)}
 .pure-table-horizontal th:hover{background-color: #304050;}
 
 .pure-table tr:hover, table.dataTable tbody tr:hover{background: rgba(255,255,255,0.01);}
