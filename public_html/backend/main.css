@@ -291,7 +291,7 @@ body, .contextbox, .piechart{
 
 
 /* level 1 */
-.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l); border-bottom: 0px dotted var(--color-default); border-left: 0px solid var(--color-default); margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
+.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 0px dotted var(--color-default); border-left: 0px solid var(--color-default); margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
 .header .pure-menu-list .pure-menu-list .pure-menu-link {
     border-color: var(--color-default);
     padding: 0.3em;
@@ -310,10 +310,13 @@ body, .contextbox, .piechart{
 */
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link{border-color: none; }
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link,
-.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:focus{color:var(--navi-bg-l3-active); text-decoration: none; padding: 0.2em;}
+.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:focus,
+.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:active
+    {color:var(--color-default); text-decoration: none; padding: 0.2em;}
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:hover{text-decoration: underline; background: none;}
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link-active{
     background: var(--navi-bg-on-hover);
+    color:var(--color-default);
 }
 /* --- menu top (profiles) ---
 .pure-menu-horizontal{margin-left: 0;border-bottom: 1px solid rgba(0,0,0,0.05); box-shadow: 0 0 1em rgba(0,0,0,0.05);}

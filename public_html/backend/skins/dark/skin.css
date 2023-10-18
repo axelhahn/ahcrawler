@@ -1,8 +1,8 @@
 :root {
-    --color-default:#567;
+    --color-default:#777;
     --color-bg-boxes:#1c1c20;
-    --color-h1:#68a;
-    --color-h2: #962;
+    --color-h1:#578;
+    --color-h2: #578;
     --color-h3:#477;
     --color-h4:#747;
     --color-bg-default:#202428;
@@ -12,7 +12,7 @@
     --color-pacman: #925;
 
     --color-childitem-i: #477;
-    --color-childitem-title: #567;
+    --color-childitem-title: none;
 
     --color-border-active:#89a;
     --color-border-click:#fc2;
@@ -21,31 +21,32 @@
     --sidebar-bg: #1c1c20;
     --sidebar-box-shadow: 0 0 2em #222;
 
-    --navi-bg-l1-active:#404850;
-    --navi-bg-l2-active:#505860;
-    --navi-bg-on-hover:#c0d0dc;
+    --navi-bg-l1-active:#101010;
+    --navi-bg-l2-active:#141414;
+    --navi-bg-l3-active: #ccc;
+    --navi-bg-on-hover:#0c0e0f;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
-    --tile-bg:radial-gradient(#202028,#303840);
-    --tile-color:#789;
+    --tile-bg:radial-gradient(#202028,#283034);
+    --tile-color:none;
     --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
     --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
-    --context-head-bg:radial-gradient(#202028,#303840);
+    --context-head-bg:radial-gradient(#202028,#283034);
     
     --pagehint-bg:rgba(0,0,0,0.2);
 
-    --status-bg-error:radial-gradient(#422,#844);
+    --status-bg-error:radial-gradient(#322,#422);
     --status-bg-error-flat:rgb(114, 59, 59);
-    --status-bg-warning:radial-gradient(#432,#863);
+    --status-bg-warning:radial-gradient(#503020,#753);
     --status-bg-warning-flat:rgb(83, 68, 45);
-    --status-bg-ok:radial-gradient(#133,#354);
+    --status-bg-ok:radial-gradient(#283430,#354);
     --status-bg-ok-flat:rgb(45, 71, 58);
     --status-bg-todo:radial-gradient(#303030,#202020);
     
     --status-color-error:#c88;
     --status-color-warning:#b97;
-    --status-color-ok:#587;
+    --status-color-ok:#7a9;
     --status-color-todo:#778;
     
     --boxes-border:2px solid rgba(0,0,0,0.02);
@@ -65,7 +66,7 @@ hr {border-bottom: 2px dotted #444;}
 input, option, select, textarea{background: rgba(255,255,255,0.3); border-color: var(--color-bg-default );}
 
 code,pre{background: rgba(0,0,0,0.1); }
-.message pre{ color: rgba(0,0,0,0.8); }
+.message pre{ color: rgba(255,255,255,0.5); }
 div.contextbox .head{color: rgba(255,255,255,0.4);opacity: 1;}
 
 a.childitem{
@@ -77,15 +78,15 @@ a.childitem:hover{
 
 
 /* ----- override pure elements ----- */
-.header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:#89a;}
-.header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:#89a;}
+.header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:var(--color-default);}
+.header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:var(--color-default);}
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active,
     .pure-menu a:active{
 	border-color: var(--color-default);
 }
 
 .pure-menu-link i {
-	color: #89a;
+	color: var(--color-default);
 }
 
 .pure-button{background: rgba(255,255,255,0.25); color:#999;}
