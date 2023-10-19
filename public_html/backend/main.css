@@ -51,7 +51,6 @@
     --sidebar-bg: #fff;
     --sidebar-box-shadow: 0 0 2em #e0ecf0;
 
-    --button-bg: #e0e4e8;
     --button-bg: #d8dce0;
     --button-text-color: var(--DEFAULT-markedelement-color);
     --button-textshadow-color: rgba(0, 0, 0, 0.4);
@@ -342,6 +341,7 @@ body, .contextbox, .piechart{
     border: 1px solid rgba(0, 0, 0, 0.1);
     */
     background: var(--button-bg);
+    color: var(--button-text-color);
 }
 .pure-button:hover {
     /*
@@ -624,12 +624,6 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .http-code-0xx,.http-code-301,.http-code-4xx, .http-code-9xx {background:var(--http-code-error-bg);}
 .http-code-5xx {background:var(--http-code-5xx-bg);}
 
-/* TODO: unused??
-.last-http-code-2xx {background:#dec;}
-.last-http-code-3xx{background:#fec;}
-.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#fdd;}
-.last-http-code-5xx {background:#ece;}
-*/
 
 /* --- types --- */
 .type-external{color:var(--type-external-color);}

@@ -1,11 +1,16 @@
 :root {
+    --DEFAULT-markedelement-color: #fff;
+    --DEFAULT-mark-ok: rgb(40, 144, 90);
+    --DEFAULT-mark-error: rgb(170, 60, 60);
+    --DEFAULT-mark-warning: rgb(223, 117, 20);
+
     --color-default:#777;
     --color-bg-boxes:#1c1c20;
     --color-h1:#578;
     --color-h2: #578;
     --color-h3:#477;
-    --color-h4:#747;
-    --color-bg-default:#202428;
+    --color-h4:#646;
+    --color-a:#67a;
     --color-bg-default:#242630;
     --color-shadow-default:rgba(0,0,0,0.4);
     
@@ -26,8 +31,27 @@
     --navi-bg-on-hover:#0c0e0f;
     --navi-bg-on-hover:rgba(120,130,138,0.1);
 
+    --overlay-bg:rgba(0,0,0,0.1);
+    --overlay-dialog-bg: #222024;
+    --overlay-dialog-border:rgba(0,0,0,0.5);
+    --overlay-dialog-shadow-color1:#000;
+    --overlay-dialog-shadow-color2:#333;
+    --overlay-dialog-title-bg:#578;
+    --overlay-dialog-title-color:var(--DEFAULT-markedelement-color);
+
     --sidebar-bg: #1c1c20;
     --sidebar-box-shadow: 0 0 2em #222;
+
+    --button-bg: #283040;
+    --button-text-color: var(--color-default);
+    --button-textshadow-color: none;
+    --button-secondary-bg: rgb(40, 110, 140);
+
+    --button-varname-color: #838;
+    --button-value-color: #388;
+
+    --http-code-color: rgba(0,0,0,0.7);
+    --http-code-5xx-bg:#b6b;
 
     --tile-bg:radial-gradient(#202028,#283034);
     --tile-color:none;
@@ -50,6 +74,8 @@
     --status-color-ok:#597;
     --status-color-todo:#666;
     
+    --table-tr-marked-bg: #303438;
+
     --toggle-head-a-bg: var(--DEFAULT-darken-5);
     --toggle-head-a-border: rgba(0,0,0,0);
     --toggle-head-a-color: none;
@@ -57,12 +83,27 @@
     --toggle-head-a-hover-border: var(--border1);
     --toggle-head-a-open-color: #a44;
 
+    --table-head-hover-color: var(--color-default);
+
     --boxes-border:2px solid rgba(0,0,0,0.02);
     --chart-background_V: linear-gradient(-7deg, #080810,#102030 20%,#345 60%,#234 90%,#123);
     --chart-background: rgba(0,0,0,0.1);
     --chart-border:5px solid #222;
 }
-a{color:#568;}
+
+
+
+.button-success,
+.button-error,
+.button-warning,
+.button-secondary {
+    color: #222;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+    text-shadow: none;
+}
+
+
+
 body, .contextbox, h2{
 	color: var(--color-default);
     background-image: url('bg_main.png');
@@ -97,7 +138,6 @@ a.childitem:hover{
 	color: var(--color-default);
 }
 
-.pure-button{background: rgba(255,255,255,0.25); color:#999;}
 .pure-table{background:none; border-color: rgba(255,255,255,0.05);}
 .pure-table-horizontal th{background-color: #202830; color:var(--color-default)}
 .pure-table-horizontal th:hover{background-color: #304050;}
@@ -131,25 +171,6 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .pure-table tr.unwanted{background: #432; color:rgba(255,255,255,0.4);}
 
 /* ----- custom elements ----- */
-#overlay div.divdialog {
-    background: #222024;
-    box-shadow: 0.1em 0.1em 2em #333, 0.5em 0.5em 3em #000;
-}
-.pure-button {background: #283040;}
-
-.button-success,
-.button-error,
-.button-warning,
-.button-secondary {
-    color: #222;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-    text-shadow: none;
-}
-
-.button-success {background: rgb(40, 144, 90); /* this is a green */}
-.button-error {background: rgb(170, 60, 60); /* this is a maroon */}
-.button-warning {background: rgb(223, 117, 20); /* this is an orange */}
-.button-secondary {background: rgb(40, 110, 140); /* this is a light blue */}
 
 .div-toggle{background: none;}
 .div-toggle-head a{background: rgba(255,255,255,0.03);}
@@ -181,21 +202,11 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 
 .http-code {
     box-shadow: none;
-    color: #111;
     opacity: 0.5;
 }
-.last-http-code-2xx {background:#143;}
-.last-http-code-3xx{background:#542;}
-.last-http-code-0,.last-http-code-301,.last-http-code-4xx, .last-http-code-9xx {background:#422;}
-.last-http-code-5xx {background:#535;}
-
-.divRessourceReport.http-code-2xx {border-color: var(--status-color-ok);}
-.divRessourceReport.http-code-3xx{border-color: var(--status-color-warning);}
-.divRessourceReport.http-code-0,.http-code-301,.http-code-4xx, .http-code-9xx {border-color: var(--status-color-error);}
-.divRessourceReport.http-code-5xx {border-color: #b6b;}
 
 .divRessource {border: 1px solid rgba(255,255,255,0.1);}
-.divRessourceHead {background-color: #234;}
+.divRessourceHead {background-color: var(--DEFAULT-darken-10);}
 
 div.person {
     background: rgba(0,0,0,0.1);
