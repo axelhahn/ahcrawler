@@ -15,12 +15,23 @@
     --DEFAULT-darken-5: rgba(0,0,0,0.05);
     --DEFAULT-darken-2: rgba(0,0,0,0.02);
     
-    --border1: rgba(0,0,0,0.1);
+    --DEFAULT-lighten-10: rgba(255,255,255,0.1);
+    --DEFAULT-lighten-7: rgba(255,255,255,0.07);
+    --DEFAULT-lighten-5: rgba(255,255,255,0.05);
+    --DEFAULT-lighten-2: rgba(255,255,255,0.02);
 
-    --color-bg-default:#f8f8f8;
-    --color-bg-boxes:#f0f4f4;
+    /*
+        -----=====| MAIN COLORS |=====-----
+    */
     --color-a:#35a;
+    --color-bg-default:#f8f8f8;
     --color-default:#444;
+
+    /*
+        -----=====| PAGE LAYOUT |=====-----
+    */
+    --color-border-active:#89a;
+    --color-border-click:#cde;
     --color-h1:#346;
     --color-h2:#457;
     --color-h3:#589;
@@ -30,26 +41,45 @@
     --color-hr:#ddd;
     --color-shadow-default:#c0d0d8;
 
-    --color-pacman: #69a;
+    --context-head-bg:#78a;
+    --context-head-fg:var(--DEFAULT-markedelement-color);
 
-    --color-childitem-i: #808890;
-    --color-childitem-i: #568;
-    --color-childitem-background: var(--color-bg-boxes);
-    --color-childitem-border: var(--DEFAULT-darken-5);
-    --color-childitem-title: #589;
-
-    --color-border-active:#89a;
-    --color-border-click:#fc2;
-    --color-border-click:#cde;
-
-    --actionbox-bg: rgba(140,160,180,0.1);
-
-    --boxes-border:2px solid rgba(0,0,0,0.02);
-    --brand-title-bg: rgba(140,160,200,0.1);
-    --brand-title-bg: none;
-
+    /* -- menu left -- */
     --sidebar-bg: #fff;
     --sidebar-box-shadow: 0 0 2em #e0ecf0;
+
+    --brand-title-bg: none;
+    --color-pacman: #69a;
+
+    --navi-bg-l1:rgba(0,0,0,0.03);
+    --navi-bg-l1-active:#568;
+    --navi-bg-l2-active:#78a;
+    --navi-bg-l3-active:#567;
+    --navi-bg-on-hover:#c0d0dc;
+    --navi-bg-on-hover:rgba(160,170,190,0.1);
+
+    --navi-icon-color:#808890;
+    --navi-icon-color-active:var(--DEFAULT-markedelement-color);
+
+    --overlay-bg:rgba(0,0,0,0.1);
+    --overlay-dialog-bg:#fff;
+    --overlay-dialog-border:rgba(0,0,0,0.5);
+    --overlay-dialog-shadow-color1:#fff;
+    --overlay-dialog-shadow-color2:#333;
+    --overlay-dialog-title-bg:#789;
+    --overlay-dialog-title-color:var(--DEFAULT-markedelement-color);
+
+    --pagehint-bg:#d0e8e0;
+
+    /* -- foooter -- */
+    --footer-bg: var(--DEFAULT-darken-5);
+    --statusbar-bg: #cde;
+
+    /*
+        -----=====| PAGE ELEMENTS |=====-----
+    */
+    --actionbox-bg: rgba(140,160,180,0.1);
+    --border1: var(--DEFAULT-darken-10);
 
     --button-bg: #d8dce0;
     --button-text-color: var(--DEFAULT-markedelement-color);
@@ -61,6 +91,16 @@
 
     --button-varname-color: #838;
     --button-value-color: #388;
+
+    --color-bg-boxes:#f0f4f4;
+
+    --color-childitem-i: #808890;
+    --color-childitem-i: #568;
+    --color-childitem-background: var(--color-bg-boxes);
+    --color-childitem-border: var(--DEFAULT-darken-5);
+    --color-childitem-title: #589;
+
+    --boxes-border:2px solid rgba(0,0,0,0.02);
 
     --chart-background: none;
     --chart-border:5px solid var(--DEFAULT-markedelement-color);
@@ -77,15 +117,10 @@
         --chart-color-5:#eb6;
     /* /TODO */
 
-    --context-head-bg:#78a;
-    --context-head-fg:var(--DEFAULT-markedelement-color);
-
     --debug-container-bg:#f8f8f8;
     --div-bar-border: var(--border1);
 
     --extended-bg: rgba(0,0,0,0.05);
-
-    --footer-bg: rgba(0,0,0,0.05);
 
     --form-label-hover-bg:rgba(255,255,255,0.3);
     --form-select-hover-bg:rgba(255,255,255,0.7);
@@ -123,27 +158,6 @@
     --ico-miss-color:#c42;
     --ico-found-color:#083;
 
-    --navi-bg-on-hover:#c0d0dc;
-    --navi-bg-on-hover:rgba(160,170,190,0.1);
-
-    --navi-bg-l1:rgba(0,0,0,0.03);
-    --navi-bg-l1-active:#568;
-    --navi-bg-l2-active:#78a;
-    --navi-bg-l3-active:#567;
-
-    --navi-icon-color:#808890;
-    --navi-icon-color-active:var(--DEFAULT-markedelement-color);
-
-    --overlay-bg:rgba(0,0,0,0.1);
-    --overlay-dialog-bg:#fff;
-    --overlay-dialog-border:rgba(0,0,0,0.5);
-    --overlay-dialog-shadow-color1:#fff;
-    --overlay-dialog-shadow-color2:#333;
-    --overlay-dialog-title-bg:#789;
-    --overlay-dialog-title-color:var(--DEFAULT-markedelement-color);
-
-    --pagehint-bg:#d0e8e0;
-
     --person-bg:rgba(255,255,255,0.5);
     --person-border:rgba(0,0,0,.1);
 
@@ -169,8 +183,6 @@
     --status-color-ok:#50705c;
     --status-color-warning:#975;
     --status-color-todo:#778;
-
-    --statusbar-bg: #cde;
 
     --table-bg: #fff;
     --table-head-bg: #8ab;
