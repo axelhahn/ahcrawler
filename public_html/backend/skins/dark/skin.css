@@ -26,9 +26,10 @@
     --color-h3:#477;
     --color-h4:#646;
     --color-hr:#ddd;
-    --color-shadow-default:var(--DEFAULT-darken-5);
+    --color-shadow-default:rgba(0,0,0,0.7);
+    --color-shadow-hover:rgba(40,80,100,0.7);
 
-    --context-head-bg: var(--DEFAULT-lighten-5);
+    --context-head-bg: #234;
 
     /* -- menu left -- */
     --sidebar-bg: #1c1c20;
@@ -59,6 +60,7 @@
     /*
         -----=====| PAGE ELEMENTS |=====-----
     */
+    --actionbox-bg: var(--DEFAULT-darken-15);
     --border1: var(--DEFAULT-darken-10);
 
     --button-bg: #283040;
@@ -79,11 +81,6 @@
     --http-code-color: rgba(0,0,0,0.7);
     --http-code-5xx-bg:#b6b;
 
-    --tile-bg:radial-gradient(#202028,#283034);
-    --tile-color:none;
-    --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
-    --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
-
     --status-bg-error:radial-gradient(#322,#422);
     --status-bg-error-flat:rgb(114, 59, 59);
     --status-bg-warning:radial-gradient(#503020,#643);
@@ -97,7 +94,20 @@
     --status-color-ok:#597;
     --status-color-todo:#666;
     
+    --table-bg: #202028;
+    --table-head-bg: #234;
+    --table-head-color: var(--color-default);
+    --table-head-hover-bg: #345;
+    --table-head-hover-color: #f8f8f8;
+    --table-head-select-bg: #345;
+    --table-head-select-color: #cde;
+
     --table-tr-marked-bg: #303438;
+
+    --tile-bg:radial-gradient(#242430,#202028);
+    --tile-color:none;
+    --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
+    --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
     --toggle-head-a-bg: var(--DEFAULT-darken-5);
     --toggle-head-a-border: rgba(0,0,0,0);
@@ -128,7 +138,7 @@
 
 body, .contextbox, h2{
 	color: var(--color-default);
-    background-image: url('bg_main.png');
+    background: url('bg_main.jpg') fixed;
 }
 h2{box-shadow: none; color: var(--color-h2);}
 h3{border-top-color: rgba(255,255,255,0.1); }
@@ -144,7 +154,7 @@ a.childitem{
     color:var(--color-default);
 }
 a.childitem:hover{
-    background: none;
+    box-shadow: 0 0 1em var(--color-shadow-hover);
 }
 
 
@@ -160,13 +170,15 @@ a.childitem:hover{
 	color: var(--color-default);
 }
 
-.pure-table{background:none; border-color: rgba(255,255,255,0.05);}
+/*
+.pure-table{border-color: rgba(255,255,255,0.05);}
 .pure-table-horizontal th{background-color: #202830; color:var(--color-default)}
 .pure-table-horizontal th:hover{background-color: #304050;}
 
 .pure-table tr:hover, table.dataTable tbody tr:hover{background: rgba(255,255,255,0.01);}
 .pure-table-horizontal td{border-bottom-width: 0;}
 .pure-table-horizontal td, .pure-table-horizontal th{border-bottom-color: rgba(255,255,255,0.01);}
+*/
 
 .pure-form input[type="color"], .pure-form input[type="date"], .pure-form input[type="datetime-local"], .pure-form input[type="datetime"], .pure-form input[type="email"], .pure-form input[type="month"], .pure-form input[type="number"], .pure-form input[type="password"], .pure-form input[type="search"], .pure-form input[type="tel"], .pure-form input[type="text"], .pure-form input[type="time"], .pure-form input[type="url"], .pure-form input[type="week"], .pure-form select, .pure-form textarea
 {border: 1px solid #111; box-shadow: inset 0 1px 3px #111;}
@@ -175,6 +187,7 @@ a.childitem:hover{
     background-color: rgba(255,255,255,0.3);
 }
 
+/*
 table.dataTable tbody tr{background: none;}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc{background-color: #234; color:#789;}
 table.dataTable thead th:hover{background-color: #304050;}
@@ -182,6 +195,7 @@ table.dataTable thead th:hover{background-color: #304050;}
 .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
         background: rgba(255,255,255,0.25); color:#999;
 }
+*/
 div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,255,0.02);} 
 
 /* --- http response header tags ---  */
@@ -194,13 +208,13 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 
 /* ----- custom elements ----- */
 
-.div-toggle{background: none;}
-.div-toggle-head a{background: rgba(255,255,255,0.03);}
+.div-toggle{background: var(--DEFAULT-darken-10);}
+.div-toggle-head a{background: var(--DEFAULT-darken-15);}
 
 .divRessourceReport {background: none;}
-.divRessourceReport:hover {background: rgba(255,255,255,0.02);}
+.divRessourceReport:hover {background: var(--DEFAULT-lighten-2);}
 .divRessourceAsLine {border-bottom: 1px solid #234; }
-.divRessourceAsLine:hover {background: rgba(0,0,0,0.1);}
+.divRessourceAsLine:hover {background: var(--DEFAULT-darken-10);}
 
 /* --- color for pie chart --- */
 

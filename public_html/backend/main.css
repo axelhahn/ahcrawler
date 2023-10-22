@@ -10,6 +10,7 @@
     --DEFAULT-mark-error: rgb(177, 86, 86);
     --DEFAULT-mark-warning: rgb(216, 124, 38);
 
+    --DEFAULT-darken-15: rgba(0,0,0,0.15);
     --DEFAULT-darken-10: rgba(0,0,0,0.1);
     --DEFAULT-darken-7: rgba(0,0,0,0.07);
     --DEFAULT-darken-5: rgba(0,0,0,0.05);
@@ -707,11 +708,15 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .divRessourceReport .references{margin: 0 0 0 2em; padding-left: 0.5em;}
 
 /* --- tables --- */
-.pure-table{background: var(--table-bg);}
+.pure-table, table.dataTable tbody tr{background: var(--table-bg); border: 1px solid var(--border1);}
 .pure-table-horizontal th{background-color:var(--table-head-bg); color:var(--table-head-color); text-align: left;}
 .pure-table-horizontal th:hover{background-color:var(--table-head-hover-bg); color:var(--table-head-hover-color);}
 table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
     background-color:var(--table-head-select-bg); color:var(--table-head-select-color);
+}
+
+.pure-table-horizontal td, .pure-table-horizontal th {
+	border-bottom: 1px solid var(--border1);
 }
 .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate
 {color: inherit;}
