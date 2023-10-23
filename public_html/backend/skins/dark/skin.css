@@ -104,9 +104,11 @@
 
     --table-tr-marked-bg: #303438;
 
-    --tile-bg:radial-gradient(#242430,#202028);
+    --tile-bg__:radial-gradient(#242430,#202028);
+    --tile-bg: var(--color-bg-boxes);
+    --tile-border-color: #181818;
     --tile-color:none;
-    --tile-shadow-hover: 0 0 5px #000, 0 0 1em #468;
+    --tile-shadow-hover: 0 0 5px #000, 0 0 1em var(--color-shadow-hover);
     --tile-shadow:-2px -2px 5px #222, 0 0 0.9em var(--color-shadow-default);
 
     --toggle-head-a-bg: var(--DEFAULT-darken-5);
@@ -170,16 +172,6 @@ a.childitem:hover{
 	color: var(--color-default);
 }
 
-/*
-.pure-table{border-color: rgba(255,255,255,0.05);}
-.pure-table-horizontal th{background-color: #202830; color:var(--color-default)}
-.pure-table-horizontal th:hover{background-color: #304050;}
-
-.pure-table tr:hover, table.dataTable tbody tr:hover{background: rgba(255,255,255,0.01);}
-.pure-table-horizontal td{border-bottom-width: 0;}
-.pure-table-horizontal td, .pure-table-horizontal th{border-bottom-color: rgba(255,255,255,0.01);}
-*/
-
 .pure-form input[type="color"], .pure-form input[type="date"], .pure-form input[type="datetime-local"], .pure-form input[type="datetime"], .pure-form input[type="email"], .pure-form input[type="month"], .pure-form input[type="number"], .pure-form input[type="password"], .pure-form input[type="search"], .pure-form input[type="tel"], .pure-form input[type="text"], .pure-form input[type="time"], .pure-form input[type="url"], .pure-form input[type="week"], .pure-form select, .pure-form textarea
 {border: 1px solid #111; box-shadow: inset 0 1px 3px #111;}
 
@@ -187,15 +179,6 @@ a.childitem:hover{
     background-color: rgba(255,255,255,0.3);
 }
 
-/*
-table.dataTable tbody tr{background: none;}
-table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc{background-color: #234; color:#789;}
-table.dataTable thead th:hover{background-color: #304050;}
-
-.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
-        background: rgba(255,255,255,0.25); color:#999;
-}
-*/
 div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,255,0.02);} 
 
 /* --- http response header tags ---  */
@@ -205,6 +188,13 @@ div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,
 .pure-table tr.security{background: #343; color:rgba(255,255,255,0.4);}
 .pure-table tr.unknown{color:#444;}
 .pure-table tr.unwanted{background: #432; color:rgba(255,255,255,0.4);}
+
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+	color: var(--color-default) !important;
+	border: 1px solid var(--border1);
+	background: var(--color-bg-boxes) !important;
+}
 
 /* ----- custom elements ----- */
 
