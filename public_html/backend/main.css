@@ -83,7 +83,7 @@
     --border1: var(--DEFAULT-darken-10);
 
     --button-bg: #d8dce0;
-    --button-text-color: var(--DEFAULT-markedelement-color);
+    --button-text-color: #303438;
     --button-textshadow-color: rgba(0, 0, 0, 0.4);
     --button-success-bg: var(--DEFAULT-mark-ok);
     --button-error-bg: var(--DEFAULT-mark-error);
@@ -366,7 +366,7 @@ body, .contextbox, .piechart{
 .button-error,
 .button-warning,
 .button-secondary {
-    color: var(--button-text-color);
+    color: var(--DEFAULT-markedelement-color);
     text-shadow: 1px 1px 1px var(--button-textshadow-color);
 }
 
