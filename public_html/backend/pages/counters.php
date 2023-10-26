@@ -7,7 +7,7 @@ require_once __DIR__ . '/../../classes/counter.class.php';
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sHtml='';
 $sSelector='';
-$sGraph='';
+$sDetails='';
 
 $iSizeOfSelectbox=35;
 
@@ -36,14 +36,16 @@ $aList=$oCounter->getCounterItems(true);
 
 if (!$aList){
     // --- no counter was found yet
-    # TODO translate
-    $sHtml='INFO: no counter yet. They appear, if you start crawling.';
+    $sHtml.=$oRenderer->renderMessagebox($this->lB('counter.notEnoughData'), 'warning');
 } else {
     foreach($aList as $sLabel){
         $sSelector.='<a href="?page=counters&siteid='.$iProfileId.'&countername='.$sLabel.'" 
-            class="pure-button '.($sSelectedCounter == $sLabel ? ' button-secondary' : '').'" 
+            class="pure-button button-small '.($sSelectedCounter == $sLabel ? ' button-secondary' : '').'" 
             style="width: 100%;">'.$sLabel.'</a><br>';
+            // echo '    "counter.'.$sLabel.'.label" :"'.$sLabel.'",<br>';
+            // echo '    "counter.'.$sLabel.'.description" :"'.$sLabel.'",<br>';
     }
+    // exit;
 }
 
 // ---------- load data of a selected counter
@@ -54,7 +56,19 @@ if($sSelectedCounter){
         $aTable[]=[ 'ts'=>$aEntry['ts'], 'value'=>$aEntry['value'] ];
     }
 
-    $sGraph.=$this->_getHistoryCounter([$sSelectedCounter])
+
+    $sLabel=$this->lB('counter.'.$sSelectedCounter.'.label');
+    $sLabel=($sLabel!=$sSelectedCounter) ? $sLabel : '';
+    $sDescription=$this->lB('counter.'.$sSelectedCounter.'.description');
+    $sDescription=($sDescription!=$sSelectedCounter) ? $sDescription : '';
+
+
+    $sDetails.= ''
+        . ($sLabel 
+            ? '<strong>'.$sLabel.'</strong><br>' 
+                . ( $sDescription ? $sDescription.'<br><br>' : '<br>' )
+            : '')
+        . $this->_getHistoryCounter([$sSelectedCounter])
         . $this->_getHtmlTable($aTable, 'counter.', 'tblCounterdata')
         // . '<pre>'.print_r($oCounter->getCountersHistory($sSelectedCounter), 1).'</pre>'
     ;    
@@ -62,5 +76,5 @@ if($sSelectedCounter){
 
 // ---------- complete output
 
-$sHtml.='<table><th><tr><td valign="top">'.$sSelector.'</td><td>&nbsp;&nbsp;&nbsp;</td><td valign=top>'.$sGraph.'</td></tr></th></table>';
+$sHtml.='<table><th><tr><td valign="top">'.$sSelector.'</td><td>&nbsp;&nbsp;&nbsp;</td><td valign=top>'.$sDetails.'</td></tr></th></table>';
 return $sHtml;
