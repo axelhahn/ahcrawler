@@ -60,6 +60,7 @@ class backend extends crawler_base {
                 'ressources'=>array('needs'=>array('ressources')),
                 'checkurl'=>array('needs'=>array('ressources')), 
                 'ressourcedetail'=>array('needs'=>array('ressources')), 
+                'counters'=>array('needs'=>array('pages')), 
             ),
         ), 
         'tools'=>array(
@@ -67,7 +68,6 @@ class backend extends crawler_base {
                 'bookmarklet'=>array(), 
                 'httpstatuscode'=>array(), 
                 'langedit'=>array(), 
-                'counters'=>array(), 
                 // 'showicons'=>array(), // coming soon
                 'update'=>array(), 
             ),
