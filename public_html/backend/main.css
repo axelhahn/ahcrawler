@@ -375,6 +375,8 @@ body, .contextbox, .piechart{
 .button-warning {background: var(--button-warning-bg); /* this is an orange */}
 .button-secondary {background: var(--button-secondary-bg); /* this is a light blue */}
 
+.button-small {font-size: 100%; padding: 0.1em;}
+
 a{color:var(--color-a);}
 a:hover{}
 
