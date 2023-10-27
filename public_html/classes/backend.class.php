@@ -2096,7 +2096,7 @@ class backend extends crawler_base {
             }
             
             $sHtml.=''
-                . $this->lB('chart.historicalView').'<br><br>'
+                . $this->lB('chart.historicalView').':<br><br>'
                 . '<div class="floatleft">'
                     . $this->_getChart(array(
                         'type'=>'bar',

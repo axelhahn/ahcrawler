@@ -56,11 +56,21 @@ if($sSelectedCounter){
         $aTable[]=[ 'ts'=>$aEntry['ts'], 'value'=>$aEntry['value'] ];
     }
 
-
-    $sLabel=$this->lB('counter.'.$sSelectedCounter.'.label');
-    $sLabel=($sLabel!=$sSelectedCounter) ? $sLabel : '';
-    $sDescription=$this->lB('counter.'.$sSelectedCounter.'.description');
-    $sDescription=($sDescription!=$sSelectedCounter) ? $sDescription : '';
+    $iHttpcode=false;
+    $sHttpCodeHelp='';
+    $sLangIdx=$sSelectedCounter;
+    if (strstr($sSelectedCounter, '[')){
+        $sLangIdx=preg_replace('/\[.*\]/','',$sSelectedCounter).'[]';
+        preg_match('/\[(.*)\]/',$sSelectedCounter,$aMatches);
+        $iHttpcode=isset($aMatches[1]) ? $aMatches[1] : false;
+        $sHttpCodeHelp='<br><br>'.$this->lB('httpcode.'.$iHttpcode.'.label').'<br>'
+            .$this->lB('httpcode.'.$iHttpcode.'.descr')
+        ;
+    }
+    $sLabel=sprintf($this->lB('counter.'.$sLangIdx.'.label'), $iHttpcode);
+    $sLabel=($sLabel!=$sLangIdx) ? $sLabel : '';
+    $sDescription=sprintf($this->lB('counter.'.$sLangIdx.'.description'), $iHttpcode, $sHttpCodeHelp);
+    $sDescription=($sDescription!=$sLangIdx) ? $sDescription : '';
 
 
     $sDetails.= ''
