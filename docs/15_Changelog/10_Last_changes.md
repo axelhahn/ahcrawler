@@ -5,7 +5,8 @@
 #### 2023-10-29: v0.165
 
 * 🟢 ADDED: viewer page for all counters
-* ↗️ UPDATE: Medoo (AcCrawler is compatible with PHP 8.2 with it)
+* 🟢 ADDED: LICENSE file (licence didn't change - but now licence text is in project root too)
+* ↗️ UPDATE: Medoo to v 2.1.10 (AcCrawler is compatible with PHP 8.2 with it)
 * ↗️ UPDATE: dark skin
 * ↗️ UPDATE: docker dev environment
 
