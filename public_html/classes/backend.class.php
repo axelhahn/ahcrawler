@@ -60,6 +60,7 @@ class backend extends crawler_base {
                 'ressources'=>array('needs'=>array('ressources')),
                 'checkurl'=>array('needs'=>array('ressources')), 
                 'ressourcedetail'=>array('needs'=>array('ressources')), 
+                'counters'=>array('needs'=>array('pages')), 
             ),
         ), 
         'tools'=>array(
@@ -123,6 +124,7 @@ class backend extends crawler_base {
             'httpstatuscode'=>'fab fa-font-awesome', 
             'showicons'=>'fa-solid fa-icons', 
             'langedit'=>'fa-regular fa-comment', 
+            'counters'=>'fa-solid fa-chart-simple', 
             'about'=>'fa-solid fa-info-circle', 
             'update'=>'fa-solid fa-cloud-download-alt', 
             'userprofile'=>'fa-solid fa-user', 
@@ -2094,7 +2096,7 @@ class backend extends crawler_base {
             }
             
             $sHtml.=''
-                . $this->lB('chart.historicalView').'<br><br>'
+                . $this->lB('chart.historicalView').':<br><br>'
                 . '<div class="floatleft">'
                     . $this->_getChart(array(
                         'type'=>'bar',

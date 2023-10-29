@@ -10,6 +10,7 @@
 # 2022-12-18  v1.3 <www.axel-hahn.de>        add -p "$APP_NAME" in other docker commands
 # 2022-12-20  v1.4 <axel.hahn@unibe.ch>      replace fgrep with grep -F
 # 2023-03-06  v1.5 <www.axel-hahn.de>        up with and without --build
+# 2023-08-17  v1.6 <www.axel-hahn.de>        menu selection with single key (without return)
 # ======================================================================
 
 cd $( dirname $0 )
@@ -18,7 +19,7 @@ cd $( dirname $0 )
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
 
-_version="1.5"
+_version="1.6"
 
 # ----------------------------------------------------------------------
 # FUNCTIONS
@@ -227,8 +228,14 @@ function _showInfos(){
     echo
 }
 
+# helper for menu: print an inverted key
+function  _key(){
+    printf "\e[4;7m ${1} \e[0m"
+}
+
+# helper: wait for a return key
 function _wait(){
-    echo -n "... press RETURN > "; read dummy
+    echo -n "... press RETURN > "; read -r
 }
 
 # ----------------------------------------------------------------------
@@ -246,22 +253,25 @@ while true; do
         _showContainers
 
         h2 MENU
-        echo "  g - remove git data of starterkit"
+        echo "  $( _key g ) - remove git data of starterkit"
         echo
-        echo "  i - init application: set permissions"
-        echo "  t - generate files from templates"
-        echo "  T - remove generated files"
+        echo "  $( _key i ) - init application: set permissions"
+        echo "  $( _key t ) - generate files from templates"
+        echo "  $( _key T ) - remove generated files"
         echo
-        echo "  u - startup containers    docker-compose ... up -d"
-        echo "  U - startup containers    docker-compose ... up -d --build"
-        echo "  s - shutdown containers   docker-compose stop"
-        echo "  r - remove containers     docker-compose rm -f"
+        echo "  $( _key u ) - startup containers    docker-compose ... up -d"
+        echo "  $( _key U ) - startup containers    docker-compose ... up -d --build"
+        echo "  $( _key s ) - shutdown containers   docker-compose stop"
+        echo "  $( _key r ) - remove containers     docker-compose rm -f"
         echo
-        echo "  m - more infos"
-        echo "  c - console (bash)"
+        echo "  $( _key m ) - more infos"
+        echo "  $( _key c ) - console (bash)"
+        echo
+        echo "  $( _key q ) - quit"
         echo
         echo -n "  select >"
-        read action 
+        read -rn 1 action 
+        echo
     fi
 
     case "$action" in
@@ -279,11 +289,12 @@ while true; do
             _removeGeneratedFiles
             rm -rf containers
             ;;
-        f)
-            _removeGeneratedFiles
-            _generateFiles
-            _wait
-            ;;
+        # not in the menu
+        # f)
+        #     _removeGeneratedFiles
+        #     _generateFiles
+        #     _wait
+        #     ;;
         m)
             _showInfos
             _wait
@@ -316,7 +327,11 @@ while true; do
             read dockerid
             test -z "$dockerid" || docker exec -it $dockerid /bin/bash
             ;;
-        *) echo "ACTION [$action] NOT IMPLEMENTED."
+        q)
+            exit 0;
+            ;;
+        *) 
+            test -n "$action" && ( echo "  ACTION FOR [$action] NOT IMPLEMENTED."; sleep 1 )
     esac
     action=
 done

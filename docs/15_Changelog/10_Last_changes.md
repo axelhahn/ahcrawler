@@ -2,6 +2,14 @@
 
 ### 2023
 
+#### 2023-10-29: v0.165
+
+* 🟢 ADDED: viewer page for all counters
+* 🟢 ADDED: LICENSE file (licence didn't change - but now licence text is in project root too)
+* ↗️ UPDATE: Medoo to v 2.1.10 (AcCrawler is compatible with PHP 8.2 with it)
+* ↗️ UPDATE: dark skin
+* ↗️ UPDATE: docker dev environment
+
 #### 2023-08-03: v0.164
 
 * 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
@@ -26,10 +34,3 @@
 * ↗️ UPDATE: pure 2.1.0 --> 3.0.0
 * ↗️ UPDATE: jQuery 3.6.1 --> 3.6.4
 * ↗️ UPDATE: font-awesome 5.15.4 --> 6.4.0
-
-#### 2023-03-09: v0.160
-
-* 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
-  You can wait until currently wrong counter values are out of scope after 90d or you can execute `truncate counteritems` and `truncate counters` on the database to delete them.
-* ↗️ UPDATE: css update of default theme
-* ↗️ UPDATE: fix php warnings in some classes

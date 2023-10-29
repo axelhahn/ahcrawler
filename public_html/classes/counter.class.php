@@ -189,9 +189,31 @@ class counter extends crawler_base {
     
     /**
      * get ids of existing counters
+     * @param boolean $bMySiteIdOnly   optional: flag to get only counters of the current site
+     * @return array
      */
-    public function getCounterItems() {
-        return $this->oDB->select($this->_db_reltable, 'label');
+    public function getCounterItems($bMySiteIdOnly=false) {
+
+        if(!$bMySiteIdOnly){
+            return $this->oDB->select($this->_db_reltable, 'label');
+        }
+        $aReturn=[];
+        $aTmp=$this->oDB->select(
+                $this->_db_table,
+                array('[>]' . $this->_db_reltable => array('counterid' => 'id')),
+                array(
+                    '@'.$this->_db_reltable.'.label',  // @ is DISTINCT
+                ),
+                array(
+                    $this->_db_table.'.siteid'=>$this->_iWebId
+                )
+            );
+        foreach(array_values($aTmp) as $aData){
+            $aReturn[]=$aData['label'];
+        }
+        sort($aReturn);
+        
+        return $aReturn;
     }
 
     /**
