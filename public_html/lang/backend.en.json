@@ -210,7 +210,7 @@
     "counter.statusOk[].description" :"Http code %s (OK) during link check; %s",
     "counter.statusTodo.label" :"Todo",
     "counter.statusTodo.description" :"Open requests during link check",
-    "counter.statusTodo[].label" :"Todo code çs",
+    "counter.statusTodo[].label" :"Todo code %s",
     "counter.statusTodo[].description" :"Open requests during link check with code %s; %s",
     "counter.statusWarning.label" :"Http warnings",
     "counter.statusWarning.description" :"Count of http warnings during link check",
