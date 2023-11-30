@@ -2,6 +2,14 @@
 
 ### 2023
 
+#### 2023-05-09: v0.161
+
+* 💣 FIX: cdnorlocal because API response of Cdnjs was changed
+* 💣 FIX:  left menubar is scrollable
+* ↗️ UPDATE: pure 2.1.0 --> 3.0.0
+* ↗️ UPDATE: jQuery 3.6.1 --> 3.6.4
+* ↗️ UPDATE: font-awesome 5.15.4 --> 6.4.0
+
 #### 2023-03-09: v0.160
 
 * 💣 FIX: counters were set in a wrong way. Graphs of values in the last N days were wrong
