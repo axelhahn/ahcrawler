@@ -463,7 +463,8 @@ class backend extends crawler_base {
                 /*
                 . '<h3>' . $this->lB('login.title') . '</h3>'
                  */
-                . '<div style="background:#fff; margin-top: 12em; padding: 1em;">'
+                . '<br><br><br>'
+                .'<div class="actionbox">'
                     . '<p>' . $this->lB('login.infotext') . '</p>'
                     . '<br>'
                     . '<form method="POST" action="' . $sHref . '" class="pure-form pure-form-aligned">'

@@ -2,6 +2,12 @@
 
 ### 2023
 
+#### 2023-12-03: v0.166
+
+* ↗️ UPDATE: AcCrawler runs on PHP 8.3
+* ↗️ UPDATE: dark skin - login page is not white anymore
+* ↗️ UPDATE: German texts for counters
+
 #### 2023-10-29: v0.165
 
 * 🟢 ADDED: viewer page for all counters
@@ -27,10 +33,3 @@
 * ↗️ UPDATE: cdnorlocal --> 1.0.13
 * 🟢 ADDED: metadata of needed libs
 
-#### 2023-05-09: v0.161
-
-* 💣 FIX: cdnorlocal because API response of Cdnjs was changed
-* 💣 FIX:  left menubar is scrollable
-* ↗️ UPDATE: pure 2.1.0 --> 3.0.0
-* ↗️ UPDATE: jQuery 3.6.1 --> 3.6.4
-* ↗️ UPDATE: font-awesome 5.15.4 --> 6.4.0
