@@ -2,7 +2,7 @@
 
 ### 2023
 
-#### 2023-12-NN: v0.166
+#### 2023-12-03: v0.166
 
 * ↗️ UPDATE: AcCrawler runs on PHP 8.3
 * ↗️ UPDATE: dark skin - login page is not white anymore
