@@ -518,7 +518,7 @@
     "ressources.searchressourceid-hint":"Remark: This page is linked in other analysis pages to show details.<br>\r\nFollow one of the links below.",
     "ressources.searchurl-head":" tìm kiếm url, chỉ định đường dẫn cơ bản hoặc mẫu URL mà các yêu cầu tìm kiếm tài nguyên sẽ được gửi đến.",
     "ressources.searchurl":"yêu cầu tìm kiếm sẽ được gửi đến khi người dùng thực hiện tìm kiếm trong giao diện người dùng hoặc qua các chức năng tìm kiếm trong ứng dụng.",
-    "ressources.searchurl-hint":"hướng dẫn hoặc gợi ý cho người dùng về cách sử dụng chức năng tìm kiếm tài nguyên trong hệ thống.",
+    "ressources.searchurl-hint":" hướng dẫn hoặc gợi ý cho người dùng về cách sử dụng chức năng tìm kiếm tài nguyên trong hệ thống.",
     "ressources.showreport":" hiển thị thông tin dạng báo cáo",
     "ressources.showreport.hint":"cung cấp hướng dẫn hoặc gợi ý cho người dùng về việc truy cập hoặc sử dụng báo cáo về tài nguyên trong hệ thống.",
     "ressources.showtable":" hiển thị thông tin dạng bảng",
