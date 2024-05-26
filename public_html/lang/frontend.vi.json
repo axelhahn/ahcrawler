@@ -1,0 +1,34 @@
+{
+    "id": "vietnamese",
+
+    "btn.search.label": "Tìm kiếm",
+    "label.searchterm": "Từ tìm kiếm",
+    "label.searchoptions": "Tùy chọn",
+    
+    "input.search.placeholder": "Thuật ngữ tìm ...",
+    "input.search.title": "Thuật ngữ tìm (tối thiểu 2 ký tự)",
+    
+    "label.searchhelp": "Nhập ít nhất một từ - hoặc một chuỗi. Chúng phải tồn tại ở một trang (hoặc tiêu đề, mô tả, từ khóa). Nhiều thuật ngữ tìm sẽ được kết hợp với cách thức tìm đã chọn.",
+    "label.searchsubdir": "Tỉm ở đâu...",
+    "label.searchsubdir-none": "Mọi nơi... trên toàn bộ website",
+    "label.searchlang": "Ngôn ngữ",
+    "label.searchlang.title": "Ngôn ngữ",
+    "label.searchlang-none": "bất kỳ",
+    "label.searchmode": "Cơ chế tìm",
+    "label.searchmode-and": "strict: all searchterms are a must (Và)",
+    "label.searchmode-or": "thêm kết quả: tối thiểu một từ của chuỗi tìm phù hợp (Hoặc)",
+    "label.searchmode-phrase": "chính xác: cụm từ",
+    "label.search-in-content": "Search index (visible text; like search in a website)",
+    "label.search-in-response": "Mã html",
+    
+    "searchout.results": "Kết quả tìm",
+    "searchout.nohit": "Không có kết quả :-/",
+    "searchout.too-many-hits": "Remark: You get a lot of hits. You should add one more term for your search.",
+    "searchout.n-more-hits": "... %s more hit(s) in the content",
+    "searchout.hits": "Kết quả: <strong>%s</strong>",
+    "searchout.totaltime": "cần %01.1f ms",
+    "searchout.days": "%s ngày",
+    "searchout.today": "hôm nay",
+    
+    "about.infostring": "Máy tìm và phân tích website mã nguồn mở"
+}
