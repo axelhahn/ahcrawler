@@ -6,10 +6,10 @@
     "home.intro": "Here are the public accessible tools of ahCrawler that have been enabled by the administrator.<br>\r\nRemark: To use all tools you can run the ahCrawler as your own instance on your server - ahCrawler is free software and open source.",
     "home.no-pages": "Here is nothing to see. The administrator didn't enable services yet.",
     "httpheader.enter-url": "Điền url",
-    "httpheader.enter-url.hint": "Enter url to analyze its http response header. The given url will be requested with an Http HEAD request.",
+    "httpheader.enter-url.hint": "Điền url để phân tích kết quả http header. Từ url đã cho, hệ thống sẽ gửi một yêu cầu Http HEAD.",
     "httpheader.result": "Kết quả",
-    "httpheader.result.non-ok": "Hint: The given url did not send a 200 OK. Maybe the url is is not what you are searching for.",
-    "httpheader.result.no-response": "No response from given url. Maybe the url is wrong or is not reachable at the moment.<br>Curl error: %s (code %s)",
+    "httpheader.result.non-ok": "Gợi ý: url được đưa ra không trả về mã 200 OK. Có thể url không phải là thứ bạn đang tìm kiếm.",
+    "httpheader.result.no-response": "Không trả lời từ url đã cho. Maybe the url is wrong or is not reachable at the moment.<br>Curl error: %s (code %s)",
     "httpheader.result.redirect": "A redirect was found. You can follow the redirect or inspect the current header below.",
     "error.403.message": "Từ chối truy cập. Trang này không hoạt động.",
     "error.403.title": "403 Từ chối truy cập."
