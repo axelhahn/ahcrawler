@@ -1,0 +1,16 @@
+{
+    "id": "vietnamese",
+    "nav.home.label": "Bắt đầu",
+    "nav.home.hint": "Trang chủ của dịch vụ công khai",
+    "home.welcome": "Chào bạn!",
+    "home.intro": "Đây là công cụ truy cập công khai của ahCrawler được bật bởi người quản trị hệ thống.<br>\r\nLưu ý: để sử dụng toàn bộ công cụ bạn có thể dùng ahCrawler như phiên bản của chính mình trên máy chủ - ahCrawler là phần mềm mã nguồn mở miễn phí.",
+    "home.no-pages": "Không có gì ở đây. Quản trị hệ thống vẫn chưa mở dịch vụ.",
+    "httpheader.enter-url": "Điền url",
+    "httpheader.enter-url.hint": "Điền url để phân tích kết quả http header. Từ url đã cho, hệ thống sẽ gửi một yêu cầu Http HEAD.",
+    "httpheader.result": "Kết quả",
+    "httpheader.result.non-ok": "Gợi ý: url đã cho không trả về mã 200 OK. Có thể url không phải là thứ bạn đang tìm kiếm.",
+    "httpheader.result.no-response": "Không trả lời từ url đã cho. Có thể sai url hoặc không thể truy cập lúc này.<br>Lỗi curl: %s (mã %s)",
+    "httpheader.result.redirect": "Đã tìm thấy chuyển hướng. Bạn có thể theo chuyển hướng hoặc quan sát header bên dưới.",
+    "error.403.message": "Từ chối truy cập. Trang này không hoạt động.",
+    "error.403.title": "403 Từ chối truy cập."
+}
