@@ -9,8 +9,6 @@
 # (2) run "docker-compose up" to startup
 # 
 # ======================================================================
-version: '3.9'
-
 networks:
   {{APP_NAME}}-network:
 
