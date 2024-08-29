@@ -1,6 +1,5 @@
 <?php
 
-require_once 'ahwi-updatecheck.class.php';
 require_once 'analyzer.html.class.php';
 require_once 'crawler-base.class.php';
 require_once 'crawler.class.php';
@@ -10,7 +9,9 @@ require_once 'renderer.class.php';
 require_once 'search.class.php';
 require_once 'sslinfo.class.php';
 require_once 'status.class.php';
-require_once 'cache.class.php';
+
+require_once __DIR__ . '/../vendor/ahcache/cache.class.php';
+require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
 
 /**
  * ____________________________________________________________________________

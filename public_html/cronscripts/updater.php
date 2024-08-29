@@ -36,9 +36,9 @@
  */
 
 require_once(__DIR__ . '/../classes/crawler.class.php');
-require_once(__DIR__ . '/../classes/cli.class.php');
-require_once(__DIR__ . '/../classes/ahwi-updatecheck.class.php');
-require_once(__DIR__ . '/../classes/ahwi-installer.class.php');
+require_once(__DIR__ . '/../vendor/ahcli/cli.class.php');
+require_once(__DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php');
+require_once(__DIR__ . '/../vendor/ahwebinstall/ahwi-installer.class.php');
 
 $aDirs=[
     'download'=>[

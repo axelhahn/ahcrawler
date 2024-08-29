@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../vendor/medoo/src/Medoo.php';
 require_once 'status.class.php';
-require_once 'logger.class.php';
+require_once __DIR__ . '/../vendor/ahlogger/logger.class.php';
 require_once 'httpheader.class.php';
 
 /**
@@ -33,8 +33,8 @@ class crawler_base {
 
     public $aAbout = array(
         'product' => 'ahCrawler',
-        'version' => '0.166',
-        'date' => '2023-12-03',
+        'version' => '0.167 WIP',
+        'date' => '2024-08-29',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1816,7 +1816,7 @@ class crawler_base {
             return false;
         }
         if(!$oCli){
-            require_once 'cli.class.php';
+            require_once __DIR__ . '/../vendor/ahcli/cli.class.php';
             $oCli=new axelhahn\cli();
         }
         if($sMessage){

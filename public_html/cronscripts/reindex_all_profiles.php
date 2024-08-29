@@ -37,7 +37,7 @@
  */
 
 require_once(__DIR__ . '/../classes/crawler.class.php');
-require_once(__DIR__ . '/../classes/cli.class.php');
+require_once(__DIR__ . '/../vendor/ahcli/cli.class.php');
 
 // ----------------------------------------------------------------------
 // MAIN
