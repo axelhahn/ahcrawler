@@ -78,7 +78,7 @@ if(isset($_POST['action'])){
             
             $this->flushData(array('full'), $iProfileId);
             $this->logfileDelete();
-            require_once __DIR__ . '/../../classes/cache.class.php';
+            require_once __DIR__ . '/../../vendor/ahcache/cache.class.php';
             $oCache = new AhCache($this->getCacheModule());
             $oCache->deleteModule(false);
         

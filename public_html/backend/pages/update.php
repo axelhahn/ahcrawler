@@ -7,7 +7,7 @@ $oRenderer=new ressourcesrenderer();
 $sReturn = '';
 
 
-require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
+require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $aDirs=[
     'download'=>[

@@ -15,7 +15,7 @@ $oInstaller=new ahwi(array(
 $aRequirements=$oInstaller->getRequirements();
 echo '<pre>'. print_r($aRequirements, 1).'</pre>';
  */
-require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
+require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $sReturn = '';
 
