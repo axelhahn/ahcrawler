@@ -1111,12 +1111,13 @@ class analyzerHtml
      * Helper: add a new item to an given array with resources items.
      * If key "_url" was added already it increases the field 
      * refcount by and adds the new item to the list of items
+     * It returns the array or false if a url was not found in the new item
      * 
      * @param null|array $aArray    array to collect all resources an its count
      * @param array      $aNewItem  new item to add
-     * @return array
+     * @return bool|array
      */
-    private function _add2Array(null|array &$aArray, array $aNewItem = []): array
+    private function _add2Array(null|array &$aArray, array $aNewItem = []): bool|array
     {
         $bFound = false;
 
