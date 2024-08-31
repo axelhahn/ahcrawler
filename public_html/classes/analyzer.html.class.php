@@ -177,10 +177,11 @@ class analyzerHtml
 
         $this->_sHtml = $sHtmlcode;
         $this->_sUrl = $sUrl;
-        $this->_sBaseHref = false;
-        $this->_sScheme = false;
-        $this->_sDomain = false;
-        $this->_oDom = false;
+        $this->_sBaseHref = '';
+        $this->_sScheme = '';
+        $this->_sDomain = '';
+        unset($this->_oDom);
+        
         if ($sUrl) {
             $parts = parse_url($this->_sUrl);
             $this->_sScheme = isset($parts['scheme']) ? $parts['scheme'] : false;
@@ -188,7 +189,7 @@ class analyzerHtml
         }
 
         if (!$sHtmlcode) {
-            $this->_oDom = false;
+            unset($this->_oDom);
             return false;
         }
         // echo __METHOD__. " ... $sUrl". PHP_EOL ."html size: " . strlen($sHtmlcode) . ' byte'. PHP_EOL;
@@ -1111,11 +1112,11 @@ class analyzerHtml
      * If key "_url" was added already it increases the field 
      * refcount by and adds the new item to the list of items
      * 
-     * @param array $aArray
-     * @param mixed $aNewItem
+     * @param null|array $aArray    array to collect all resources an its count
+     * @param array      $aNewItem  new item to add
      * @return array
      */
-    private function _add2Array(array &$aArray, array $aNewItem): array
+    private function _add2Array(null|array &$aArray, array $aNewItem = []): array
     {
         $bFound = false;
 

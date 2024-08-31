@@ -925,7 +925,7 @@ class ressources extends crawler_base {
         $this->addAllCounters();
 
         $this->cliprint('info', "----- cleanup cache.\n");
-        require_once("../require_once '../vendor/ahcache/cache.class.php");
+        require_once(__DIR__ . "/../vendor/ahcache/cache.class.php");
         $this->cliprint('info', "deleting items in module ".$this->getCacheModule().".\n");
         $oCache = new AhCache($this->getCacheModule());
         $oCache->deleteModule(true);

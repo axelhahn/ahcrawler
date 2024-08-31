@@ -31,7 +31,7 @@
     // $bUseCache=false;
     $sRefFile=false;
     if($bUseCache){
-        require_once(__DIR__ . "/classes/cache.class.php");
+        require_once(__DIR__ . "/vendor/ahcache/cache.class.php");
         $sRefFile=__DIR__. '/data/indexlog-siteid-'.$iSiteId.'.log';
         $aGetParams=$_GET;
         unset($aGetParams['page']);
