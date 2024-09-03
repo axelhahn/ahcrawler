@@ -37,7 +37,7 @@ require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
  * 
  * BACKEND
  * 
- * 2024-09-02  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
  */
 class backend extends crawler_base
 {
@@ -1076,9 +1076,9 @@ class backend extends crawler_base
      * 
      * @since v0.150
      * 
-     * @return string
+     * @return array
      */
-    public function getSkinsAvailable(): string
+    public function getSkinsAvailable(): array
     {
         $aReturn = [];
         foreach (glob(dirname(__DIR__) . '/backend/skins/*') as $sSkinname) {

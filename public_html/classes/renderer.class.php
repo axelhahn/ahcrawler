@@ -761,7 +761,7 @@ class ressourcesrenderer extends crawler_base {
         $aRessourceItem = $this->_extendRessourceItem($aRessourceItem);
 
         $unixTS = date("U", strtotime($aRessourceItem['ts']));
-        $iPageId=$this->getIdsByUrl($aRessourceItem['url'],'pages');
+        $iPageId=$this->getIdByUrl($aRessourceItem['url'],'pages');
 
         $sLink2Searchindex=$aRessourceItem['isSource'] ? '?page=searchindexstatus&id='.$iPageId.'&siteid='.$aRessourceItem['siteid'] : false;
 
