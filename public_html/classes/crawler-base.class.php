@@ -1457,7 +1457,7 @@ class crawler_base
      * @param integer $iSiteId
      * @return boolean
      */
-    public function setSiteId($iSiteId = 0): bool
+    public function setSiteId(int $iSiteId = 0): bool
     {
         $this->logAdd(__METHOD__ . '(' . htmlentities($iSiteId) . ') start');
         $iSiteId = preg_replace('/[^a-z0-9]/', '', $iSiteId);
