@@ -28,6 +28,7 @@
  * 2022-12-15  make it compatible to PHP 8.2; add doc + comments
  * 2023-05-15  fix _getBar() - division by zero
  * 2024-07-12  php8 only: use variable types; update phpdocs
+ * 2024-09-04  fix short array syntax
  * ----------------------------------------------------------------------
  */
 class logger
@@ -86,12 +87,12 @@ class logger
         if (!$this->bShowDebug) {
             return false;
         }
-        $this->aMessages[] = array(
+        $this->aMessages[] = [
             'time' => microtime(true),
             'message' => $sMessage,
             'level' => preg_replace('/[^a-z0-9\-\_]/', '', $sLevel),
             'memory' => memory_get_usage()
-        );
+        ];
 
         return true;
     }
