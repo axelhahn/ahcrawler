@@ -29,7 +29,7 @@ require_once 'httpheader.class.php';
  * AXLES CRAWLER BASE CLASS
  * ----------------------------------------------------------------------------
  * ...
- * 2024-09-03  v0.167  WIP php8 only; add typed variables; use short array syntax
+ * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
  * */
 class crawler_base
 {
@@ -627,11 +627,11 @@ class crawler_base
      * 
      * $foundVar=&$this->_getArrayValueByKeysAsString($aItem, $sKey);
      * 
-     * @param array   $aItem  array to scan
-     * @param string  $sKey   
+     * @param array|string   $aItem  array to scan
+     * @param string         $sKey   key and subkey to find with "." as delimiter eg. "a.b.c"
      * @return mixed
      */
-    public function &getArrayValueByKeysAsString(array &$aItem, string $sKey = ''): mixed
+    public function &getArrayValueByKeysAsString(array|string &$aItem, string $sKey = ''): mixed
     {
         $sDivider = '\.';
         if (!isset($aItem)) {
@@ -650,13 +650,14 @@ class crawler_base
         }
         return $aItem;
     }
+
     /**
      * Helper make a config item integer or set it false
      * 
      * @see backend/pages/setup.php + profiles.php
      * 
      * @param array  $aItem  config item (global config or specific config item)
-     * @param string $sKey   optional key sequence with "." as delimiter
+     * @param string $sKey   key and subkey to find with "." as delimiter eg. "a.b.c"
      * @return boolean
      */
     protected function _configMakeInt(array &$aItem, string $sKey = ''): bool
@@ -956,7 +957,8 @@ class crawler_base
             }
             return false;
         } elseif ($this->aOptions['debug']) {
-            $this->logAdd('... OK: DB-QUERY : ' . substr($this->oDB->last(), 0, 200) . " [...]");
+            // $this->logAdd('... OK: DB-QUERY : ' . substr($this->oDB->last(), 0, 200) . " [...]");
+            $this->logAdd('... OK: DB-QUERY : ' . $this->oDB->last());
         }
         return true;
     }

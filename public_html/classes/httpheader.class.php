@@ -24,8 +24,11 @@
  * httpstatus
  *
  * @author hahn
+ * 
+ * 2024-09-06  v0.167  php8 only; add typed variables; use short array syntax
  */
-class httpheader {
+class httpheader
+{
     /*
       content-security-policy: default-src 'self'; script-src 'self' cdnjs.cloudflare.com; img-src 'self'; style-src 'self' 'unsafe-inline' fonts.googleapis.com cdnjs.cloudflare.com; font-src 'self' fonts.gstatic.com cdnjs.cloudflare.com; form-action 'self'; report-uri https://scotthelme.report-uri.com/r/default/csp/enforce
       strict-transport-security: max-age=31536000; includeSubDomains; preload
@@ -37,245 +40,41 @@ class httpheader {
       feature-policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'
      */
 
-    protected $_aHeaderVars = array(
-        // en: https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-        // de: https://de.wikipedia.org/wiki/Liste_der_HTTP-Headerfelder
-        // ... plus https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
-        'http' => array(
-            '_status' => array(),
-            'Accept' => array('client'=>true),
-            'Accept-Additions' => array(),
-            'Accept-CH' => array('client'=>true),
-            'Accept-Charset' => array('client'=>true),
-            'Accept-CH-Lifetime' => array('client'=>true),
-            'Accept-Encoding' => array('client'=>true),
-            'Accept-Features' => array(),
-            'Accept-Language' => array('client'=>true),
-            'Accept-Patch' => array('response'=>true),
-            'Accept-Ranges' => array('response'=>true),
-            'Access-Control-Allow-Credentials' => array('response'=>true),
-            'Access-Control-Allow-Headers' => array('response'=>true),
-            'Access-Control-Allow-Methods' => array('response'=>true),
-            'Access-Control-Allow-Origin' => array('response'=>true),
-            'Access-Control-Expose-Headers' => array('response'=>true),
-            'Access-Control-Max-Age' => array('response'=>true),
-            'Access-Control-Request-Headers' => array(),
-            'Access-Control-Request-Method' => array(),
-            'Age' => array('tags' => array('cache')),
-            'A-IM' => array(),
-            'Allow' => array(),
-            'Alternates' => array(),
-            'Alt-Svc' => array(),
-            'Authentication-Info' => array(),
-            'Authorization' => array(),
-            'Cache-Control' => array('tags' => array('cache')),
-            'C-Ext' => array(),
-            'Clear-Site-Data' => array(),
-            'C-Man' => array(),
-            'Connection' => array('response'=>true),
-            'Content-Base' => array(),
-            'Content-Disposition' => array('response'=>true),
-            'Content-Encoding' => array('response'=>true, 'tags' => array('compression')),
-            'Content-ID' => array(),
-            'Content-Language' => array('response'=>true),
-            'Content-Length' => array('response'=>true),
-            'Content-Location' => array('response'=>true),
-            'Content-MD5' => array(),
-            'Content-Range' => array('response'=>true),
-            'Content-Script-Type' => array(),
-            'Content-Security-Policy' => array(),
-            'Content-Security-Policy-Report-Only' => array(),
-            'Content-Style-Type' => array(),
-            'Content-Type' => array(),
-            'Content-Version' => array(),
-            'Cookie' => array(),
-            'Cookie2' => array('obsolete'=>true),
-            'C-Opt' => array(),
-            'C-PEP-Info' => array(),
-            'Cross-Origin-Resource-Policy' => array(),
-            'Date' => array(),
-            'DAV' => array(),
-            'Default-Style' => array(),
-            'Delta-Base' => array(),
-            'Depth' => array(),
-            'Derived-From' => array(),
-            'Destination' => array(),
-            'Device-Memory' => array(),
-            'Differential-ID' => array(),
-            'Digest' => array('response'=>true),
-            'DNT' => array(),
-            'DPR' => array(),
-            'Early-Data' => array(),
-            'ETag' => array('response'=>true, 'tags' => array('cache')),
-            'Expect' => array('response'=>true),
-            'Expect-CT' => array(),
-            'Expires' => array('response'=>true, 'tags' => array('cache')),
-            'Ext' => array(),
-            'Feature-Policy' => array('response'=>true, 'tags' => array('feature', 'security'), "directives"=>array(
-                "accelerometer",
-                "ambient-light-sensor",
-                "autoplay",
-                "battery",
-                "camera",
-                "display-capture",
-                "document-domain",
-                "encrypted-media",
-                "fullscreen",
-                "geolocation",
-                "gyroscope",
-                "layout-animations",
-                "legacy-image-formats",
-                "magnetometer",
-                "microphone",
-                "midi",
-                "oversized-images",
-                "payment",
-                "picture-in-picture",
-                "publickey-credentials-get",
-                "sync-xhr",
-                "unoptimized-images",
-                "unsized-media",
-                "usb",
-                "vibrate",
-                "vr",
-                "wake-lock",
-                "xr",
-                "xr-spatial-tracking"                
-            )),
-            'Forwarded' => array(),
-            'From' => array('response'=>true),
-            'GetProfile' => array(),
-            'Host' => array('response'=>true),
-            'If' => array(),
-            'If-Match' => array('response'=>true),
-            'If-Modified-Since' => array('response'=>true),
-            'If-None-Match' => array('response'=>true),
-            'If-Range' => array('response'=>true),
-            'If-Unmodified-Since' => array('response'=>true),
-            'IM' => array(),
-            'Index' => array(),
-            'Keep-Alive' => array('response'=>true),
-            'Label' => array(),
-            'Large-Allocation' => array(),
-            'Last-Modified' => array('response'=>true),
-            'Link' => array('response'=>true),
-            'Location' => array('response'=>true),
-            'Lock-Token' => array(),
-            'Man' => array(),
-            'Max-Forwards' => array(),
-            'Meter' => array(),
-            'MIME-Version' => array(),
-            'Negotiate' => array(),
-            'NEL' => array(),
-            'Opt' => array(),
-            'Ordering-Type' => array(),
-            'Origin' => array(),
-            'Overwrite' => array(),
-            'P3P' => array(),
-            'PEP' => array(),
-            'Pep-Info' => array(),
-            'PICS-Label' => array(),
-            'Position' => array(),
-            'Pragma' => array('response'=>true, 'tags' => array('cache', 'deprecated')),
-            'ProfileObject' => array(),
-            'Protocol' => array(),
-            'Protocol-Info' => array(),
-            'Protocol-Query' => array(),
-            'Protocol-Request' => array(),
-            'Proxy-Authenticate' => array('response'=>true),
-            'Proxy-Authentication-Info' => array(),
-            'Proxy-Authorization' => array('response'=>true),
-            'Proxy-Features' => array(),
-            'Proxy-Instruction' => array(),
-            'Public' => array(),
-            'Public-Key-Pins' => array('tags'=>array('deprecated', 'obsolete')),
-            'Public-Key-Pins-Report-Only' => array('tags'=>array('deprecated', 'obsolete')),
-            'Range' => array('response'=>true),
-            'Referer' => array('response'=>true),
-            'Referrer-Policy' => array(),
-            'Retry-After' => array('response'=>true),
-            'Safe' => array(),
-            'Save-Data' => array(),
-            'Sec-Fetch-Dest' => array(),
-            'Sec-Fetch-Mode' => array(),
-            'Sec-Fetch-Site' => array(),
-            'Sec-Fetch-User' => array(),
-            'Security-Scheme' => array(),
-            'Sec-WebSocket-Accept' => array(),
-            'Server' => array('response'=>true, 'unwantedregex' => '[0-9]*\.[0-9\.]*'),
-            'Server-Timing' => array(),
-            'Set-Cookie' => array('response'=>true),
-            'Set-Cookie2' => array('obsolete'=>true, 'response'=>true),
-            'SetProfile' => array(),
-            'SoapAction' => array(),
-            'SourceMap' => array(),
-            'Status-URI' => array(),
-            'Strict-Transport-Security' => array(),
-            'Surrogate-Capability' => array(),
-            'Surrogate-Control' => array(),
-            'TCN' => array(),
-            'TE' => array('response'=>true),
-            'Timeout' => array(),
-            'Timing-Allow-Origin' => array(),
-            'Tk' => array(),
-            'Trailer' => array('response'=>true),
-            'Transfer-Encoding' => array('response'=>true),
-            'Upgrade' => array(),
-            'Upgrade-Insecure-Requests' => array(),
-            'URI' => array(),
-            'User-Agent' => array('response'=>true),
-            'Variant-Vary' => array(),
-            'Vary' => array('response'=>true),
-            'Via' => array('response'=>true),
-            'Want-Digest' => array('response'=>true),
-            'Warning' => array('response'=>true),
-            'WWW-Authenticate' => array('response'=>true),
-            'X-Content-Type-Options' => array(),
-            'X-DNS-Prefetch-Control' => array(),
-            'X-Frame-Options' => array(),
-            'X-XSS-Protection' => array(),
-        // ),
-        // see  https://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_response_fields
-        // 'non-standard' => array(
-            'Refresh' => array('response'=>true, 'tags' => array('non-standard')),
-            'Status' => array('response'=>true, 'tags' => array('non-standard')),
-            'Timing-Allow-Origin' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Content-Duration' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Content-Security-Policy' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Correlation-ID' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Forwarded-For' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Forwarded-Host' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Forwarded-Proto' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Pingback' => array('response'=>true, 'tags' => array('non-standard')), // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
-            'X-Powered-By' => array('response'=>true, 'tags' => array('non-standard', 'unwanted'), 'unwantedregex' => '[0-9]*\.[0-9\.]*'),
-            'X-Request-ID' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-Robots-Tag' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-UA-Compatible' => array('response'=>true, 'tags' => array('non-standard')),
-            'X-WebKit-CSP' => array('response'=>true, 'tags' => array('non-standard')),
-        // ),
-        // see https://www.owasp.org/index.php/OWASP_Secure_Headers_Project#tab=Headers
-        // 'security' => array(
-            'Content-Security-Policy' =>           array('response'=>true, 'tags' => array('security'), 'badvalueregex' => 'unsafe\-'),
-            'Expect-CT' =>                         array('response'=>true, 'tags' => array('security')),
-            'Feature-Policy' =>                    array('response'=>true, 'tags' => array('feature', 'security')),
-            'Public-Key-Pins' =>                   array('response'=>true, 'tags' => array('security', 'deprecated')),
-            'Referrer-Policy' =>                   array('response'=>true, 'tags' => array('security')),
-            'Strict-Transport-Security' =>         array('response'=>true, 'tags' => array('security')),
-            'X-Content-Type-Options' =>            array('response'=>true, 'tags' => array('security')),
-            'X-Frame-Options' =>                   array('response'=>true, 'tags' => array('security'), 'badvalueregex' => 'ALLOW-FROM'),
-            'X-Permitted-Cross-Domain-Policies' => array('response'=>true, 'tags' => array('security')),
-            'X-XSS-Protection' =>                  array('response'=>true, 'tags' => array('security')),
-        ),
-    );
-    protected $_sHeader = '';
-    protected $_aHeader = array();
-    protected $_aParsedHeader = array();
+    /**
+     * Hash of known http header variables.
+     * data will be loaded from httpheader.data.php
+     * @var array
+     */
+    protected array $_aHeaderVars = [];
+
+    /**
+     * Http response header as string
+     * @var string
+     */
+    protected string $_sHeader = '';
+
+    /**
+     * Http response header as array
+     * @var array
+     */
+    protected array $_aHeader = [];
+
+    /**
+     * Result hash of parsed header
+     * @var array
+     */
+    protected array $_aParsedHeader = [];
 
     // ----------------------------------------------------------------------
     // CONSTRUCT
     // ----------------------------------------------------------------------
-    public function __construct() {
-        return true;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->_aHeaderVars = include('httpheader.data.php');
     }
 
     // ----------------------------------------------------------------------
@@ -283,29 +82,33 @@ class httpheader {
     // ----------------------------------------------------------------------
 
     /**
-     * helper: split header info by ":" and return an array with variable and value
+     * Helper: split header info by ":" and return an array with variable and 
+     * value. If no ":" was found it creates a key named "_status" for the 
+     * http return status
      * 
      * @param  string  $sLine  single http response header line
      * @return array
      */
-    protected function _splitHeaderLine($sLine) {
+    protected function _splitHeaderLine(string $sLine): array
+    {
         $aTmp = explode(":", $sLine, 2);
         $sVarname = count($aTmp) > 1 ? $aTmp[0] : '_status';
         $value = count($aTmp) > 1 ? $aTmp[1] : $sLine;
-        return array($sVarname, trim($value));
+        return [$sVarname, trim($value)];
     }
 
     /**
-     * set http response header to analyze
+     * Set http response header to analyze
      * 
-     * @param string $sJson
+     * @param string $sHeader  http response header as string with line breaks
      * @return array
      */
-    public function setHeaderAsString($sHeader) {
-        $this->_aHeader = array();
+    public function setHeaderAsString(string $sHeader): array
+    {
+        $this->_aHeader = [];
         $this->_sHeader = '';
-        if(!$sHeader){
-            return false;
+        if (!$sHeader) {
+            return [];
         }
         $aTmp = explode("\r\n", $sHeader);
         // echo "DEBUG: " . $sHeader."<br>";
@@ -315,7 +118,7 @@ class httpheader {
                     break;
                 }
                 $this->_aHeader[] = $this->_splitHeaderLine($sLine);
-                $this->_sHeader .= $sLine . "\r\n";
+                $this->_sHeader .= "$sLine\r\n";
             }
         }
         $this->_aParsedHeader = $this->parseHeaders();
@@ -326,18 +129,20 @@ class httpheader {
     // ----------------------------------------------------------------------
 
     /**
-     * get the current http response header as array of lines
+     * Get the current http response header as array of lines
      * @return array
      */
-    public function getHeaderAsArray() {
+    public function getHeaderAsArray(): array
+    {
         return $this->_aHeader;
     }
 
     /**
-     * get the conmlete http response header as single string
+     * Get the current http response header as single string with line breaks
      * @return string
      */
-    public function getHeaderAsString() {
+    public function getHeaderAsString(): string
+    {
         return $this->_sHeader;
     }
 
@@ -346,18 +151,19 @@ class httpheader {
     // ----------------------------------------------------------------------
 
     /**
-     * get hash with known headers in the config that match a tag
+     * Helper: Get hash with known headers in the config that match a tag
      * 
      * @param   string  $sTag  name of tag to filter
      * @return array
      */
-    protected function _getHeaderCfgOfGivenTag($sTag){
-        $aReturn=array();
-    
+    protected function _getHeaderCfgOfGivenTag(string $sTag): array
+    {
+        $aReturn = [];
+
         foreach ($this->_aHeaderVars as $sSection => $aSection) {
             foreach ($aSection as $sVar => $aParams) {
-                if(isset($aParams['tags']) && in_array($sTag, $aParams['tags'])){
-                    $aReturn[$sVar]=$aParams;
+                if (isset($aParams['tags']) && in_array($sTag, $aParams['tags'])) {
+                    $aReturn[$sVar] = $aParams;
                 }
             }
         }
@@ -365,20 +171,21 @@ class httpheader {
     }
 
     /**
-     * get an array with defined securtity headers and existance in the current
+     * Get an array with defined securtity headers and existance in the current
      * response header data
      * 
      * @return array
      */
-    public function getSecurityHeaders() {
+    public function getSecurityHeaders(): array
+    {
         $aReturn = array();
-        foreach ($this->_getHeaderCfgOfGivenTag('security') as $sVar=>$aChecks) {
-            $aReturn[$sVar]=false;
+        foreach ($this->_getHeaderCfgOfGivenTag('security') as $sVar => $aChecks) {
+            $aReturn[$sVar] = false;
             $iLine = 0;
             foreach ($this->getHeadersWithGivenTag('security') as $aLine) {
                 $iLine++;
-                if(strtolower($aLine['var'])=== strtolower($sVar)){
-                $aReturn[$sVar]=$aLine;
+                if (strtolower($aLine['var']) === strtolower($sVar)) {
+                    $aReturn[$sVar] = $aLine;
                 }
             }
         }
@@ -386,11 +193,12 @@ class httpheader {
     }
 
     /**
-     * get count of securtity headers that were NOT found
+     * Get count of securtity headers that were NOT found
      * 
      * @return integer
      */
-    public function getCountBadSecurityHeaders() {
+    public function getCountMissedSecurityHeaders(): int
+    {
         $iReturn = 0;
         foreach ($this->getSecurityHeaders() as $val) {
             $iReturn += $val ? 0 : 1;
@@ -399,11 +207,12 @@ class httpheader {
     }
 
     /**
-     * get count of found securtity headers
+     * Get count of found securtity headers
      * 
      * @return integer
      */
-    public function getCountOkSecurityHeaders() {
+    public function getCountOkSecurityHeaders(): int
+    {
         $iReturn = 0;
         foreach ($this->getSecurityHeaders() as $val) {
             $iReturn += $val ? 1 : 0;
@@ -414,21 +223,22 @@ class httpheader {
     // ----------------------------------------------------------------------
 
     /**
-     * helper: get an array of tags by given http response header var + value
+     * Helper: get an array of tags by given http response header var + value
      * 
      * @param string  $varname  http response variable
      * @param string  $val      its value
      * @return array
      */
-    protected function _getTagsOfHeaderline($varname, $val) {
-        $aTags = array();
-        $aRegex = array();
-        if($varname=='_status'){
-            $sVersionStatus=$this->getHttpVersionStatus();
+    protected function _getTagsOfHeaderline(string $varname, string $val): array
+    {
+        $aTags = [];
+        $aRegex = [];
+        if ($varname == '_status') {
+            // $sVersionStatus = $this->getHttpVersionStatus();
             $aTags[] = 'http';
-            $aTags[] ='httpversion';
-            $aTags[] ='httpstatus';
-            return array($aTags, $aRegex);
+            $aTags[] = 'httpversion';
+            $aTags[] = 'httpstatus';
+            return [$aTags, $aRegex];
         }
         foreach ($this->_aHeaderVars as $sSection => $aSection) {
             foreach ($aSection as $sVar => $aParams) {
@@ -459,31 +269,35 @@ class httpheader {
             $aTags[] = 'unknown';
         }
         // echo "DEBUG: $varname: $val - ".print_r($aTags, 1).'<br>';
-        return array($aTags, $aRegex);
+        return [$aTags, $aRegex];
     }
 
     /**
-     * ckeck if a header item matches a given tag and return its value
+     * Helper for parseHeaders()
+     * Check if a header item matches a given tag and return its value
+     * eg. $this->_hasTag($aItem, 'unwanted');
      * 
-     * @param array   $aItem
+     * @param array   $aItem  item to check against its key "tags"
      * @param string  $sTag   tag to search for
-     * @return string
+     * @return bool|int|string
      */
-    protected function _hasTag($aItem, $sTag) {
+    protected function _hasTag(array $aItem, string $sTag): bool|int|string
+    {
         return array_search($sTag, $aItem['tags']) !== false;
     }
 
     /**
-     * check if a header item tag contains a known header var;
+     * Helper: check if a header item tag contains a known header var;
      * if true it returns a string with the section
      * 
-     * @param array  $aItem
-     * @return boolean
+     * @param array   $aItem  item to check against its key "tags"
+     * @return string
      */
-    protected function _isKnownHeader($aItem) {
-        if($aItem['tags'] && is_array($aItem['tags'])){
-            foreach(array('security', 'non-standard', 'http') as $sSection){
-                if(in_array($sSection, $aItem['tags'])){
+    protected function _isKnownHeader(array $aItem): string
+    {
+        if ($aItem['tags'] && is_array($aItem['tags'])) {
+            foreach (['security', 'non-standard', 'http'] as $sSection) {
+                if (in_array($sSection, $aItem['tags'])) {
                     return $sSection;
                 }
             }
@@ -496,30 +310,34 @@ class httpheader {
         }
          * 
          */
-        return false;
+        return '';
     }
+
     /**
-     * get array of deprecated http response headers
+     * Get array of deprecated http response headers
      * @return array
      */
-    public function getDeprecatedHeaders() {
+    public function getDeprecatedHeaders(): array
+    {
         return $this->getHeadersWithGivenTag('deprecated');
     }
 
     /**
-     * get array of common but non-standard http response headers
+     * Get array of common but non-standard http response headers
      * @return array
      */
-    public function getNonStandardHeaders() {
+    public function getNonStandardHeaders(): array
+    {
         return $this->getHeadersWithGivenTag('non-standard');
     }
 
     /**
-     * get array of unknown http response headers
+     * Get array of unknown http response headers
      * @return array
      */
-    public function getUnknowHeaders() {
-        $aReturn = array();
+    public function getUnknowHeaders(): array
+    {
+        $aReturn = [];
         foreach ($this->parseHeaders() as $aData) {
             if ($aData['found'] === 'unknown') {
                 $aReturn[] = $aData;
@@ -529,19 +347,24 @@ class httpheader {
     }
 
     /**
-     * get array of unwanted http response headers
+     * Get array of unwanted http response headers
      * @return array
      */
-    public function getUnwantedHeaders() {
+    public function getUnwantedHeaders(): array
+    {
         return $this->getHeadersWithGivenTag('unwanted');
     }
 
     /**
-     * get array of http headers with headers matching a given tag
+     * Get array of http headers with headers matching a given tag
+     * eg. $this->getHeadersWithGivenTag('unwanted');
+     * 
+     * @param string  $sTag   tag to search for
      * @return array
      */
-    public function getHeadersWithGivenTag($sTag) {
-        $aReturn = array();
+    public function getHeadersWithGivenTag(string $sTag): array
+    {
+        $aReturn = [];
         foreach ($this->parseHeaders() as $aData) {
             if (array_search($sTag, $aData['tags']) !== false) {
                 $aReturn[] = $aData;
@@ -552,11 +375,12 @@ class httpheader {
     }
 
     /**
-     * get array all found tags and its count in http response header data
+     * Get array all found tags and its count in http response header data
      * @return array
      */
-    public function getExistingTags() {
-        $aReturn = array();
+    public function getExistingTags(): array
+    {
+        $aReturn = [];
         foreach ($this->parseHeaders() as $aData) {
             if (isset($aData['tags']) && count($aData['tags'])) {
                 foreach ($aData['tags'] as $sTag) {
@@ -568,33 +392,37 @@ class httpheader {
     }
 
     /**
-     * get http version from http response status line i.e. "1.1" or "2"
+     * Get http version from http response status line i.e. "1.1" or "2"
      * @return string
      */
-    public function getHttpVersion(){
-        $sReturn = '';
+    public function getHttpVersion(): string
+    {
         foreach ($this->_aHeader as $aData) {
-            if ($aData[0]=='_status'){
+            if ($aData[0] == '_status') {
                 return preg_replace('#.*/([0-9\.]*)\ .*#u', '\1', $aData[1]);
             }
         }
-        return false;
+        return '';
     }
+
     /**
-     * helper function for rendering / reporting: get a status value as string
+     * Helper function for rendering / reporting: get a status value as string
      * one of ok|warning|error 
      * in dependency of http version.
+     * 
      * @param string $sVersion  optional: version number; default: take version from current http header
      * @return string
      */
-    public function getHttpVersionStatus($sVersion=false){
-        if (!$sVersion){
-            $sVersion=$this->getHttpVersion();
+    public function getHttpVersionStatus(string $sVersion = '')
+    {
+        if (!$sVersion) {
+            $sVersion = $this->getHttpVersion();
         }
-        return ($sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning') );
+        return $sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning');
     }
+
     /**
-     * get array with cookie data from curl cookie file
+     * Get array with cookie data from curl cookie file
      * https://stackoverflow.com/questions/410109/php-reading-a-cookie-file
      * array(
      *      'metainfos' => array(
@@ -607,7 +435,8 @@ class httpheader {
      * @param string $sFile  filename of cookie file
      * @return array
      */
-    public function parseCookiefile($sFile) {
+    public function parseCookiefile(string $sFile): array
+    {
         $aReturn = array(
             'metainfos' => array(
                 'file' => $sFile
@@ -655,7 +484,7 @@ class httpheader {
                 }
             }
         } else {
-            $aReturn['error']=file_exists($sFile)
+            $aReturn['error'] = file_exists($sFile)
                 ? 'NOT_READABLE'
                 : 'NOT_FOUND'
             ;
@@ -665,11 +494,12 @@ class httpheader {
     }
 
     /**
-     * get an helper array with all header lines
+     * Parse http response header get an helper array with all header lines
      * @return array
      */
-    public function parseHeaders() {
-        $aReturn = array();
+    public function parseHeaders(): array
+    {
+        $aReturn = [];
 
         $iLine = 0;
         foreach ($this->_aHeader as $aLine) {
@@ -679,18 +509,18 @@ class httpheader {
             // $aReturn[strtolower($varname)]=array(
             // $sFound = count($this->isKnownHeadervar($sVar, $val)) ? true : 'unknown';
             $aTagData = $this->_getTagsOfHeaderline($varname, $val);
-            $aItem = array(
-                'var'        => $varname,
-                'value'      => $val,
-                'line'       => $iLine,
-                'tags'       => $aTagData[0],
-                'regex'      => $aTagData[1],
-            );
-            $aItem['found']      = ($this->_isKnownHeader($aItem) ? $this->_isKnownHeader($aItem) : 'unknown');
+            $aItem = [
+                'var' => $varname,
+                'value' => $val,
+                'line' => $iLine,
+                'tags' => $aTagData[0],
+                'regex' => $aTagData[1],
+            ];
+            $aItem['found'] = ($this->_isKnownHeader($aItem) ? $this->_isKnownHeader($aItem) : 'unknown');
             // TEST $aItem['bad']        = $this->_hasTag($aItem, 'unwanted');
-            $aItem['unwanted']   = $this->_hasTag($aItem, 'unwanted');
+            $aItem['unwanted'] = $this->_hasTag($aItem, 'unwanted');
             $aItem['deprecated'] = $this->_hasTag($aItem, 'deprecated');
-            $aItem['obsolete']   = $this->_hasTag($aItem, 'obsolete');
+            $aItem['obsolete'] = $this->_hasTag($aItem, 'obsolete');
             // $aItem['bad']=$this->_isKnownHeader($aItem);
             $aReturn[] = $aItem;
         }

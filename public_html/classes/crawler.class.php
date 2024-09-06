@@ -42,6 +42,7 @@ require_once 'analyzer.html.class.php';
  * // or update a single page
  * $o->updateSingleUrl('https://example.com/mypage.html');
  * 
+ * 2024-09-06  v0.167  php8 only; add typed variables; use short array syntax
  **/
 class crawler extends crawler_base
 {
@@ -133,10 +134,10 @@ class crawler extends crawler_base
      * List of regex with links to remove
      * @var array
      */
-    public array $aExclude = array(
+    public array $aExclude = [
         '^javascript\:',
         '^mailto\:',
-    );
+    ];
 
     // ----------------------------------------------------------------------
     // cleanup settings - when to remove content from index
@@ -167,8 +168,8 @@ class crawler extends crawler_base
     public function __construct(int $iSiteId = 0)
     {
         $this->setSiteId($iSiteId);
-        $this->_aUrls2Crawl = array();
-        $this->_aUrls2Skip = array();
+        $this->_aUrls2Crawl = [];
+        $this->_aUrls2Skip = [];
     }
 
 
@@ -241,7 +242,7 @@ class crawler extends crawler_base
                     $sEntry = str_replace('//', '/', $sEntry);
                     // ?? $sEntry = str_replace('*\.*', '.*', $sEntry);
                     // $sEntry = str_replace('.', '\.', $sEntry);
-                    foreach (array('.', '?') as $sMaskMe) {
+                    foreach (['.', '?'] as $sMaskMe) {
                         $sEntry = str_replace($sMaskMe, '\\' . $sMaskMe, $sEntry);
                     }
                     $sEntry = str_replace('*', '.*', $sEntry);
@@ -554,7 +555,7 @@ class crawler extends crawler_base
             $this->cliprint('info', "SKIP: do not following links in url $url\n");
         }
         if ($bIngoreNoIndex || $oHtml->canIndexContent()) {
-            $this->_preparePageForIndex(array('header' => $info, 'body' => $response));
+            $this->_preparePageForIndex(['header' => $info, 'body' => $response]);
         } else {
             if ($oHtml->hasOtherCanonicalUrl()) {
                 $sCanonicalUrl = $oHtml->getCanonicalUrl();
@@ -570,12 +571,12 @@ class crawler extends crawler_base
     }
 
     /**
-     * start crawler to index whole page or opdate last errors only
+     * Start crawler to index whole page or opdate last errors only
      * 
      * @param boolean  $bMissesOnly  flag: rescan pages with errors only; default: false
-     * @return void
+     * @return boolean
      */
-    public function run(bool $bMissesOnly = false): void
+    public function run(bool $bMissesOnly = false): bool
     {
 
         // TODO: UNDO
@@ -598,20 +599,20 @@ class crawler extends crawler_base
         // ------------------------------------------------------------
         // get start urls ...
         // ------------------------------------------------------------
-        $aStartUrls = array();
+        $aStartUrls = [];
         if ($bMissesOnly) {
             // ... pages with error
             $this->cliprint('info', "I do a rescan of pages with error.\n");
             $this->_bFollowLinks = false;
             $aUrls = $this->oDB->select(
                 'pages',
-                array('url'),
-                array(
-                    'AND' => array(
+                ['url'],
+                [
+                    'AND' => [
                         'siteid' => $this->iSiteId,
                         'errorcount[>]' => 0,
-                    ),
-                )
+                    ],
+                ]
             );
             if (is_array($aUrls) && count($aUrls)) {
                 foreach ($aUrls as $aRow) {
@@ -651,13 +652,17 @@ class crawler extends crawler_base
         // ------------------------------------------------------------
 
         $this->_cleanupSearchIndex();
-        // print_r($this->oDB->select('pages', array('url', 'ts', 'siteid', 'errorcount', 'tserror')));
+        // print_r($this->oDB->select('pages', ['url', 'ts', 'siteid', 'errorcount', 'tserror']));
 
-        $iUrls = $this->oDB->count('pages', array('url'), [
-            'AND' => [
-                'siteid' => $this->iSiteId,
-            ],
-        ]);
+        $iUrls = $this->oDB->count(
+            'pages', 
+            ['url'], 
+            [
+                'AND' => [
+                    'siteid' => $this->iSiteId,
+                ],
+            ]
+        );
 
         $iTotal = date("U") - $this->iStartCrawl;
         $this->disableLocking();
@@ -672,21 +677,23 @@ class crawler extends crawler_base
             $this->cliprint('warning', "Remark: Not all html pages were added (crawling denied or arror)\n");
         }
 
+        return true;
     }
 
     /**
      * Update content of given urls in the search index 
      * (with or without following its links)
+     * It returns false if an empty array of urls was given.
      * 
      * @param array   $aUrls          array of urls
      * @param boolean $bFollowLinks   flag: scan content and follow links (default: false)
      * @return boolean
      */
-    public function updateMultipleUrls($aUrls, $bFollowLinks = false): bool
+    public function updateMultipleUrls(array $aUrls, bool $bFollowLinks = false): bool
     {
         // echo "--- ".__FUNCTION__."([array], [$bFollowLinks]) \n";
         $sMsgId = 'crawler-' . ($bFollowLinks ? 'index' : 'update') . '-profile-' . $this->iSiteId;
-        if (!is_array($aUrls) || !count($aUrls)) {
+        if (!count($aUrls)) {
             $this->cliprint(
                 $bFollowLinks ? 'error' : 'info',
                 $bFollowLinks
@@ -822,23 +829,26 @@ class crawler extends crawler_base
     }
 
     /**
-     * get latest record from table "pages" (search index)
-     * @param array $aFilter optional: filter (unused yet)
+     * Get latest record from table "pages" (search index)
+     * 
+     * @param array $aFilter optional: filter in Meedoo where syntax (unused yet) 
      * @return string|null
      */
     public function getLastRecord(array $aFilter = []): string|null
     {
-        return $this->getLastTsRecord("pages", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
+        return $this->getLastTsRecord("pages", $aFilter ?: ['siteid' => $this->iSiteId]);
     }
 
     /**
-     * get record count from table "pages" (search index)
-     * @param array $aFilter optional: filter (unused yet)
+     * Get record count from table "pages" (search index)
+     * 
+     * @param array $aFilter optional: filter in Meedoo where syntax
      * @return string|null
      */
     public function getCount(array $aFilter = []): string|null
     {
-        return $this->getRecordCount("pages", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
+        // return $this->getRecordCount("pages", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
+        return $this->getRecordCount("pages", $aFilter ?: ['siteid' => $this->iSiteId]);
     }
 
     // ----------------------------------------------------------------------
@@ -846,14 +856,14 @@ class crawler extends crawler_base
     // ----------------------------------------------------------------------
 
     /**
-     * helper function: get a value from html header
+     * Helper function: get a value from html header
      * called in _preparePageForIndex()
      * 
-     * @param string $sHtml  html code of adocument
-     * @param type $sItem    head item to fetch
-     * @return boolean|array
+     * @param string $sHtml  html code of a document (response body)
+     * @param string $sItem  head item to fetch
+     * @return mixed
      */
-    private function _getMetaHead($sHtml, $sItem)
+    private function _getMetaHead(string $sHtml, string $sItem): mixed
     {
         preg_match("@<head[^>]*>(.*?)<\/head>@si", $sHtml, $regs);
         if (!is_array($regs) || count($regs) < 2) {
@@ -861,7 +871,7 @@ class crawler extends crawler_base
         }
         $headdata = $regs[1];
 
-        $res = array();
+        $res = [];
         if ($headdata != "") {
             if (preg_match("@<" . $sItem . " *>(.*?)<\/" . $sItem . "*>@si", $sHtml, $regs)) {
                 return trim($regs[1]);
@@ -875,12 +885,12 @@ class crawler extends crawler_base
     }
 
     /**
-     * index a html page
+     * Index an html page
      * 
-     * @param array  $aPage  array with keys header and body
+     * @param array  $aPage  array with keys "header" and "body"
      * @return boolean
      */
-    private function _preparePageForIndex($aPage)
+    private function _preparePageForIndex(array $aPage): bool
     {
         // print_r($aPage['header']);
         $url = $aPage['header']['url'];
@@ -979,7 +989,7 @@ class crawler extends crawler_base
         // echo "DEBUG content strlen is finally ".strlen($sContent)." byte\n";
 
         $this->_addToSearchIndex(
-            array(
+            [
                 'url' => $url,
                 'title' => $sTitle,
                 'description' => $sDescr,
@@ -990,29 +1000,37 @@ class crawler extends crawler_base
                 'time' => $aPage['header']['total_time'] ? (int) ($aPage['header']['total_time'] * 1000) : -1, // is sec as float value
                 'header' => $aPage['header'],
                 'response' => $aPage['body'],
-            )
+            ]
         );
+        return true;
     }
 
     /**
-     * generate page id by given url (plus siteID)
-     * @param type $sUrl
-     * @return type
+     * Generate page id by given url (plus siteID)
+     * 
+     * @param string $sUrl
+     * @return null|int
      */
-    private function _getPageId($sUrl)
+    private function _getPageId(string $sUrl): null|int
     {
         $aCurrent = $this->oDB->select(
             'pages',
-            array('id'),
-            array(
+            ['id'],
+            [
                 'url' => $sUrl,
                 'siteid' => $this->iSiteId
-            )
+            ]
         );
-        return count($aCurrent) ? $aCurrent[0]['id'] : false;
+        return $aCurrent[0]['id'] ?? null;
+        // return count($aCurrent) ? $aCurrent[0]['id'] : false;
         // return $this->iSiteId ? md5($sUrl . $this->iSiteId) : false;
     }
 
+    /**
+     * Summary of _getWordCount
+     * @param mixed $s
+     * @return int
+     */
     protected function _getWordCount($s)
     {
         $characterMap = 'À..ÿ'; // chars #192 .. #255
@@ -1024,9 +1042,10 @@ class crawler extends crawler_base
     }
     /**
      * add / update page data in search index
-     * @param type $aData
+     * @param array $aData
+     * @return boolean|PDOStatement
      */
-    private function _addToSearchIndex($aData)
+    private function _addToSearchIndex(array $aData): bool|PDOStatement
     {
         if (!$this->iSiteId) {
             $this->cliprint('info', "WARNING: you need to set the siteId first.\n");
@@ -1038,13 +1057,13 @@ class crawler extends crawler_base
         // $iPageId=$this->_getPageId($aData['url']);
 
         $sFieldToCompare = 'response';
-        $aCurrent = $this->oDB->select('pages', array('id', $sFieldToCompare, 'errorcount'), array(
+        $aCurrent = $this->oDB->select('pages', ['id', $sFieldToCompare, 'errorcount'], [
             'url' => $aData['url'],
             'siteid' => $this->iSiteId,
-        ));
+        ]);
 
         // fix charset 4 studmed (on iso-8859-1) .. TODO: check on UTF8 web
-        foreach (array('title', 'description', 'keywords', 'content', 'response') as $sKey) {
+        foreach (['title', 'description', 'keywords', 'content', 'response'] as $sKey) {
             $aData[$sKey] = mb_convert_encoding($aData[$sKey], "UTF-8");
         }
 
@@ -1059,7 +1078,7 @@ class crawler extends crawler_base
             // echo ' ('.$aCurrent[0]['errorcount'] . ' errors) ';
             $aResult = $this->oDB->update(
                 'pages',
-                array(
+                [
                     'url' => $aData['url'],
                     'siteid' => $this->iSiteId,
                     'title' => $aData['title'],
@@ -1078,12 +1097,12 @@ class crawler extends crawler_base
                     'tserror' => '0000-00-00 00:00:00',
                     'errorcount' => 0,
                     'lasterror' => '',
-                ),
-                array(
+                ],
+                [
                     // 'id' => $aCurrent[0]['id'],
                     'url' => $aData['url'],
                     'siteid' => $this->iSiteId,
-                )
+                ]
             );
 
         } else {
@@ -1091,7 +1110,7 @@ class crawler extends crawler_base
             // echo "  title: " . $aData['title'] . "\n";
             $aResult = $this->oDB->insert(
                 'pages',
-                array(
+                [
                     // 'id' => $this->_getPageId($aData['url']),
                     'url' => $aData['url'],
                     'siteid' => $this->iSiteId,
@@ -1110,7 +1129,7 @@ class crawler extends crawler_base
                     'ts' => date("Y-m-d H:i:s"),
                     'tserror' => '0000-00-00 00:00:00',
                     'errorcount' => 0,
-                )
+                ]
             );
         }
         if (isset($aResult)) {
@@ -1137,25 +1156,28 @@ class crawler extends crawler_base
     }
 
     /**
-     * mark an url in search index that it has an error; it increases
-     * the error counter 
+     * Mark an url in search index that it has an error; it increases
+     * the error counter.
+     * It returns false if the siteId is not set
+     * 
      * @param string  $sUrl
      * @param array   $aHeader  http response header (=last error)
+     * @return null|PDOStatement
      */
-    private function _markAsErrorInSearchIndex($sUrl, $aHeader = array())
+    private function _markAsErrorInSearchIndex(string $sUrl, array $aHeader = []): ?PDOStatement
     {
         if (!$this->iSiteId) {
             $this->cliprint('warning', "WARNING: you need to set the siteId first.");
-            return false;
+            return null;
         }
         $aResult = $this->oDB->update(
             'pages',
-            array(
+            [
                 'errorcount[+]' => 1,
                 'tserror' => date("Y-m-d H:i:s"),
                 'lasterror' => json_encode($aHeader)
-            ),
-            array('id' => $this->_getPageId($sUrl))
+            ],
+            ['id' => $this->_getPageId($sUrl)]
         );
         $this->_checkDbResult($aResult);
         return $aResult;
@@ -1165,39 +1187,45 @@ class crawler extends crawler_base
      * cleanup search index: remove old pages and entries with error count > N
      * @return boolean
      */
-    private function _cleanupSearchIndex()
+    private function _cleanupSearchIndex():bool
     {
-        $aResult = $this->oDB->delete('pages', array(
-            'AND' => array(
+        $aResult = $this->oDB->delete('pages', [
+            'AND' => [
                 'siteid' => $this->iSiteId,
-                'OR' => array(
+                'OR' => [
                     'errorcount[>]' => $this->_iMaxAllowedErrors,
                     'ts[<]' => date("Y-m-d H:i:s", (date("U") - $this->_iMaxAllowedAgeOfLastIndex)),
-                )
-            ),
-        ));
+                ]
+            ],
+        ]);
         $this->_checkDbResult($aResult);
 
         return true;
     }
 
-    public function updateIndexAndKeywords()
+    /**
+     * Read title, description, keywords and content from database of current 
+     * site, count all words in them and store them in table "words"
+     * 
+     * @return PDOStatement|null
+     */
+    public function updateIndexAndKeywords(): PDOStatement|null
     {
         if (!$this->iSiteId) {
-            return false;
+            return null;
         }
         $characterMap = 'À..ÿ'; // chars #192 .. #255
         $this->cliprint('cli', "BUILD INDEX ... finding words ");
-        $aWords = array();
+        $aWords = [];
         $aResult = $this->oDB->select(
             'pages',
-            array('title', 'description', 'keywords', 'content'),
-            array(
-                'AND' => array(
+            ['title', 'description', 'keywords', 'content'],
+            [
+                'AND' => [
                     'siteid' => $this->iSiteId,
                     'errorcount' => 0,
-                )
-            )
+                ]
+            ]
         );
         $this->_checkDbResult($aResult);
         $this->cliprint('cli', "... and count ");
@@ -1224,21 +1252,21 @@ class crawler extends crawler_base
         // print_r($aWords);
 
 
-        $aResult = $this->oDB->delete('words', array('siteid' => $this->iSiteId));
+        $aResult = $this->oDB->delete('words', ['siteid' => $this->iSiteId]);
         $this->_checkDbResult($aResult);
 
         $this->cliprint('cli', "... and insert " . count($aWords) . " words to siteid " . $this->iSiteId);
-        $aInsertdata = array();
+        $aInsertdata = [];
         $iCounter = 0;
         foreach ($aWords as $sWord => $iCount) {
             $iCounter++;
-            $aInsertdata[] = array('word' => $sWord, 'count' => $iCount, 'siteid' => $this->iSiteId);
+            $aInsertdata[] = ['word' => $sWord, 'count' => $iCount, 'siteid' => $this->iSiteId];
             if ($iCounter > 99 || $iCounter == count($aWords)) {
                 $aResult = $this->oDB->insert('words', $aInsertdata);
                 // $this->cliprint('cli', ".");
                 // echo "\n" . $this->oDB->last_query() . "<br>\n";
                 $this->_checkDbResult($aResult);
-                $aInsertdata = array();
+                $aInsertdata = [];
                 $iCounter = 0;
             }
         }
