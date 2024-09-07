@@ -1133,7 +1133,7 @@ class crawler extends crawler_base
             );
         }
         if (isset($aResult)) {
-            $this->_checkDbResult($aResult, 1);
+            $this->_checkDbResult($aResult);
 
             /*
             // echo $this->oDB->last();

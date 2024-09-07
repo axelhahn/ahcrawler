@@ -134,4 +134,48 @@ class htmlelements
             ;
     }
 
+
+    // ----------------------------------------------------------------------
+    // 
+    // PUBLIC FUNCTIONS
+    // HTML COMPONENTS
+    // 
+    // ----------------------------------------------------------------------
+
+    /**
+     * get html code for an option field in a select drop down
+     * 
+     * @deprecated 
+     * 
+     * @param array $aAttributes  attributes of the option tag
+     * @return string
+     */
+    public function getFormOption($aAttributes){
+        $sTpl = '<option %s>%s</option>';
+        $this->_setAttributes($aAttributes);
+        return sprintf($sTpl, $this->_addAttributes(), $this->_sLabel);
+    }
+    /**
+     * get html code for a select drop down
+     * @deprecated 
+     * 
+     * @param array $aAttributes  attributes of the select tag
+     * @param array $aOptions     array for all option fields
+     * @return string
+     */
+    public function getFormSelect($aAttributes, $aOptions=array()){
+        // $sTpl = '<select %s>%s</select>';
+
+        if(!count($aOptions)){
+            return false;
+        }
+        $sOptions='';
+        foreach($aOptions as $aOptionAttributes){
+            // $sOptions.=$this->getFormOption($aOptionAttributes);
+            $sOptions.=$this->getTag('option', $aOptionAttributes);
+        }
+        $aAttributes['label']=$sOptions;
+        return $this->getTag('select', $aAttributes);
+
+    }
 }
