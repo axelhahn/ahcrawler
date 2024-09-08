@@ -28,27 +28,30 @@ require_once 'htmlelements.class.php';
  * ressources-renderer
  *
  * @author hahn
+ * 
+ * 2024-09-08  v0.167  php8 only; add typed variables; use short array syntax
  */
-class ressourcesrenderer extends crawler_base {
+class ressourcesrenderer extends crawler_base
+{
 
     /**
-     * searchindex
+     * crawler base object
      * @var object 
      */
-    protected $oCrawler = false;
+    protected object $oCrawler;
 
     /**
      * ressource
      * @var object
      */
-    protected $oRes = false;
-    
+    protected object $oRes;
+
 
     /**
      * icons
      * @var array 
      */
-    private $_aIcons = array(
+    private array $_aIcons = [
         /*
         'url' => 'fa fa-link',
         'title' => 'fa fa-chevron-right',
@@ -75,20 +78,20 @@ class ressourcesrenderer extends crawler_base {
         '_meta_total_time' => 'fa fa-clock-o',
          * 
          */
-        
+
         // ressourcetype
-        'audio'=>'fa-solid fa-volume-high',
-        'css'=>'fa-solid fa-eye-dropper',
-        'image'=>'fa-regular fa-file-image',
-        'link'=>'fa-solid fa-link',
-        'media'=>'fa-solid fa-photo-video',
-        'page'=>'fa-regular fa-sticky-note',
+        'audio' => 'fa-solid fa-volume-high',
+        'css' => 'fa-solid fa-eye-dropper',
+        'image' => 'fa-regular fa-file-image',
+        'link' => 'fa-solid fa-link',
+        'media' => 'fa-solid fa-photo-video',
+        'page' => 'fa-regular fa-sticky-note',
         // 'redirect'=>'fa-solid fa-angle-double-right',
-        'script'=>'fa-regular fa-file-code',
+        'script' => 'fa-regular fa-file-code',
 
         // type
-        'external'=>'fa-solid fa-globe-americas',
-        'internal'=>'fa-solid fa-thumbtack',
+        'external' => 'fa-solid fa-globe-americas',
+        'internal' => 'fa-solid fa-thumbtack',
         // content_type/ MIME
         //
         'link-to-url' => 'fa-solid fa-external-link-alt',
@@ -122,10 +125,10 @@ class ressourcesrenderer extends crawler_base {
         'button.view' => 'fa fa-eye',
          * 
          */
-        
+
         'ico.found' => 'fa-solid fa-check',
         'ico.miss' => 'fa-solid fa-ban',
-        
+
         // http response header
         'ico.unknown' => 'fa-solid fa-question-circle',
         'ico.http' => 'fa-solid fa-check',
@@ -136,45 +139,50 @@ class ressourcesrenderer extends crawler_base {
         'ico.unwanted' => 'fa-solid fa-exclamation-triangle',
         'ico.badvalue' => 'fa-solid fa-exclamation-triangle',
 
-        'ico.tag'=>'fa-solid fa-tag',
+        'ico.tag' => 'fa-solid fa-tag',
 
         'ico.error' => 'fa-solid fa-bolt',
         'ico.ok' => 'fa-solid fa-check',
         'ico.warn' => 'fa-solid fa-exclamation-triangle',
         'ico.warning' => 'fa-solid fa-exclamation-triangle',
-        
+
         'ico.bookmarklet' => 'fa-solid fa-expand-arrows-alt',
         'ico.redirect' => 'fa-solid fa-share',
-        'ico.filter'=>'fa-solid fa-filter',
+        'ico.filter' => 'fa-solid fa-filter',
 
-        'ico.toggle-off'=>'fa-solid fa-toggle-off',
-        'ico.toggle-on'=>'fa-solid fa-toggle-on',
-        
-        'ico.reindex'=>'fa-solid fa-redo',
-    );
-    public $oHtml=false;
+        'ico.toggle-off' => 'fa-solid fa-toggle-off',
+        'ico.toggle-on' => 'fa-solid fa-toggle-on',
+
+        'ico.reindex' => 'fa-solid fa-redo',
+    ];
+    public $oHtml = false;
 
     // ----------------------------------------------------------------------
     // construct
     // ----------------------------------------------------------------------
 
-    public function __construct($iSiteId = false) {
-        $this->oHtml=new htmlelements();
+    /**
+     * Constructor
+     * @param integer $iSiteId  id of the web project
+     */
+    public function __construct(int $iSiteId = 0)
+    {
+        $this->oHtml = new htmlelements();
         $this->setLangBackend();
         if ($iSiteId) {
             $this->_initRessource($iSiteId);
         }
-        return true;
     }
 
     /**
-     * get all icons as key value hash
+     * Get all icons of the renderer object +as key value hash
      * @return array
      */
-    public function getIcons(){
-        $aReturn=[];
-        foreach($this->_aIcons as $sKey => $sClass){
-            $aReturn['rendererer --> '.$sKey]=$sClass;
+    public function getIcons(): array
+    {
+        $aReturn = [];
+        foreach ($this->_aIcons as $sKey => $sClass) {
+            $aReturn['rendererer --> ' . $sKey] = $sClass;
         }
         return $aReturn;
     }
@@ -184,16 +192,18 @@ class ressourcesrenderer extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * init resource class and set the site id
-     * @param type $iSiteId
+     * Init resource class and set the site id
+     * 
+     * @param integer $iSiteId  id of the web project
      * @return boolean
      */
-    private function _initRessource($iSiteId = false) {
-        if (!$this->oRes) {
-            $this->oRes = new ressources();
-        }
-        if (!$this->oCrawler) {
+    private function _initRessource(int $iSiteId = 0): bool
+    {
+        if (!isset($this->oCrawler)) {
             $this->oCrawler = new crawler();
+        }
+        if (!isset($this->oRes)) {
+            $this->oRes = new ressources();
         }
         if ($iSiteId) {
             $this->oRes->setSiteId($iSiteId);
@@ -202,11 +212,21 @@ class ressourcesrenderer extends crawler_base {
         return true;
     }
 
-    public function _getIcon($sKey, $bEmptyIfMissing = false, $sClass=false) {
-        if (array_key_exists($sKey."", $this->_aIcons)) {
-            return '<i class="' . $this->_aIcons[$sKey] . ($sClass ? ' '.$sClass : '' ) .'"></i> ';
+    /**
+     * Get html code for an icon or show a placeholder if the icon key does 
+     * not exist
+     * 
+     * @param string   $sKey             
+     * @param boolean  $bEmptyIfMissing
+     * @param string   $sClass
+     * @return string
+     */
+    public function _getIcon(string $sKey, bool $bEmptyIfMissing = false, string $sClass = ''): string
+    {
+        if (array_key_exists($sKey, $this->_aIcons)) {
+            return '<i class="' . $this->_aIcons[$sKey] . ($sClass ? " $sClass" : '') . '"></i> ';
         }
-        return $bEmptyIfMissing ? '' : '<span title="missing icon [' . $sKey . ']">[' . $sKey . ']</span>';
+        return $bEmptyIfMissing ? '' : "<span title=\"missing icon [$sKey]\">[$sKey]</span>";
     }
 
     /**
@@ -217,15 +237,17 @@ class ressourcesrenderer extends crawler_base {
      * @param array   $aArray  array
      * @return string
      */
-    public function renderArrayValue($sKey, $aArray){
-        if (array_key_exists($sKey, $aArray)){
+    public function renderArrayValue($sKey, $aArray)
+    {
+        if (array_key_exists($sKey, $aArray)) {
             return $this->renderValue($sKey, $aArray[$sKey]);
         }
         return false;
     }
 
     /**
-     * render a table to show http header
+     * Get html code for a table to show http responseheader
+     * 
      * @param array $aHeaderWithChecks  array of header vars; user the return of [httpheader]->checkHeaders();
      *     [expires] => Array
      *        (
@@ -239,91 +261,95 @@ class ressourcesrenderer extends crawler_base {
      *
      * @return string
      */
-    public function renderHttpheaderAsTable($aHeaderWithChecks){
-        if(!$aHeaderWithChecks ||!is_array($aHeaderWithChecks) || !count($aHeaderWithChecks)){
+    public function renderHttpheaderAsTable(array $aHeaderWithChecks): string
+    {
+        if (!$aHeaderWithChecks || !is_array($aHeaderWithChecks) || !count($aHeaderWithChecks)) {
             return '';
         }
-        $sReturn='';
-        foreach($aHeaderWithChecks as $aEntry){
-            $sIcon='';
-            $sIcon=$this->_getIcon('ico.' . $aEntry['found'], false, 'ico-'.$aEntry['found'])
-                    /*
-                . ($aEntry['obsolete']   ? $this->_getIcon('ico.obsolete', false, 'ico-obsolete') : '')
-                . ($aEntry['deprecated'] ? $this->_getIcon('ico.deprecated', false, 'ico-deprecated') : '')
-                . ($aEntry['unwanted']   ? $this->_getIcon('ico.', false, 'ico-warn') : '')
-                . (array_search('security', $aEntry['tags'])!==false ? $this->_getIcon('ico.security', false, 'ico-security') : '')
-                     * 
-                     */
-                ;
-            foreach(array('unwanted', 'badvalue', /*'unknown',*/ 'obsolete') as $sMyTag){
-                $sIcon.=(array_search($sMyTag, $aEntry['tags'])!==false ? $this->_getIcon('ico.'.$sMyTag, false, 'ico-'.$sMyTag) : '');
+        $sReturn = '';
+        foreach ($aHeaderWithChecks as $aEntry) {
+            $sIcon = '';
+            $sIcon = $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-' . $aEntry['found'])
+                /*
+            . ($aEntry['obsolete']   ? $this->_getIcon('ico.obsolete', false, 'ico-obsolete') : '')
+            . ($aEntry['deprecated'] ? $this->_getIcon('ico.deprecated', false, 'ico-deprecated') : '')
+            . ($aEntry['unwanted']   ? $this->_getIcon('ico.', false, 'ico-warn') : '')
+            . (array_search('security', $aEntry['tags'])!==false ? $this->_getIcon('ico.security', false, 'ico-security') : '')
+                 * 
+                 */
+            ;
+            foreach (array('unwanted', 'badvalue', /*'unknown',*/ 'obsolete') as $sMyTag) {
+                $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
             }
-            
-            $sComment='';
-            if(count($aEntry['tags'])){
-                foreach($aEntry['tags'] as $sTag){
-                    $sComment.=($sTag==='http' ? '' : $this->_getIcon('ico.tag').$this->lB('httpheader.tag.'.$sTag).' ');
+
+            $sComment = '';
+            if (count($aEntry['tags'])) {
+                foreach ($aEntry['tags'] as $sTag) {
+                    $sComment .= ($sTag === 'http' ? '' : $this->_getIcon('ico.tag') . $this->lB('httpheader.tag.' . $sTag) . ' ');
                 }
             }
-            $sReturn.='<tr title="'.htmlentities($aEntry['var'].': '.$aEntry['value']).'" '
-                    . 'class="'.implode(' ', array_values($aEntry['tags'])).'"'
-                    . '>'
-                    . '<td>'.(strstr($aEntry['var'], '_') ? '' : htmlentities($aEntry['var'])) . '</td>'
-                    . '<td style="max-width: 30em; overflow: hidden;">'.htmlentities($aEntry['value']).'</td>'
-                    . '<td>' . $sIcon    .'</td>'
-                    . '<td>' . $sComment .'</td>'
-                    // . '<td>'. print_r(array_values($aEntry['tags']),1) .'</td>'
-                    . '</tr>'
-                    ;
+            $sReturn .= '<tr title="' . htmlentities($aEntry['var'] . ': ' . $aEntry['value']) . '" '
+                . 'class="' . implode(' ', array_values($aEntry['tags'])) . '"'
+                . '>'
+                . '<td>' . (strstr($aEntry['var'], '_') ? '' : htmlentities($aEntry['var'])) . '</td>'
+                . '<td style="max-width: 30em; overflow: hidden;">' . htmlentities($aEntry['value']) . '</td>'
+                . '<td>' . $sIcon . '</td>'
+                . '<td>' . $sComment . '</td>'
+                // . '<td>'. print_r(array_values($aEntry['tags']),1) .'</td>'
+                . '</tr>'
+            ;
         }
         return '<table class="pure-table pure-table-horizontal">'
-                . '<tr>'
-                    . '<th>'.$this->lB('httpheader.thvariable').'</th>'
-                    . '<th>'.$this->lB('httpheader.thvalue').'</th>'
-                    . '<th></th>'
-                    . '<th>'.$this->lB('httpheader.thcomment').'</th>'
-                . '</tr>'
-                . $sReturn
+            . '<tr>'
+            . '<th>' . $this->lB('httpheader.thvariable') . '</th>'
+            . '<th>' . $this->lB('httpheader.thvalue') . '</th>'
+            . '<th></th>'
+            . '<th>' . $this->lB('httpheader.thcomment') . '</th>'
+            . '</tr>'
+            . $sReturn
             . '</table>';
     }
-    
+
     /**
-     * get css classes for http status; it returns 2 classnames with
+     * Get css classes for http status; it returns 2 classnames with
      * 100 block grouping and the exact code
      * 
-     * @param integer $iHttpStatus
+     * @param integer $iHttpStatus  http status
      * @param boolean $bOnlyFirst   optional flag: use grouped code "http-code-Nxx" without full statuscode; default: false (=show http code as number)
      * @return string
      */
-    protected function _getCssClassesForHttpstatus($iHttpStatus, $bOnlyFirst=false){
-        return 'http-code-'.floor((int)$iHttpStatus/100).'xx'.
-                (!$bOnlyFirst ? ' http-code-'.(int)$iHttpStatus : '');
+    protected function _getCssClassesForHttpstatus(int $iHttpStatus, bool $bOnlyFirst = false): string
+    {
+        return 'http-code-' . floor((int) $iHttpStatus / 100) . 'xx' .
+            (!$bOnlyFirst ? ' http-code-' . (int) $iHttpStatus : '');
     }
+
     /**
-     * render a ressource value and add css class
+     * Get html code for a ressource value and add css class
      * 
      * @param string  $sType  string
-     * @param mixed   $value  value
+     * @param string  $value  value
      * @return string
      */
-    public function renderValue($sType, $value) {
+    public function renderValue(string $sType, string $value): string
+    {
 
         $sIcon = $this->_getIcon($value, true);
         switch ($sType) {
 
             case 'http_code':
                 if (!$sIcon) {
-                    $sIcon = $this->_getIcon('http-code-' . floor((int)$value/100) . 'xx', true);
+                    $sIcon = $this->_getIcon('http-code-' . floor((int) $value / 100) . 'xx', true);
                 }
                 if (!$sIcon) {
                     $sIcon = $this->_getIcon('http-code-' . $value, true);
                 }
                 // $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
-                $shttpStatusDescr=$value.': '.$this->lB('httpcode.'.$value.'.descr', 'httpcode.???.descr')
-                        .($this->lB('httpcode.'.$value.'.todo') ? "&#13;&#13;".$this->lB('httpcode.todo').":&#13;".$this->lB('httpcode.'.$value.'.todo') : '');
-                $sReturn='<span class="http-code '.$this->_getCssClassesForHttpstatus($value).'" '
-                        . 'title="'.$shttpStatusDescr.'"'
-                        . '>'.$sIcon.$value.'</span>';
+                $shttpStatusDescr = $value . ': ' . $this->lB('httpcode.' . $value . '.descr', 'httpcode.???.descr')
+                    . ($this->lB('httpcode.' . $value . '.todo') ? "&#13;&#13;" . $this->lB('httpcode.todo') . ":&#13;" . $this->lB('httpcode.' . $value . '.todo') : '');
+                $sReturn = '<span class="http-code ' . $this->_getCssClassesForHttpstatus((int)$value) . '" '
+                    . 'title="' . $shttpStatusDescr . '"'
+                    . '>' . $sIcon . $value . '</span>';
                 break;
 
             case 'ressourcetype':
@@ -342,12 +368,15 @@ class ressourcesrenderer extends crawler_base {
     }
 
     /**
-     * render an value from the array by the given key
+     * Get html code for an value from the array by the given key
+     * It returns false if not found
+     * 
      * @param string $sKey
      * @param array  $aArray
-     * @return boolean
+     * @return string
      */
-    private function _renderArrayValue($sKey, $aArray) {
+    private function _renderArrayValue(string $sKey, array $aArray): bool|string
+    {
         if (array_key_exists($sKey, $aArray)) {
             return $this->renderValue($sKey, $aArray[$sKey]);
         }
@@ -355,76 +384,74 @@ class ressourcesrenderer extends crawler_base {
     }
 
     /**
-     * render a few items from ressource item array as html table
+     * Get items from ressource item array as html table
+     * 
      * @param array  $aItem       array of a single ressource item
      * @param array  $aArraykeys  optional: array keys to render (default: all)
-     * @return strineg
+     * @return string
      */
-    private function _renderItemAsTable($aItem, $aArraykeys = false) {
+    private function _renderItemAsTable(array $aItem, array $aArraykeys = []): string
+    {
         if (!$aArraykeys) {
             $aArraykeys = array_keys($aItem);
         }
         $sReturn = '';
         foreach ($aArraykeys as $sKey) {
             if (array_key_exists($sKey, $aItem)) {
-                $sReturn.='<tr>'
-                        . '<td>' . $this->_getIcon($sKey, true) . ' ' . $this->lB("db-ressources." . $sKey) . '</td>'
-                        . '<td>' . $this->renderValue($sKey, $aItem[$sKey]) . '</td>'
-                        . '</tr>';
+                $sReturn .= '<tr>'
+                    . '<td>' . $this->_getIcon($sKey, true) . ' ' . $this->lB("db-ressources." . $sKey) . '</td>'
+                    . '<td>' . $this->renderValue($sKey, $aItem[$sKey]) . '</td>'
+                    . '</tr>';
             }
         }
         if ($sReturn) {
-            return '<table class="pure-table pure-table-horizontal">'
-                    . $sReturn
-                    . '</table>';
+            return "<table class=\"pure-table pure-table-horizontal\">$sReturn</table>";
         }
-        return false;
+        return '';
     }
 
     /**
-     * human readaably size by value in byte
+     * Get human readable size by value in byte
      * 
-     * @param integer  $iValue
+     * @param integer|float  $iValue
      * @return string
      */
-    public function hrSize($iValue) {
+    public function hrSize(int|float $iValue): string
+    {
         $iOut = $iValue;
-        foreach (array(
-            $this->lB('hr-size-byte'),
-            $this->lB('hr-size-kb'),
-            $this->lB('hr-size-MB'),
-            $this->lB('hr-size-GB'),
-            $this->lB('hr-size-TB'),
-            $this->lB('hr-size-PB'),
-        ) as $sSuffix) {
+        foreach ([$this->lB('hr-size-byte'), $this->lB('hr-size-kb'), $this->lB('hr-size-MB'), $this->lB('hr-size-GB'), $this->lB('hr-size-TB'), $this->lB('hr-size-PB'), ] as $sSuffix) {
             if ($iOut < 3000) {
                 return round($iOut, 2) . ' ' . $sSuffix;
             }
             $iOut = $iOut / 1024;
         }
-        return $iValue . ' (??)';
+
+        // if foor loop didn't return anything ... finally return with added ??
+        return "$iValue (??)";
     }
 
     /**
-     * human readaably age by value in unix ts
+     * Get human readable age by value in unix ts
      * 
      * @param integer  $iUnixTs  unix timestamp
      * @return string
      */
-    public function hrAge($iUnixTs) {
-        if($iUnixTs<1){
+    public function hrAge(int $iUnixTs): string
+    {
+        if ($iUnixTs < 1) {
             return $this->lB('hr-time-never');
         }
         return $this->hrTimeInSec(date("U") - $iUnixTs);
     }
 
     /**
-     * human readaably time by value in seconds
+     * Get human readable time by value in seconds
      * 
      * @param integer  $iValue  value in seconds
      * @return string
      */
-    public function hrTimeInSec($iValue) {
+    public function hrTimeInSec(int $iValue): string
+    {
         $iOut = $iValue;
         if ($iOut < 180) {
             return $iOut . ' ' . $this->lB('hr-time-sec');
@@ -451,18 +478,22 @@ class ressourcesrenderer extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * render ressource with redirects in ressource report
+     * Get div for a ressource with redirects in ressource report
+     * 
      * @param array    $aRessourceItem  ressource item
      * @param integer  $iLevel          level
+     * @param string   $sLastUrl        Url pointing to the current ressource
+     * 
      * @return string
      */
-    private function _renderWithRedirects($aRessourceItem, $iLevel = 1, $sLastUrl='') {
-        $iIdRessource=$aRessourceItem['id'];
+    private function _renderWithRedirects(array $aRessourceItem, int $iLevel = 1, string $sLastUrl = ''): string
+    {
+        $iIdRessource = $aRessourceItem['id'];
         static $aUrllist;
-        if ($iLevel===1){
-            $aUrllist=array();
+        if ($iLevel === 1) {
+            $aUrllist = [];
         }
-        $sReturn='';
+        $sReturn = '';
         /*
         $iIdRessource=array_key_exists('id_ressource', $aRessourceItem)
                 ? $aRessourceItem['id_ressource_to']
@@ -470,31 +501,31 @@ class ressourcesrenderer extends crawler_base {
                 ;
         */
 
-        if (array_key_exists($iIdRessource, $aUrllist)){
+        if (array_key_exists($iIdRessource, $aUrllist)) {
             return $sReturn .= $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
-        $oStatus=new httpstatus($aRessourceItem['http_code']);
-        $bIsRedirect=($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
-        $lastProt=parse_url($sLastUrl, PHP_URL_SCHEME);
-        $nowProt=parse_url($aRessourceItem['url'], PHP_URL_SCHEME);
+        // $oStatus = new httpstatus($aRessourceItem['http_code']);
+        $bIsRedirect = ($aRessourceItem['http_code'] >= 300 && $aRessourceItem['http_code'] < 400);
+        $lastProt = parse_url($sLastUrl, PHP_URL_SCHEME);
+        $nowProt = parse_url($aRessourceItem['url'], PHP_URL_SCHEME);
         $sReturn .= ''
-                // . ' #'.$iIdRessource.' '.$iLevel.' '
-                . ($iLevel===2 ? '<div class="redirects"><div class="redirectslabel">'.$this->lB('ressources.redirects-to').'</div>' : '')
-                    . ($iLevel>2 ? '<div class="redirects">' : '')
-                    . ($aRessourceItem['url']==str_replace('http://', 'https://',  $sLastUrl)
-                        ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
-                        : ''
-                    )
-                    . ($lastProt=='https' && $nowProt=='http'
-                        ? $this->renderMessagebox($this->lB("linkchecker.https-to-http"), 'warning')
-                        : ''
-                    )
-                    . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
-                    . ($iLevel===2 ? '</div>' : '')
-                . ($iLevel>2 ? '</div>' : '')
-                // . ' ('.$aRessourceItem['http_code']
-                ;
-        $aUrllist[$iIdRessource]=true;
+            // . ' #'.$iIdRessource.' '.$iLevel.' '
+            . ($iLevel === 2 ? '<div class="redirects"><div class="redirectslabel">' . $this->lB('ressources.redirects-to') . '</div>' : '')
+            . ($iLevel > 2 ? '<div class="redirects">' : '')
+            . ($aRessourceItem['url'] == str_replace('http://', 'https://', $sLastUrl)
+                ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
+                : ''
+            )
+            . ($lastProt == 'https' && $nowProt == 'http'
+                ? $this->renderMessagebox($this->lB("linkchecker.https-to-http"), 'warning')
+                : ''
+            )
+            . $this->renderRessourceItemAsLine($aRessourceItem, true, !$bIsRedirect)
+            . ($iLevel === 2 ? '</div>' : '')
+            . ($iLevel > 2 ? '</div>' : '')
+            // . ' ('.$aRessourceItem['http_code']
+        ;
+        $aUrllist[$iIdRessource] = true;
         if ($bIsRedirect) {
             // echo " scan sub elements of # $iIdRessource ...<br>";
             $aOutItem = $this->oRes->getRessourceDetailsOutgoing($iIdRessource);
@@ -507,43 +538,46 @@ class ressourcesrenderer extends crawler_base {
         }
         return $sReturn;
     }
+
     /**
-     * render referencing (incoming) ressources report
+     * Get div for referencing (incoming) ressources report
+     * 
      * @param array   $aRessourceItem  ressource item
      * @param boolean $bReinit         flag for deleting the url list (for multiple usage of this method on a page)
      * @return string
      */
-    public function _renderIncomingWithRedirects($aRessourceItem, $bReInit=false) {
-        $iIdRessource=$aRessourceItem['id'];
+    public function _renderIncomingWithRedirects(array $aRessourceItem, bool $bReInit = false): string
+    {
+        $iIdRessource = $aRessourceItem['id'];
         static $aUrllist;
-        if (!$aUrllist || $bReInit){
-            $aUrllist=array();
+        if (!$aUrllist || $bReInit) {
+            $aUrllist = array();
         }
         $sReturn = '';
 
-        if (array_key_exists($iIdRessource, $aUrllist)){
+        if (array_key_exists($iIdRessource, $aUrllist)) {
             return $sReturn . $this->renderMessagebox(sprintf($this->lB("linkchecker.loop-detected"), $aRessourceItem['url']), 'error');
         }
-        $aResIn=$this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
-        $aUrllist[$iIdRessource]=true;
-        if(count($aResIn)){
+        $aResIn = $this->oRes->getRessourceDetailsIncoming($aRessourceItem['id']);
+        $aUrllist[$iIdRessource] = true;
+        if (count($aResIn)) {
             // $sReport.='|   |<br>';
-            $sReturn.='<div class="references">'
-                . '<div class="referenceslabel">'.sprintf($this->lB('ressources.referenced-in'), count($aResIn)).'</div>';
-                foreach ($aResIn as $aInItem){
-                    $sReturn.=''
-                        // .$aRessourceItem['url'].'<br>'.print_r($aInItem,1)
-                        .($aInItem['url']==str_replace('https://', 'http://',  $aRessourceItem['url'])
-                            ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
-                            : ''
-                        )
-                        .$this->renderRessourceItemAsLine($aInItem, $aInItem['type']=='external')
-                        ;
-                    if ($aInItem['type']=='external'){
-                        $sReturn.=$this->_renderIncomingWithRedirects($aInItem);
-                    }
+            $sReturn .= '<div class="references">'
+                . '<div class="referenceslabel">' . sprintf($this->lB('ressources.referenced-in'), count($aResIn)) . '</div>';
+            foreach ($aResIn as $aInItem) {
+                $sReturn .= ''
+                    // .$aRessourceItem['url'].'<br>'.print_r($aInItem,1)
+                    . ($aInItem['url'] == str_replace('https://', 'http://', $aRessourceItem['url'])
+                        ? $this->renderMessagebox($this->lB("linkchecker.http-to-https"), 'warning')
+                        : ''
+                    )
+                    . $this->renderRessourceItemAsLine($aInItem, $aInItem['type'] == 'external')
+                ;
+                if ($aInItem['type'] == 'external') {
+                    $sReturn .= $this->_renderIncomingWithRedirects($aInItem);
                 }
-            $sReturn.='</div>';
+            }
+            $sReturn .= '</div>';
 
         } else {
             // $sReturn.='<br>';
@@ -551,265 +585,314 @@ class ressourcesrenderer extends crawler_base {
         return $sReturn;
     }
 
-    public function renderBookmarklet($sId){
-        $aItems=array(
-            'details'=>array(
-                'query'=>"backend/?page=checkurl&siteid=all&redirect=1&query='+encodeURI(document.location.href);"
-                ),
-            'httpheaderchecks'=>array(
-                // 'query'=>"?page=httpheaderchecks&url='+encodeURI(document.location.href);"
-                'query'=>"?page=httpheaderchecks&urlbase64='+btoa(document.location.href);"
-                ),
-            'sslcheck'=>array(
-                'query'=>"?page=sslcheck&host='+(document.location.hostname)+'&port='+(document.location.port ? document.location.port : (document.location.protocol==='http:' ? 80 : (document.location.protocol==='https:' ? 443 : 0 )));"
-                ),
-        );
-        if(!isset($aItems[$sId])){
-            return 'INTERNAL ERROR: this page integrated bookmarklet of non existing id ['.$sId.']<br>';
-        }
-        $sBaseUrl= preg_replace('/(\/backend|\?.*)/', '', $_SERVER["REQUEST_URI"]);
-        $sMyUrl = 'http'
-                . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? 's' : '')
-                . '://'
-                . $_SERVER["HTTP_HOST"]
-                . ':' . $_SERVER["SERVER_PORT"]
-                . $sBaseUrl
-                . $aItems[$sId]['query']
-                // . (isset($_GET['lang']) ? '&lang='.$_GET['lang'] : '')
-                ;
-        $sMyUrl=isset($_GET['lang']) ? str_replace('?page=', '?lang='.$_GET['lang'].'&amp;page=', $sMyUrl) : $sMyUrl;
-        return $this->lB('bookmarklet.hint').':<br><br>'
-            . $this->oHtml->getTag('a', array(
-                    'class'=>'pure-button',
-                    'href'=>'javascript:document.location.href=\''.$sMyUrl,
-                    'onclick'=>'alert(\''.$this->lB('bookmarklet.hint').'\'); return false;',
-                    'title'=>$this->lB('bookmarklet.hint'),
-                    'label'=>$this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.'.$sId.'.label'),
-              ))
-            
-            . '<br><br>'
-            . $this->lB('bookmarklet.'.$sId.'.posthint')
-            ;
-    }
-    
     /**
-     * get html code for a context box on the side
-     * @param string  $sContent  content of the box
-     * @param strng   $sTitle    optional title
+     * Get html code to render a bookmarklet
+     * 
+     * @param string $sId  id for bookmarklet; one of 'details', 'httpheaderchecks', 'sslcheck'
      * @return string
      */
-    public function renderContextbox($sContent, $sTitle=''){
-        return '<div class="contextbox">'
-                    . ($sTitle ? '<div class="head">'.$sTitle.'</div>' : '')
-                    . '<div class="content">'.$sContent.'</div>'
-                .'</div>';
+    public function renderBookmarklet(string $sId): string
+    {
+        $aItems = array(
+            'details' => array(
+                'query' => "backend/?page=checkurl&siteid=all&redirect=1&query='+encodeURI(document.location.href);"
+            ),
+            'httpheaderchecks' => array(
+                // 'query'=>"?page=httpheaderchecks&url='+encodeURI(document.location.href);"
+                'query' => "?page=httpheaderchecks&urlbase64='+btoa(document.location.href);"
+            ),
+            'sslcheck' => array(
+                'query' => "?page=sslcheck&host='+(document.location.hostname)+'&port='+(document.location.port ? document.location.port : (document.location.protocol==='http:' ? 80 : (document.location.protocol==='https:' ? 443 : 0 )));"
+            ),
+        );
+        if (!isset($aItems[$sId])) {
+            // TODO: translate text
+            return "INTERNAL ERROR: this page integrated bookmarklet of non existing id [$sId]<br>";
+        }
+        $sBaseUrl = preg_replace('/(\/backend|\?.*)/', '', $_SERVER["REQUEST_URI"]);
+        $sMyUrl = 'http'
+            . ((isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"]) ? 's' : '')
+            . '://'
+            . $_SERVER["HTTP_HOST"]
+            . ':' . $_SERVER["SERVER_PORT"]
+            . $sBaseUrl
+            . $aItems[$sId]['query']
+            // . (isset($_GET['lang']) ? '&lang='.$_GET['lang'] : '')
+        ;
+        $sMyUrl = isset($_GET['lang']) ? str_replace('?page=', '?lang=' . $_GET['lang'] . '&amp;page=', $sMyUrl) : $sMyUrl;
+        return $this->lB('bookmarklet.hint') . ':<br><br>'
+            . $this->oHtml->getTag('a', array(
+                'class' => 'pure-button',
+                'href' => 'javascript:document.location.href=\'' . $sMyUrl,
+                'onclick' => 'alert(\'' . $this->lB('bookmarklet.hint') . '\'); return false;',
+                'title' => $this->lB('bookmarklet.hint'),
+                'label' => $this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.' . $sId . '.label'),
+            ))
+
+            . '<br><br>'
+            . $this->lB('bookmarklet.' . $sId . '.posthint')
+        ;
     }
 
     /**
-     * get html code for a context box on the side
+     * Get html code for a context box on the side; with title in the header 
+     * or without.
+     * 
      * @param string  $sContent  content of the box
-     * @param strng   $sTitle    optional title
+     * @param string  $sTitle    optional title
      * @return string
      */
-    public function renderExtendedView(){
-        return $this->oHtml->getTag('a',array(
-            'href'=>'#',
-            'id'=>'btn-extend-on',
-            'class'=>'pure-button btn-extend',
-            'onclick'=>'toggleExtendedView(); return false',
-            'label'=>$this->_getIcon('ico.toggle-on').$this->lB('button.extended-on'),
-        ))
-        .$this->oHtml->getTag('a',array(
-            'href'=>'#',
-            'id'=>'btn-extend-off',
-            'class'=>'pure-button btn-extend',
-            'onclick'=>'toggleExtendedView(); return false',
-            'label'=>$this->_getIcon('ico.toggle-off').$this->lB('button.extended-off'),
-        ));
+    public function renderContextbox(string $sContent, string $sTitle = ''): string
+    {
+        return '<div class="contextbox">'
+            . ($sTitle ? "<div class=\"head\">$sTitle</div>" : '')
+            . "<div class=\"content\">$sContent</div>"
+            . '</div>';
     }
-    
+
     /**
-     * 
+     * Get html code opening and closing button for showing extended settings/ content
+     * @param string  $sContent  content of the box
+     * @param string  $sTitle    optional title
+     * @return string
      */
-    public function renderIndexButton($sAction, $sWhat, $sSiteId){
-        return $this->oHtml->getTag(
-            'a', 
-            array(
-                 'href' => './get.php?action='.$sAction.'-'.$sWhat.'&siteid='.$sSiteId,
-                 'class' => 'pure-button button-secondary trigger_action_reindex',
-                 'target' => 'selfiframe',
-                 'label'=> $this->_getIcon('ico.reindex').$this->lB('button.'.$sAction),
-            ));
+    public function renderExtendedView(): string
+    {
+        return $this->oHtml->getTag('a', [
+            'href' => '#',
+            'id' => 'btn-extend-on',
+            'class' => 'pure-button btn-extend',
+            'onclick' => 'toggleExtendedView(); return false',
+            'label' => $this->_getIcon('ico.toggle-on') . $this->lB('button.extended-on'),
+        ])
+        . $this->oHtml->getTag('a', [
+            'href' => '#',
+            'id' => 'btn-extend-off',
+            'class' => 'pure-button btn-extend',
+            'onclick' => 'toggleExtendedView(); return false',
+            'label' => $this->_getIcon('ico.toggle-off') . $this->lB('button.extended-off'),
+        ]);
     }
-    
-    public function renderIndexActions($sAction, $sWhat, $sSiteId){
+
+    /**
+     * Get html code for a search index button
+     * @param string  $sAction  action
+     * @param string  $sWhat    what
+     * @param string  $sSiteId  site id
+     * @return string
+     */
+    public function renderIndexButton($sAction, $sWhat, $sSiteId): string
+    {
+        return $this->oHtml->getTag(
+            'a',
+            [
+                'href' => "./get.php?action=$sAction-$sWhat&siteid=$sSiteId",
+                'class' => 'pure-button button-secondary trigger_action_reindex',
+                'target' => 'selfiframe',
+                'label' => $this->_getIcon('ico.reindex') . $this->lB('button.' . $sAction),
+            ]
+        );
+    }
+
+    /**
+     * Get html code for a box showing the status of the search index
+     * It writes divs for each status that will be shown by css
+     * 
+     * @param string  $sAction  Name of the action; one of 'reindex'
+     * @param string  $sWhat    What to index
+     * @param integer $sSiteId  Site id of the web
+     * @return string
+     */
+    public function renderIndexActions($sAction, $sWhat, $sSiteId): string
+    {
         return '<div class="actions-crawler">'
             . '<div class="running">'
-                .$this->renderMessagebox($this->lB('status.indexer_is_running'), 'warning')
+            . $this->renderMessagebox($this->lB('status.indexer_is_running'), 'warning')
             . '</div>'
             . '<div class="stopped">'
-                .$this->renderIndexButton($sAction, $sWhat, $sSiteId)
+            . $this->renderIndexButton($sAction, $sWhat, $sSiteId)
             . '</div>'
             . '</div>';
     }
 
     /**
-     * get html code for a button that points to a known page (anywhere) in the menu
-     * @param string $sMenuItem         target menu id (page=...)
-     * @param string $sIcon             optional: icon to show (html code)
-     * @param string $iSiteId           optional: site id
-     * @param string $sMoreUrlParams    optional: more url params for href target
-     * @return string
-     */
-    public function renderLink2Page($sMenuItem, $sIcon='', $iSiteId=false, $sMoreUrlParams=false){
-        return  $this->oHtml->getTag('a', array(
-                    'class'=>'pure-button',
-                    'href'=>'?page='.$sMenuItem.($iSiteId ? '&siteid='.$iSiteId : '').($sMoreUrlParams ? $sMoreUrlParams : ''),
-                    'title'=>$this->lB('nav.'.$sMenuItem.'.hint'),
-                    'label'=>($sIcon ? $sIcon.' ' : '').$this->lB('nav.'.$sMenuItem.'.label') ,
-            ));
-    }
-    
-    /**
-     * get html code for an infobox 
-     * @param string  $sMessage  message text
-     * @param string  $sType     one of ok|warning|error
-     * @return string
-     */
-    public function renderMessagebox($sMessage, $sType=''){
-        return '<div class="message message-'.$sType.'">'
-                .$this->renderShortInfo($sType)
-                .$sMessage
-            .'</div>';
-    }
-    /**
-     * get html code for report item with redirects and and its references
+     * Get html code for a button that points to a known page (anywhere) in the 
+     * menu
      * 
-     * @param integer  $iRessourceId    id of the ressource
+     * @param string  $sMenuItem         target menu id (page=...)
+     * @param string  $sIcon             optional: icon to show (html code)
+     * @param integer $iSiteId           optional: site id
+     * @param string  $sMoreUrlParams    optional: more url params for href target
+     * @return string
+     */
+    public function renderLink2Page(string $sMenuItem, string $sIcon = '', int $iSiteId = 0, string $sMoreUrlParams = ''): string
+    {
+        return $this->oHtml->getTag('a', [
+            'class' => 'pure-button',
+            'href' => '?page=' . $sMenuItem . ($iSiteId ? '&siteid=' . $iSiteId : '') . ($sMoreUrlParams ? $sMoreUrlParams : ''),
+            'title' => $this->lB('nav.' . $sMenuItem . '.hint'),
+            'label' => ($sIcon ? $sIcon . ' ' : '') . $this->lB('nav.' . $sMenuItem . '.label'),
+        ]);
+    }
+
+    /**
+     * Get html code for an infobox 
+     * @param string  $sMessage  message text
+     * @param string  $sType     one of ok|warning|error; default: ''
+     * @return string
+     */
+    public function renderMessagebox(string $sMessage, string $sType = ''): string
+    {
+        return '<div class="message message-' . $sType . '">'
+            . $this->renderShortInfo($sType)
+            . $sMessage
+            . '</div>';
+    }
+    /**
+     * Get html code for report item with redirects and and its references
+     * 
+     * @param array    $iRessourceItem  array of the ressource
      * @param boolean  $bShowIncoming   optional flag: show ressources that use the current ressource? default: true (=yes)
      * @param boolean  $bShowRedirects  optional flag: show redrirects? default: true (=yes)
      * @return string
      */
-    public function renderReportForRessource($aRessourceItem, $bShowIncoming=true, $bShowRedirects=true) {
+    public function renderReportForRessource(array $aRessourceItem, bool $bShowIncoming = true, bool $bShowRedirects = true): string
+    {
         $sReturn = '';
         $this->_initRessource();
-        
-        $sCssStatus=isset($aRessourceItem['http_code']) ? ' '.$this->_getCssClassesForHttpstatus($aRessourceItem['http_code']) : '';
-        
-        $sReturn.=$bShowRedirects
+
+        $sCssStatus = isset($aRessourceItem['http_code']) ? ' ' . $this->_getCssClassesForHttpstatus($aRessourceItem['http_code']) : '';
+
+        $sReturn .= $bShowRedirects
             ? $this->_renderWithRedirects($aRessourceItem)
             : $this->renderRessourceItemAsLine($aRessourceItem, true)
         ;
         if ($bShowIncoming) {
-            $sReturn.=$this->_renderIncomingWithRedirects($aRessourceItem, $bShowIncoming, $bShowRedirects);
+            $sReturn .= $this->_renderIncomingWithRedirects($aRessourceItem, $bShowIncoming, $bShowRedirects);
         }
         // return $sReturn;
-        return '<div class="divRessourceReport '.$sCssStatus.'">'. $sReturn . '</div>';
+        return "<div class=\"divRessourceReport $sCssStatus\">$sReturn</div>";
     }
 
     /**
-     * get html code for infobox with a single ressource given by id
+     * Get html code for infobox with a single ressource given by id
      * 
      * @param integer  $iRessourceId  id of the ressource
      * @return string
      */
-    public function renderRessourceId($iRessourceId) {
+    public function renderRessourceId(int $iRessourceId): string
+    {
         $iId = (int) $iRessourceId;
         if (!$iId) {
-            return false;
+            return '';
         }
         $this->_initRessource();
         $aResourceItem = $this->oRes->getRessourceDetails($iId);
         return $this->renderRessourceItemAsBox($aResourceItem);
     }
 
-    private function _extendRessourceItem($aRessourceItem) {
+    /**
+     * Extend properties of given resource item.
+     * - human readable values:
+     *    - _size_download - download size 
+     *    - _dlspeed - download speed
+     * - parse curl metadata in header and add it as value to the item
+     *    - _meta_total_time
+     *    - _meta_namelookup_time
+     *    - _meta_connect_time
+     *    - _meta_pretransfer_time
+     *    - _meta_starttransfer_time
+     *    - _meta_redirect_time
+     * 
+     * @param array  $aRessourceItem
+     * @return array
+     */
+    private function _extendRessourceItem(array $aRessourceItem): array
+    {
 
         if (array_key_exists('size_download', $aRessourceItem)) {
             $aRessourceItem['_size_download'] = $aRessourceItem['size_download']
-                    ? $this->hrSize($aRessourceItem['size_download'])
-                    : $this->lB('ressources.size-is-zero');
-        }
-        if (array_key_exists('total_time', $aRessourceItem) && $aRessourceItem['total_time']) {
-            $aRessourceItem['_dlspeed'] = $this->hrSize($aRessourceItem['size_download'] / $aRessourceItem['total_time']) . '/ sec';
+                ? $this->hrSize($aRessourceItem['size_download'])
+                : $this->lB('ressources.size-is-zero');
         }
         if (array_key_exists('total_time', $aRessourceItem) && $aRessourceItem['total_time']) {
             $aRessourceItem['_dlspeed'] = $this->hrSize($aRessourceItem['size_download'] / $aRessourceItem['total_time']) . '/ sec';
         }
 
         // add head metadata
-        $aResponsemetadata= json_decode($aRessourceItem['header'], 1);
-        foreach(array('total_time', 'namelookup_time', 'connect_time', 'pretransfer_time', 'starttransfer_time', 'redirect_time') as $sKey){
+        $aResponsemetadata = json_decode($aRessourceItem['header'], 1);
+        foreach (['total_time', 'namelookup_time', 'connect_time', 'pretransfer_time', 'starttransfer_time', 'redirect_time'] as $sKey) {
             if ($aResponsemetadata && is_array($aResponsemetadata) && array_key_exists($sKey, $aResponsemetadata)) {
-                $aRessourceItem['_meta_'.$sKey]=$aResponsemetadata[$sKey];
+                $aRessourceItem['_meta_' . $sKey] = $aResponsemetadata[$sKey];
             }
         }
         return $aRessourceItem;
     }
 
     /**
-     * get html code for infobox with a single ressource given by arraydata
+     * Get html code for infobox with a single ressource given by arraydata
      * 
      * @param array  $aRessourceItem  array of the ressource item
      * @return string
      */
-    public function renderRessourceItemAsBox($aRessourceItem) {
+    public function renderRessourceItemAsBox(array $aRessourceItem): string
+    {
         $sReturn = '';
         if (!is_array($aRessourceItem) || !count($aRessourceItem) || !array_key_exists('ressourcetype', $aRessourceItem)) {
-            return false;
+            return '';
         }
         $aRessourceItem = $this->_extendRessourceItem($aRessourceItem);
 
         $unixTS = date("U", strtotime($aRessourceItem['ts']));
-        $iPageId=$this->getIdByUrl($aRessourceItem['url'],'pages');
+        $iPageId = $this->getIdByUrl($aRessourceItem['url'], 'pages');
 
-        $sLink2Searchindex=$aRessourceItem['isSource'] ? '?page=searchindexstatus&id='.$iPageId.'&siteid='.$aRessourceItem['siteid'] : false;
+        $sLink2Searchindex = $aRessourceItem['isSource'] ? '?page=searchindexstatus&id=' . $iPageId . '&siteid=' . $aRessourceItem['siteid'] : false;
 
-        $sReturn.='<div class="divRessource">'
-                . '<div class="divRessourceHead">'
-                    /*
-                    . '<span style="float: right;">'
-                        . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
-                            . $this->_getIcon('link-to-url')
-                        . '</a>'
-                    . '</span>'
-                    . $this->_renderArrayValue('type', $aRessourceItem)
-                    . ' '
-                    . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
-                    . '<br>'
-                    */
-                    . '<br><strong>'. str_replace('&', '&shy;&',htmlentities($this->_renderArrayValue('url', $aRessourceItem))).'</strong>'
-                    . ' '
-                    .($sLink2Searchindex
-                        ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
-                            . ' title="'.$this->lB('ressources.link-to-searchindex').'"' 
-                            . '>'
-                            . $this->_getIcon('switch-search-res')
-                            . '</a>'
-                        : ''
-                    )
-                    .' <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'
-                        . $this->_getIcon('link-to-url')
-                        . '</a>'
-                    .'<br><br>'
-                . '</div>'
-                . '<div class="divRessourceContent">'
-                . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
-                
-                ;
+        $sReturn .= '<div class="divRessource">'
+            . '<div class="divRessourceHead">'
+            /*
+            . '<span style="float: right;">'
+                . '<a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button button-secondary" title="'.$this->lB('ressources.link-to-url').'">'
+                    . $this->_getIcon('link-to-url')
+                . '</a>'
+            . '</span>'
+            . $this->_renderArrayValue('type', $aRessourceItem)
+            . ' '
+            . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
+            . '<br>'
+            */
+            . '<br><strong>' . str_replace('&', '&shy;&', htmlentities($this->_renderArrayValue('url', $aRessourceItem))) . '</strong>'
+            . ' '
+            . ($sLink2Searchindex
+                ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
+                . ' title="' . $this->lB('ressources.link-to-searchindex') . '"'
+                . '>'
+                . $this->_getIcon('switch-search-res')
+                . '</a>'
+                : ''
+            )
+            . ' <a href="' . $aRessourceItem['url'] . '" target="_blank" class="pure-button" title="' . $this->lB('ressources.link-to-url') . '">'
+            . $this->_getIcon('link-to-url')
+            . '</a>'
+            . '<br><br>'
+            . '</div>'
+            . '<div class="divRessourceContent">'
+            . $this->lB('ressources.age-scan') . ': ' . $this->hrAge($unixTS) . '<br><br>'
 
-                $sReturn.=$this->_renderItemAsTable($aRessourceItem, array(
-                    // 'id',
-                    'http_code',
-                    'type',
-                    'ressourcetype',
-                    'content_type',
-                    '_size_download',
-                    'ts',
-                    '_meta_total_time', 
-                    // 'errorcount', 
-                ))
-                ;
+        ;
+
+        $sReturn .= $this->_renderItemAsTable($aRessourceItem, [
+            // 'id',
+            'http_code',
+            'type',
+            'ressourcetype',
+            'content_type',
+            '_size_download',
+            'ts',
+            '_meta_total_time',
+            // 'errorcount', 
+        ])
+        ;
 
         /*
         if ($aRessourceItem['errorcount']) {
@@ -820,9 +903,9 @@ class ressourcesrenderer extends crawler_base {
         }
         */
 
-        $sReturn.='</div>'
+        $sReturn .= '</div>'
             . '</div>'
-            ;
+        ;
 
         // $sReturn.='<pre>ressource id #'.$aRessourceItem['id'].'<br>'.print_r($aRessourceItem, 1).'</pre>';
 
@@ -830,137 +913,147 @@ class ressourcesrenderer extends crawler_base {
     }
 
     /**
-     * render a ressource as a line (for reporting)
+     * Render a ressource as a line (for reporting)
+     * 
      * @param array    $aResourceItem    array of ressurce item
      * @param boolean  $bShowHttpstatus  flasg: show http code? default: false (=no)
      * @param boolean  $bUseLast         add css class "last" to highlight it? default; flase (=no)
-     * @return boolean
+     * @return string
      */
-    public function renderRessourceItemAsLine($aResourceItem, $bShowHttpstatus = false, $bUseLast=false) {
-        $sReturn = '';
+    public function renderRessourceItemAsLine(array $aResourceItem, bool $bShowHttpstatus = false, bool $bUseLast = false): string
+    {
         if (!is_array($aResourceItem) || !count($aResourceItem) || !array_key_exists('ressourcetype', $aResourceItem)) {
-            return false;
+            return '';
         }
-        $sButtons='';
-        if($bShowHttpstatus && (!$aResourceItem['http_code'] || $aResourceItem['http_code']>299)){
-            $sButtons.='<a href="#" class="pure-button blacklist" data-url="'.$aResourceItem['url'].'" title="'.$this->lB('ressources.denylist.add').'">'
-                            . $this->_getIcon('blacklist')
-                        . '</a> '
-                    ;
+        $sButtons = '';
+        if ($bShowHttpstatus && (!$aResourceItem['http_code'] || $aResourceItem['http_code'] > 299)) {
+            $sButtons .= '<a href="#" class="pure-button blacklist" data-url="' . $aResourceItem['url'] . '" title="' . $this->lB('ressources.denylist.add') . '">'
+                . $this->_getIcon('blacklist')
+                . '</a> '
+            ;
         }
-        $sCurlError='';
-        if(isset($aResourceItem['lasterror'])){
-            $aErrData=json_decode($aResourceItem['lasterror'], 1);
-            if(isset($aErrData['_curlerror']) && $aErrData['_curlerror']){
+        $sCurlError = '';
+        if (isset($aResourceItem['lasterror'])) {
+            $aErrData = json_decode($aResourceItem['lasterror'], 1);
+            if (isset($aErrData['_curlerror']) && $aErrData['_curlerror']) {
                 $sCurlError .= $this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aErrData['_curlerror'], $aErrData['_curlerrorcode']), 'error');
             }
         }
-        return '<div class="divRessourceAsLine'.($bUseLast ? ' last last-'.$this->_getCssClassesForHttpstatus($aResourceItem['http_code'], true) : '').'">'
-                . ' <span style="float: right; font-size: 70%;">'
-                        . $sButtons
-                        . '<a href="' . $aResourceItem['url'] . '" class="pure-button" title="'.$this->lB('ressources.link-to-url').'" target="_blank">'
-                            . $this->_getIcon('link-to-url')
-                        . '</a>'
-                    . '</span>'
-                . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
-                . ' ' . $this->_renderArrayValue('type', $aResourceItem)
-                . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
-                . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid='.$aResourceItem['siteid'].'" class="url" title="'.$this->lB('ressources.link-to-details').'">' . htmlentities($aResourceItem['url']) . '</a>'
-                . ($aResourceItem['http_code']==-1 && $this->oRes->isInDenyList($aResourceItem['url'])
-                    ? $this->renderMessagebox(sprintf($this->lB("linkchecker.found-in-deny-list"), $this->oRes->isInDenyList($aResourceItem['url'])), 'ok')
-                    : ''
-                )
-                .$sCurlError
-                
-                /*
-                . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
-                        ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 
-                        : '')
-                 * 
-                 */
+        return '<div class="divRessourceAsLine' . ($bUseLast ? ' last last-' . $this->_getCssClassesForHttpstatus($aResourceItem['http_code'], true) : '') . '">'
+            . ' <span style="float: right; font-size: 70%;">'
+            . $sButtons
+            . '<a href="' . $aResourceItem['url'] . '" class="pure-button" title="' . $this->lB('ressources.link-to-url') . '" target="_blank">'
+            . $this->_getIcon('link-to-url')
+            . '</a>'
+            . '</span>'
+            . ($bShowHttpstatus ? ' ' . $this->_renderArrayValue('http_code', $aResourceItem) : '')
+            . ' ' . $this->_renderArrayValue('type', $aResourceItem)
+            . ' ' . $this->_renderArrayValue('ressourcetype', $aResourceItem)
+            . ' <a href="?page=ressourcedetail&id=' . $aResourceItem['id'] . '&siteid=' . $aResourceItem['siteid'] . '" class="url" title="' . $this->lB('ressources.link-to-details') . '">' . htmlentities($aResourceItem['url']) . '</a>'
+            . ($aResourceItem['http_code'] == -1 && $this->oRes->isInDenyList($aResourceItem['url'])
+                ? $this->renderMessagebox(sprintf($this->lB("linkchecker.found-in-deny-list"), $this->oRes->isInDenyList($aResourceItem['url'])), 'ok')
+                : ''
+            )
+            . $sCurlError
+
+            /*
+            . (isset($aResourceItem['isExternalRedirect']) && $aResourceItem['isExternalRedirect'] 
+                    ? ' <span class="redirect"><nobr>' . $this->_getIcon('ico.redirect') . $this->lB('ressources.link-is-external-redirect') . '</nobr></span>' 
+                    : '')
+             * 
+             */
             . '<div style="clear: both;"></div>'
             . '</div>'
             // . print_r($aResourceItem, 1)
-            ;
+        ;
+    }
+
+    /**
+     * Helper function for vis js:
+     * Get a node as array
+     * 
+     * @param array  $aItem    ressource item
+     * @param string $sNodeId  optional id for the node (default is id in ressource item)
+     * @return array
+     */
+    private function _getVisNode(array $aItem, string $sNodeId = '')
+    {
+        $sNodeLabel = $aItem['url'] . "\n(" . $aItem['type'] . ' ' . $aItem['ressourcetype'] . '; ' . $aItem['http_code'] . ')';
+        $sNodeId = $sNodeId ? $sNodeId : $aItem['id'];
+        return [
+            'id' => $sNodeId,
+            // 'label'=>$this->renderRessourceItemAsLine($aItem),
+            'label' => $sNodeLabel,
+            'group' => $aItem['ressourcetype'],
+            'title' => $sNodeLabel,
+        ];
     }
 
     /**
      * helper function for vis js
-     * @param array  $aItem    ressource item
+     * Get an edge as array to connect 2 nodes
+     * 
+     * @param array  $aOptions   Array with options; subkeys are:
+     *                              - from   id for starting node 
+     *                              - to     id for ending node
+     *                              - color  color of the edge
+     *                              - arrows arrow direction
+     *                              - title  title of the edge
      * @param string $sNodeId  optional id for the node (default is id in ressource item)
      * @return array
      */
-    private function _getVisNode($aItem, $sNodeId=''){
-        $sNodeLabel=$aItem['url']."\n(".$aItem['type'].' '.$aItem['ressourcetype'].'; '.$aItem['http_code'].')';
-        $sNodeId=$sNodeId ? $sNodeId : $aItem['id'];
-        return array(
-            'id'=>$sNodeId, 
-            // 'label'=>$this->renderRessourceItemAsLine($aItem),
-            'label'=>$sNodeLabel,
-            'group'=>$aItem['ressourcetype'],
-            'title'=>$sNodeLabel,
-        );
-    }
-    /**
-     * helper function for vis js
-     * @param array  $aItem    ressource item
-     * @param string $sNodeId  optional id for the node (default is id in ressource item)
-     * @return array
-     */
-    private function _getVisEdge($aOptions){
-        $aColors=array(
-            'in'=>'#99bb99',
-            'out'=>'#9999bb',
-        );
-        foreach (array('from', 'to') as $sMustKey){
-            if (!array_key_exists($sMustKey, $aOptions)){
-                echo __METHOD__ . ' WARNING: no '.$sMustKey.' in option array<br>';
-                return false;
+    private function _getVisEdge($aOptions)
+    {
+        $aColors = [
+            'in' => '#99bb99',
+            'out' => '#9999bb',
+        ];
+        foreach (['from', 'to'] as $sMustKey) {
+            if (!array_key_exists($sMustKey, $aOptions)) {
+                echo __METHOD__ . ' WARNING: no ' . $sMustKey . ' in option array<br>';
+                return [];
             }
         }
-        $aReturn=array(
-                    'from'=>$aOptions['from'],
-                    'to'=>$aOptions['to'], 
-        );
-        
-        if(array_key_exists('color', $aOptions) && array_key_exists($aOptions['color'], $aColors)){
-            $aOptions['color']=$aColors[$aOptions['color']];
+        $aReturn = [
+            'from' => $aOptions['from'],
+            'to' => $aOptions['to'],
+        ];
+
+        if (array_key_exists('color', $aOptions) && array_key_exists($aOptions['color'], $aColors)) {
+            $aOptions['color'] = $aColors[$aOptions['color']];
         }
-        foreach (array('arrows', 'title', 'color') as $sKey){
-            if (array_key_exists($sKey, $aOptions)){
-                $aReturn[$sKey]=$aOptions[$sKey];
+        foreach (['arrows', 'title', 'color'] as $sKey) {
+            if (array_key_exists($sKey, $aOptions)) {
+                $aReturn[$sKey] = $aOptions[$sKey];
             }
         }
         return $aReturn;
     }
-    
-    
-        // visualization
-        // https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js
-        // https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css
+
 
     /**
-     * 
-     * @param type $aNodes
-     * @param type $aEdges
-     * @return string
+     * Get html code for network visualization with visjs
+     * @param array  $aNodes
+     * @param array  $aEdges
+     * @return string The HTML code
      */
-    private function _renderNetwork($aNodes, $aEdges){
-        $sIdDiv='visarea';
-        $sVisual=''
+    private function _renderNetwork(array $aNodes, array $aEdges): string
+    {
+        $sIdDiv = 'visarea';
+        $sVisual = ''
             . '<!-- for header -->'
             . '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script>'
             . '<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css" rel="stylesheet" type="text/css" />'
-                . '  <style>
-                    #'.$sIdDiv.'{
+            . '  <style>
+                    #' . $sIdDiv . '{
                       height: 500px;
                       width: 60%;
                       border:1px solid lightgrey;
                     }
                 </style>'
             . '<!-- for body -->'
-                . '<div id="'.$sIdDiv.'"></div>'
-                . '<script language="JavaScript">
+            . '<div id="' . $sIdDiv . '"></div>'
+            . '<script language="JavaScript">
                     var iIconSize=120;
                     var optionsFA = {
                       groups: {
@@ -1038,10 +1131,10 @@ class ressourcesrenderer extends crawler_base {
                     };
 
                     // create a network
-                    var containerFA = document.getElementById(\''.$sIdDiv.'\');
+                    var containerFA = document.getElementById(\'' . $sIdDiv . '\');
                     var dataFA = {
-                      nodes: '. json_encode($aNodes).',
-                      edges: '. json_encode($aEdges).'
+                      nodes: ' . json_encode($aNodes) . ',
+                      edges: ' . json_encode($aEdges) . '
                     };
 
                     var networkFA = new vis.Network(containerFA, dataFA, optionsFA);
@@ -1054,57 +1147,59 @@ class ressourcesrenderer extends crawler_base {
                 </script>';
         return $sVisual;
     }
-    
+
     /**
-     * get html code for a list of ressource items and an added http-status group filter 
+     * Get html code for a list of ressource items and an added http-status group filter 
      * used in renderRessourceItemFull()
      * 
      * @staticvar int $iListcounter
+     * 
      * @param array    $aItemlist       array of ressource items to display
      * @param boolean  $bShowIncoming   optional flag: show ressources that use the current ressource? default: true (=yes)
      * @param boolean  $bShowRedirects  optional flag: show redrirects? default: true (=yes)
      * @return string
      */
-    protected function _renderRessourceListWithGroups($aItemlist, $bShowIncoming=true, $bShowRedirects=true){
-        $sReturn=$this->lB('ressources.total'). ': <strong>' . count($aItemlist) . '</strong>';
-        if(!count($aItemlist)){
+    protected function _renderRessourceListWithGroups(array $aItemlist, bool $bShowIncoming = true, bool $bShowRedirects = true): string
+    {
+        $sReturn = $this->lB('ressources.total') . ': <strong>' . count($aItemlist) . '</strong>';
+        if (!count($aItemlist)) {
             return $sReturn;
         }
         static $iListcounter;
-        if(!isset($iListcounter)){
-            $iListcounter=0;
+        if (!isset($iListcounter)) {
+            $iListcounter = 0;
         }
         $iListcounter++;
-        
-        $oHttp=new httpstatus();
-        $sDivClass='resitemout'.$iListcounter;
-        $iReportCounter=1;
-        $sFilter='';
-        $sOut='';
-        $aHttpStatus=array();
-        $aTypes=array();
+
+        $oHttp = new httpstatus();
+        $sDivClass = 'resitemout' . $iListcounter;
+        $iReportCounter = 1;
+        $sFilter = '';
+        $sOut = '';
+        $aHttpStatus = array();
+        $aTypes = array();
         foreach ($aItemlist as $aTmpItem) {
             $oHttp->setHttpcode($aTmpItem['http_code']);
-            $sHttpStatusgroup=$oHttp->getStatus();
-            $sRestype=$aTmpItem['ressourcetype'];
-            $aHttpStatus[$sHttpStatusgroup]=(isset($aHttpStatus[$sHttpStatusgroup])) ? $aHttpStatus[$sHttpStatusgroup]+1 : 1;
-            $aTypes[$sRestype]=(isset($aTypes[$sRestype])) ? $aTypes[$sRestype]+1 : 1;
+            $sHttpStatusgroup = $oHttp->getStatus();
+            $sRestype = $aTmpItem['ressourcetype'];
+            $aHttpStatus[$sHttpStatusgroup] = (isset($aHttpStatus[$sHttpStatusgroup])) ? $aHttpStatus[$sHttpStatusgroup] + 1 : 1;
+            $aTypes[$sRestype] = (isset($aTypes[$sRestype])) ? $aTypes[$sRestype] + 1 : 1;
 
-            $sOut.='<div class="'.$sDivClass.' group-'.$sHttpStatusgroup.' restype-'.$sRestype.'">'
-                    . '<div class="counter">'. $iReportCounter++.'</div>'.$this->renderReportForRessource($aTmpItem, $bShowIncoming, $bShowRedirects)
-                    . '</div>'
-                    ;
+            $sOut .= '<div class="' . $sDivClass . ' group-' . $sHttpStatusgroup . ' restype-' . $sRestype . '">'
+                . '<div class="counter">' . $iReportCounter++ . '</div>' . $this->renderReportForRessource($aTmpItem, $bShowIncoming, $bShowRedirects)
+                . '</div>'
+            ;
         }
-        if(count($aHttpStatus)>0){
+        if (count($aHttpStatus) > 0) {
             ksort($aHttpStatus);
-            foreach($aHttpStatus as $sHttpStatusgroup=>$iStatusCount){
-                $sCss='text-on-markedelement http-code-'.implode(' http-code-',explode('-', $sHttpStatusgroup));
-                $sFilter.=''
-                        . '<a href="#" class="pure-button '.$sCss.'" '
-                        . 'onclick="$(this).toggleClass(\''.$sCss.'\'); $(\'div.'.$sDivClass.'.group-'.$sHttpStatusgroup.'\').toggle(); return false;"'
-                        . '><strong>'.$iStatusCount . '</strong> x ' .$this->lB('http-status-group-'.$sHttpStatusgroup).'</a>'
-                        . ' '
-                        ;
+            foreach ($aHttpStatus as $sHttpStatusgroup => $iStatusCount) {
+                $sCss = 'text-on-markedelement http-code-' . implode(' http-code-', explode('-', $sHttpStatusgroup));
+                $sFilter .= ''
+                    . '<a href="#" class="pure-button ' . $sCss . '" '
+                    . 'onclick="$(this).toggleClass(\'' . $sCss . '\'); $(\'div.' . $sDivClass . '.group-' . $sHttpStatusgroup . '\').toggle(); return false;"'
+                    . '><strong>' . $iStatusCount . '</strong> x ' . $this->lB('http-status-group-' . $sHttpStatusgroup) . '</a>'
+                    . ' '
+                ;
             }
             /*
              * only useful with a tab control
@@ -1121,27 +1216,29 @@ class ressourcesrenderer extends crawler_base {
             }
              * 
              */
-            $sFilter='<div class="actionbox">'
+            $sFilter = '<div class="actionbox">'
                 . $this->_getIcon('ico.filter')
-                . $this->lB('ressources.filter').'<br>'
-                . $this->lB('ressources.filter-httpgroups').'<br>'
-                .'<br>'
-                .$sFilter
-                .'</div><br>';
+                . $this->lB('ressources.filter') . '<br>'
+                . $this->lB('ressources.filter-httpgroups') . '<br>'
+                . '<br>'
+                . $sFilter
+                . '</div><br>';
         }
-        return $sReturn.'<br><br>'.$sFilter.$sOut;
-    }    
+        return "$sReturn<br><br>$sFilter$sOut";
+    }
     /**
-     * get html code for full detail of a ressource with properties, in and outs
+     * Get html code for full detail of a ressource with properties, in and outs
+     * 
      * @param array $aItem  ressource item
      * @return string
      */
-    public function renderRessourceItemFull($aItem) {
+    public function renderRessourceItemFull($aItem): string
+    {
         $sReturn = '';
         $iId = $aItem['id'];
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
-        
+
         /*
          
         // data mapping into JS to visualize a map
@@ -1181,7 +1278,7 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         // table on top
         // --------------------------------------------------
-        
+
         /*
         $sReturn.=''
                 . '<table><tr>'
@@ -1200,45 +1297,45 @@ class ressourcesrenderer extends crawler_base {
                 // . $this->_renderNetwork($aNodes, $aEdges)
                 ;
         */
-        $sReturn.=$this->renderRessourceItemAsBox($aItem).'<br>';
+        $sReturn .= $this->renderRessourceItemAsBox($aItem) . '<br>';
 
         // --------------------------------------------------
         // http header
         // --------------------------------------------------
-        $sHeader=$aItem['header'] ? $aItem['header'] : $aItem['lasterror'];
-        $aHeaderJson=json_decode($sHeader, 1);
+        $sHeader = $aItem['header'] ?: $aItem['lasterror'];
+        $aHeaderJson = json_decode($sHeader, 1);
         // $sReturn.='<pre>'.print_r($aHeaderJson,1).'</pre>';
-        if(isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']){
-            $sReturn.=$this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error').'<br>';                    
+        if (isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']) {
+            $sReturn .= $this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error') . '<br>';
         } else {
-            $sReposneHeaderAsString= strlen($aHeaderJson['_responseheader'][0])!=1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
-            
-            $oHttpheader=new httpheader();
+            $sReposneHeaderAsString = strlen($aHeaderJson['_responseheader'][0]) != 1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
+
+            $oHttpheader = new httpheader();
             $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
             // $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
             // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
-            
-            $sReturn.=''
-                    .$this->renderToggledContent(
-                        $this->lB('httpheader.data'),
-                        $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
-                            .(isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
-                                ? '<br><a href="../?page=httpheaderchecks&urlbase64='.base64_encode($aItem['url']).'" class="pure-button" target="_blank">'.$this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live').'</a>'
-                                : ''
-                            )
-                        ,
-                        false
-                    );
+
+            $sReturn .= ''
+                . $this->renderToggledContent(
+                    $this->lB('httpheader.data'),
+                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
+                    . (isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
+                        ? '<br><a href="../?page=httpheaderchecks&urlbase64=' . base64_encode($aItem['url']) . '" class="pure-button" target="_blank">' . $this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live') . '</a>'
+                        : ''
+                    )
+                    ,
+                    false
+                );
         }
-        
+
 
         // --------------------------------------------------
         // where it is linked
         // --------------------------------------------------
-        $sReturn.=$this->renderToggledContent(
-                sprintf($this->lB('ressources.references-h3-in'), count($aIn)),
-                $this->_renderRessourceListWithGroups($aIn,false, true),
-                false
+        $sReturn .= $this->renderToggledContent(
+            sprintf($this->lB('ressources.references-h3-in'), count($aIn)),
+            $this->_renderRessourceListWithGroups($aIn, false, true),
+            false
         );
         /*
         $sReturn.='<h3 id="listIn">' . sprintf($this->lB('ressources.references-h3-in'), count($aIn)) . '</h3>'
@@ -1248,10 +1345,10 @@ class ressourcesrenderer extends crawler_base {
         // --------------------------------------------------
         // outgoing links / redirects
         // --------------------------------------------------
-        $sReturn.=$this->renderToggledContent(
-                sprintf($this->lB('ressources.references-h3-out'), count($aOut)),
-                $this->_renderRessourceListWithGroups($aOut,false, true),
-                false
+        $sReturn .= $this->renderToggledContent(
+            sprintf($this->lB('ressources.references-h3-out'), count($aOut)),
+            $this->_renderRessourceListWithGroups($aOut, false, true),
+            false
         );
         /*
         $sReturn.='<h3 id="listOut">' . sprintf($this->lB('ressources.references-h3-out'), count($aOut)) . '</h3>'
@@ -1261,72 +1358,80 @@ class ressourcesrenderer extends crawler_base {
         return $sReturn;
     }
 
-    public function renderRessourceStatus(){
+    /**
+     * Get html code for tiles of ressource status total
+     * 
+     * @return string
+     */
+    public function renderRessourceStatus()
+    {
         // $iRessourcesCount=$this->oDB->count('ressources',array('siteid'=>$this->iSiteId));
         $this->_initRessource();
-        $iRessourcesCount=$this->oRes->getCount();
-        $iExternal=$this->oRes->getCount(array('siteid'=>$this->oRes->iSiteId,'isExternalRedirect'=>'1'));
-        
-        $dateLast=$this->oRes->getLastRecord();
+        $iRessourcesCount = $this->oRes->getCount();
+        $iExternal = $this->oRes->getCount(['siteid' => $this->oRes->iSiteId, 'isExternalRedirect' => '1']);
+
+        $dateLast = $this->oRes->getLastRecord();
         $sTiles = ''
-            . $this->renderTile('',            $this->lB('ressources.age-scan'), $this->hrAge(date("U", strtotime($dateLast))), $dateLast, '')
-            . $this->renderTile('',            $this->lB('ressources.itemstotal'), $iRessourcesCount, '', '')
-            . $this->renderTile('',            $this->lB('linkchecker.found-http-external'), $iExternal, '', '')
-            ;
-        
-        return ''
-                . $this->renderTileBar($sTiles)
-                ;
+            . $this->renderTile('', $this->lB('ressources.age-scan'), $this->hrAge(date("U", strtotime($dateLast))), $dateLast, '')
+            . $this->renderTile('', $this->lB('ressources.itemstotal'), $iRessourcesCount, '', '')
+            . $this->renderTile('', $this->lB('linkchecker.found-http-external'), $iExternal, '', '')
+        ;
+
+        return $this->renderTileBar($sTiles);
     }
-    
+
     /**
      * render an icon and a prefix
-     * @param type $sType
-     * @return type
-     */
-    public function renderShortInfo($sType){
-        return $this->_getIcon('ico.'.$sType, false, 'ico-'.$sType);
-    }
-    
-    
-    /**
-     * get html code to draw a tile
      * 
-     * @param string $sType       type; one of '' |'ok'|'error'
+     * @param string $sType
+     * @return string
+     */
+    public function renderShortInfo(string $sType): string
+    {
+        return $this->_getIcon("ico.$sType", false, "ico-$sType");
+    }
+
+
+    /**
+     * Get html code to draw a tile
+     * 
+     * @param string $sType       type to select a color; one of '' |'ok'|'error'
      * @param string $sIntro      top text
      * @param string $sCount      counter value
-     * @param string $sFoot       footer text
-     * @param string $sTargetUrl  linked url
+     * @param string $sFoot       optional: footer text
+     * @param string $sTargetUrl  optional: linked url if it acts as a link
      * @return string
      */
-    public function renderTile($sType, $sIntro, $sCount, $sFoot=false, $sTargetUrl=false){
+    public function renderTile(string $sType, string $sIntro, string $sCount, string $sFoot = '', string $sTargetUrl = ''): string
+    {
         return '<li>'
-            . $this->oHtml->getTag('a', array(
-                'href'=>($sTargetUrl ? $sTargetUrl : '#" onclick="return false;'),
-                'class'=>'tile '.$sType.' scroll-link '.($sTargetUrl ? '' : 'nonclickable'),
-                'label'=> $sIntro
+            . $this->oHtml->getTag('a', [
+                'href' => ($sTargetUrl ?: '#" onclick="return false;'),
+                'class' => 'tile ' . $sType . ' scroll-link ' . ($sTargetUrl ? '' : 'nonclickable'),
+                'label' => $sIntro
                     . (strstr($sIntro, '<br>') ? '' : '<br>')
                     . '<br>'
-                    . '<strong>'.$sCount.'</strong><br>'
+                    . '<strong>' . $sCount . '</strong><br>'
                     . $sFoot
-            ))
+            ])
             . '</li>';
     }
-    
+
     /**
-     * get html code to wrap all tiles 
+     * Get html code to wrap all tiles 
      * @see $this->renderTile() to generate the necessary items.
      * 
-     * @param string $sTiles      html code with tiles
-     * @param string $sType       default type of all tilea; one of '' |'ok'|'error'|'warn'
+     * @param string $sTiles      html code with tiles (list items)
+     * @param string $sType       default type of all tiles; one of '' |'ok'|'error'|'warn'
      * @return string
      */
-    public function renderTileBar($sTiles, $sType=''){
-        return '<ul class="tiles '.$sType.'">'.$sTiles.'</ul>';
+    public function renderTileBar(string $sTiles, string $sType = ''): string
+    {
+        return "<ul class=\"tiles $sType\">$sTiles</ul>";
     }
-    
+
     /**
-     * get html code to show a toggable content box
+     * Get html code to show a toggable content box
      * 
      * @staticvar int $iToggleCounter  counter of toggled box on a page
      * 
@@ -1335,27 +1440,28 @@ class ressourcesrenderer extends crawler_base {
      * @param boolean  $bIsOpen    flag: open box by default? default: false (=closed content)
      * @return string
      */
-    public function renderToggledContent($sHeader,$sContent, $bIsOpen=false){
+    public function renderToggledContent(string $sHeader, string $sContent, bool $bIsOpen = false): string
+    {
         static $iToggleCounter;
-        if(!isset($iToggleCounter)){
-            $iToggleCounter=0;
+        if (!isset($iToggleCounter)) {
+            $iToggleCounter = 0;
         }
         $iToggleCounter++;
-        $sDivIdHead='div-toggle-head-'.$iToggleCounter;
-        $sDivId='div-toggle-'.$iToggleCounter;
+        $sDivIdHead = 'div-toggle-head-' . $iToggleCounter;
+        $sDivId = 'div-toggle-' . $iToggleCounter;
         return ''
-            . '<div class="div-toggle-head" id="'.$sDivIdHead.'">'
-                . $this->oHtml->getTag('a', array(
-                    'href'=>'#',
-                    'class'=>($bIsOpen ? 'open' : ''),
-                    // 'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
-                    'label'=>$sHeader,
-                ))
+            . '<div class="div-toggle-head" id="' . $sDivIdHead . '">'
+            . $this->oHtml->getTag('a', array(
+                'href' => '#',
+                'class' => ($bIsOpen ? 'open' : ''),
+                // 'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
+                'label' => $sHeader,
+            ))
             . '</div>'
-            . '<div'.($bIsOpen ? '' : ' style="display:none;"').' id="'.$sDivId.'" class="div-toggle">'
-                . $sContent
+            . '<div' . ($bIsOpen ? '' : ' style="display:none;"') . ' id="' . $sDivId . '" class="div-toggle">'
+            . $sContent
             . '</div>'
-            ;
-        
+        ;
+
     }
 }

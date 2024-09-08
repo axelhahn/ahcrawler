@@ -1107,7 +1107,7 @@ class crawler_base
         // echo "DEBUG: ".__METHOD__." - sql=$sSql<br>";
         $aTmp = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
         // return isset($aTmp[0]['count']) ? $aTmp[0]['count'] : false;
-        return $aTmp[0]['count'] ?: false;
+        return $aTmp[0]['count'] ?: 0;
     }
 
     /**
@@ -1115,16 +1115,16 @@ class crawler_base
      * 
      * @param string   $sKey    name of item; one of size|time
      * @param integer  $iMax    max value
-     * @return boolean|integer
+     * @return integer
      */
-    private function _getHtmlchecksLarger(string $sKey, int $iMax): bool|int
+    private function _getHtmlchecksLarger(string $sKey, int $iMax): int
     {
         $aTmp = $this->oDB->query('
                     select count(*) count from pages 
                     where siteid=' . $this->iSiteId . ' and errorcount=0 and ' . $sKey . '>' . $iMax
         )->fetchAll(PDO::FETCH_ASSOC);
         // return isset($aTmp[0]['count']) ? $aTmp[0]['count'] : false;
-        return $aTmp[0]['count'] ?: false;
+        return $aTmp[0]['count'] ?: 0;
     }
 
     /**
