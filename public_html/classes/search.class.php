@@ -28,8 +28,11 @@ require_once 'crawler-base.class.php';
  * usage:
  * require_once("../search.class.php");
  * 
- * */
-class ahsearch extends crawler_base {
+ * 2024-09-09  v0.167  php8 only; add typed variables; use short array syntax
+ * 
+ */
+class ahsearch extends crawler_base
+{
 
     // ----------------------------------------------------------------------
     // searchresults
@@ -59,153 +62,140 @@ class ahsearch extends crawler_base {
         ),
     );
      */
-    private $_aRankCounter = array();
-    
-    private $_aFormNames = array(
-        'language'=>'lang',
-        'category'=>'subdir',
-    );
+
+    /**
+     * Config array for ranking weights
+     * @var array
+     */
+    private array $_aRankCounter = [];
+
 
     // ----------------------------------------------------------------------
     /**
-     * new crawler
+     * Constructor 
      * @param integer  $iSiteId  site-id of search index
      */
-    public function __construct($iSiteId = false) {
-        
-        $aOptions=$this->getEffectiveOptions();
+    public function __construct(int $iSiteId = 0)
+    {
+
+        $aOptions = $this->getEffectiveOptions();
         $this->_aRankCounter = $aOptions['searchindex']['rankingWeights'];
 
         $this->setSiteId($iSiteId);
         $this->setLangFrontend();
-        return true;
     }
 
-    public function getQueryValue($sKey){
-        $aSource=(isset($_POST) && is_array($_POST) && count($_POST))
-                ? $_POST
-                : ((isset($_GET) && is_array($_GET) && count($_GET))
-                    ? $_GET
-                    : false
-                )
-                ;
-        if(!$aSource){
+    /**
+     * Get a value from $_POST or $_GET
+     * @param string $sKey
+     * @return mixed
+     */
+    public function getQueryValue(string $sKey): mixed
+    {
+        $aSource = (isset($_POST) && is_array($_POST) && count($_POST))
+            ? $_POST
+            : ((isset($_GET) && is_array($_GET) && count($_GET))
+                ? $_GET
+                : false
+            )
+        ;
+        if (!$aSource) {
             return false;
         }
-        if(!isset($aSource[$sKey]) || !$aSource[$sKey]){
+        if (!isset($aSource[$sKey]) || !$aSource[$sKey]) {
             return false;
         }
-        
+
         // TODO: clean value
         return $aSource[$sKey];
     }
-    
+
     /**
-     * get categories to search in ... it returns the structure from config 
-     * below profiles -> [id] -> searchcategories
+     * Get categories to search to render a dropdown
+     * It returns the structure from config below 
+     * profiles -> [id] -> searchcategories
+     * 
+     * @param bool $bAddNone  Flag to add an empty category; dafault: false (= no)
      * @return array
      */
-    public function getSearchCategories($bAddNone=false) {
-        $aReturn=array();
+    public function getSearchCategories(bool $bAddNone = false): array
+    {
+        $aReturn = [];
         if (!isset($this->aProfileSaved['frontend']['searchcategories']) || !count($this->aProfileSaved['frontend']['searchcategories'])) {
-            return false;
+            return [];
         }
-        if($bAddNone){
-            $aReturn[$this->lF('label.searchsubdir-none')]='';
+        if ($bAddNone) {
+            $aReturn[$this->lF('label.searchsubdir-none')] = '';
         }
         return array_merge($aReturn, $this->aProfileSaved['frontend']['searchcategories']);
     }
     /**
-     * get categories to search in ... it returns the structure from config 
+     * get languages ... it returns the structure from config 
      * below profiles -> [id] -> searchlang
+     * 
+     * @param bool $bAddNone  Flag to add an empty field; dafault: false (= no)
      * @return array
      */
-    public function getSearchLang($bAddNone=false) {
-        $aReturn=array();
+    public function getSearchLang(bool $bAddNone = false): array
+    {
+        $aReturn = [];
         if (!isset($this->aProfileSaved['frontend']['searchlang']) || !count($this->aProfileSaved['frontend']['searchlang'])) {
-            return false;
+            return [];
         }
-        if($bAddNone){
-            $aReturn[$this->lF('label.searchlang-none')]='';
+        if ($bAddNone) {
+            $aReturn[$this->lF('label.searchlang-none')] = '';
         }
-        foreach ($this->aProfileSaved['frontend']['searchlang'] as $sMyLang){
-            $aReturn[$sMyLang]=$sMyLang;
+        foreach ($this->aProfileSaved['frontend']['searchlang'] as $sMyLang) {
+            $aReturn[$sMyLang] = $sMyLang;
         }
         return $aReturn;
     }
-    
-    public function __TO_REMOVE__getSearchtermsOfUsers(){
-            $sQuery=''
-                    . 'SELECT query, count(query) as count, results '
-                    . 'FROM searches '
-                    . 'WHERE siteid = '.$this->_sTab.' '
-                    . 'AND ts > \''.date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))).'\' '
-                    . 'GROUP BY query '
-                    . 'ORDER BY count desc, query asc '
-                    . 'LIMIT 0,10';
-            $oResult=$this->oDB->query($sQuery);
-            
-            /*
-             * TODO: FIX ME
-            $oResult = $this->oDB->select(
-                    'searches', 
-                    array('ts', 'query', 'count(query) as count', 'results'),
-                    array(
-                        'AND' => array(
-                            'siteid' => $this->_sTab,
-                            '[>]ts' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24 * $iDays))),
-                        ),
-                        "GROUP" => "query",
-                        "ORDER" => array("count"=>"DESC", "query"=>"asc"),
-                        "LIMIT" => 10
-                    )
-            );
-             */
-            
-            // echo "$sQuery ".($oResult ? "OK" : "fail")."<br>";
-            $aSearches[$iDays]=($oResult ? $oResult->fetchAll(PDO::FETCH_ASSOC) : array());
-    }
-            
-            
+
     // ----------------------------------------------------------------------
     // ACTIONS SEARCH
     // ----------------------------------------------------------------------
 
     /**
-     * create a search phrase for WHERE clause
+     * Create a search phrase for WHERE clause
      * This method replaces % with [%]
      * 
      * @param string   $sTerm  search term
      * @param boolean  $bLike  surround % for search with like (for Medoo)
-     * @return type
+     * @return string
      */
-    private function _replaceSearchterm4Sql($sTerm, $bLike=true){
-        $sReturn=$sTerm;
-        if(strpos($sReturn, '%')!==false){
-            $sReturn=str_replace('%', '/%', $sTerm);
+    private function _replaceSearchterm4Sql(string $sTerm, bool $bLike = true): string
+    {
+        $sReturn = $sTerm;
+        if (strstr($sReturn, '%')) {
+            $sReturn = str_replace('%', '/%', $sTerm);
             // for Medoo: if the search term contains a % then it
             // does not surround the searchterm with % on using like
-            $sReturn=$bLike ? '%'.$sReturn.'%' : $sReturn;
+            $sReturn = $bLike ? "%$sReturn%" : $sReturn;
         }
-        
+
         return $sReturn;
     }
-    
+
     /**
-     * do search through pages
+     * Do search through pages and return an array with metadata, timers 
+     * and results ordered by ranking.
+     * It returns false if
+     * - no site id was set
+     * - the query is empty
+     * 
      * @param string  $q          search string
-     * @param type $aOptions
+     * @param array $aOptions     options
      *   url    {string}  limit url i.e. //[domain]/[path] - without "%"
      *   subdir {string}  => subset of search without domain with starting slash (/[path])
      *   mode   {string}  one of AND | OR | PHRASE (default: AND)
      *   lang   {string}  force language of the document; default: all
-     * @param string  $aOptions     options
      * @return array
      */
-    public function search($q, $aOptions = array()) {
-        $iTimerStart=microtime(true);
-        $sContentDbColumn='content'; // could switch to "response"
-        $aResult=array();
+    public function search(string $q, array $aOptions = []): bool|array
+    {
+        $iTimerStart = microtime(true);
+        $sContentDbColumn = 'content'; // could switch to "response"
+        $aResult = [];
         if (!$this->iSiteId) {
             // echo "ABORT - keine this->iSiteId = ".$this->iSiteId."<br>";
             return false;
@@ -217,30 +207,30 @@ class ahsearch extends crawler_base {
         }
 
         if (!is_array($aOptions)) {
-            $aOptions = array();
+            $aOptions = [];
         }
-        
+
         // get GET / POST values from a sent form
-        foreach(array('subdir', 'lang', 'mode', 'contentcolumn') as $sOptionKey){
-            $sVal=$this->getQueryValue($sOptionKey);
-            if ($sVal){
-                $aOptions[$sOptionKey]=$sVal;
+        foreach (['subdir', 'lang', 'mode', 'contentcolumn'] as $sOptionKey) {
+            $sVal = $this->getQueryValue($sOptionKey);
+            if ($sVal) {
+                $aOptions[$sOptionKey] = $sVal;
             }
         }
 
         // echo '<pre>'.print_r($aOptions,1).'</pre>';
-        if (!array_key_exists('url', $aOptions)){
-            $aOptions['url']='//'.parse_url($this->aProfileSaved['searchindex']['urls2crawl'][0], PHP_URL_HOST);
+        if (!array_key_exists('url', $aOptions)) {
+            $aOptions['url'] = '//' . parse_url($this->aProfileSaved['searchindex']['urls2crawl'][0], PHP_URL_HOST);
         }
-        
-        if (array_key_exists('subdir', $aOptions)){
-            $aOptions['url'].=str_replace('//','/','/'.$aOptions['subdir']);
+
+        if (array_key_exists('subdir', $aOptions)) {
+            $aOptions['url'] .= str_replace('//', '/', '/' . $aOptions['subdir']);
         }
-        
+
         if (!array_key_exists('mode', $aOptions)) {
             $aOptions['mode'] = 'AND';
         }
-        
+
         // --- prepare search options
         if (!array_key_exists('url', $aOptions)) {
             $aOptions['url'] = '';
@@ -253,56 +243,56 @@ class ahsearch extends crawler_base {
             $sContentDbColumn = $aOptions['contentcolumn'];
         }
 
-        $sPhrase=$this->_replaceSearchterm4Sql($q);
-        if($aOptions['mode']==='PHRASE'){
-            $aQuery['OR'] = array(
+        $sPhrase = $this->_replaceSearchterm4Sql($q);
+        if ($aOptions['mode'] === 'PHRASE') {
+            $aQuery['OR'] = [
                 'title[~]' => $sPhrase,
-                'description[~]' =>$sPhrase,
+                'description[~]' => $sPhrase,
                 'keywords[~]' => $sPhrase,
                 'url[~]' => $sPhrase,
-                $sContentDbColumn.'[~]' => $sPhrase,
-            );
-            $aOptions['mode']='AND';
+                $sContentDbColumn . '[~]' => $sPhrase,
+            ];
+            $aOptions['mode'] = 'AND';
         } else {
             foreach (explode(" ", $q) as $sWord) {
-                $sPhrase=$this->_replaceSearchterm4Sql($sWord);
-                $aQuery['OR # query for ['.$sWord.']'] = array(
+                $sPhrase = $this->_replaceSearchterm4Sql($sWord);
+                $aQuery['OR # query for [' . $sWord . ']'] = [
                     'title[~]' => $sPhrase,
                     'description[~]' => $sPhrase,
                     'keywords[~]' => $sPhrase,
                     'url[~]' => $sPhrase,
-                    $sContentDbColumn.'[~]' => $sPhrase,
-                );
+                    $sContentDbColumn . '[~]' => $sPhrase,
+                ];
             }
         }
         // print_r($aOptions);echo "<hr>";
-        $aSelect=array(
+        $aSelect = [
             'siteid' => $this->iSiteId,
             'errorcount' => 0,
             'url[~]' => $aOptions['url'],
             $aOptions['mode'] => $aQuery,
-        );
-        
-        if (isset($aOptions['lang']) && $aOptions['lang']){
-            $aSelect['lang']=$aOptions['lang'];
+        ];
+
+        if (isset($aOptions['lang']) && $aOptions['lang']) {
+            $aSelect['lang'] = $aOptions['lang'];
         }
-        $iTimerStartQuery=microtime(true);
-        
+        $iTimerStartQuery = microtime(true);
+
         $aDbitems = $this->oDB->select(
-                'pages', 
-                array('id', 'url', 'lang', 'title', 'description', 'keywords', $sContentDbColumn.'(content)', 'ts'), 
-                array(
-                    'AND' => $aSelect,
-                    // LIMIT on db can miss best ranked items 
-                    // 'LIMIT' => 55
-                )
+            'pages',
+            ['id', 'url', 'lang', 'title', 'description', 'keywords', $sContentDbColumn . '(content)', 'ts'],
+            [
+                'AND' => $aSelect,
+                // LIMIT on db can miss best ranked items 
+                // 'LIMIT' => 55
+            ]
         );
         /*
         echo "DEBUG aQuery = <pre>" . print_r($aQuery, 1) ."</pre><br>";
         echo 'DEBUG: Query = ' . $this->oDB->last() . '<br>';
         echo "DEBUG aOptions = <pre>" . print_r($aOptions, 1) ."</pre><br>"; 
          */
-        $iTimerStartRanking=microtime(true);
+        $iTimerStartRanking = microtime(true);
         if (is_array($aDbitems) && count($aDbitems)) {
             $aResult = $this->_reorderByRanking($aDbitems, $q);
             /*
@@ -311,15 +301,15 @@ class ahsearch extends crawler_base {
             } 
             */
         }
-        $iTimerEnd=microtime(true);
+        $iTimerEnd = microtime(true);
         $aTimers = [
-            'prepare'=>($iTimerStartQuery-$iTimerStart)*1000,
-            'dbquery'=>($iTimerStartRanking-$iTimerStartQuery)*1000,
-            'sorting'=>($iTimerEnd-$iTimerStartRanking)*1000,
-            'total'=>($iTimerEnd-$iTimerStart)*1000,
+            'prepare' => ($iTimerStartQuery - $iTimerStart) * 1000,
+            'dbquery' => ($iTimerStartRanking - $iTimerStartQuery) * 1000,
+            'sorting' => ($iTimerEnd - $iTimerStartRanking) * 1000,
+            'total' => ($iTimerEnd - $iTimerStart) * 1000,
         ];
 
-        $aReturn=[
+        $aReturn = [
             'meta' => [
                 'query' => $q,
                 'options' => $aOptions,
@@ -334,11 +324,13 @@ class ahsearch extends crawler_base {
     }
 
     /**
-     * get valid keywords by last word of a searchstring ordered by count of results
+     * Get valid keywords by last word of a searchstring ordered by count of 
+     * results
+     * 
      * @param string  $q  search string
-     * @return array
-     */
-    public function searchKeyword($q) {
+     * @return boolean|array
+    public function searchKeyword__(string $q): 
+    {
         if (!$this->iSiteId) {
             return false;
         }
@@ -354,26 +346,29 @@ class ahsearch extends crawler_base {
             )
         );
         $aResult = $this->oDB->select(
-                'words', array('word', 'count'), array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-                'AND' => $aQuery,
-            ),
-            "order" => 'count',
-            "LIMIT" => 11
-                )
+            'words',
+            array('word', 'count'),
+            array(
+                'AND' => array(
+                    'siteid' => $this->iSiteId,
+                    'AND' => $aQuery,
+                ),
+                "order" => 'count',
+                "LIMIT" => 11
+            )
         );
         // echo $this->oDB->last_query() . "\n";
         // print_r($aResult);
         return $aResult;
     }
+     */
 
     /**
-     * get valid titles by word of a searchstring
+     * Get valid titles by word of a searchstring
      * @param string  $q  search string
-     * @return array
-     */
-    public function searchTitle($q) {
+     * @return boolean|array
+    public function searchTitle__(string $q): bool|array
+    {
         if (!$this->iSiteId) {
             return false;
         }
@@ -383,38 +378,42 @@ class ahsearch extends crawler_base {
             )
         );
         $aResult = $this->oDB->select(
-                'pages', array('title', 'url'), array(
-            'AND' => array(
-                'siteid' => $this->iSiteId,
-                'AND' => $aQuery,
-            ),
-            "order" => 'title',
-            "LIMIT" => 11
-                )
+            'pages',
+            array('title', 'url'),
+            array(
+                'AND' => array(
+                    'siteid' => $this->iSiteId,
+                    'AND' => $aQuery,
+                ),
+                "order" => 'title',
+                "LIMIT" => 11
+            )
         );
         // echo $this->oDB->last_query() . "\n";
         // print_r($aResult);
         return $aResult;
     }
+     */
 
     /**
-     * get array with hit counts of different type
+     * Get array with hit counts of different type
      * @param string $sNeedle
      * @param string $sHaystack
      * @return array
      */
-    private function _countHits($sNeedle, $sHaystack) {
+    private function _countHits(string $sNeedle, string $sHaystack): array
+    {
 
-        $iMatchWord=0;
-        $iWordStart=0;
-        
+        $iMatchWord = 0;
+        $iWordStart = 0;
+
         // ----- matching word
-        $a1=array();
-        
+        $a1 = [];
+
         // detect a searchterm within the text
         preg_match_all('/\W' . $sNeedle . '\W/i', $sHaystack, $a1);
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
-        
+
         // detect a searchterm at the end of the text
         preg_match_all('/\W' . $sNeedle . '$/i', $sHaystack, $a1);
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
@@ -428,7 +427,7 @@ class ahsearch extends crawler_base {
         $iMatchWord += is_array($a1) ? count($a1[0]) : 0;
 
         // ----- word start
-        $a2=array();
+        $a2 = [];
 
         // detect searchterm as word start 
         preg_match_all('/\W' . $sNeedle . '/i', $sHaystack, $a2);
@@ -441,43 +440,49 @@ class ahsearch extends crawler_base {
         // ----- any hit
         preg_match_all('/' . $sNeedle . '/i', $sHaystack, $a3);
 
-        return array(
+        return [
             'matchWord' => $iMatchWord,
-            'WordStart' => $iWordStart-$iMatchWord,
+            'WordStart' => $iWordStart - $iMatchWord,
             'any' => is_array($a3) ? count($a3[0]) - $iWordStart : 0,
-        );
+        ];
     }
 
     /**
-     * mark tags in a given texr
+     * Get html code with marked span tags in a given content
+     * 
      * @param  string  $sText  Text to handle
      * @param  array   $aTags  list of tags to mark
+     * @return string
      */
-    private function _marktags($sText, $aTags){
-        $iWord=0;
+    private function _marktags(string $sText, array $aTags): string
+    {
+        $iWord = 0;
         // $sReturn=strip_tags($sText);
-        $sReturn=$sText;
-        foreach($aTags as $sWord){
+        $sReturn = $sText;
+        foreach ($aTags as $sWord) {
             $iWord++;
-            $sReturn= preg_replace('@('.$sWord.')@i', '<mark class="mark'.$iWord.'">\1</mark>', $sReturn);
+            $sReturn = preg_replace('@('.$sWord.')@i', '<mark class="mark'.$iWord.'">\1</mark>', $sReturn);
         }
         return $sReturn;
     }
+
     /**
-     * reorder search result by getting weight and ranking; ordered by most
+     * Reorder search result by getting weight and ranking; ordered by most
      * relevant item
+     * 
      * @param array   $aData  searchresult from $this->search()
      * @param string  $q      search query
      * @return array
      */
-    private function _reorderByRanking($aData, $q) {
+    private function _reorderByRanking(array $aData, string $q): array
+    {
         $aReturn = [];
         if (!is_array($aData) || !count($aData)) {
             return $aReturn;
         }
         $aSearchwords = explode(" ", $q);
         foreach ($aData as $aItem) {
-            $iFirstContent=-1;
+            $iFirstContent = -1;
             $iCount = 0;
             $sUrl = $aItem['url'];
 
@@ -487,44 +492,44 @@ class ahsearch extends crawler_base {
             $aItem['url'] = str_replace('.html', '', $aItem['url']);
             $aItem['url'] = str_replace('.php', '', $aItem['url']);
             // echo '['.$aItem['url']."]<br>";
-            $aResults = array();
+            $aResults = [];
             $aWords = [];
-            $sHitsByWord='';
+            $sHitsByWord = '';
             foreach ($aSearchwords as $sWord) {
 
-                $aWords[$sWord]=0;
-                $aResults[$sWord]=[];
-                $sWordRegex= preg_replace('/([^a-zA-Z0-9])/', '\\\$1', $sWord);
+                $aWords[$sWord] = 0;
+                $aResults[$sWord] = [];
+                $sWordRegex = preg_replace('/([^a-zA-Z0-9])/', '\\\$1', $sWord);
                 // in den einzelnen Spalten nach Anzahl Vorkommen des
                 // Wortes (Übereinstimmung, am Anfang, irgendwo) suchen und 
                 // deren Anzahl Treffer mit dem Ranking-Faktor multiplizieren 
-                foreach (array('title', 'description', 'keywords', 'url', 'content') as $sCol) {
+                foreach (['title', 'description', 'keywords', 'url', 'content'] as $sCol) {
                     foreach ($this->_countHits($sWordRegex, $aItem[$sCol]) as $sKey => $iHits) {
-                        $iCount+=$iHits * $this->_aRankCounter[$sKey][$sCol];
-                        $aResults[$sWord][$sKey][$sCol] = array($iHits, $this->_aRankCounter[$sKey][$sCol]);
-                        if($iCount){
-                            $aWords[$sWord]+=$iHits;
+                        $iCount += $iHits * $this->_aRankCounter[$sKey][$sCol];
+                        $aResults[$sWord][$sKey][$sCol] = [$iHits, $this->_aRankCounter[$sKey][$sCol]];
+                        if ($iCount) {
+                            $aWords[$sWord] += $iHits;
                         }
                     }
                 }
                 // echo "DEBUG: Position von $sWord: ".strpos($aItem['content'], $sWord).'<br>';
 
 
-                $iMyPos=stripos($aItem['content'], $sWord);
-                if($iMyPos!==false){
-                    $iFirstContent=$iFirstContent===-1
+                $iMyPos = stripos($aItem['content'], $sWord);
+                if ($iMyPos !== false) {
+                    $iFirstContent = $iFirstContent === -1
                         ? $iMyPos
                         : min($iFirstContent, $iMyPos);
                 }
 
                 // add searchterm in found words list
-                $sHitsByWord.=($sHitsByWord ? ' ... ': '' ) 
-                    .($aWords[$sWord] 
-                        ? $sWord.' ('.$aWords[$sWord].')'
-                        :'<del>'.$sWord.'</del>'
+                $sHitsByWord .= ($sHitsByWord ? ' ... ' : '')
+                    . ($aWords[$sWord]
+                        ? $sWord . ' (' . $aWords[$sWord] . ')'
+                        : '<del>' . $sWord . '</del>'
                     );
             }
-            $iFirstContent=$iFirstContent ? $iFirstContent : 0;
+            $iFirstContent = $iFirstContent ? $iFirstContent : 0;
 
             // update search result item
             $aItem['url'] = $sUrl;
@@ -533,16 +538,16 @@ class ahsearch extends crawler_base {
             $aItem['terms'] = $aWords;
             $aItem['weight'] = $iCount;
 
-            $iStart=max(0,$iFirstContent-10);
-            $aItem['preview'] = ($iStart ? '...' : '' )
-                .substr($aItem['content'], $iStart, 300).'...';
+            $iStart = max(0, $iFirstContent - 10);
+            $aItem['preview'] = ($iStart ? '...' : '')
+                . substr($aItem['content'], $iStart, 300) . '...';
             $aItem['hits_per_term'] = $sHitsByWord;
 
             // add mark tags for found search terms
-            foreach (array('title', 'description', 'keywords', 'url', 'preview', 'hits_per_term') as $sCol) {
-                $aItem['html_'.$sCol] = $this->_markTags($aItem[$sCol], $aSearchwords);
+            foreach (['title', 'description', 'keywords', 'url', 'preview', 'hits_per_term'] as $sCol) {
+                $aItem['html_' . $sCol] = $this->_markTags($aItem[$sCol], $aSearchwords);
             }
-            
+
             // unset($aItem['content']);
             $aReturn[$iCount][] = $aItem;
         }
@@ -553,17 +558,18 @@ class ahsearch extends crawler_base {
     }
 
     /**
-     * get count of search results 
+     * Get count of search results 
      * @param array   array of $this->search()
      * @return int
      */
-    public function getCountOfSearchresults($aResult) {
+    public function getCountOfSearchresults(array $aResult): int
+    {
         $iCounter = 0;
         if (!is_array($aResult)) {
             return 0;
         }
         foreach ($aResult as $iRanking => $aDataItems) {
-            $iCounter+=count($aDataItems);
+            $iCounter += count($aDataItems);
         }
         return $iCounter;
     }
@@ -571,213 +577,274 @@ class ahsearch extends crawler_base {
     // ----------------------------------------------------------------------
     // render functions to display search form
     // ----------------------------------------------------------------------
-    
-        /**
-         * generate attributes for html tags with a given kay value hash
-         * @param array $aAttributes  attributes as key=>value items
-         * @return string
-         */
-        protected function _addAttributes($aAttributes){
-            $sReturn='';
-            foreach($aAttributes as $sAttr=>$sValue){
-                $sReturn.=' '.$sAttr.'="'.$sValue.'"';
-            }
-            return $sReturn;
-        }
-        protected function _getSelectId($sKeyword){
-            return 'select'.$sKeyword;
-        }
 
-        protected function _renderLabel($sKeyword, $aAttributes=array()){
-            if(!isset($aAttributes['for'])){
-                $aAttributes['for']=$this->_getSelectId($sKeyword);
-            }
-            return '<label'
-                . $this->_addAttributes($aAttributes)
-                . '>'. $this->lF('label.search'.$sKeyword) .'</label>'
-                ;
-        }
-        /**
-         * return html code for a select form field 
-         * 
-         * @param array  $aOptions     array with key = visible label; value= value in option
-         * @param string $sName        name attribute for select field
-        *  @param array  $aAttributes  optional: html attributes for select tag
-         * @param string $sSelected    value of item to select
-         * @return string
-         */
-        protected function _renderSelect($aOptions, $sName, $aAttributes=array(), $sSelected=false){
-            $sReturn='';
-            if ($aOptions){
-                if(!isset($aAttributes['id'])){
-                    $aAttributes['id']=$this->_getSelectId($sName);
-                }
-                $aAttributes['name']=$sName;
-                if(!$sSelected){
-                    $sSelected=$this->getQueryValue($sName);
-                }
-                foreach ($aOptions as $sLabel=>$sValue){
-                    $sReturn.='<option value="'.$sValue.'"'.($sSelected===$sValue?' selected="selected"':'').'>'.$sLabel.'</option>';
-                }
-                $sReturn='<select' . $this->_addAttributes($aAttributes) . '>'.$sReturn.'</select>';
-            }
-            return $sReturn;
-        }
-        
     /**
-     * get html code to add site id (project) and frontend language
-     * @since v0.98
+     * Generate attributes for html tags with a given key value hash
+     * 
+     * @param array $aAttributes  attributes as key=>value items
      * @return string
      */
-    public function renderHiddenfields(){
-        return '<input'
-            . $this->_addAttributes(array(
-                'type'=>'hidden',
-                'name'=>'siteid',
-                'value'=>$this->iSiteId,
-            ))
-            .'>'
-            . '<input'
-            . $this->_addAttributes(array(
-                'type'=>'hidden',
-                'name'=>'guilang',
-                'value'=>$this->sLang,
-            ))
-            .'>'
-            ;
+    protected function _addAttributes(array $aAttributes): string
+    {
+        $sReturn = '';
+        foreach ($aAttributes as $sAttr => $sValue) {
+            $sReturn .= " $sAttr=\"$sValue\"";
+        }
+        return $sReturn;
     }
 
     /**
-     * get html code for category selection label
+     * Generate a html id for a given keyword
+     * 
+     * @param string $sKeyword
+     * @return string
+     */
+    protected function _getSelectId(string $sKeyword): string
+    {
+        return 'select' . $sKeyword;
+    }
+
+    /**
+     * Get HTML code for a label for a given keyword
+     * 
+     * @param string $sKeyword
+     * @param array  $aAttributes
+     * @return string
+     */
+    protected function _renderLabel(string $sKeyword, array $aAttributes = []): string
+    {
+        if (!isset($aAttributes['for'])) {
+            $aAttributes['for'] = $this->_getSelectId($sKeyword);
+        }
+        return '<label'
+            . $this->_addAttributes($aAttributes)
+            . '>' . $this->lF('label.search' . $sKeyword) . '</label>'
+        ;
+    }
+    
+    /**
+     * Get html code for a select form field 
+     * 
+     * @param array  $aOptions     array with key = visible label; value= value in option
+     * @param string $sName        name attribute for select field
+     * @param array  $aAttributes  optional: html attributes for select tag
+     * @param string $sSelected    value of item to select
+     * @return string
+     */
+    protected function _renderSelect(array $aOptions, string $sName, array $aAttributes = [], string $sSelected = ''): string
+    {
+        $sReturn = '';
+        if ($aOptions) {
+            if (!isset($aAttributes['id'])) {
+                $aAttributes['id'] = $this->_getSelectId($sName);
+            }
+            $aAttributes['name'] = $sName;
+            if (!$sSelected) {
+                $sSelected = $this->getQueryValue($sName);
+            }
+            foreach ($aOptions as $sLabel => $sValue) {
+                $sReturn .= '<option value="' . $sValue . '"' . ($sSelected === $sValue ? ' selected="selected"' : '') . '>' . $sLabel . '</option>';
+            }
+            $sReturn = '<select' . $this->_addAttributes($aAttributes) . '>' . $sReturn . '</select>';
+        }
+        return $sReturn;
+    }
+
+    /**
+     * Get html code to add site id (project) and frontend language
+     * 
+     * @since v0.98
+     * 
+     * @return string
+     */
+    public function renderHiddenfields(): string
+    {
+        return '<input'
+            . $this->_addAttributes(array(
+                'type' => 'hidden',
+                'name' => 'siteid',
+                'value' => $this->iSiteId,
+            ))
+            . '>'
+            . '<input'
+            . $this->_addAttributes(array(
+                'type' => 'hidden',
+                'name' => 'guilang',
+                'value' => $this->sLang,
+            ))
+            . '>'
+        ;
+    }
+
+    /**
+     * Get html code for category selection label
+     * 
      * @param array  $aAttributes  optional: html attributes for input tag
      * @return string
      */
-    public function renderInput($aAttributes=array()){
+    public function renderInput(array $aAttributes = []): string
+    {
         return '<input'
-            . $this->_addAttributes(array_merge(array(
-                'type'=>'text',
-                'name'=>'q',
-                'id'=>'searchterm',
-                'value'=>htmlentities($this->getQueryValue('q')),
-                'placeholder'=>$this->lF('input.search.placeholder'),
-                'title'=>$this->lF('input.search.title'),
-                'pattern'=>'^..*',
-                'required'=>'required',
-            ),$aAttributes))
-            .'>';
+            . $this->_addAttributes(array_merge([
+                'type' => 'text',
+                'name' => 'q',
+                'id' => 'searchterm',
+                'value' => htmlentities($this->getQueryValue('q')),
+                'placeholder' => $this->lF('input.search.placeholder'),
+                'title' => $this->lF('input.search.title'),
+                'pattern' => '^..*',
+                'required' => 'required',
+            ], $aAttributes))
+            . '>';
     }
+
     /**
-     * get html code for category selection label
+     * Get html code for category selection label
+     * 
+     * @param array $aAttributes  optional: html attributes for label tag
      * @return string
      */
-    public function renderLabelCategories($aAttributes=array()){
+    public function renderLabelCategories(array $aAttributes = []): string
+    {
         return $this->_renderLabel('subdir', $aAttributes);
     }
+
     /**
-     * get html code for lang selection label
+     * Get html code for lang selection label
+     * 
+     * @param array $aAttributes  optional: html attributes for label tag
      * @return string
      */
-    public function renderLabelLang($aAttributes=array()){
+    public function renderLabelLang(array $aAttributes = []): string
+    {
         return $this->_renderLabel('lang', $aAttributes);
     }
+
     /**
-     * get html code for mode selection label
+     * Get html code for mode selection label
+     * 
+     * @param array $aAttributes  optional: html attributes for label tag
      * @return string
      */
-    public function renderLabelMode($aAttributes=array()){
+    public function renderLabelMode(array $aAttributes = []): string
+    {
         return $this->_renderLabel('mode', $aAttributes);
     }
+
     /**
-     * get html code for searchterm label
+     * Get html code for searchterm label
+     * 
+     * @param array $aAttributes  optional: html attributes for term tag
      * @return string
      */
-    public function renderLabelSearch($aAttributes=array()){
-        if(!isset($aAttributes['for'])){
-            $aAttributes['for']='searchterm';
+    public function renderLabelSearch(array $aAttributes = []): string
+    {
+        if (!isset($aAttributes['for'])) {
+            $aAttributes['for'] = 'searchterm';
         }
         return $this->_renderLabel('term', $aAttributes);
     }
 
-    
     /**
-     * get html code for category selection 
+     * Get html code for category selection 
+     * 
+     * @param array $aAttributes  optional: html attributes for select tag
      * @return string
      */
-    public function renderSelectCategories($aAttributes=array()){
+    public function renderSelectCategories(array $aAttributes = []): string
+    {
         return $this->_renderSelect($this->getSearchCategories(true), 'subdir', $aAttributes);
-    }
-    /**
-     * get html code for language selection 
-     * @return string
-     */
-    public function renderSelectLang($aAttributes=array()){
-        return $this->_renderSelect($this->getSearchLang(true), 'lang', $aAttributes);
-    }
-    /**
-     * get html code for mode selection 
-     * @return string
-     */
-    public function renderSelectMode($aAttributes=array()){
-        return $this->_renderSelect(array(
-            $this->lF('label.searchmode-and')=>'AND',
-            $this->lF('label.searchmode-or')=>'OR',
-            $this->lF('label.searchmode-phrase')=>'PHRASE',
-        ), 'mode', $aAttributes);
-    }
-    /**
-     * get html code for content table selection
-     * @return string
-     */
-    public function renderSelectContentTable($aAttributes=array()){
-        return $this->_renderSelect(array(
-            $this->lF('label.search-in-content')=>'content',
-            $this->lF('label.search-in-response')=>'response',
-        ), 'contentcolumn', $aAttributes);
     }
 
     /**
-     * get htmlcode for a simple or extended search form
+     * Get html code for language selection
+     * 
+     * @param array $aAttributes  optional: html attributes for select tag
+     * @return string
+     */
+    public function renderSelectLang(array $aAttributes = []): string
+    {
+        return $this->_renderSelect($this->getSearchLang(true), 'lang', $aAttributes);
+    }
+
+    /**
+     * Get html code for mode selection 
+     * 
+     * @param array $aAttributes  optional: html attributes for select tag
+     * @return string
+     */
+    public function renderSelectMode(array $aAttributes = []): string
+    {
+        return $this->_renderSelect([
+            $this->lF('label.searchmode-and') => 'AND',
+            $this->lF('label.searchmode-or') => 'OR',
+            $this->lF('label.searchmode-phrase') => 'PHRASE',
+        ], 'mode', $aAttributes);
+    }
+
+    /**
+     * Get html code for content table selection
+     * 
+     * @param array $aAttributes  optional: html attributes for select tag
+     * @return string
+     */
+    public function renderSelectContentTable(array $aAttributes = []): string
+    {
+        return $this->_renderSelect([
+            $this->lF('label.search-in-content') => 'content',
+            $this->lF('label.search-in-response') => 'response',
+        ], 'contentcolumn', $aAttributes);
+    }
+
+    /**
+     * Get htmlcode for a simple or extended search form
      * 
      * echo $o->renderSearchForm();
      * 
      * // with additional options
-     * echo $o->renderSearchForm(array(
+     * echo $o->renderSearchForm([
      *     'categories'=>1,
      *     'lang'=>1,
      *     'mode'=>1,
-     * ));
+     * ]);
 
-     * @param type $aOptions
+     * @param array $aOptions  options array; valid subkeys: 
+     *                         - categories {bool} show subdirs of the website
+     *                         - lang       {bool} show languages
+     *                         - mode       {bool} show search modes
+     *                         Without setting values to true they are hidden
      * @return string
      */
-    public function renderSearchForm($aOptions=array()){
-        $sOptions=(isset($aOptions['categories']) && $aOptions['categories'] 
-                ? '<tr><td>'.$this->renderLabelCategories() .'</td><td>'. $this->renderSelectCategories().'</td></tr>'
+    public function renderSearchForm(array $aOptions = []): string
+    {
+        $sOptions = (isset($aOptions['categories']) && $aOptions['categories']
+            ? '<tr><td>' . $this->renderLabelCategories() . '</td><td>' . $this->renderSelectCategories() . '</td></tr>'
+            : '')
+            . (isset($aOptions['lang']) && $aOptions['lang']
+                ? '<tr><td>' . $this->renderLabelLang() . '</td><td>' . $this->renderSelectLang() . '</td></tr>'
                 : '')
-            .(isset($aOptions['lang']) && $aOptions['lang'] 
-                ? '<tr><td>'.$this->renderLabelLang() .'</td><td>'. $this->renderSelectLang().'</td></tr>'
+            . (isset($aOptions['mode']) && $aOptions['mode']
+                ? '<tr><td>' . $this->renderLabelMode() . '</td><td>' . $this->renderSelectMode() . '</td></tr>'
                 : '')
-            .(isset($aOptions['mode']) && $aOptions['mode'] 
-                ? '<tr><td>'.$this->renderLabelMode() .'</td><td>'. $this->renderSelectMode().'</td></tr>'
-                : '')
-            ;
-        $sReturn='<form method="GET" action="?">'
-                . $this->renderHiddenfields()
-                . $this->lF('label.searchhelp').'<br><br>'
-                . $this->renderLabelSearch().': '
-                . $this->renderInput(array('size'=>'50'))
-                . ($sOptions ? '<br><br><strong>'.$this->lF('label.searchoptions').'</strong>:<br><table>'.$sOptions.'</table><hr>' : '')
-                .'<button>'.$this->lF('btn.search.label').'</button>'
-                .'</form>'
-                ;
+        ;
+        $sReturn = '<form method="GET" action="?">'
+            . $this->renderHiddenfields()
+            . $this->lF('label.searchhelp') . '<br><br>'
+            . $this->renderLabelSearch() . ': '
+            . $this->renderInput(['size' => '50'])
+            . ($sOptions ? '<br><br><strong>' . $this->lF('label.searchoptions') . '</strong>:<br><table>' . $sOptions . '</table><hr>' : '')
+            . '<button>' . $this->lF('btn.search.label') . '</button>'
+            . '</form>'
+        ;
         return $sReturn;
     }
     // ----------------------------------------------------------------------
     // render function to display search result
     // ----------------------------------------------------------------------
-    
+
     /**
-     * do search and render search results
+     * Do search and render search results
+     * 
      * @param string  $aParams     search options understanding those keys:
      * 
      *                  q      {string}  search string
@@ -793,12 +860,12 @@ class ahsearch extends crawler_base {
      *                  result {string}  html template code for each result
      * @return string
      */
-    public function renderSearchresults($aParams = array()) {
-        $sOut = '';
-        $aData = array();
+    public function renderSearchresults(array $aParams = []): string
+    {
+        $aData = [];
         $iHits = 0;
-        $sCss='
-            <!-- default css code added by '.__CLASS__.' -->
+        $sCss = '
+            <!-- default css code added by ' . __CLASS__ . ' -->
             <style>
                 .searchresult{margin: 0 0 1em 0; border: 0px solid #eee; border-left: 0px solid #eee; padding: 0.5em;}
                 .searchresult:hover{background:#fafafa;}
@@ -821,58 +888,55 @@ class ahsearch extends crawler_base {
             </style>
             <!-- /css -->
             ';
-        $iLimit=(isset($aParams['limit']) && (int)$aParams['limit'] ? (int)$aParams['limit'] : 50);
-        $q=trim(isset($aParams['q']) ? $aParams['q'] : $this->getQueryValue('q'));
+        $iLimit = (isset($aParams['limit']) && (int) $aParams['limit'] ? (int) $aParams['limit'] : 50);
+        $q = trim(isset($aParams['q']) ? $aParams['q'] : $this->getQueryValue('q'));
 
         // output of results:
-        $sHead='';
-        $sResults='';
-        
+        $sHead = '';
+        $sResults = '';
+
         if ($q) {
-            $aSet=array();
-            foreach (array('url', 'subdir', 'mode', 'lang') as $sMyKey){
-                if(isset($aParams[$sMyKey])){
-                    $aSet[$sMyKey]=$aParams[$sMyKey];
+            $aSet = [];
+            foreach (['url', 'subdir', 'mode', 'lang'] as $sMyKey) {
+                if (isset($aParams[$sMyKey])) {
+                    $aSet[$sMyKey] = $aParams[$sMyKey];
                 }
             }
             $aData = $this->search($q, $aSet);
 
             // $iHits = $this->getCountOfSearchresults($aData);
             $iHits = isset($aData['meta']['result_count']) ? $aData['meta']['result_count'] : 0;
-            
+
             // LIMIT output ... maybe add a paging?
-            while(count($aData['data'])>$iLimit){
+            while (count($aData['data']) > $iLimit) {
                 array_pop($aData['data']);
-            } 
+            }
 
             // echo '<pre>'.print_r($_SERVER, 1).'</pre>'; die();
-            if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $client_ip = $_SERVER['REMOTE_ADDR'];
-            } else {
-                $client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            }
+            $client_ip = $_SERVER['REMOTE_ADDR'] ?: $_SERVER['HTTP_X_FORWARDED_FOR'];
             $aResult = $this->oDB->insert(
-                    'searches', array(
-                        'ts' => date("Y-m-d H:i:s"),
-                        'siteid' => $this->iSiteId,
-                        'searchset' => $aSet,
-                        'query' => $q,
-                        'results' => $iHits,
-                        'host' => $client_ip,
-                        'ua' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '-',
-                        'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '-',
-                    )
+                'searches',
+                [
+                    'ts' => date("Y-m-d H:i:s"),
+                    'siteid' => $this->iSiteId,
+                    'searchset' => $aSet,
+                    'query' => $q,
+                    'results' => $iHits,
+                    'host' => $client_ip,
+                    'ua' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '-',
+                    'referrer' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '-',
+                ]
             );
             // echo "\n" . $this->oDB->last() . '<br>'; 
 
-            $sTplHead=isset($aParams['head']) 
-                ? $aParams['head'] 
-                : (isset($aParams['result']) ? '' : $sCss ) . '
+            $sTplHead = isset($aParams['head'])
+                ? $aParams['head']
+                : (isset($aParams['result']) ? '' : $sCss) . '
                     <strong>{{RESULTS}}</strong> ({{TOTALTIME}})<br><br>
                     <p>{{HITS}}</p>
                 '
-                ;
-            $sTplResult=isset($aParams['result']) ? $aParams['result'] : '
+            ;
+            $sTplResult = isset($aParams['result']) ? $aParams['result'] : '
                 <div class="searchresult">
                     <div class="bar">
                         <span>{{PERCENT}}%</span>
@@ -886,64 +950,61 @@ class ahsearch extends crawler_base {
                         &gt; {{HTML_TERMS}}
                     </div>
                 </div>'
-                ;
-                
-            $sTplFoot='';
-            
-            
-            $sInsResults=$this->lF('searchout.results');
+            ;
+
+            $sInsResults = $this->lF('searchout.results');
             if (!$iHits) {
-                $sInsHits=$this->lF('searchout.nohit');
+                $sInsHits = $this->lF('searchout.nohit');
             } else {
                 if ($iHits > $iLimit) {
-                    $sInsHits=$this->lF('searchout.too-many-hits');
+                    $sInsHits = $this->lF('searchout.too-many-hits');
                 } else {
-                    $sInsHits=sprintf($this->lF('searchout.hits'), $iHits);
+                    $sInsHits = sprintf($this->lF('searchout.hits'), $iHits);
                 }
-                $aMappingSearch=[
+                $aMappingSearch = [
                     '{{RESULTS}}' => $sInsResults,
                     '{{HITS}}' => $sInsHits,
                     '{{HITCOUNT}}' => $iHits,
                     '{{TOTALTIME}}' => sprintf($this->lF('searchout.totaltime'), $aData['meta']['timers']['total']),
                 ];
-                $sHead=str_replace(
+                $sHead = str_replace(
                     array_keys($aMappingSearch),
                     array_values($aMappingSearch),
                     $sTplHead
                 );
-                
+
                 $iMaxRanking = false;
-                $iCounter=0;
+                $iCounter = 0;
                 foreach ($aData['data'] as $iRanking => $aDataItems) {
                     if (!$iMaxRanking) {
                         $iMaxRanking = $iRanking ? $iRanking : 1;
                     }
                     foreach ($aDataItems as $aItem) {
-                        $sAge = round((date("U") - date("U", strtotime($aItem['ts'])) ) / 60 / 60 / 24);
+                        $sAge = round((date("U") - date("U", strtotime($aItem['ts']))) / 60 / 60 / 24);
                         $sAge = $sAge > 1 ? sprintf($this->lF('searchout.days'), $sAge) : $this->lF('searchout.today');
                         $iCounter++;
-                        $aMappingSearchterm=[
-                            '{{COUNTER}}'          => $iCounter,
-                            '{{URL}}'              => $aItem['url'],
-                            '{{TITLE}}'            => $aItem['title'],
-                            '{{DESCRIPTION}}'      => $aItem['description'],
-                            '{{KEYWORDS}}'         => $aItem['keywords'],
-                            '{{DETAIL}}'           => $aItem['preview'],
-                            '{{TERMS}}'            => $aItem['hits_per_term'],
+                        $aMappingSearchterm = [
+                            '{{COUNTER}}' => $iCounter,
+                            '{{URL}}' => $aItem['url'],
+                            '{{TITLE}}' => $aItem['title'],
+                            '{{DESCRIPTION}}' => $aItem['description'],
+                            '{{KEYWORDS}}' => $aItem['keywords'],
+                            '{{DETAIL}}' => $aItem['preview'],
+                            '{{TERMS}}' => $aItem['hits_per_term'],
 
-                            '{{LANG}}'             => $aItem['lang'],
-                            '{{PERCENT}}'          => round($iRanking / $iMaxRanking * 100), 
-                            '{{AGE}}'              => $sAge,
+                            '{{LANG}}' => $aItem['lang'],
+                            '{{PERCENT}}' => round($iRanking / $iMaxRanking * 100),
+                            '{{AGE}}' => $sAge,
 
-                            '{{HTML_URL}}'         => $aItem['html_url'],
-                            '{{HTML_TITLE}}'       => $aItem['html_title'],
+                            '{{HTML_URL}}' => $aItem['html_url'],
+                            '{{HTML_TITLE}}' => $aItem['html_title'],
                             '{{HTML_DESCRIPTION}}' => $aItem['html_description'],
-                            '{{HTML_KEYWORDS}}'    => $aItem['html_keywords'],
-                            '{{HTML_DETAIL}}'      => $aItem['html_preview'],
-                            '{{HTML_TERMS}}'       => $aItem['html_hits_per_term'],
+                            '{{HTML_KEYWORDS}}' => $aItem['html_keywords'],
+                            '{{HTML_DETAIL}}' => $aItem['html_preview'],
+                            '{{HTML_TERMS}}' => $aItem['html_hits_per_term'],
                         ];
 
-                        $sResults.=str_replace(
+                        $sResults .= str_replace(
                             array_keys(array_merge($aMappingSearchterm, $aMappingSearch)),
                             array_values(array_merge($aMappingSearchterm, $aMappingSearch)),
                             $sTplResult
@@ -954,11 +1015,11 @@ class ahsearch extends crawler_base {
 
         }
         return ''
-                . $sHead
-                . $sResults
-                . '<br>'
-                . 'powered by <a href="'.$this->aAbout['urlDocs'].'">' . $this->aAbout['product'].' '.$this->aAbout['version'].'</a>: '
-                . $this->LF('about.infostring');
+            . $sHead
+            . $sResults
+            . '<br>'
+            . 'powered by <a href="' . $this->aAbout['urlDocs'] . '">' . $this->aAbout['product'] . ' ' . $this->aAbout['version'] . '</a>: '
+            . $this->LF('about.infostring');
     }
 
 }

@@ -260,6 +260,7 @@ class ressources extends crawler_base
 
     /**
      * Update a resource into ressource table
+     * 
      * @param array $aData
      * @return array|bool
      */
@@ -287,7 +288,7 @@ class ressources extends crawler_base
      * Update an external redirect in resources table
      * @return void
      */
-    public function updateExternalRedirect()
+    public function updateExternalRedirect(): void
     {
 
         // reset all
@@ -498,7 +499,7 @@ class ressources extends crawler_base
      * Show resource status on CLI output
      * @return bool
      */
-    protected function _showResourceStatusOnCli()
+    protected function _showResourceStatusOnCli(): bool
     {
         $iUrls = $this->oDB->count('ressources', array('url'), [
             'AND' => [
@@ -537,14 +538,14 @@ class ressources extends crawler_base
     }
 
     /**
-     * get ressources 
+     * Get resources as array
      * 
      * @param string|array  $aFields  fieldlist of colums to get; '*' or array with column names
-     * @param array          $aWhere   array for filtering columns; default: []
-     * @param array          $aOrder   sort infos; default: ["url" => "asc"]
+     * @param array         $aWhere   array for filtering columns; default: []
+     * @param array         $aOrder   sort infos; default: ["url" => "asc"]
      * @return array
      */
-    public function getRessources(string|array $aFields = '*', array $aWhere = [], array $aOrder = ["url" => "asc"])
+    public function getRessources(string|array $aFields = '*', array $aWhere = [], array $aOrder = ["url" => "asc"]): array
     {
         $aReturn = $this->oDB->select(
             'ressources',
@@ -584,7 +585,7 @@ class ressources extends crawler_base
      * @param bool   $bUseLike  Flag: use like instead of = in sql select; default: false (use "=")
      * @return array
      */
-    public function getRessourceDetailsByUrl($sUrl, $bUseLike = false)
+    public function getRessourceDetailsByUrl(string $sUrl, bool $bUseLike = false): array
     {
         $aData = $this->getRessources(
             '*',
@@ -603,7 +604,7 @@ class ressources extends crawler_base
     }
 
     /**
-     * get ressource details of all incoming or outgoing ressources related to 
+     * Get ressource details of all incoming or outgoing ressources related to 
      * a given ressource id
      * It returns false if the ressource id or direction is invalid  
      * 
@@ -931,17 +932,17 @@ class ressources extends crawler_base
         $aUrls = $this->oDB->select(
             'ressources',
             'url',
-            array(
-                'AND' => array(
+            [
+                'AND' => [
                     'siteid' => $this->iSiteId,
-                    'OR' => array(
+                    'OR' => [
                         'rescan' => 1,
                         'http_code[<]' => 1,
                         'http_code[>=]' => 500,
-                    ),
-                ),
+                    ],
+                ],
                 // "LIMIT" => 2,
-            )
+            ]
         );
         foreach ($aUrls as $sUrl) {
             $this->_addUrl2Crawl($sUrl, true);
@@ -985,7 +986,7 @@ class ressources extends crawler_base
             $sStatusPrefix = (100 - round($iUrlsLeft * 100 / $iUrlsTotal)) . '%: ' . $iUrlsLeft . '  of ' . $iUrlsTotal . ' urls left';
             if ($bPause && $this->iSleep) {
                 $this->touchLocking($this->_getStatus_urls_left($iUrlsTotal, $iUrlsLeft) . '; sleep ' . $this->iSleep . 's');
-                $this->cliprint('cli', "sleep ..." . $this->iSleep . "s\n");
+                $this->cliprint('cli', "Sleep $this->iSleep s ...\n");
                 sleep($this->iSleep);
             }
             $bPause = true;
