@@ -49,7 +49,7 @@ if ($iPageId) {
         $sSelfUrl='?page=searchindexstatus&siteid='.$this->_sTab;
         $sBaseUrl=$sSelfUrl."&id=".$iPageId;
         
-        $iResId=$this->getIdsByUrl($aItem[0]['url'],'ressources');
+        $iResId=$this->getIdByUrl($aItem[0]['url'],'ressources');
 
         // --- general infos
         $aTableInfos=array(
