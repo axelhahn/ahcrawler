@@ -5,7 +5,7 @@
     $iCountUnused=0;
     
     global $oCdn;
-    require_once(__DIR__ . '/../../classes/cdnorlocal-admin.class.php');
+    require_once(__DIR__ . '/../../vendor/cdnorlocal/cdnorlocal-admin.class.php');
     
     $oRenderer=new ressourcesrenderer();
     
