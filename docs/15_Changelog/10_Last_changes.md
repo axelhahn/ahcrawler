@@ -1,10 +1,17 @@
 ## Last changes
 
+### 2024
+
+#### 2024-09-xx: v0.167
+
+* ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables; short array syntax
+* ↗️ UPDATE: A small cleanup: My own classes were moved to vendor subdir
+
 ### 2023
 
 #### 2023-12-03: v0.166
 
-* ↗️ UPDATE: AcCrawler runs on PHP 8.3
+* ↗️ UPDATE: AhCrawler runs on PHP 8.3
 * ↗️ UPDATE: dark skin - login page is not white anymore
 * ↗️ UPDATE: German texts for counters
 
@@ -26,10 +33,4 @@
 * ↗️ UPDATE: ahCache class
 * ↗️ UPDATE: ah web updater classes
 * ↗️ UPDATE: html analyzer class
-
-#### 2023-05-09: v0.162
-
-* 💣 FIX: error with missing vendor cache dir
-* ↗️ UPDATE: cdnorlocal --> 1.0.13
-* 🟢 ADDED: metadata of needed libs
 

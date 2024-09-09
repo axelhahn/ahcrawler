@@ -1,6 +1,6 @@
 ## Requirements
 
-The tool is designed to run on a local machine, a vm or your own server.
+The tool is designed to run on a local machine, a vm or your own server or as docker container.
 
 * any webserver plus PHP 
 * PHP: 

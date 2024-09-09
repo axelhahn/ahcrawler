@@ -2,6 +2,12 @@
 
 ### 2023
 
+#### 2023-05-09: v0.162
+
+* 💣 FIX: error with missing vendor cache dir
+* ↗️ UPDATE: cdnorlocal --> 1.0.13
+* 🟢 ADDED: metadata of needed libs
+
 #### 2023-05-09: v0.161
 
 * 💣 FIX: cdnorlocal because API response of Cdnjs was changed

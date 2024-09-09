@@ -65,3 +65,36 @@ wget https://sourceforge.net/projects/ahcrawler/files/latest/download
 unzip download
 rm -f download
 ``` 
+
+## Docker container
+
+WIP
+
+I use rootless docker + docker compose for my local development. But you could use it in a Linux machine for a first test too.
+
+To bring up the project in `~/docker/`...
+
+Get the sources
+
+```txt
+cd ~/docker
+git clone https://github.com/axelhahn/ahcrawler.git [optional-name-of-subdir]
+``` 
+
+Go to the application root.
+In the docker subdir is an init script
+
+```txt
+cd ~/docker/ahcrawler/
+./docker/init.sh
+``` 
+
+* press `i` to set ACL on local directory (for rootless docker only)
+* press `t` to generate all templates
+* press `u` to bring up the containers
+* press `o` to open the browser with the application
+* press `q` to quit
+
+To bring up lamp projects as a docker container I use
+<https://os-docs.iml.unibe.ch/docker-php-starterkit/>
+For cofiguration details and instructions see there.
