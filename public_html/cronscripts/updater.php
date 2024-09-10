@@ -106,6 +106,12 @@ $oCheck = new ahwiupdatecheck([
 echo 'Checking update of your ' . $oCrawler->aAbout['product'] . ' v' . $oCrawler->aAbout['version'] . '...' . PHP_EOL;
 $oCheck->getUpdateInfos(true);
 
+$sError=$oCheck->getError();
+if ($sError) {
+    echo "$sError\n\n";
+    exit(1);
+}
+
 $bHasUpdate = $oCheck->hasUpdate();
 echo ($bHasUpdate
     ? 'Update AVAILABLE: ' . $oCheck->getLatestVersion()
