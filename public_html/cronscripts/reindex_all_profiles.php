@@ -34,6 +34,8 @@
  *      do handle a single profile only instead of all profiles
  * 
  * ----------------------------------------------------------------------
+ * (...)
+ * 2024-09-10  v0.167  php8 only; add typed variables; use short array syntax
  */
 
 require_once(__DIR__ . '/../classes/crawler.class.php');
@@ -50,25 +52,26 @@ require_once(__DIR__ . '/../vendor/ahcli/cli.class.php');
  * @param string  $sCmd  command to execute
  * @return integer
  */
-function run($sCmd){
-        echo "\n";
-        echo "RUN ::\n";
-        echo "RUN :: **************************************** START\n";
-        echo "RUN :: $$sCmd\n";
-        echo "RUN ::\n\n";
+function run(string $sCmd): int
+{
+    echo "\n";
+    echo "RUN ::\n";
+    echo "RUN :: **************************************** START\n";
+    echo "RUN :: $$sCmd\n";
+    echo "RUN ::\n\n";
 
-        // exec($sCmd, $aOut, $iRc);
-        // echo implode("\n", $aOut);
-        system($sCmd, $iRc);
+    // exec($sCmd, $aOut, $iRc);
+    // echo implode("\n", $aOut);
+    system($sCmd, $iRc);
 
 
-        echo "\n\n";
-        echo "RUN ::\n";
-        echo "RUN :: $$sCmd\n";
-        echo "RUN :: rc=$iRc\n";
-        echo "RUN :: **************************************** END\n\n";
+    echo "\n\n";
+    echo "RUN ::\n";
+    echo "RUN :: $$sCmd\n";
+    echo "RUN :: rc=$iRc\n";
+    echo "RUN :: **************************************** END\n\n";
 
-        return $iRc;
+    return $iRc;
 }
 
 // ----------------------------------------------------------------------
@@ -76,60 +79,60 @@ function run($sCmd){
 // ----------------------------------------------------------------------
 
 $sScript = "php " . __DIR__ . '/../bin/cli.php';
-$iRc=0;
+$iRc = 0;
 
 $oCrawler = new crawler();
 
-$aParamDefs=array(
+$aParamDefs = [
     'label' => 'AhCrawler :: Cronjob - reindex all',
-    'description' => 'CLI reindexer tool for a cronjob.'.PHP_EOL.'It flushes all indexed data of all profiles and then reindexes them.',
-    'params'=>array(
-        'update'=>array(
+    'description' => 'CLI reindexer tool for a cronjob.' . PHP_EOL . 'It flushes all indexed data of all profiles and then reindexes them.',
+    'params' => [
+        'update' => [
             'short' => 'u',
-            'value'=> CLIVALUE_NONE,
+            'value' => CLIVALUE_NONE,
             'shortinfo' => 'update only',
             'description' => 'Do not flush and reindex all - only update (=rescan errors and missed items)',
-        ),
-        'profile'=>array(
+        ],
+        'profile' => [
             'short' => 'p',
-            'value'=> CLIVALUE_REQUIRED,
-            'pattern'=>'/^[0-9]*$/',
+            'value' => CLIVALUE_REQUIRED,
+            'pattern' => '/^[0-9]*$/',
             'shortinfo' => 'Handle a single profile id',
             'description' => 'Set a profile id. Do not handle all profiles - just a single one. Use this on tomeout problems on a shared hoster; default: all profiles',
-        ),
-        'help'=>array(
+        ],
+        'help' => [
             'short' => 'h',
-            'value'=> CLIVALUE_NONE,
+            'value' => CLIVALUE_NONE,
             'shortinfo' => 'show this help',
             'description' => '',
-        ),
-    ),
-);
+        ],
+    ],
+];
 
-$oCli=new axelhahn\cli($aParamDefs);
+$oCli = new axelhahn\cli($aParamDefs);
 
 // ----- check params
-if($oCli->getvalue('help')){
+if ($oCli->getvalue('help')) {
     echo $oCli->getlabel() . $oCli->showhelp();
     exit(0);
 }
 
 
 $aIds = $oCrawler->getProfileIds();
-if($oCli->getvalue('profile')){
+if ($oCli->getvalue('profile')) {
     echo "INFO: set single profile " . $oCli->getvalue('profile') . PHP_EOL;
-    $aIds=array($oCli->getvalue('profile'));
+    $aIds = [$oCli->getvalue('profile')];
 } else {
     echo "INFO: processing ALL profiles" . PHP_EOL;
 }
 
 
 // ----- FULL REINDEX
-if(!$oCli->getvalue('update')){
+if (!$oCli->getvalue('update')) {
 
     // ----- FLUSH
-    if($oCli->getvalue('profile')){
-        $iRc += run($sScript . ' --action empty --data all --profile '.$oCli->getvalue('profile'));
+    if ($oCli->getvalue('profile')) {
+        $iRc += run($sScript . ' --action empty --data all --profile ' . $oCli->getvalue('profile'));
     } else {
         $iRc += run($sScript . ' --action flush --data all');
     }
@@ -146,7 +149,7 @@ if(!$oCli->getvalue('update')){
 
 // ----- UPDATE MISSING RESSOURCES
 foreach ($aIds as $iProfile) {
-    $iRc += run($sScript . ' --action update --data resources --profile ' . $iProfile);
+    $iRc += run("$sScript --action update --data resources --profile $iProfile");
 }
 
 echo PHP_EOL . "--- DONE.";

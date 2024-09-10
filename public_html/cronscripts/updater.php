@@ -33,6 +33,8 @@
  *     show this help
  * 
  * ----------------------------------------------------------------------
+ * (...)
+ * 2024-09-10  v0.167  php8 only; add typed variables; use short array syntax
  */
 
 require_once(__DIR__ . '/../classes/crawler.class.php');
@@ -40,49 +42,49 @@ require_once(__DIR__ . '/../vendor/ahcli/cli.class.php');
 require_once(__DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php');
 require_once(__DIR__ . '/../vendor/ahwebinstall/ahwi-installer.class.php');
 
-$aDirs=[
-    'download'=>[
-        'root'=>dirname(__DIR__),
-        'zip' =>dirname(__DIR__).'/tmp/__latest.zip',
+$aDirs = [
+    'download' => [
+        'root' => dirname(__DIR__),
+        'zip' => dirname(__DIR__) . '/tmp/__latest.zip',
     ],
-    'git'=>[
-        'root'=>dirname(dirname(__DIR__)),
-        'zip' =>false,
+    'git' => [
+        'root' => dirname(dirname(__DIR__)),
+        'zip' => false,
     ]
 ];
 
-$aParamDefs=array(
+$aParamDefs = [
     'label' => 'AhCrawler :: Updater',
     'description' => 'CLI updater tool. It checks if a newer version exists and - if so - installs the update.',
-    'params'=>array(
-        'check'=>array(
+    'params' => [
+        'check' => [
             'short' => 'c',
-            'value'=> CLIVALUE_NONE,
+            'value' => CLIVALUE_NONE,
             'shortinfo' => 'Check only.',
             'description' => 'If a newer version would exist, you get just a message and exitcode 1 (without installing the update).',
-        ),
-        'force'=>array(
+        ],
+        'force' => [
             'short' => 'f',
-            'value'=> CLIVALUE_NONE,
+            'value' => CLIVALUE_NONE,
             'shortinfo' => 'force installation',
             'description' => 'If no newer version exists it reinstalls the current version.',
-        ),
-        'help'=>array(
+        ],
+        'help' => [
             'short' => 'h',
-            'value'=> CLIVALUE_NONE,
+            'value' => CLIVALUE_NONE,
             'shortinfo' => 'show this help',
             'description' => '',
-        ),
-    ),
-);
+        ],
+    ],
+];
 
 
 // ----- check params
-$oCli=new axelhahn\cli($aParamDefs);
+$oCli = new axelhahn\cli($aParamDefs);
 
 echo $oCli->getlabel();
 
-if($oCli->getvalue('help')){
+if ($oCli->getvalue('help')) {
     echo $oCli->showhelp();
     exit(0);
 }
@@ -90,81 +92,82 @@ if($oCli->getvalue('help')){
 
 // ----- init update check
 $oCrawler = new crawler();
-$aOptions=$oCrawler->getEffectiveOptions();
-$oCheck=new ahwiupdatecheck(array(
-    'product'=>$oCrawler->aAbout['product'],
-    'version'=>$oCrawler->aAbout['version'],
-    'baseurl'=>$aOptions['updater']['baseurl'],
-    'tmpdir'=>($aOptions['updater']['tmpdir'] ? $aOptions['updater']['tmpdir'] : __DIR__.'/../tmp/'),
-    'ttl'=>$aOptions['updater']['ttl'],
-));
+$aOptions = $oCrawler->getEffectiveOptions();
+$oCheck = new ahwiupdatecheck([
+    'product' => $oCrawler->aAbout['product'],
+    'version' => $oCrawler->aAbout['version'],
+    'baseurl' => $aOptions['updater']['baseurl'],
+    'tmpdir' => ($aOptions['updater']['tmpdir'] ? $aOptions['updater']['tmpdir'] : __DIR__ . '/../tmp/'),
+    'ttl' => $aOptions['updater']['ttl'],
+]);
 
 
 // ----- check version on server 
-echo 'Checking update of your '.$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'].'...'.PHP_EOL;
+echo 'Checking update of your ' . $oCrawler->aAbout['product'] . ' v' . $oCrawler->aAbout['version'] . '...' . PHP_EOL;
 $oCheck->getUpdateInfos(true);
 
-$bHasUpdate=$oCheck->hasUpdate();
-echo ($bHasUpdate 
-        ? 'Update AVAILABLE: ' . $oCheck->getLatestVersion() 
-        : 'Version '.$oCheck->getLatestVersion() .' was found in the internet. You are UP TO DATE :-)'
-    ).PHP_EOL
-    ;
+$bHasUpdate = $oCheck->hasUpdate();
+echo ($bHasUpdate
+    ? 'Update AVAILABLE: ' . $oCheck->getLatestVersion()
+    : 'Version ' . $oCheck->getLatestVersion() . ' was found in the internet. You are UP TO DATE :-)'
+) . PHP_EOL
+;
 
-if($oCli->getvalue('check')
-  || !$bHasUpdate && !$oCli->getvalue('force')
-){
+if (
+    $oCli->getvalue('check')
+    || !$bHasUpdate && !$oCli->getvalue('force')
+) {
     exit($bHasUpdate ? 1 : 0);
 }
 
 
 // ----- start / force update
 echo PHP_EOL;
-$oInstaller=new ahwi(array(
-    'product'=>$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'],
-    'source'=>$oCheck->getDownloadUrl(),
-    'md5'=>$oCheck->getChecksumUrl(),
-    'installdir'=>$aDirs['git']['root'],
-    'tmpzip'=>$aDirs['git']['zip'],
-    'checks'=>$oCrawler->aAbout['requirements'],
-));
+$oInstaller = new ahwi([
+    'product' => $oCrawler->aAbout['product'] . ' v' . $oCrawler->aAbout['version'],
+    'source' => $oCheck->getDownloadUrl(),
+    'md5' => $oCheck->getChecksumUrl(),
+    'installdir' => $aDirs['git']['root'],
+    'tmpzip' => $aDirs['git']['zip'],
+    'checks' => $oCrawler->aAbout['requirements'],
+]);
 
-$bIsGit=$oInstaller->vcsDetect('git');
-if(!$bIsGit){
-    echo 'Starting Zip-Installer...'.PHP_EOL.PHP_EOL;
-    $oInstaller=new ahwi(array(
-        'product'=>$oCrawler->aAbout['product'].' v'.$oCrawler->aAbout['version'],
-        'source'=>$oCheck->getDownloadUrl(),
-        'md5'=>$oCheck->getChecksumUrl(),
-        'installdir'=>$aDirs['download']['root'],
-        'tmpzip'=>$aDirs['download']['zip'],
-        'checks'=>$oCrawler->aAbout['requirements'],
-    ));
-    if(!$oInstaller->download(true)){
-        echo 'ERROR: download failed :-/'.PHP_EOL;
+$bIsGit = $oInstaller->vcsDetect('git');
+if (!$bIsGit) {
+    echo 'Starting Zip-Installer...' . PHP_EOL . PHP_EOL;
+    $oInstaller = new ahwi([
+        'product' => $oCrawler->aAbout['product'] . ' v' . $oCrawler->aAbout['version'],
+        'source' => $oCheck->getDownloadUrl(),
+        'md5' => $oCheck->getChecksumUrl(),
+        'installdir' => $aDirs['download']['root'],
+        'tmpzip' => $aDirs['download']['zip'],
+        'checks' => $oCrawler->aAbout['requirements'],
+    ]);
+    if (!$oInstaller->download(true)) {
+        echo 'ERROR: download failed :-/' . PHP_EOL;
         exit(2);
     }
 
     echo PHP_EOL;
-    if(!$oInstaller->install()){
-        echo 'ERROR: installation failed :-/'.PHP_EOL;
+    if (!$oInstaller->install()) {
+        echo 'ERROR: installation failed :-/' . PHP_EOL;
         exit(3);
     }
 } else {
-    echo 'Starting git pull ...'.PHP_EOL.PHP_EOL;
-    $aResult=$oInstaller->vcsUpdate('git');
-    if($aResult===false){
-        echo 'ERROR: git cli client not detected locally'.PHP_EOL;
+    echo 'Starting git pull ...' . PHP_EOL . PHP_EOL;
+    $aResult = $oInstaller->vcsUpdate('git');
+    if ($aResult === false) {
+        echo 'ERROR: git cli client not detected locally' . PHP_EOL;
         exit(4);
     } else {
-        $iRc=$aResult[0];
-        echo implode(PHP_EOL, $aResult[1]).PHP_EOL;
-        if ($iRc!=0){
-            echo 'ERROR: update with git failed :-/'.PHP_EOL;
+        $iRc = $aResult[0];
+        echo implode(PHP_EOL, $aResult[1]) . PHP_EOL;
+        if ($iRc != 0) {
+            echo 'ERROR: update with git failed :-/' . PHP_EOL;
             exit(5);
         }
     }
 }
 
 
-echo PHP_EOL . '--- Installation was successful :-)'.PHP_EOL;
+echo PHP_EOL . '--- Installation was successful :-)' . PHP_EOL;
