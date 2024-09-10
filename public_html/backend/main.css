@@ -463,6 +463,8 @@ pre.logdata .message{border: none; margin:0;}
 
 pre span.linenumber{background: var(--DEFAULT-darken-10); display: inline-block; padding: 0.2em 0.5em; text-align: center; width: 1.7em; }
 
+pre.output{font-size: 100%;}
+
 /* --- tiles --- */
 
 a.childitem{

@@ -107,38 +107,45 @@ switch ($sStepName) {
         
         global $oCdn;
         $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+
+        $sFoundError=$this->oUpdate->getError();
         $bHasUpdate=$this->oUpdate->hasUpdate();
         
         $sCssBtnHome=$bHasUpdate ? 'pure-button' : 'button-secondary';
         $sCssBtnContinue=!$bHasUpdate ? 'pure-button' : 'button-secondary';
 
         $sReturn .= '<p>'
-            .($bHasUpdate || 0
-                ?  
-                    $this->_getSimpleHtmlTable(
-                        array(
-                            array($this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()),
-                            array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
-                        )
+            .($sFoundError
+                ? $oRenderer->renderMessagebox($sFoundError, 'error').'<br>'
+                    . $this->lB('update.welcome.available-check').'<br></br><br>'
+                :
+                    ($bHasUpdate || 0
+                        ?  
+                            $this->_getSimpleHtmlTable(
+                                array(
+                                    array($this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()),
+                                    array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
+                                )
+                            )
+                            . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
+                            . '<br>'
+                        :  
+                            $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
+                            .'<br>'
+                            .'<br>'
+                        
+                            .($iCountUnused 
+                                ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
+                                    .$oRenderer->oHtml->getTag('a', array(
+                                        'href' => '?page=vendor',
+                                        'class' => 'pure-button',
+                                        'title' => $this->lB('nav.vendor.hint'),
+                                        'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
+                                    )).'<br><br><br><br><br>'
+                                : ''
+                            )        
                     )
-                    . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
-                    . '<br>'
-                :  
-                    $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
-                    .'<br>'
-                    .'<br>'
-                
-                    .($iCountUnused 
-                        ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
-                            .$oRenderer->oHtml->getTag('a', array(
-                                'href' => '?page=vendor',
-                                'class' => 'pure-button',
-                                'title' => $this->lB('nav.vendor.hint'),
-                                'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
-                            )).'<br><br><br><br><br>'
-                        : ''
-                    )        
-             )
+            )
              . '<div>'
              
                 // --- buttons 
@@ -195,7 +202,9 @@ switch ($sStepName) {
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
                 } else {
-                    $sReturn.=$sBtnBack.$this->lB('update.gitpull.failed');
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('update.gitpull.failed'), 'error')
+                        .$sBtnBack
+                        ;
                 }
             }
         break;
@@ -231,7 +240,9 @@ switch ($sStepName) {
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
             } else {
-                $sReturn.=$sBtnBack.$this->lB('update.download.failed');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('update.download.failed'), 'error')
+                    .$sBtnBack
+                    ;
             }        
         break;
     case 'extract':
@@ -247,7 +258,9 @@ switch ($sStepName) {
                     . $sBtnBack.$sBtnNext.$sScriptContinue
                     ;
             } else {
-                $sReturn.=$sBtnBack.$this->lB('update.extract.failed');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('update.extract.failed'), 'error')
+                    . $sBtnBack
+                    ;
             }
         break;
 
