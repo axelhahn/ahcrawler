@@ -403,7 +403,7 @@ class sslinfo
      * 
      * @return string
      */
-    public function getStatus()
+    public function getStatus(): string
     {
         $aChecks = $this->checkCertdata();
         return $aChecks['status'] ?: '';

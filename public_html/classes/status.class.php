@@ -207,8 +207,13 @@ class status
      * - current action
      * - last response
      * - running time
+     * by echoing it.
      * 
-     * @return bool
+     * It returns the locking status. 
+     * - false if there is no action (a new action is allowed to start).
+     * - true if an action is running.
+     * 
+     * @return bool Is it locked?
      */
     public function showStatus(): bool
     {
