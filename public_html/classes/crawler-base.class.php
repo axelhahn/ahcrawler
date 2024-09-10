@@ -69,6 +69,12 @@ class crawler_base
                     'image' => '',
                     'url' => 'https://github.com/Ozhiganov'
                 ],
+                [
+                    'label' => 'Vietnamese',
+                    'name' => 'Dzung Do',
+                    'image' => '',
+                    'url' => 'https://github.com/saosangmo'
+                ],
             ],
         ],
     ];
