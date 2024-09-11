@@ -59,7 +59,7 @@
     --navi-bg-on-hover:#c0d0dc;
     --navi-bg-on-hover:rgba(160,170,190,0.1);
 
-    --navi-icon-color:#808890;
+    --navi-icon-color: #568;
     --navi-icon-color-active:var(--DEFAULT-markedelement-color);
 
     --overlay-bg:rgba(0,0,0,0.1);
@@ -537,6 +537,7 @@ img.profile{
     border-radius: 0.5em;
     padding: 0;
     max-width: 100%;
+    opacity: 0.4
 }
 
 /* ----- toggle boxes for help/ legends) ----- */
