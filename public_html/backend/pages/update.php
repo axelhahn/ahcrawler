@@ -20,14 +20,14 @@ $aDirs=[
     ]
 ];
 
-$oInstaller=new ahwi(array(
+$oInstaller=new ahwi([
     'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
     'source'=>$this->oUpdate->getDownloadUrl(),
     'md5'=>$this->oUpdate->getChecksumUrl(),
     'installdir'=>$aDirs['git']['root'],
     'tmpzip'=>$aDirs['git']['zip'],
     'checks'=>$this->aAbout['requirements'],
-));
+]);
 
 // to get all known vcs:
 // $aTmpVcs=$oInstaller->vcsDetect();
@@ -40,14 +40,14 @@ if($bIsGit){
         'gitpull',
     ];
 } else {
-    $oInstaller=new ahwi(array(
+    $oInstaller=new ahwi([
         'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
         'source'=>$this->oUpdate->getDownloadUrl(),
         'md5'=>$this->oUpdate->getChecksumUrl(),
         'installdir'=>$aDirs['download']['root'],
         'tmpzip'=>$aDirs['download']['zip'],
         'checks'=>$this->aAbout['requirements'],
-    ));
+    ]);
     $sZipfile=$aDirs['download']['zip'];
     $sTargetPath=$aDirs['download']['root'];
     $aSteps=[
@@ -76,18 +76,18 @@ $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
         : '?page=update&ts='.date('U')
         ;
-$sBtnBack=$this->_getButton(array(
+$sBtnBack=$this->_getButton([
     'href' => $sBackUrl,
     'class' => 'pure-button',
     'label' => 'button.back',
     'popup' => false
-)).' ';
-$sBtnNext=$this->_getButton(array(
+]).' ';
+$sBtnNext=$this->_getButton([
     'href' => $sNextUrl,
     'class' => 'button-secondary',
     'label' => 'button.continue',
     'popup' => false
-)).' ';
+]).' ';
 $sScriptContinue=$bAutoContinue ? 
         '<br><br>'
             .$oRenderer->renderMessagebox($this->lB("update.singlestepupdate"), 'warning')
@@ -106,7 +106,7 @@ switch ($sStepName) {
         $this->oUpdate->getUpdateInfos(true);
         
         global $oCdn;
-        $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+        $iCountUnused=count($oCdn->getFilteredLibs(['islocal'=>1,'isunused'=>1]));
 
         $sFoundError=$this->oUpdate->getError();
         $bHasUpdate=$this->oUpdate->hasUpdate();
@@ -122,10 +122,10 @@ switch ($sStepName) {
                     ($bHasUpdate || 0
                         ?  
                             $this->_getSimpleHtmlTable(
-                                array(
-                                    array($this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()),
-                                    array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
-                                )
+                                [
+                                    [$this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()],
+                                    [$this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()],
+                                ]
                             )
                             . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
                             . '<br>'
@@ -136,12 +136,12 @@ switch ($sStepName) {
                         
                             .($iCountUnused 
                                 ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
-                                    .$oRenderer->oHtml->getTag('a', array(
+                                    .$oRenderer->oHtml->getTag('a', [
                                         'href' => '?page=vendor',
                                         'class' => 'pure-button',
                                         'title' => $this->lB('nav.vendor.hint'),
                                         'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
-                                    )).'<br><br><br><br><br>'
+                                    ]).'<br><br><br><br><br>'
                                 : ''
                             )        
                     )
@@ -149,26 +149,26 @@ switch ($sStepName) {
              . '<div>'
              
                 // --- buttons 
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => '?',
                     'class' => $sCssBtnHome,
                     'label' => 'button.home',
                     'popup' => false
-                ))
+                ])
                 . ' '
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => $sNextUrl,
                     'class' => $sCssBtnContinue,
                     'label' => 'button.continue',
                     'popup' => false
-                ))
+                ])
                 . ' '
-                .$this->_getButton(array(
+                .$this->_getButton([
                     'href' => $sNextUrl.'&docontinue=1',
                     'class' => $sCssBtnContinue,
                     'label' => 'button.updatesinglestep',
                     'popup' => false
-                ))
+                ])
             
             
             . '</div>'

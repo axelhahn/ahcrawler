@@ -4,20 +4,20 @@
  */
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sReturn = '';
-$aTexts=array();
-$aFiles=array();
-$aLangkeys=array();
+$aTexts=[];
+$aFiles=[];
+$aLangkeys=[];
 
 
 // ----------------------------------------------------------------------
 // get lang obj to edit
 // ----------------------------------------------------------------------
 
-$aObjects=array(
+$aObjects=[
     'backend',
     'frontend',
     'public',
-);
+];
 $sLangobject=$this->_getRequestParam('object') ? $this->_getRequestParam('object') : $aObjects[0];
 if (array_search($sLangobject, $aObjects)===false){
     $sLangobject=$aObjects[0];
@@ -27,12 +27,12 @@ if (array_search($sLangobject, $aObjects)===false){
 // lang object navi
 // ----------------------------------------------------------------------
 $sObjNavi='';
-$aObjOptions=array();
+$aObjOptions=[];
 foreach($aObjects as $sLangobjName){
-    $aOptionfield=array(
+    $aOptionfield=[
         'value'=>$sLangobjName,
         'label'=>$sLangobjName,
-    );
+    ];
     if($sLangobjName===$sLangobject){
         $aOptionfield['selected']='selected';
     }
@@ -111,13 +111,13 @@ if (count($aLangfiles)>0){
 }
 
 // 2 option arrays for lang select boxes
-$aLangOptions1=array();
-$aLangOptions2=array();
+$aLangOptions1=[];
+$aLangOptions2=[];
 foreach($aLangkeys as $sMylang){
-    $aOptionfield1=array(
+    $aOptionfield1=[
         'value'=>$sMylang,
         'label'=>$sMylang,
-    );
+    ];
     $aOptionfield2=$aOptionfield1;
     if($sMylang===$sLang1){
         $aOptionfield1['selected']='selected';
@@ -157,26 +157,26 @@ if($sLang2){
 
 $sObjNavi.='<div class="pure-control-group">'
 
-    . $oRenderer->oHtml->getTag('label', array('for'=>'sellangobj', 'label'=>$this->lB('langedit.object')))
-    . $oRenderer->oHtml->getFormSelect(array(
+    . $oRenderer->oHtml->getTag('label', ['for'=>'sellangobj', 'label'=>$this->lB('langedit.object')])
+    . $oRenderer->oHtml->getFormSelect([
         'id'=>'sellangobj', 
         'name'=>'object',
         'onchange'=>'submit()',
-        ), $aObjOptions)
+        ], $aObjOptions)
 
-    . $oRenderer->oHtml->getTag('label', array('for'=>'sellang1', 'label'=>$this->lB('langedit.lang1')))
-    . $oRenderer->oHtml->getFormSelect(array(
+    . $oRenderer->oHtml->getTag('label', ['for'=>'sellang1', 'label'=>$this->lB('langedit.lang1')])
+    . $oRenderer->oHtml->getFormSelect([
         'id'=>'sellang1', 
         'name'=>'lang1',
         'onchange'=>'submit()',
-        ), $aLangOptions1)
+        ], $aLangOptions1)
 
-    . $oRenderer->oHtml->getTag('label', array('for'=>'sellang2', 'label'=>$this->lB('langedit.lang2')))
-    . $oRenderer->oHtml->getFormSelect(array(
+    . $oRenderer->oHtml->getTag('label', ['for'=>'sellang2', 'label'=>$this->lB('langedit.lang2')])
+    . $oRenderer->oHtml->getFormSelect([
         'id'=>'sellang2', 
         'name'=>'lang2',
         'onchange'=>'submit()',
-        ), $aLangOptions2)
+        ], $aLangOptions2)
 . '</div>'
 ;
 
@@ -185,21 +185,21 @@ $sObjNavi.='<div class="pure-control-group">'
 // generate table
 // ----------------------------------------------------------------------
 
-$aTbl=array();
+$aTbl=[];
 $sTableId='tblLangtexts';
 $sTablePrefix='tblLangtexts.';
 
-$aWarnings=array();
+$aWarnings=[];
 
-$sJsData=array();
+$sJsData=[];
 // foreach ($aTexts as $sKey=>$aAllLangTxt){
 foreach (array_keys($aTexts) as $sKey){
-    $aTr=array();
+    $aTr=[];
     $sDivId='key-'.md5($sKey);
     $aTr['id']='<div id="'.$sDivId.'" class="editrow" data-key="'.$sKey.'">'.$sKey.'</div>';
     $iLang=1;
     
-    foreach(array($sLang1, $sLang2) as $sLang){
+    foreach([$sLang1, $sLang2] as $sLang){
         if(isset($aTexts[$sKey][$sLang])){
             $sLabel=htmlentities($aTexts[$sKey][$sLang]);
             $sJsData[$sKey][$sLang]=$aTexts[$sKey][$sLang];
@@ -245,37 +245,37 @@ $sForm='<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SER
     . '<input type="hidden" name="lang2" value="'.$sLang2.'">'
     . '<input type="hidden" id="lang-key" name="key" value="[key]"><br>'
     . '<div class="pure-control-group">'
-        . $oRenderer->oHtml->getTag('label', array('for'=>'text1', 'label'=>$sLang1, 'style'=>'min-width: 0; width: 4em;'))
-        . $oRenderer->oHtml->getTag('textarea', array(
+        . $oRenderer->oHtml->getTag('label', ['for'=>'text1', 'label'=>$sLang1, 'style'=>'min-width: 0; width: 4em;'])
+        . $oRenderer->oHtml->getTag('textarea', [
             'id'=>'lang-text1', 
             'name'=>'text['.$sLang1.']',
             'size'=>'120',
             'cols'=>'120',
             'rows'=>'3',
             'value'=>''
-            ))
+            ])
         . '</div>'
     . '<div class="pure-control-group">'
-        . $oRenderer->oHtml->getTag('label', array('for'=>'text2', 'label'=>$sLang2, 'style'=>'min-width: 0; width: 4em;'))
-        . $oRenderer->oHtml->getTag('textarea', array(
+        . $oRenderer->oHtml->getTag('label', ['for'=>'text2', 'label'=>$sLang2, 'style'=>'min-width: 0; width: 4em;'])
+        . $oRenderer->oHtml->getTag('textarea', [
             'id'=>'lang-text2', 
             'name'=>'text['.$sLang2.']',
             'size'=>'120',
             'cols'=>'120',
             'rows'=>'3',
             'value'=>''
-            ))
+            ])
         . '</div>'
     . '<br><hr>'
     . '<div>'
         . '<div style="float: right">'
-            . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.close') . $this->lB('button.close'), 'class'=>'pure-button button-default', 'onclick'=>'return hideModal();'))
+            . $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.close') . $this->lB('button.close'), 'class'=>'pure-button button-default', 'onclick'=>'return hideModal();'])
             . ' '
-            . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'))
+            . $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'])
         . '</div>'
-        . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.up'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return prevRow();'))
+        . $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.up'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return prevRow();'])
         . ' '
-        . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.down'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return nextRow();'))
+        . $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.down'), 'class'=>'pure-button button-default', 'onclick'=>'hideModal(); return nextRow();'])
     . '</div>'
     . '</form>'
 ;
@@ -291,11 +291,11 @@ $sReturn .= ''
     . '<form class="pure-form pure-form-aligned" method="GET" action="?'.$_SERVER['QUERY_STRING'].'">'
         
         // default GET params
-        . $oRenderer->oHtml->getTag('input', array(
+        . $oRenderer->oHtml->getTag('input', [
             'type'=>'hidden',
             'name'=>'page',
             'value'=>$this->_getRequestParam('page'),
-            ), false)
+            ], false)
 
         // navigation
         . $sObjNavi

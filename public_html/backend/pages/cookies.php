@@ -49,9 +49,9 @@ if ($iCookieCount) {
     ;
     if (count($aCookies['cookies']) > 0) {
 
-        $aTbl = array();
+        $aTbl = [];
         foreach ($aCookies['cookies'] as $aCookie) {
-            $aTbl[] = array(
+            $aTbl[] = [
                 'domain' => $aCookie['domain'],
                 'path' => $aCookie['path'],
                 'name' => $aCookie['name'],
@@ -65,23 +65,23 @@ if ($iCookieCount) {
                         . $aCookie['secure']
                         .'</span>',
                 'expiration' => $aCookie['expiration'],
-            );
+            ];
         }
         $sTableId = 'tblSavedCookies';
 
         $sReturn .= ''
                 . $this->_getHtmlTable($aTbl, 'cookies.col-', $sTableId)
-                . $this->_getHtmlLegend(array('domain', 'path', 'name', 'value', 'httponly', 'secure', 'expiration'), 'cookies.col-')
+                . $this->_getHtmlLegend(['domain', 'path', 'name', 'value', 'httponly', 'secure', 'expiration'], 'cookies.col-')
                 . '<h3>' . $this->lB('cookies.delete') . '</h3>'
                 . '<p>' . $this->lB('cookies.delete.hint') . '</p>'
                 . '<form class="pure-form pure-form-aligned" method="POST" action="?' . $_SERVER['QUERY_STRING'] . '">'
-                . $oRenderer->oHtml->getTag('input', array(
+                . $oRenderer->oHtml->getTag('input', [
                         'type' => 'hidden',
                         'name' => 'profile',
                         'value' => $this->_sTab,
-                    ), 
+                    ], 
                     false)
-                . $oRenderer->oHtml->getTag('button', array('label' => $this->_getIcon('button.delete') . $this->lB('button.delete'), 'class' => 'pure-button button-error', 'name' => 'action', 'value' => 'deletecookie'))
+                . $oRenderer->oHtml->getTag('button', ['label' => $this->_getIcon('button.delete') . $this->lB('button.delete'), 'class' => 'pure-button button-error', 'name' => 'action', 'value' => 'deletecookie'])
                 . '</form>'
         ;
     }

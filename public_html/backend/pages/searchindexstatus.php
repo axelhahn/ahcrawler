@@ -12,7 +12,7 @@ $oRenderer = new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 $iCountEntries = 5;
 
-$aHeaderIndex = array('id', 'ts', 'url', 'title', 'errorcount', 'lasterror');
+$aHeaderIndex = ['id', 'ts', 'url', 'title', 'errorcount', 'lasterror'];
 
 
 $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
@@ -36,24 +36,24 @@ $sBackUrl="javascript:history.back();";
 $iPageId = $this->_getRequestParam('id', false, 'int');
 if ($iPageId) {
     $aItem = $this->oDB->select(
-        'pages', '*', array(
-            'AND' => array(
+        'pages', '*', [
+            'AND' => [
                 'id' => $iPageId,
-            )
-        )
+            ]
+        ]
     );
     if (count($aItem)) {
-        $aTableInfos = array();
-        $aTableWords = array();
-        $aTable = array();
+        $aTableInfos = [];
+        $aTableWords = [];
+        $aTable = [];
         $sSelfUrl='?page=searchindexstatus&siteid='.$this->_sTab;
         $sBaseUrl=$sSelfUrl."&id=".$iPageId;
         
         $iResId=$this->getIdByUrl($aItem[0]['url'],'ressources');
 
         // --- general infos
-        $aTableInfos=array(
-            array(
+        $aTableInfos=[
+            [
                 $this->_getIcon('url').$this->lB('db-pages.url'), 
                 $aItem[0]['url']
                     . ' '
@@ -64,44 +64,46 @@ if ($iPageId) {
                         : ''
                     )
                     . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
-                    )
-                ,
-            array(
+            ],
+            [
                 $this->_getIcon('description').$this->lB('db-pages.description'), 
                 ($aItem[0]['description'] 
                     ? $aItem[0]['description']
                     : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-description').')', 'warning')
-                )),
-            array(
+                )
+            ],
+            [
                 $this->_getIcon('keywords').$this->lB('db-pages.keywords'), 
                 ($aItem[0]['keywords'] 
                     ? $aItem[0]['keywords'].'<br>' 
                     : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-keywords').')', 'warning')
-                )),
-            array(
+                )
+            ],
+            [
                 $this->_getIcon('lang').$this->lB('db-pages.lang'), 
                 ($aItem[0]['lang'] 
                     ? $aItem[0]['lang'].'<br>' 
                     : ''
-                )),
-            array(
+                )
+            ],
+            [
                 $this->_getIcon('ts').$this->lB('db-pages.ts'), 
                 $aItem[0]['ts']
-                    ),
-        );
+            ],
+        ];
 
         // --- used words in the content
-        $aWc=array();
+        $aWc=[];
         $sUsedWords='';
         
         $aWordsInContent=$this->getWordsInAText($aItem[0]['content']);
         $iMinCount=$this->_getRequestParam('kwcount', false, 'int');
         $iMinCount=$iMinCount ? $iMinCount : 3;
         
-        $aCounters=array();
+        $aCounters=[];
         foreach ($aWordsInContent as $sMyWord=>$iWordCount){
             if($iWordCount>=$iMinCount){
-                $aTableWords[]=array($iWordCount, $sMyWord);
+                $aTableWords[]=[$iWordCount, $sMyWord];
             }
             $aWc[$iWordCount]=true;
         }
@@ -120,11 +122,11 @@ if ($iPageId) {
 
         // --- raw data
         foreach ($aItem[0] as $sKey => $sVal) {
-            $aTable[] = array(
+            $aTable[] = [
                 $sKey,
                 $this->_prettifyString($sVal, 500)
                     .(is_string($sVal) && strlen($sVal)>50 ? ' ['.strlen($sVal).']' : '')
-            );
+            ];
         }
         
         
@@ -138,12 +140,12 @@ if ($iPageId) {
         return $sReturn 
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
                 /*
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => $sBackUrl,
                     'class' => 'button-secondary',
                     'popup' => false,
                     'label' => 'button.back'
-                )) . '<br><br>'
+                ]) . '<br><br>'
                 */
                 
                 // ---- basic page data
@@ -185,32 +187,32 @@ if ($iPageId) {
                 .'<br>'
                 
                 /*
-                  . $this->_getButton(array(
+                  . $this->_getButton([
                   'href' => './?page=status',
                   'target' => '_top',
                   'class' => 'button-secondary',
                   'label' => 'button.close'
-                  ))
+                  ])
                   . ' '
-                  . $this->_getButton(array(
+                  . $this->_getButton([
                   'href' => 'overlay.php?action=updateindexitem&url=' . $aItem[0]['url'] . '&siteid=' . $aItem[0]['siteid'],
                   'class' => 'button-success',
                   'label' => 'button.reindex'
-                  ))
+                  ])
                   . ' '
-                  . $this->_getButton(array(
+                  . $this->_getButton([
                   'href' => 'overlay.php?action=deleteindexitem&id=' . $sId . '&siteid=' . $aItem[0]['siteid'],
                   'class' => 'button-error',
                   'label' => 'button.delete'
-                  ))
+                  ])
                  * 
                  */
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => $sBackUrl,
                     'class' => 'button-secondary',
                     'popup' => false,
                     'label' => 'button.back'
-                )) . '<br><br>'
+                ]) . '<br><br>'
 
         ;
     }
@@ -224,23 +226,24 @@ $sReturn .= '<h3>' . $this->lB('status.overview') . '</h3>';
 $sTiles = $oRenderer->renderTile('', $this->lB('status.indexed_urls.label'), $iUrls, $this->lB('status.indexed_urls.footer'), '');
 
 $sLast = $oCrawler->getLastRecord();
-$sOldest = $this->oDB->min('pages', array('ts'), array(
-    'AND' => array(
+$sOldest = $this->oDB->min('pages', ['ts'], [
+    'AND' => [
         'siteid' => $this->_sTab,
-    ),));
+    ],]);
 
 
 $iUrlsLast24 = $oCrawler->getCount(
-        array(
+    [
             'siteid' => $this->_sTab,
             'ts[>]' => date("Y-m-d H:i:s", (date("U") - (60 * 60 * 24))),
-        ));
+        ]);
 
-$iUrlsErr = $oCrawler->getCount(array(
-    'AND' => array(
+$iUrlsErr = $oCrawler->getCount([
+    'AND' => [
         'siteid' => $this->_sTab,
         'errorcount[>]' => 0,
-        )));
+        ]
+    ]);
 
 
 // ----------------------------------------------------------------------
@@ -274,42 +277,42 @@ if (!$iPageId) {
     $aOldestInIndex=[];
     if(date('U', strtotime($sLast))-date('U', strtotime($sOldest)) > 60*60*6){
         $aNewestInIndex = $this->oDB->select(
-                'pages', $aHeaderIndex, array(
-            'AND' => array(
-                'siteid' => $this->_sTab,
-            ),
-            "ORDER" => array("ts" => "DESC"),
-            "LIMIT" => $iCountEntries
-                )
+            'pages', $aHeaderIndex, [
+                'AND' => [
+                    'siteid' => $this->_sTab,
+                ],
+                "ORDER" => ["ts" => "DESC"],
+                "LIMIT" => $iCountEntries
+            ]
         );
         $aOldestInIndex = $this->oDB->select(
-                'pages', $aHeaderIndex, array(
-            'AND' => array(
-                'siteid' => $this->_sTab,
-            ),
-            "ORDER" => array("ts" => "ASC"),
-            "LIMIT" => $iCountEntries
-                )
+            'pages', $aHeaderIndex, [
+                'AND' => [
+                    'siteid' => $this->_sTab,
+                ],
+                "ORDER" => ["ts" => "ASC"],
+                "LIMIT" => $iCountEntries
+            ]
         );
     }
     $aEmpty = $this->oDB->select(
-            'pages', $aHeaderIndex, array(
-        'AND' => array(
-            'siteid' => $this->_sTab,
-            'title' => '',
-            'content' => '',
-        ),
-        "ORDER" => array("ts" => "ASC"),
+        'pages', $aHeaderIndex, [
+            'AND' => [
+                'siteid' => $this->_sTab,
+                'title' => '',
+                'content' => '',
+            ],
+            "ORDER" => ["ts" => "ASC"],
             // "LIMIT" => 5
-            )
+        ]
     );
     $aAllInIndex = $this->oDB->select(
-            'pages', $aHeaderIndex, array(
-        'AND' => array(
-            'siteid' => $this->_sTab,
-        ),
-        "ORDER" => array("url" => "ASC"),
-            )
+        'pages', $aHeaderIndex, [
+            'AND' => [
+                'siteid' => $this->_sTab,
+            ],
+            "ORDER" => ["url" => "ASC"],
+        ]
     );
 
     if (count($aNewestInIndex)) {
@@ -328,14 +331,14 @@ if (!$iPageId) {
     }
     if ($iUrlsErr) {
         $aErrorUrls = $this->oDB->select(
-                'pages', $aHeaderIndex, array(
-            'AND' => array(
-                'siteid' => $this->_sTab,
-                'errorcount[>=]' => 0,
-            ),
-            "ORDER" => array("ts" => "ASC"),
-            "LIMIT" => 50
-                )
+            'pages', $aHeaderIndex, [
+                'AND' => [
+                    'siteid' => $this->_sTab,
+                    'errorcount[>=]' => 0,
+                ],
+                "ORDER" => ["ts" => "ASC"],
+                "LIMIT" => 50
+            ]
         );
         $sReturn .= '<h3>' . $this->lB('status.error_urls') . '</h3>'
                 . $this->_getSearchindexTable($aErrorUrls, 'pages.', false, false)

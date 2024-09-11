@@ -37,7 +37,7 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
                 <nobr>
                 <input type="text" size="100" id="e_url" value="' . htmlentities($sUrl) . '" placeholder="https://example.com" pattern="^http[s]*://.*">'
         . ($sUrl
-            ? $oRenderer->oHtml->getTag('a', array('label' => $this->_getIcon('button.close'), 'class' => 'pure-button button-error', 'href' => '?page=httpheaderchecks&lang=' . $this->sLang)) . ' '
+            ? $oRenderer->oHtml->getTag('a', ['label' => $this->_getIcon('button.close'), 'class' => 'pure-button button-error', 'href' => '?page=httpheaderchecks&lang=' . $this->sLang]) . ' '
             : ''
         )
         . '<button class="pure-button button-secondary">' . $this->_getIcon('button.save') . '</button>'
@@ -81,7 +81,7 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
 
     $sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 
-    $aCountByStatuscode = $this->_getStatusinfos(array('_global'));
+    $aCountByStatuscode = $this->_getStatusinfos(['_global']);
     $iRessourcesCount = $aCountByStatuscode['_global']['ressources']['value'];
     $iPagesCount = $aCountByStatuscode['_global']['pages']['value'];
     if (!$iPagesCount) {
@@ -101,14 +101,14 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
         // default: detect first url in pages table
         $aPagedata = $this->oDB->select(
             'pages',
-            array('url', 'header'),
-            array(
-                'AND' => array(
+            ['url', 'header'],
+            [
+                'AND' => [
                     'siteid' => $this->_sTab,
-                ),
-                "ORDER" => array("id" => "ASC"),
+                ],
+                "ORDER" => ["id" => "ASC"],
                 "LIMIT" => 1
-            )
+            ]
         );
     } else {
         if (!$iRessourcesCount) {
@@ -120,15 +120,15 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
         // with get param id: get it from ressources (not pages!)
         $aPagedata = $this->oDB->select(
             'ressources',
-            array('url', 'header'),
-            array(
-                'AND' => array(
+            ['url', 'header'],
+            [
+                'AND' => [
                     'siteid' => $this->_sTab,
                     'id' => $iResId,
-                ),
-                "ORDER" => array("id" => "ASC"),
+                ],
+                "ORDER" => ["id" => "ASC"],
                 "LIMIT" => 1
-            )
+            ]
         );
         if (count($aPagedata) === 0) {
             $sReturn .= $oRenderer->renderMessagebox(sprintf($this->lB('httpheader.nopage-with-id'), $iResId) . '<br>' . $this->oDB->last(), 'warning');

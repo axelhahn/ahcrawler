@@ -14,16 +14,16 @@
      * 
      */
     $sVendorUrl='/../vendor/cache/';
-    $oCdnAdmin = new axelhahn\cdnorlocaladmin(array(
+    $oCdnAdmin = new axelhahn\cdnorlocaladmin([
         'vendordir'=>__DIR__ . '/../../vendor/cache', 
         'vendorurl'=>$sVendorUrl, 
         'debug'=>0
-    ));
+    ]);
     // $oCdnAdmin->setLibs($oCdn->getLibs());
     $oCdnAdmin->setLibs(array_keys($oCdn->getLibs()));
     
     // echo '<pre>'.print_r($oCdn->getLibs(), 1).'</pre>';
-    // echo '<pre>'.print_r($oCdn->getFilteredLibs(array('islocal'=>1, 'isunused'=>1)), 1).'</pre>';
+    // echo '<pre>'.print_r($oCdn->getFilteredLibs(['islocal'=>1, 'isunused'=>1]), 1).'</pre>';
     // echo '<pre>'.print_r($oCdnAdmin->getLibs(), 1).'</pre>';
     // echo '<pre>'.print_r($oCdnAdmin->getLibs(true), 1).'</pre>';
     
@@ -32,17 +32,17 @@
     $sLib2delete=(array_key_exists('delete', $_GET))?$_GET['delete']:'';
     $sVersion2delete=(array_key_exists('version', $_GET))?$_GET['version']:'';
     
-    $aTable=array();    
+    $aTable=[];    
     $sHtml='
             <p>' . $this->lB('vendor.hint') . '</p>'
-            // . ($sLib2delete.$sLib2download ? '<a href="'. getNewQs(array('delete'=>'', 'download'=>'')).'" class="btn btn-default">OK</a>' : '')
+            // . ($sLib2delete.$sLib2download ? '<a href="'. getNewQs(['delete'=>'', 'download'=>''])).'" class="btn btn-default">OK</a>' : '')
             ;
-    $aTable[]=array(
+    $aTable[]=[
         $this->lB('vendor.lib'),
         $this->lB('vendor.version'),
         $this->lB('vendor.remote'),
         $this->lB('vendor.local'),
-    );
+    ];
     foreach($oCdnAdmin->getLibs(true) as $sLibname=>$aLib){
         
         // --- download
@@ -63,7 +63,7 @@
             // TODO re-enable $oCdn->setLibs($aEnv['vendor']);
         }
 
-        $aTable[]=array(
+        $aTable[]=[
             '<strong>'.$aLib['lib'].'</strong><br>' 
                 // . $oCdnAdmin->getLibraryDescription($aLib['lib']).'<br>'
                 // . '<a href="'.$oCdnAdmin->getLibraryHomepage($aLib['lib']).'">'.$oCdnAdmin->getLibraryHomepage($aLib['lib']).'</a><br>'
@@ -75,27 +75,27 @@
                 : ''
             )
             ,
-            (!$aLib['islocal'] ? $this->_getButton(array(
-                            'onclick' => 'location.href=\''. getNewQs(array('download'=>$aLib['lib'], 'version'=>$aLib['version'])).'\';',
-                            'class' => 'button-secondary',
-                            'label' => 'button.download'
-                        ))
-                :''),
+            (!$aLib['islocal'] 
+                ? $this->_getButton([
+                    'onclick' => 'location.href=\''. getNewQs(['download'=>$aLib['lib'], 'version'=>$aLib['version']]).'\';',
+                    'class' => 'button-secondary',
+                    'label' => 'button.download'
+                ])
+                :''
+            ),
             ($aLib['islocal'] 
-                
-                ? $this->_getButton(array(
-                            'onclick' => 'location.href=\''. getNewQs(array('delete'=>$aLib['lib'], 'version'=>$aLib['version'])).'\';',
-                            'class' => 'button-error',
-                            'popup' => false,
-                            'label' => 'button.delete'
-                        ))
-
+                ? $this->_getButton([
+                    'onclick' => 'location.href=\''. getNewQs(['delete'=>$aLib['lib'], 'version'=>$aLib['version']]).'\';',
+                    'class' => 'button-error',
+                    'popup' => false,
+                    'label' => 'button.delete'
+                ])
                 :''),
-        );
+        ];
     }
     $iCount=count($oCdn->getLibs());
-    $iCountLocal=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>0)));
-    $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+    $iCountLocal=count($oCdn->getFilteredLibs(['islocal'=>1,'isunused'=>0]));
+    $iCountUnused=count($oCdn->getFilteredLibs(['islocal'=>1,'isunused'=>1]));
     
     return  (($iCount && $iCount===$iCountLocal)
             ? sprintf($this->lB('vendor.AllLocal'), $iCount)

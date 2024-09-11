@@ -31,12 +31,12 @@ if(!$this->_configExists() ){
         $sHtml.=''
             // . $oRenderer->renderTile('', $this->lB('nav.profiles.label'), 0, '', '')
             . $this->lB('home.noprojectyet').'<br><br>'
-            . $oRenderer->oHtml->getTag('a',array(
+            . $oRenderer->oHtml->getTag('a',[
                     'href'=>'?page=profiles&siteid=add',
                     'class'=>'pure-button button-secondary',
                     'title' => $this->lB('nav.profiles.hint'),
                     'label' => $this->_getIcon('profiles').$this->lB('nav.profiles.label'),
-                    ))    
+                    ])
             ;
     }
     if ($bShowProject) {
@@ -46,7 +46,7 @@ if(!$this->_configExists() ){
             // ------------------------------------------------------------        
             $this->setSiteId($iProfileId);
 
-            $aGlobal=$this->_getStatusinfos(array('_global'));
+            $aGlobal=$this->_getStatusinfos(['_global']);
             // echo '<pre>aGlobal = '.print_r($aGlobal, 1).'</pre>';
             
             $sTiles2='';
@@ -81,7 +81,7 @@ if(!$this->_configExists() ){
 
             // ----- by level
             $sLastTarget='';
-            foreach (array('error', 'warning') as $sMyKey) {
+            foreach (['error', 'warning'] as $sMyKey) {
                 // foreach($aHints[$sMyKey] as $aMsg){
                 foreach($this->_getStatusInfoByLevel($sMyKey) as $aMsg) {
                     if(!$aMsg['target'] || $aMsg['target']==='_global' && $sMyKey=='warning'){

@@ -3,7 +3,7 @@
  * INSTALLER
  */
 
-require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
+require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $sReturn='';
 $oRenderer=new ressourcesrenderer();
@@ -12,13 +12,13 @@ $sLanguage=$this->sLang;
 $iStep=$this->_getRequestParam('step') ? (int)$this->_getRequestParam('step') : 0;
 
 // $this->setLangBackend($sLanguage);
-$aSteps=array(
-    array('lang'),
-    array('requirements'),
-    array('database'),
-    array('done'),
-    array('start'),
-);
+$aSteps=[
+    ['lang'],
+    ['requirements'],
+    ['database'],
+    ['done'],
+    ['start'],
+];
 
 $iNextStep=(int)($iStep+1);
 if(($iNextStep)===count($aSteps)){
@@ -26,15 +26,15 @@ if(($iNextStep)===count($aSteps)){
 }
 $iLastStep=(int)($iStep-1);
 
-$aLast=$iLastStep >=0 ? array(
+$aLast=$iLastStep >=0 ? [
     'url'=>'?page=installer&lang='.$sLanguage.'&step='.$iLastStep,
     'label'=>sprintf($this->lB('installer.back'), $this->lB('installer.'.$aSteps[$iLastStep][0])),
-) : array();
-$aNext=$iStep < count($aSteps)-1 ? array(
+ ] : [];
+$aNext=$iStep < count($aSteps)-1 ? [
     'url'=>'?page=installer&lang='.$sLanguage.'&step='.$iNextStep,
     'label'=>sprintf($this->lB('installer.continue'), $this->lB('installer.'.$aSteps[$iNextStep][0])),
-) : array();
-$aOptions = array();
+ ] : [];
+$aOptions = [];
 
 $sIdPrefixDb='options-database-';
 $sIdPrefixAuth='options-auth-';
@@ -84,16 +84,16 @@ switch ($iStep) {
         if(!$this->_getRequestParam('lang') || !$iStep){
             $sReturn.='<p>';
             foreach($aLanguages as $sLangOption=>$sLangname){
-                $aLangOptions[$sLangOption]=array(
+                $aLangOptions[$sLangOption]=[
                     'label'=>$sLangname,
                     'value'=>$sLangOption,
-                );
-                $sReturn.=$oRenderer->oHtml->getTag('a',array(
+                ];
+                $sReturn.=$oRenderer->oHtml->getTag('a',[
                     'href' => '?page=installer&lang='.$sLangOption,
                     'class' => 'pure-button' . ($sLangOption===$sLanguage ? ' button-secondary' : ''),
                     'title' => $sLangname,
                     'label' => $sLangname,
-                )).'<br><br>'
+                ]).'<br><br>'
                 ;
             }
             $sReturn.='</p>'
@@ -106,39 +106,39 @@ switch ($iStep) {
         // ----------------------------------------------------------------------
         // requirements
         // ----------------------------------------------------------------------
-        $oInstaller=new ahwi(array(
+        $oInstaller=new ahwi([
             'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
             'source'=>'',
             'installdir'=>'',
             'tmpzip'=>'',
             'checks'=>$this->aAbout['requirements'],
-        ));
+        ]);
         $aErr=$oInstaller->getRequirementErrors();
         $aRequirements=$oInstaller->getRequirements();
-        $aTableReq=array(
-            array(
+        $aTableReq=[
+            [
                 $this->lB('installer.requirement.test'),
                 $this->lB('installer.requirement.result'),
-            )
-        );
+            ]
+        ];
         if(isset($aRequirements['phpversion'])){
-            $aTableReq[]=array(
+            $aTableReq[]=[
                 sprintf($this->lB('installer.requirement.phpversion'), $aRequirements['phpversion']['required']),
                 ($aRequirements['phpversion']['result'] 
                     ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok') .' ('.$aRequirements['phpversion']['value'].')'
                     : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail') .' ('.$aRequirements['phpversion']['value'].')'
                 ),
-            );
+            ];
         }
         if(isset($aRequirements['phpextensions'])){
             foreach($aRequirements['phpextensions'] as $sModule=>$aItem){
-                $aTableReq[]=array(
+                $aTableReq[]=[
                     sprintf($this->lB('installer.requirement.phpextension'), $sModule),
                     ($aItem['result'] 
                         ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok')
                         : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail')
                     ),
-                );
+                ];
             }
             
         }
@@ -147,12 +147,12 @@ switch ($iStep) {
                 .(count($aErr)
                     ? $this->lB('installer.requirement-fail.hint')
                         .'<br><br>'
-                        .$oRenderer->oHtml->getTag('a',array(
+                        .$oRenderer->oHtml->getTag('a',[
                         'href' => $_SERVER['REQUEST_URI'],
                         'class' => 'pure-button',
                         'title' => $this->lB('installer.refresh'),
                         'label' => $this->_getIcon('button.refresh').$this->lB('installer.refresh'),
-                    )).'<br><br>'
+                    ]).'<br><br>'
                     : ''
                 )
                 . '</p>'
@@ -165,24 +165,24 @@ switch ($iStep) {
         // ----------------------------------------------------------------------
         // set database
         // ----------------------------------------------------------------------
-        $aDbOptions=array();
+        $aDbOptions=[];
         $aAllMods=get_loaded_extensions(false);
         $sDefaultDb='mysql';
-        foreach(array('sqlite', 'mysql') as $sDbtype){   
-            $aDbOptions[$sDbtype]=array(
+        foreach(['sqlite', 'mysql'] as $sDbtype){   
+            $aDbOptions[$sDbtype]=[
                 'label'=>$this->lB('setup.section.database.type.'.$sDbtype),
                 'value'=>$sDbtype,
-            );
+            ];
         }
         $aDbOptions[$sDefaultDb]['selected']='selected';
-        $aDb=array(
+        $aDb=[
             'server'=>(isset($aOptions['options']['database']['server']) ? $aOptions['options']['database']['server'] : 'localhost'),
             'port'=>(isset($aOptions['options']['database']['port']) ? $aOptions['options']['database']['port'] : ''),
             'database_name'=>(isset($aOptions['options']['database']['database_name']) ? $aOptions['options']['database']['database_name'] : 'ahcrawler'),
             'username'=>(isset($aOptions['options']['database']['username']) ? $aOptions['options']['database']['username'] : 'ahcrawler'),
             'password'=>(isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : ''),
             'charset'=>(isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8'),
-        );
+        ];
         $sReturn.= (!isset($_SERVER['HTTPS'])
                 ?  $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
                 : ''
@@ -192,103 +192,103 @@ switch ($iStep) {
                 . $this->lB('setup.section.database.hint').'<br><br>'
         
             . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'type', 'label'=>$this->lB('setup.section.database.type')))
-                . $oRenderer->oHtml->getFormSelect(array(
+                . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'type', 'label'=>$this->lB('setup.section.database.type')])
+                . $oRenderer->oHtml->getFormSelect([
                     'id'=>$sIdPrefixDb.'type', 
                     'name'=>'options[database][database_type]',
                     'onchange'=>'changeView(\'params-dbtype\', \'params-dbtype-\'+this.value); return false;'
-                    ), $aDbOptions)
+                ], $aDbOptions)
             . '</div>'
 
             // ----- sqlite
             . '<div id="params-dbtype-sqlite" class="params-dbtype">'
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('label'=>sprintf($this->lB('installer.requirement.phpextension'), 'pdo_sqlite')))
-                    . $oRenderer->oHtml->getTag('span', array(
+                    . $oRenderer->oHtml->getTag('label', ['label'=>sprintf($this->lB('installer.requirement.phpextension'), 'pdo_sqlite')])
+                    . $oRenderer->oHtml->getTag('span', [
                         'label'=>(!array_search('pdo_sqlite', $aAllMods)===false
                                 ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok')
                                 : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail')
                             )
-                        ))
+                        ])
                     . '</div>'
                     . '<br>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'file', 'label'=>$this->lB('setup.section.database.file')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'file', 'label'=>$this->lB('setup.section.database.file')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'type', 
                         'name'=>'options[database][database_file]', 
                         'size'=>50, 
                         'value'=>isset($aOptions['options']['database']['database_file']) ? $aOptions['options']['database']['database_file'] : '__DIR__/data/ahcrawl.db',
-                        ), false)
+                        ], false)
                 . '</div>'
             . '</div>'
         
             // ----- mysql
             . '<div id="params-dbtype-mysql" class="params-dbtype">'
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('label'=>sprintf($this->lB('installer.requirement.phpextension'), 'pdo_mysql')))
-                    . $oRenderer->oHtml->getTag('span', array(
+                    . $oRenderer->oHtml->getTag('label', ['label'=>sprintf($this->lB('installer.requirement.phpextension'), 'pdo_mysql')])
+                    . $oRenderer->oHtml->getTag('span', [
                         'label'=>(!array_search('pdo_mysql', $aAllMods)===false
                                 ? $oRenderer->renderShortInfo('found'). $this->lB('installer.requirement-ok')
                                 : $oRenderer->renderShortInfo('miss') . $this->lB('installer.requirement-fail')
                             )
-                        ))
+                            ])
                     . '</div>'
                 . '<br>'
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'server', 'label'=>$this->lB('setup.section.database.server')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'server', 'label'=>$this->lB('setup.section.database.server')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'name', 
                         'name'=>'options[database][server]',
                         'value'=>$aDb['server'],
-                        ), false)
+                        ], false)
                     . '</div>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'port', 'label'=>$this->lB('setup.section.database.port')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'port', 'label'=>$this->lB('setup.section.database.port')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'port', 
                         'name'=>'options[database][port]',
                         'value'=>$aDb['port'],
-                        ), false)
+                        ], false)
                     . '</div>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'name', 'label'=>$this->lB('setup.section.database.name')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'name', 'label'=>$this->lB('setup.section.database.name')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'name', 
                         'name'=>'options[database][database_name]',
                         'value'=>$aDb['database_name'],
-                        ), false)
+                        ], false)
                     . '</div>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'username', 'label'=>$this->lB('setup.section.database.username')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'username', 'label'=>$this->lB('setup.section.database.username')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'username', 
                         'name'=>'options[database][username]',
                         'value'=>$aDb['username'],
-                        ), false)
+                        ], false)
                     . '</div>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'password', 'label'=>$this->lB('setup.section.database.password')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'password', 'label'=>$this->lB('setup.section.database.password')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'password', 
                         'type'=>'password',
                         'name'=>'options[database][password]',
                         'value'=>$aDb['password'],
-                        ), false)
+                        ], false)
                     . '</div>'
 
                 . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', array('for'=>$sIdPrefixDb.'charset', 'label'=>$this->lB('setup.section.database.charset')))
-                    . $oRenderer->oHtml->getTag('input', array(
+                    . $oRenderer->oHtml->getTag('label', ['for'=>$sIdPrefixDb.'charset', 'label'=>$this->lB('setup.section.database.charset')])
+                    . $oRenderer->oHtml->getTag('input', [
                         'id'=>$sIdPrefixDb.'charset', 
                         'name'=>'options[database][charset]',
                         'value'=>isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8',
-                        ), false)
+                        ], false)
                     . '</div>'
                 . '<p>'
                 . $this->lB('installer.database.mysql')
@@ -299,13 +299,13 @@ switch ($iStep) {
                 . '</pre><br>'
             . '</div>'
                 . '<hr>'
-            . $oRenderer->oHtml->getTag('a',array(
+            . $oRenderer->oHtml->getTag('a',[
                 'href' => $aLast['url'],
                 'class' => 'pure-button',
                 'label' => $this->_getIcon('button.back').$aLast['label'],
-                )) 
+                ]) 
                 .' '
-                . $oRenderer->oHtml->getTag('button', array('label'=>$this->_getIcon('button.continue').$aNext['label'], 'class'=>'pure-button button-secondary'))
+                . $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.continue').$aNext['label'], 'class'=>'pure-button button-secondary'])
             .'</form>
                     
             <script>
@@ -325,19 +325,19 @@ switch ($iStep) {
 }
 $sReturn.=''
     . (count($aLast) 
-        ? $oRenderer->oHtml->getTag('a',array(
+        ? $oRenderer->oHtml->getTag('a',[
             'href' => $aLast['url'],
             'class' => 'pure-button',
             'label' => $this->_getIcon('button.back').$aLast['label'],
-        )) .' '
+        ]) .' '
         : ''
     )
     . (count($aNext) 
-        ? $oRenderer->oHtml->getTag('a',array(
+        ? $oRenderer->oHtml->getTag('a',[
             'href' => $aNext['url'],
             'class' => 'pure-button button-secondary',
             'label' => $this->_getIcon('button.continue').$aNext['label'],
-        )).'<br><br>'
+        ]).'<br><br>'
         : ''
     )
 ;
