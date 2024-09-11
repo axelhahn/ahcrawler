@@ -4,8 +4,10 @@
 
 #### 2024-09-xx: v0.167
 
-* ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables; short array syntax
-* ↗️ UPDATE: A small cleanup: My own classes were moved to vendor subdir
+* 🟢 ADDED: Vietnamese translation was contributed by [[https://github.com/saosangmo|saosangmo]]. Thanks a lot! He was added as contributor.
+* ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables. Arrays were rewritten to short array syntax
+* ↗️ UPDATE: My own classes were moved to vendor subdir
+* ↗️ UPDATE: The updater detects a developer branch and shows a warning
 
 ### 2023
 
