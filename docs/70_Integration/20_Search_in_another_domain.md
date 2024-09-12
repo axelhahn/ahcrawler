@@ -35,10 +35,10 @@ Set values in the array **$aDefaults**.
 		
 		// forced defaults by your own website
 		// those cannot be overrided by $_GET params
-		$aDefaults=array(
+		$aDefaults=[
 			'siteid'=>1,      // set the project id in ahcrawler instance
 			'guilang'=>'en',  // uses texts from lang/frontend.[your-language-code].json
-		);
+		];
 
 
 		// ----------------------------------------------------------------------
@@ -55,9 +55,9 @@ Set values in the array **$aDefaults**.
 		// ----------------------------------------------------------------------
 		// prepare request header
 		// ----------------------------------------------------------------------
-		$options  = array('http' => array(
+		$options  = ['http' => [
 			'user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '-',
-			));
+			]];
 		$context  = stream_context_create($options);
 
 
