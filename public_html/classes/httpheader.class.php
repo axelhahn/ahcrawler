@@ -25,7 +25,7 @@
  *
  * @author hahn
  * 
- * 2024-09-06  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  */
 class httpheader
 {
@@ -178,7 +178,7 @@ class httpheader
      */
     public function getSecurityHeaders(): array
     {
-        $aReturn = array();
+        $aReturn = [];
         foreach ($this->_getHeaderCfgOfGivenTag('security') as $sVar => $aChecks) {
             $aReturn[$sVar] = false;
             $iLine = 0;
@@ -298,12 +298,12 @@ class httpheader
         if ($aItem['tags'] && is_array($aItem['tags'])) {
             foreach (['security', 'non-standard', 'http'] as $sSection) {
                 if (in_array($sSection, $aItem['tags'])) {
-                    return $sSection;
+                    return $sSection;   
                 }
             }
         }
         /*
-        foreach (array('httpv1', 'non-standard', 'security') as $sSection) {
+        foreach (['httpv1', 'non-standard', 'security'] as $sSection) {
             if ($this->_hasTag($aItem, $sSection)) {
                 return $sSection;
             }
@@ -424,31 +424,31 @@ class httpheader
     /**
      * Get array with cookie data from curl cookie file
      * https://stackoverflow.com/questions/410109/php-reading-a-cookie-file
-     * array(
-     *      'metainfos' => array(
+     * [
+     *      'metainfos' => [
      *          'file' => {string} filename
-     *      ),
+     *      ],
      *      'cookies' => {array} list of cookies,
      *      'error' => {string} on error only: one of NOT_READABLE|NOT_FOUND 
-     *  );
+     *  ];
      * 
      * @param string $sFile  filename of cookie file
      * @return array
      */
     public function parseCookiefile(string $sFile): array
     {
-        $aReturn = array(
-            'metainfos' => array(
+        $aReturn = [
+            'metainfos' => [
                 'file' => $sFile
-            ),
-            'cookies' => array(),
-        );
+            ],
+            'cookies' => [],
+        ];
         if (is_readable($sFile)) {
             $lines = explode(PHP_EOL, file_get_contents($sFile));
 
             foreach ($lines as $line) {
 
-                $cookie = array();
+                $cookie = [];
 
                 // detect httponly cookies and remove #HttpOnly prefix
                 if (substr($line, 0, 10) == '#HttpOnly_') {
@@ -506,8 +506,6 @@ class httpheader
             $iLine++;
             list($varname, $val) = $aLine;
 
-            // $aReturn[strtolower($varname)]=array(
-            // $sFound = count($this->isKnownHeadervar($sVar, $val)) ? true : 'unknown';
             $aTagData = $this->_getTagsOfHeaderline($varname, $val);
             $aItem = [
                 'var' => $varname,

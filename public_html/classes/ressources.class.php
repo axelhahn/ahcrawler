@@ -29,7 +29,7 @@ require_once 'analyzer.html.class.php';
  * usage:
  * require_once("../ressources.class.php");
  * 
- * 2024-09-09  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  * 
  */
 class ressources extends crawler_base
@@ -133,7 +133,7 @@ class ressources extends crawler_base
             return false;
         }
         $this->cliprint('info', "Flushing resources...\n");
-        $this->flushData(array('ressources' => 1), $this->iSiteId);
+        $this->flushData(['ressources' => 1], $this->iSiteId);
         $this->_aRessourceIDs = [];
         $this->disableLocking();
 
@@ -190,7 +190,7 @@ class ressources extends crawler_base
         );
         if ($sHeaderJson) {
 
-            $a['content_type'] = str_replace(array('"', ' '), array('', ''), strtolower('' . $this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
+            $a['content_type'] = str_replace(['"', ' '], ['', ''], strtolower('' . $this->_getHeaderVarFromJson($sHeaderJson, 'content_type')));
             $a['http_code'] = (is_int($this->_getHeaderVarFromJson($sHeaderJson, 'http_code')) ? $this->_getHeaderVarFromJson($sHeaderJson, 'http_code') : -1);
             $a['total_time'] = $this->_getHeaderVarFromJson($sHeaderJson, 'total_time') ? (int) ($this->_getHeaderVarFromJson($sHeaderJson, 'total_time') * 1000) / 1 : false;
             $a['size_download'] = (int) $this->_getHeaderVarFromJson($sHeaderJson, 'size_download') / 1;
@@ -233,20 +233,20 @@ class ressources extends crawler_base
             } else {
                 $this->cliprint('info', 'UPDATE existing resource ' . $sUrl . "\n");
                 /*
-                  $aCurrent = $this->oDB->select('ressources', array('id'), array(
+                  $aCurrent = $this->oDB->select('ressources', ['id'], [
                   'url' => $aData['url'],
-                  ));
+                    ]);
                  * 
                  */
                 $aResult = $this->oDB->update(
                     'ressources',
                     $aData,
-                    array(
-                        'AND' => array(
+                    [
+                        'AND' => [
                             'url' => $sUrl,
                             'siteid' => $this->iSiteId
-                        )
-                    )
+                        ]
+                    ]
                 );
                 $this->_checkDbResult($aResult);
             }
@@ -408,12 +408,12 @@ class ressources extends crawler_base
 
                             // $this->_aRessourceIDs
                             // add the found ressource
-                            $aRelItem = array_merge(array(
+                            $aRelItem = array_merge([
                                 'url' => $aItem['_url'],
                                 'siteid' => $this->iSiteId,
                                 'isLink' => true,
                                 // 'rescan' => 1,
-                            ), $aItem);
+                            ], $aItem);
                             // create a single target entry in "ressources" 
                             $aRel[] = $this->_prepareRelitem($aRelItem, $sSourceId);
                         }
@@ -501,7 +501,7 @@ class ressources extends crawler_base
      */
     protected function _showResourceStatusOnCli(): bool
     {
-        $iUrls = $this->oDB->count('ressources', array('url'), [
+        $iUrls = $this->oDB->count('ressources', ['url'], [
             'AND' => [
                 'siteid' => $this->iSiteId,
             ],
@@ -571,9 +571,9 @@ class ressources extends crawler_base
             'ressources',
             '*',
             [
-                'AND' => array(
+                'AND' => [
                     'id' => $iId,
-                ),
+                ],
             ]
         );
     }
@@ -823,7 +823,7 @@ class ressources extends crawler_base
 
         if ($oHttpstatus->isError()) {
             $this->cliprint('error', "ERROR: " . $oHttpstatus->getHttpcode() . " $url\n");
-            $aRelItem = array(
+            $aRelItem = [
                 'id' => $iId,
                 'url' => $url,
                 'isEndpoint' => true,
@@ -833,13 +833,13 @@ class ressources extends crawler_base
                 'ts' => date("Y-m-d H:i:s"),
                 'tserror' => date("Y-m-d H:i:s"),
                 'lasterror' => json_encode($info),
-            );
+            ];
         }
         if ($oHttpstatus->isRedirect()) {
             $oHtml = new analyzerHtml();
             $sNewUrl = $oHtml->getFullUrl($oHttpstatus->getRedirect(), $url);
             $this->cliprint('cli', "REDIRECT: $url " . $oHttpstatus->getHttpcode() . " -> " . $sNewUrl . "\n");
-            $aRelItem = array(
+            $aRelItem = [
                 'id' => $iId,
                 'url' => $url,
                 'isEndpoint' => $this->isInDenyList($sNewUrl),
@@ -850,15 +850,15 @@ class ressources extends crawler_base
                 'errorcount' => 0,
                 'tserror' => false,
                 'lasterror' => false,
-            );
+            ];
             // add url
             // if(array_key_exists('redirect_url', $info)){
             if ($sNewUrl) {
-                $aRel = $this->_prepareRelitem(array(
+                $aRel = $this->_prepareRelitem([
                     'url' => $sNewUrl,
                     // 'ressourcetype' => 'page',
                     'ressourcetype' => 'link',
-                ), $iId);
+                ], $iId);
                 $aResult = $this->oDB->insert('ressources_rel', $aRel);
                 $this->_checkDbResult($aResult);
                 $this->_addUrl2Crawl($sNewUrl, true);
@@ -866,7 +866,7 @@ class ressources extends crawler_base
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
             $this->cliprint('ok', "OK: " . $info['http_code'] . " $url \n");
-            $aRelItem = array(
+            $aRelItem = [
                 'id' => $iId,
                 'url' => $url,
                 'isEndpoint' => true,
@@ -877,7 +877,7 @@ class ressources extends crawler_base
                 'errorcount' => 0,
                 'tserror' => false,
                 'lasterror' => false,
-            );
+            ];
         }
         $aRessource = $this->_sanitizeRessourceArray($aRelItem, true);
 
@@ -950,16 +950,16 @@ class ressources extends crawler_base
 
         /*
         $aUrlsDone = $this->oDB->select(
-                'ressources', 'url', array(
-                    'AND' => array(
+                'ressources', 'url', [
+                    'AND' => [
                         'siteid' => $this->iSiteId,
-                        'OR' => array(
+                        'OR' => [
                             'rescan' => 0,
                             'http_code[>]' => 0,
                             'http_code[<]' => 500,
-                        ),
-                    ),
-                )
+                        ],
+                    ],
+                ]
         );
         // echo $this->oDB->last()."\n"; die("STOP in ".__FUNCTION__);
 

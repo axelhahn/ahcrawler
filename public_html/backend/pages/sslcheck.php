@@ -1,7 +1,7 @@
 <?php
 /**
  * page analysis :: Http header check
- * TODO: use $this->_getStatusinfos(array('_global','sslcheck'));
+ * TODO: use $this->_getStatusinfos(['_global','sslcheck']);
  */
 
 $aSSLPorts=[

@@ -28,7 +28,7 @@ require_once 'crawler-base.class.php';
  * usage:
  * require_once("../search.class.php");
  * 
- * 2024-09-09  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  * 
  */
 class ahsearch extends crawler_base
@@ -38,29 +38,29 @@ class ahsearch extends crawler_base
     // searchresults
     // ----------------------------------------------------------------------
     /*
-    private $_aRankCounter = array(
-        'matchWord' => array(
+    private $_aRankCounter = [
+        'matchWord' => [
             'title' => 50,
             'keywords' => 50,
             'description' => 50,
             'url' => 500,
             'content' => 5,
-        ),
-        'WordStart' => array(
+        ],
+        'WordStart' => [
             'title' => 20,
             'keywords' => 20,
             'description' => 20,
             'url' => 30,
             'content' => 3,
-        ),
-        'any' => array(
+        ],
+        'any' => [
             'title' => 2,
             'keywords' => 2,
             'description' => 2,
             'url' => 5,
             'content' => 1,
-        ),
-    );
+        ],
+    ];
      */
 
     /**
@@ -339,23 +339,23 @@ class ahsearch extends crawler_base
         if (!$sWord) {
             return false;
         }
-        $aQuery = array(
-            'OR' => array(
+        $aQuery = [
+            'OR' => [
                 'word' => $sWord,
                 'word[~]' => $sWord,
-            )
-        );
+            ]
+        ];
         $aResult = $this->oDB->select(
             'words',
-            array('word', 'count'),
-            array(
-                'AND' => array(
+            ['word', 'count'],
+            [
+                'AND' => [
                     'siteid' => $this->iSiteId,
                     'AND' => $aQuery,
-                ),
+                ],
                 "order" => 'count',
                 "LIMIT" => 11
-            )
+            ]
         );
         // echo $this->oDB->last_query() . "\n";
         // print_r($aResult);
@@ -372,22 +372,22 @@ class ahsearch extends crawler_base
         if (!$this->iSiteId) {
             return false;
         }
-        $aQuery = array(
-            'OR' => array(
+        $aQuery = [
+            'OR' => [
                 'title[~]' => $q,
-            )
-        );
+            ]
+        ];
         $aResult = $this->oDB->select(
             'pages',
-            array('title', 'url'),
-            array(
-                'AND' => array(
+            ['title', 'url'],
+            [
+                'AND' => [
                     'siteid' => $this->iSiteId,
                     'AND' => $aQuery,
-                ),
+                ],
                 "order" => 'title',
                 "LIMIT" => 11
-            )
+            ]
         );
         // echo $this->oDB->last_query() . "\n";
         // print_r($aResult);
@@ -660,18 +660,18 @@ class ahsearch extends crawler_base
     public function renderHiddenfields(): string
     {
         return '<input'
-            . $this->_addAttributes(array(
+            . $this->_addAttributes([
                 'type' => 'hidden',
                 'name' => 'siteid',
                 'value' => $this->iSiteId,
-            ))
+            ])
             . '>'
             . '<input'
-            . $this->_addAttributes(array(
+            . $this->_addAttributes([
                 'type' => 'hidden',
                 'name' => 'guilang',
                 'value' => $this->sLang,
-            ))
+            ])
             . '>'
         ;
     }

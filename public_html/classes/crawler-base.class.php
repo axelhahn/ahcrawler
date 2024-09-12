@@ -916,7 +916,7 @@ class crawler_base
         } catch (Exception $ex) {
             $this->logAdd(__METHOD__ . '() ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.', 'error');
             // $this->oDB = false;
-            $this->oDB = false;
+            unset($this->oDB);
             echo 'CRITICAL ERROR: Unable to connect the database. Maybe the initial settings / credentials are wrong or the database is offline.<br><br>';
             // die('ERROR: the database could not be connected. Maybe the initial settings are wrong or the database is offline.');
             return false;
@@ -1487,7 +1487,7 @@ class crawler_base
         $this->sUserAgent = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlHome'] . ')';
 
         $this->_initDB();
-        if (!$this->oDB) {
+        if (!isset($this->oDB)) {
             return false;
         }
 

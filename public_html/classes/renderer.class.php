@@ -29,7 +29,7 @@ require_once 'htmlelements.class.php';
  *
  * @author hahn
  * 
- * 2024-09-08  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  */
 class ressourcesrenderer extends crawler_base
 {
@@ -278,7 +278,7 @@ class ressourcesrenderer extends crawler_base
                  * 
                  */
             ;
-            foreach (array('unwanted', 'badvalue', /*'unknown',*/ 'obsolete') as $sMyTag) {
+            foreach (['unwanted', 'badvalue', /*'unknown',*/ 'obsolete'] as $sMyTag) {
                 $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
             }
 
@@ -551,7 +551,7 @@ class ressourcesrenderer extends crawler_base
         $iIdRessource = $aRessourceItem['id'];
         static $aUrllist;
         if (!$aUrllist || $bReInit) {
-            $aUrllist = array();
+            $aUrllist = [];
         }
         $sReturn = '';
 
@@ -593,18 +593,18 @@ class ressourcesrenderer extends crawler_base
      */
     public function renderBookmarklet(string $sId): string
     {
-        $aItems = array(
-            'details' => array(
+        $aItems = [
+            'details' => [
                 'query' => "backend/?page=checkurl&siteid=all&redirect=1&query='+encodeURI(document.location.href);"
-            ),
-            'httpheaderchecks' => array(
+            ],
+            'httpheaderchecks' => [
                 // 'query'=>"?page=httpheaderchecks&url='+encodeURI(document.location.href);"
                 'query' => "?page=httpheaderchecks&urlbase64='+btoa(document.location.href);"
-            ),
-            'sslcheck' => array(
+            ],
+            'sslcheck' => [
                 'query' => "?page=sslcheck&host='+(document.location.hostname)+'&port='+(document.location.port ? document.location.port : (document.location.protocol==='http:' ? 80 : (document.location.protocol==='https:' ? 443 : 0 )));"
-            ),
-        );
+            ],
+        ];
         if (!isset($aItems[$sId])) {
             // TODO: translate text
             return "INTERNAL ERROR: this page integrated bookmarklet of non existing id [$sId]<br>";
@@ -621,13 +621,13 @@ class ressourcesrenderer extends crawler_base
         ;
         $sMyUrl = isset($_GET['lang']) ? str_replace('?page=', '?lang=' . $_GET['lang'] . '&amp;page=', $sMyUrl) : $sMyUrl;
         return $this->lB('bookmarklet.hint') . ':<br><br>'
-            . $this->oHtml->getTag('a', array(
+            . $this->oHtml->getTag('a', [
                 'class' => 'pure-button',
                 'href' => 'javascript:document.location.href=\'' . $sMyUrl,
                 'onclick' => 'alert(\'' . $this->lB('bookmarklet.hint') . '\'); return false;',
                 'title' => $this->lB('bookmarklet.hint'),
                 'label' => $this->_getIcon('ico.bookmarklet') . $this->lB('bookmarklet.' . $sId . '.label'),
-            ))
+            ])
 
             . '<br><br>'
             . $this->lB('bookmarklet.' . $sId . '.posthint')
@@ -1176,8 +1176,8 @@ class ressourcesrenderer extends crawler_base
         $iReportCounter = 1;
         $sFilter = '';
         $sOut = '';
-        $aHttpStatus = array();
-        $aTypes = array();
+        $aHttpStatus = [];
+        $aTypes = [];
         foreach ($aItemlist as $aTmpItem) {
             $oHttp->setHttpcode($aTmpItem['http_code']);
             $sHttpStatusgroup = $oHttp->getStatus();
@@ -1243,8 +1243,8 @@ class ressourcesrenderer extends crawler_base
          
         // data mapping into JS to visualize a map
          
-        $aNodes=array();
-        $aEdges=array();
+        $aNodes=[];
+        $aEdges=[];
         
         $sNodeLabel=$aItem['url']."\n(".$aItem['type'].' '.$aItem['ressourcetype'].'; '.$aItem['http_code'].')';
         $aNodes[]=$this->_getVisNode($aItem);
@@ -1252,12 +1252,12 @@ class ressourcesrenderer extends crawler_base
             foreach ($aIn as $aTmpItem) {
                 $sNodeId=$aTmpItem['id'].'IN';
                 $aNodes[]=$this->_getVisNode($aTmpItem,$sNodeId);
-                $aEdges[]=$this->_getVisEdge(array(
+                $aEdges[]=$this->_getVisEdge([
                     'from'=>$sNodeId,
                     'to'=>$aNodes[0]['id'], 
                     'arrows'=>'to',
                     'color' => 'in',
-                ));
+                ]);
             }
         }
         if (count($aOut)){
@@ -1265,12 +1265,12 @@ class ressourcesrenderer extends crawler_base
                 $sNodeId=$aTmpItem['id'].'OUT';
                 $sNodeLabel=$aTmpItem['url']."\n(".$aTmpItem['type'].' '.$aTmpItem['ressourcetype'].')';
                 $aNodes[]=$this->_getVisNode($aTmpItem,$sNodeId);
-                $aEdges[]=$this->_getVisEdge(array(
+                $aEdges[]=$this->_getVisEdge([
                     'from'=>$aNodes[0]['id'],
                     'to'=>$sNodeId, 
                     'arrows'=>'to',
                     'color' => 'out',
-                ));
+                ]);
             }
         }
         */
@@ -1365,7 +1365,7 @@ class ressourcesrenderer extends crawler_base
      */
     public function renderRessourceStatus()
     {
-        // $iRessourcesCount=$this->oDB->count('ressources',array('siteid'=>$this->iSiteId));
+        // $iRessourcesCount=$this->oDB->count('ressources',['siteid'=>$this->iSiteId]);
         $this->_initRessource();
         $iRessourcesCount = $this->oRes->getCount();
         $iExternal = $this->oRes->getCount(['siteid' => $this->oRes->iSiteId, 'isExternalRedirect' => '1']);
@@ -1451,12 +1451,12 @@ class ressourcesrenderer extends crawler_base
         $sDivId = 'div-toggle-' . $iToggleCounter;
         return ''
             . '<div class="div-toggle-head" id="' . $sDivIdHead . '">'
-            . $this->oHtml->getTag('a', array(
+            . $this->oHtml->getTag('a', [
                 'href' => '#',
                 'class' => ($bIsOpen ? 'open' : ''),
                 // 'onclick'=>'$(\'#'.$sDivId.'\').slideToggle(); $(this).toggleClass(\'open\'); return false;',
                 'label' => $sHeader,
-            ))
+            ])
             . '</div>'
             . '<div' . ($bIsOpen ? '' : ' style="display:none;"') . ' id="' . $sDivId . '" class="div-toggle">'
             . $sContent

@@ -847,7 +847,6 @@ class crawler extends crawler_base
      */
     public function getCount(array $aFilter = []): string|null
     {
-        // return $this->getRecordCount("pages", $aFilter ? $aFilter : array('siteid' => $this->iSiteId));
         return $this->getRecordCount("pages", $aFilter ?: ['siteid' => $this->iSiteId]);
     }
 
@@ -1137,10 +1136,10 @@ class crawler extends crawler_base
 
             /*
             // echo $this->oDB->last();
-            $aCurrent = $this->oDB->select('pages', array('id', $sFieldToCompare, 'errorcount'), array(
+            $aCurrent = $this->oDB->select('pages', ['id', $sFieldToCompare, 'errorcount'], [
                 'url' => $aData['url'],
                 'siteid' => $this->iSiteId,
-            ));
+            ]);
         
             echo "\n";
             echo "NACHHER: " . $sFieldToCompare."\n";

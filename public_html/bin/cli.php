@@ -37,39 +37,39 @@ error_reporting(E_ALL);
 // confing
 // ----------------------------------------------------------------------
 
-$aParamDefs=array(
+$aParamDefs=[
     'label' => 'AhCrawler :: C L I',
     'description' => 'CLI tool to start crawling and resource scan',
-    'params'=>array(
-        'action'=>array(
+    'params'=>[
+        'action'=>[
             'short' => 'a',
             'value'=> CLIVALUE_REQUIRED,
             'pattern'=>'/^(list|index|update|empty|flush|reindex)$/',
             'shortinfo' => 'name of action',
             'description' => 'The action value is one of list | index | update | empty | flush | reindex',
-        ),
-        'data'=>array(
+        ],
+        'data'=>[
             'short' => 'd',
             'value'=> CLIVALUE_REQUIRED,
             'pattern'=>'/^(searchindex|resources|search|all)$/',
             'shortinfo' => 'kind of data',
             'description' => 'The data value is one of searchindex | resources | search | all',
-        ),
-        'profile'=>array(
+        ],
+        'profile'=>[
             'short' => 'p',
             'value'=> CLIVALUE_REQUIRED,
             'pattern'=>'/^[0-9]*$/',
             'shortinfo' => 'profile id of the config',
             'description' => 'The id is an integer value ... see list action.',
-        ),
-        'help'=>array(
+        ],
+        'help'=>[
             'short' => 'h',
             'value'=> CLIVALUE_NONE,
             'shortinfo' => 'show help',
             'description' => '',
-        ),
-    ),
-);
+        ],
+    ],
+];
 // ----------------------------------------------------------------------
 // functions
 // ----------------------------------------------------------------------
@@ -208,7 +208,7 @@ $sWhat=$oCli->getvalue("data");
 
 
 if ($sAction=="flush"){
-    $oCrawler->flushData(array($sWhat=>1));
+    $oCrawler->flushData([$sWhat=>1]);
     exit(0);
 }
 
@@ -230,7 +230,7 @@ $aOptions=$oCrawler->getEffectiveOptions();
 echo "INFO: set memory_limit to ".$aOptions['crawler']['memoryLimit']."\n";
 ini_set('memory_limit', $aOptions['crawler']['memoryLimit']);
 
-$aProfileIds=$oCli->getvalue("profile") ? array($oCli->getvalue("profile")) : $oCrawler->getProfileIds();
+$aProfileIds=$oCli->getvalue("profile") ? [$oCli->getvalue("profile")] : $oCrawler->getProfileIds();
 foreach ($aProfileIds as $sSiteId){
     echo "\n-------------------------------------------------------------------------------\n"
         . "profile id $sSiteId ... $sAction ... $sWhat\n"
@@ -240,7 +240,7 @@ foreach ($aProfileIds as $sSiteId){
         
         case 'reindex':
             $oCrawler->setSiteId($sSiteId);
-            $oCrawler->flushData(array('searchindex'=>1, 'ressources'=>1), $sSiteId);
+            $oCrawler->flushData(['searchindex'=>1, 'ressources'=>1], $sSiteId);
             
             $sWhat='all';
             // no break but continue :-)
@@ -288,7 +288,7 @@ foreach ($aProfileIds as $sSiteId){
             }
             break;
         case 'empty':
-            $oCrawler->flushData(array($sWhat=>1), $sSiteId);
+            $oCrawler->flushData([$sWhat=>1], $sSiteId);
             break;
             
         default:

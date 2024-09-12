@@ -37,7 +37,7 @@ require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
  * 
  * BACKEND
  * 
- * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  */
 class backend extends crawler_base
 {
@@ -1154,7 +1154,7 @@ class backend extends crawler_base
      */
     public function hasDataInDb($sTableitem): array|bool
     {
-        /* $aData=$this->_getStatusinfos(array('_global'));
+        /* $aData=$this->_getStatusinfos(['_global']);
         return isset($aData['_global'][$sTableitem]['value']) 
             ? $aData['_global'][$sTableitem]['value']
             : false
@@ -1238,9 +1238,9 @@ class backend extends crawler_base
         $iCounter = 0;
 
         /*
-        $iPagesCount=$this->getRecordCount('pages', array('siteid'=>$this->iSiteId));
-        $iRessourcesCount=$this->getRecordCount('ressources', array('siteid'=>$this->iSiteId));
-        $iSearchesCount=$this->getRecordCount('searches', array('siteid'=>$this->iSiteId));
+        $iPagesCount=$this->getRecordCount('pages', ['siteid'=>$this->iSiteId)];
+        $iRessourcesCount=$this->getRecordCount('ressources', ['siteid'=>$this->iSiteId]);
+        $iSearchesCount=$this->getRecordCount('searches', ['siteid'=>$this->iSiteId)];
          * 
          */
         $aMyGlobalCounters = $this->getStatusCounters('_global');
@@ -1260,8 +1260,8 @@ class backend extends crawler_base
                             'value' => $iPagesCount,
                             'message' => $iPagesCount ? false : sprintf($this->lB('status.emptyindex'), $this->_sTab),
                             'thead' => $this->lB('nav.search.label'),
-                            'tfoot' => $this->getLastTsRecord('pages', array('siteid' => $this->_sTab)) . '<br>'
-                                . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('pages', array('siteid' => $this->_sTab))))),
+                            'tfoot' => $this->getLastTsRecord('pages', ['siteid' => $this->_sTab]) . '<br>'
+                                . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('pages', ['siteid' => $this->_sTab])))),
                             'page' => 'searchindexstatus',
                         ];
                         $aMsg['ressources'] = [
@@ -1270,8 +1270,8 @@ class backend extends crawler_base
                             'value' => $iRessourcesCount,
                             'message' => $iRessourcesCount ? false : sprintf($this->lB('ressources.empty'), $this->_sTab),
                             'thead' => $this->lB('nav.ressources.label'),
-                            'tfoot' => $this->getLastTsRecord('ressources', array('siteid' => $this->_sTab)) . '<br>'
-                                . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('ressources', array('siteid' => $this->_sTab))))),
+                            'tfoot' => $this->getLastTsRecord('ressources', ['siteid' => $this->_sTab]) . '<br>'
+                                . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('ressources', ['siteid' => $this->_sTab])))),
                             'page' => 'ressources',
                         ];
                         $aMsg['searches'] = [
@@ -1293,11 +1293,11 @@ class backend extends crawler_base
                         /*
                         $oCrawler=new crawler($this->_sTab);
                         $aCounter=[];
-                        $aCounter['countCrawlerErrors']=$oCrawler->getCount(array(
-                            'AND' => array(
+                        $aCounter['countCrawlerErrors']=$oCrawler->getCount([
+                            'AND' => [
                                 'siteid' => $this->_sTab,
                                 'errorcount[>]' => 0,
-                            )));
+                            ]]);
 
                         $aCounter['countShortTitles']   = $this->_getHtmlchecksCount('title',       $aOptions['analysis']['MinTitleLength']);
                         $aCounter['countShortDescr']    = $this->_getHtmlchecksCount('description', $aOptions['analysis']['MinDescriptionLength']);
@@ -1580,16 +1580,16 @@ class backend extends crawler_base
                                  * TODO: leave a messgae that scan is not finished
                                  * -a update -d ressources -p [N]
                                  * 
-                                $aMsg['ressources-unfinished']=array(
+                                $aMsg['ressources-unfinished']=[
                                     'counter'=>$iCounter++,
                                     'status'=>'error', 
                                     'value'=>0, 
                                     'message'=>$iRessourcesCount ? false : sprintf($this->lB('ressources.not-finished'), $this->_sTab),
                                     'thead'=>$this->lB('nav.ressources.label'),
-                                    'tfoot'=>$this->getLastTsRecord('ressources', array('siteid'=>$this->_sTab)).'<br>'
-                                    . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('ressources', array('siteid'=>$this->_sTab))))),
+                                    'tfoot'=>$this->getLastTsRecord('ressources', ['siteid'=>$this->_sTab]).'<br>'
+                                    . $oRenderer->hrAge(date('U', strtotime($this->getLastTsRecord('ressources', ['siteid'=>$this->_sTab])))),
                                     'page'=>'linkchecker',
-                                );
+                                ];
                                  */
                             } else {
                                 $aTmpItm = ['status' => [], 'total' => 0];
@@ -1887,13 +1887,13 @@ class backend extends crawler_base
             $aRow['actions'] = ''
                 . '<a href="' . $sUrl . '" target="_blank" class="pure-button" title="' . $this->lB('ressources.link-to-url') . '">' . $oRenderer->_getIcon('link-to-url') . '</a>';
             /*
-            $this->_getButton(array(
+            $this->_getButton([
             // 'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
             'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$sId,
             'popup' => false,
             'class' => 'pure-button',
             'label' => 'button.view'
-        ));
+        ]);
             */
             $aTable[] = $aRow;
         }
@@ -2349,13 +2349,13 @@ class backend extends crawler_base
         foreach ($aTmp as $aRow) {
             $aTable[] = $aRow;
             /*
-            $aData[]=array(
+            $aData[]=[
                     'label'=>$this->lB('htmlchecks.label-warnings'),
                     'value'=>$iWarnings,
                     'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
                     'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-ok\')',
                     // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': '.,
-                );
+            ];
             */
         }
         // echo "<pre>$sQuery<br>".print_r($aTmp,1).'</pre>';

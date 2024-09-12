@@ -49,7 +49,7 @@
  * @author Axel Hahn <axel.hahn@axel-hahn.de>
  * @license GNU GPL 3.0
  * 
- * 2024-09-10  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  */
 class sslinfo
 {
@@ -135,7 +135,7 @@ class sslinfo
             ]
         );
         if (!$aStreamOptions) {
-            return array('_error' => 'Error: Cannot create stream_context');
+            return ['_error' => 'Error: Cannot create stream_context'];
         }
 
         $errno = '';
