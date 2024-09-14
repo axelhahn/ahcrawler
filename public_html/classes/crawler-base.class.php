@@ -1725,6 +1725,7 @@ class crawler_base
      */
     private function _getLangData(string $sPlace, string $sLang = ''): bool
     {
+        $sRefLang='en';
         if (!$sLang) {
             // $this->setSiteId(false);
             $sLang = $this->getLang();
@@ -1736,7 +1737,19 @@ class crawler_base
         if (!$aLang || !is_array($aLang) || !count($aLang)) {
             die("ERROR: json lang file $sJsonfile is invalid. Aborting.");
         }
+
+        if ($sLang != $sRefLang){
+            // missing lang keys will be added from reference language
+            $sJsonfile2 = '/lang/' . $sPlace . '.' . $sRefLang . '.json';
+            foreach (json_decode(file_get_contents(dirname(__DIR__) . $sJsonfile2), true) as $sKey => $sText){
+                if (!isset($aLang[$sKey])){
+                    $aLang[$sKey] = "$sText ($sRefLang)";
+                }
+            };
+        }
+
         $this->aLang[$sPlace] = $aLang;
+        
         return true;
     }
 
