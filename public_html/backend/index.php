@@ -1,3 +1,3 @@
 <?php
-define('BACKEND', true);
-require('../index.php');
+const BACKEND = true;
+require '../index.php';
