@@ -12,8 +12,6 @@ $aLegendKeys=$aFields;
 unset($aLegendKeys[2]); // remove siteid
 unset($aLegendKeys[0]); // remove id
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
 $aUrl=[];
 
 // $sSiteId = $this->_getRequestParam('siteid');

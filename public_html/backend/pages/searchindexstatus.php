@@ -14,11 +14,6 @@ $iCountEntries = 5;
 
 $aHeaderIndex = ['id', 'ts', 'url', 'title', 'errorcount', 'lasterror'];
 
-
-$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=home');
-
-
-
 $oCrawler = new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();
 if (!$iUrls) {

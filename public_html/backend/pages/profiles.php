@@ -243,8 +243,7 @@ $sSubmit='<br><br>'
 )
 ;
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), true, '?page=home')
-        .(!isset($_SERVER['HTTPS'])
+$sReturn.=(!isset($_SERVER['HTTPS'])
             ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
             : ''
         )
@@ -579,7 +578,8 @@ $sReturn.='
                         'placeholder'=>isset($aOptions['options']['crawler']['ressources']['simultanousRequests']) ? $aOptions['options']['crawler']['ressources']['simultanousRequests'] : '',
                         'value'=>isset($this->aProfileSaved['ressources']['simultanousRequests']) ? $this->aProfileSaved['ressources']['simultanousRequests'] : '',
                         ], false)
-                    . '</div>'
+                . '</div>'
+
                 .'<br>'
                 .'<br>'
                 // deny list

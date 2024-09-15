@@ -9,11 +9,6 @@ $iCountEntries = 5;
 
 $aHeaderIndex = ['id', 'ts', 'url', 'title', 'errorcount', 'lasterror'];
 
-
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=home')
-    // .'<h3>' . $this->lB('status.overview') . '</h3>'
-    ;
-
 // ----------------------------------------------------------------------
 // get deta for tiles
 // ----------------------------------------------------------------------

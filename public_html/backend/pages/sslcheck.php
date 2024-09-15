@@ -107,7 +107,6 @@ if ($this->_bIsPublic){
     $sMyUrl=($sMyHost && $sMyPort) ? 'ssl://'.$sMyHost.':'.$sMyPort : false;
     
 } else {
-    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
     $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
     $sMyUrl=isset($this->aProfileSaved['searchindex']['urls2crawl'][0]) ? $this->aProfileSaved['searchindex']['urls2crawl'][0] : false;
 }

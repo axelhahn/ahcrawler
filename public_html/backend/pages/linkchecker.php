@@ -6,8 +6,6 @@ $sReturn = '';
 $sTilesOnTop='';
 $sResResult='';
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
 $oRessources=new ressources($this->_sTab);
 $oRenderer=new ressourcesrenderer($this->_sTab);
 

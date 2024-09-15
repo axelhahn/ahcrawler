@@ -12,8 +12,6 @@ $iMinKeywordsLength=$aOptions['analysis']['MinKeywordsLength'];
 $iMaxPagesize=$aOptions['analysis']['MaxPagesize'];
 $iMaxLoadtime=$aOptions['analysis']['MaxLoadtime']; 
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
 $aCountByStatuscode=$this->_getStatusinfos(['_global','htmlchecks']);
 $iPagesTotalCount=$aCountByStatuscode['_global']['pages']['value'];
 if (!$iPagesTotalCount) {

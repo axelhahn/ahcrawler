@@ -3,7 +3,6 @@
  * page analysis :: search for an url
  */
 $sReturn='';
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 

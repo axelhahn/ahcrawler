@@ -8,7 +8,6 @@ $oHttpheader = new httpheader();
 
 
 $sReturn = '';
-$sReturn .= $this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $this->setSiteId($this->_sTab);
 
 // ----------------------------------------------------------------------
