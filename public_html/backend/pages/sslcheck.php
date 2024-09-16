@@ -58,7 +58,7 @@ $aSSLPorts=[
 ];
 
 // --- certificate
-$oRenderer=new ressourcesrenderer($this->_sTab);
+$oRenderer=new ressourcesrenderer((int)$this->_sTab);
 $sReturn='';
 
 
