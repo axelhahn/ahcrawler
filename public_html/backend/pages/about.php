@@ -36,7 +36,7 @@ $aIcons=[
 
 $sPeople='';
 
-$oRenderer=new ressourcesrenderer($this->_sTab);
+$oRenderer=new ressourcesrenderer((int)$this->_sTab);
 if(BACKEND==true){
     // ----------------------------------------------------------------------
     // requirements

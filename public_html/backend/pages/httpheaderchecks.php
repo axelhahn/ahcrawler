@@ -3,7 +3,7 @@
 /**
  * page analysis :: Http header check
  */
-$oRenderer = new ressourcesrenderer($this->_sTab);
+$oRenderer = new ressourcesrenderer((int)$this->_sTab);
 $oHttpheader = new httpheader();
 
 $sReturn = '';
