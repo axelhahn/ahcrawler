@@ -216,7 +216,7 @@ switch ($sStepName) {
             . $this->lB('update.steps')
             . '</p>'
             .'<ol>'
-                . '<li>'.sprintf($this->lB('update.steps.downloadurl'), $this->oUpdate->getDownloadUrl(), $sZipfile) . '</li>'
+                . '<li>'.sprintf($this->lB('update.steps.downloadurl'), ($this->oUpdate->getDownloadUrl() ?: '❌'), $sZipfile) . '</li>'
                 . '<li>'.sprintf($this->lB('update.steps.extractto'), $sTargetPath) . '</li>'
             . '</ol>'
             .'<br>'

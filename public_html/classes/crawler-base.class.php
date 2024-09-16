@@ -40,8 +40,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.167 WIP',
-        'date' => '2024-08-29',
+        'version' => '0.167',
+        'date' => '2024-09-16',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -263,8 +263,6 @@ class crawler_base
                     ['siteid', ['siteid']],
                     ['url', ['url']],
 
-                    // it won't be created on php7 ... and crashes on php8
-                    // ['search', ['url', 'title', 'description', 'keywords', 'lang', 'content'], 'FULLTEXT'],
                 ],
             ],
 

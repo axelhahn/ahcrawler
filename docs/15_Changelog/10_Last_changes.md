@@ -2,12 +2,14 @@
 
 ### 2024
 
-#### 2024-09-xx: v0.167
+#### 2024-09-16: v0.167
 
 * 🟢 ADDED: Vietnamese translation was contributed by [[https://github.com/saosangmo|saosangmo]]. Thanks a lot! He was added as contributor.
 * ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables. Arrays were rewritten to short array syntax
-* ↗️ UPDATE: My own classes were moved to vendor subdir
+* ↗️ UPDATE: My own external classes were moved to vendor subdir
 * ↗️ UPDATE: The updater detects a developer branch and shows a warning
+* ↗️ UPDATE: main.css and default skin were updated to simplify creation light skins (coming in next release)
+* ↗️ UPDATE: missing translated items will show the english version added by "(en)"
 
 ### 2023
 
