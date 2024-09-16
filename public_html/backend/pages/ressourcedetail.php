@@ -3,13 +3,11 @@
  * page analysis
  */
 $sReturn='';
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-$sReturn.='<br>';
 $iRessourceId = (int)$this->_getRequestParam('id');
 
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
-// $aData=$oRessources->getRessources('*', array('url'=>$sQuery), array('url'=>'ASC'));
+// $aData=$oRessources->getRessources('*', ['url'=>$sQuery], ['url'=>'ASC']);
 $oRessources=new ressources($this->_sTab);
 $aData=$oRessources->getRessourceDetails($iRessourceId);
 

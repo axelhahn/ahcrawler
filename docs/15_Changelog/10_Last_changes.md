@@ -1,10 +1,21 @@
 ## Last changes
 
+### 2024
+
+#### 2024-09-16: v0.167
+
+* 🟢 ADDED: Vietnamese translation was contributed by [[https://github.com/saosangmo|saosangmo]]. Thanks a lot! He was added as contributor.
+* ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables. Arrays were rewritten to short array syntax
+* ↗️ UPDATE: My own external classes were moved to vendor subdir
+* ↗️ UPDATE: The updater detects a developer branch and shows a warning
+* ↗️ UPDATE: main.css and default skin were updated to simplify creation light skins (coming in next release)
+* ↗️ UPDATE: missing translated items will show the english version added by "(en)"
+
 ### 2023
 
 #### 2023-12-03: v0.166
 
-* ↗️ UPDATE: AcCrawler runs on PHP 8.3
+* ↗️ UPDATE: AhCrawler runs on PHP 8.3
 * ↗️ UPDATE: dark skin - login page is not white anymore
 * ↗️ UPDATE: German texts for counters
 
@@ -26,10 +37,4 @@
 * ↗️ UPDATE: ahCache class
 * ↗️ UPDATE: ah web updater classes
 * ↗️ UPDATE: html analyzer class
-
-#### 2023-05-09: v0.162
-
-* 💣 FIX: error with missing vendor cache dir
-* ↗️ UPDATE: cdnorlocal --> 1.0.13
-* 🟢 ADDED: metadata of needed libs
 

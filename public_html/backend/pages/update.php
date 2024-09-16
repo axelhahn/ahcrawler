@@ -7,7 +7,7 @@ $oRenderer=new ressourcesrenderer();
 $sReturn = '';
 
 
-require_once __DIR__ . '/../../classes/ahwi-installer.class.php';
+require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $aDirs=[
     'download'=>[
@@ -20,14 +20,14 @@ $aDirs=[
     ]
 ];
 
-$oInstaller=new ahwi(array(
+$oInstaller=new ahwi([
     'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
     'source'=>$this->oUpdate->getDownloadUrl(),
     'md5'=>$this->oUpdate->getChecksumUrl(),
     'installdir'=>$aDirs['git']['root'],
     'tmpzip'=>$aDirs['git']['zip'],
     'checks'=>$this->aAbout['requirements'],
-));
+]);
 
 // to get all known vcs:
 // $aTmpVcs=$oInstaller->vcsDetect();
@@ -40,14 +40,14 @@ if($bIsGit){
         'gitpull',
     ];
 } else {
-    $oInstaller=new ahwi(array(
+    $oInstaller=new ahwi([
         'product'=>$this->aAbout['product'].' v'.$this->aAbout['version'],
         'source'=>$this->oUpdate->getDownloadUrl(),
         'md5'=>$this->oUpdate->getChecksumUrl(),
         'installdir'=>$aDirs['download']['root'],
         'tmpzip'=>$aDirs['download']['zip'],
         'checks'=>$this->aAbout['requirements'],
-    ));
+    ]);
     $sZipfile=$aDirs['download']['zip'];
     $sTargetPath=$aDirs['download']['root'];
     $aSteps=[
@@ -76,18 +76,18 @@ $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
         : '?page=update&ts='.date('U')
         ;
-$sBtnBack=$this->_getButton(array(
+$sBtnBack=$this->_getButton([
     'href' => $sBackUrl,
     'class' => 'pure-button',
     'label' => 'button.back',
     'popup' => false
-)).' ';
-$sBtnNext=$this->_getButton(array(
+]).' ';
+$sBtnNext=$this->_getButton([
     'href' => $sNextUrl,
     'class' => 'button-secondary',
     'label' => 'button.continue',
     'popup' => false
-)).' ';
+]).' ';
 $sScriptContinue=$bAutoContinue ? 
         '<br><br>'
             .$oRenderer->renderMessagebox($this->lB("update.singlestepupdate"), 'warning')
@@ -106,62 +106,69 @@ switch ($sStepName) {
         $this->oUpdate->getUpdateInfos(true);
         
         global $oCdn;
-        $iCountUnused=count($oCdn->getFilteredLibs(array('islocal'=>1,'isunused'=>1)));
+        $iCountUnused=count($oCdn->getFilteredLibs(['islocal'=>1,'isunused'=>1]));
+
+        $sFoundError=$this->oUpdate->getError();
         $bHasUpdate=$this->oUpdate->hasUpdate();
         
         $sCssBtnHome=$bHasUpdate ? 'pure-button' : 'button-secondary';
         $sCssBtnContinue=!$bHasUpdate ? 'pure-button' : 'button-secondary';
 
         $sReturn .= '<p>'
-            .($bHasUpdate || 0
-                ?  
-                    $this->_getSimpleHtmlTable(
-                        array(
-                            array($this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()),
-                            array($this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()),
-                        )
+            .($sFoundError
+                ? $oRenderer->renderMessagebox($sFoundError, 'error').'<br>'
+                    . $this->lB('update.welcome.available-check').'<br></br><br>'
+                :
+                    ($bHasUpdate || 0
+                        ?  
+                            $this->_getSimpleHtmlTable(
+                                [
+                                    [$this->lB('update.welcome.version-on-client'),  $this->oUpdate->getClientVersion()],
+                                    [$this->lB('update.welcome.version-latest'),     $this->oUpdate->getLatestVersion()],
+                                ]
+                            )
+                            . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
+                            . '<br>'
+                        :  
+                            $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
+                            .'<br>'
+                            .'<br>'
+                        
+                            .($iCountUnused 
+                                ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
+                                    .$oRenderer->oHtml->getTag('a', [
+                                        'href' => '?page=vendor',
+                                        'class' => 'pure-button',
+                                        'title' => $this->lB('nav.vendor.hint'),
+                                        'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
+                                    ]).'<br><br><br><br><br>'
+                                : ''
+                            )        
                     )
-                    . '<br>' . $oRenderer->renderMessagebox(sprintf($this->lB('update.welcome.available-yes') , $this->oUpdate->getLatestVersion()), 'warning')
-                    . '<br>'
-                :  
-                    $oRenderer->renderMessagebox($this->lB('update.welcome.available-no'), 'ok')
-                    .'<br>'
-                    .'<br>'
-                
-                    .($iCountUnused 
-                        ? sprintf($this->lB('update.welcome.unusedLibs'), $iCountUnused).'<br><br>' 
-                            .$oRenderer->oHtml->getTag('a', array(
-                                'href' => '?page=vendor',
-                                'class' => 'pure-button',
-                                'title' => $this->lB('nav.vendor.hint'),
-                                'label' => $this->_getIcon('vendor'). $this->lB('nav.vendor.label') ,
-                            )).'<br><br><br><br><br>'
-                        : ''
-                    )        
-             )
+            )
              . '<div>'
              
                 // --- buttons 
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => '?',
                     'class' => $sCssBtnHome,
                     'label' => 'button.home',
                     'popup' => false
-                ))
+                ])
                 . ' '
-                . $this->_getButton(array(
+                . $this->_getButton([
                     'href' => $sNextUrl,
                     'class' => $sCssBtnContinue,
                     'label' => 'button.continue',
                     'popup' => false
-                ))
+                ])
                 . ' '
-                .$this->_getButton(array(
+                .$this->_getButton([
                     'href' => $sNextUrl.'&docontinue=1',
                     'class' => $sCssBtnContinue,
                     'label' => 'button.updatesinglestep',
                     'popup' => false
-                ))
+                ])
             
             
             . '</div>'
@@ -195,7 +202,9 @@ switch ($sStepName) {
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
                 } else {
-                    $sReturn.=$sBtnBack.$this->lB('update.gitpull.failed');
+                    $sReturn.=$oRenderer->renderMessagebox($this->lB('update.gitpull.failed'), 'error')
+                        .$sBtnBack
+                        ;
                 }
             }
         break;
@@ -207,7 +216,7 @@ switch ($sStepName) {
             . $this->lB('update.steps')
             . '</p>'
             .'<ol>'
-                . '<li>'.sprintf($this->lB('update.steps.downloadurl'), $this->oUpdate->getDownloadUrl(), $sZipfile) . '</li>'
+                . '<li>'.sprintf($this->lB('update.steps.downloadurl'), ($this->oUpdate->getDownloadUrl() ?: '❌'), $sZipfile) . '</li>'
                 . '<li>'.sprintf($this->lB('update.steps.extractto'), $sTargetPath) . '</li>'
             . '</ol>'
             .'<br>'
@@ -231,7 +240,9 @@ switch ($sStepName) {
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
             } else {
-                $sReturn.=$sBtnBack.$this->lB('update.download.failed');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('update.download.failed'), 'error')
+                    .$sBtnBack
+                    ;
             }        
         break;
     case 'extract':
@@ -247,7 +258,9 @@ switch ($sStepName) {
                     . $sBtnBack.$sBtnNext.$sScriptContinue
                     ;
             } else {
-                $sReturn.=$sBtnBack.$this->lB('update.extract.failed');
+                $sReturn.=$oRenderer->renderMessagebox($this->lB('update.extract.failed'), 'error')
+                    . $sBtnBack
+                    ;
             }
         break;
 

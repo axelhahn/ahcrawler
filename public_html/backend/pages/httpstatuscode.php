@@ -4,7 +4,7 @@
  */
 
 $sReturn='';
-$aTable=array();
+$aTable=[];
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sUnknownLabel=$this->lB('httpcode.???.label');
 
@@ -29,13 +29,13 @@ for ($i=0; $i<1000; $i++){
             $sReturn.= '<h4>'.$sLastStatus.'</h4>'
                     .(count($aTable) ? $this->_getHtmlTable($aTable) : '')
                     ;
-            $aTable=array();
+            $aTable=[];
             $sLastStatus=$sSection;
         }
          * 
          */
 
-        $aTable[]=array('status'=>$i, 'icon'=>$oRenderer->renderValue('http_code', $i), 'label'=>$shttpStatusLabel, 'description'=>$shttpStatusDescr, 'todo'=>$shttpStatusTodo);
+        $aTable[]=['status'=>$i, 'icon'=>$oRenderer->renderValue('http_code', $i), 'label'=>$shttpStatusLabel, 'description'=>$shttpStatusDescr, 'todo'=>$shttpStatusTodo];
     }
     
 }

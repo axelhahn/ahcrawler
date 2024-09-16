@@ -1,10 +1,10 @@
 ## Requirements
 
-The tool is designed to run on a local machine, a vm or your own server.
+The tool is designed to run on a local machine, a vm or your own server or as docker container.
 
 * any webserver plus PHP 
 * PHP: 
-  * version 8 up to 8.3 as module (mod_php) or PHP-FPM service (maybe it runs on PHP 7.3+)
+  * version 8 up to 8.3 as module (mod_php) or PHP-FPM service (maybe it runs on PHP 8.0+)
   * php-curl (could be included in php-common in some distros)
   * php-pdo and database extension (sqlite or mysql)
   * php-mbstring

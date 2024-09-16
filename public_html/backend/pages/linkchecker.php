@@ -6,12 +6,10 @@ $sReturn = '';
 $sTilesOnTop='';
 $sResResult='';
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
 $oRessources=new ressources($this->_sTab);
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
-$aCountByStatuscode=$this->_getStatusinfos(array('_global','linkchecker'));
+$aCountByStatuscode=$this->_getStatusinfos(['_global','linkchecker']);
 
 
 $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
@@ -31,20 +29,20 @@ if(!isset($aCountByStatuscode['linkchecker'])){
         .$oRenderer->renderMessagebox(sprintf($this->lB('ressources.crawler-not-finished-yet'), $this->_sTab), 'warning');
 }
 
-$iExternal=$this->oDB->count('ressources',array('siteid'=>$this->_sTab,'isExternalRedirect'=>'1'));
+$iExternal=$this->oDB->count('ressources',['siteid'=>$this->_sTab,'isExternalRedirect'=>'1']);
 if($iExternal){
-    $aChartItems[]=array(
+    $aChartItems[]=[
         'label'=>$this->lB('linkchecker.found-http-external').': '.$iExternal,
         'value'=>$iExternal,
         'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-warning\')',
         //'legend'=>$this->lB('linkchecker.found-http-external-hint'),
-    );
+    ];
 }
 
 
 foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
     $sLegende='';
-    $aChartItemsOfSection=array();
+    $aChartItemsOfSection=[];
     $sBoxes='';
     $iCodeCount=0;
     $sSection2=strtoupper($sSection[0]).substr($sSection, 1);
@@ -52,12 +50,12 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
     if($aData['value']){
 
         // --- pie chart 
-        $aChartItems[]=array(
+        $aChartItems[]=[
             'label'=>$this->lB('linkchecker.found-http-'.$sSection).': '.$aData['value'],
             'value'=>$aData['value'],
             'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.$sSection.'\')',
             // 'legend'=>$this->lB('linkchecker.found-http-'.$sSection).': ',
-        );
+        ];
 
         if ($aData['value']){
             $sResResult.=''
@@ -76,12 +74,12 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
                 : '';
         
             if($sSection==='warning' && $iExternal){
-                $aChartItemsOfSection[]=array(
+                $aChartItemsOfSection[]=[
                     'label'=>$this->lB('linkchecker.found-http-external'),
                     'value'=>$iExternal,
                     'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCodeCount % 5 + 1).'\')',
                     'legend'=>$iExternal.' x '.$this->lB('linkchecker.found-http-external'),
-                );
+                ];
                 $sBoxes.=$oRenderer->renderTile(
                         '',
                         $this->lB('linkchecker.found-http-external'),
@@ -100,12 +98,12 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
 
 
             foreach ($aData['_data'] as $iHttp_code=>$iCount){
-                $aChartItemsOfSection[]=array(
+                $aChartItemsOfSection[]=[
                     'label'=>$iHttp_code,
                     'value'=>$iCount,
                     'color'=>'getStyleRuleValue(\'color\', \'.chartcolor-'.($iCodeCount % 5 + 1).'\')',
                     'legend'=>$iCount.' x '.$this->lB('db-ressources.http_code').' '.$iHttp_code,
-                );
+                ];
                 $iCodeCount++;
 
                 $shttpStatusLabel=$this->lB('httpcode.'.$iHttp_code.'.label', 'httpcode.???.label');
@@ -136,10 +134,10 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
         $sResResult.=''
             . (count($aData['_data']) > 1
                 ? '<div class="floatright">'
-                    . $this->_getChart(array(
+                    . $this->_getChart([
                         'type'=>'pie',
                         'data'=>$aChartItemsOfSection
-                    ))
+                    ])
                 .'</div>'
                 : ''
                 )
@@ -162,10 +160,10 @@ $sReturn.='<h3>'.$this->lB("linkchecker.check-links").'</h3>'
                 . $this->_getTilesOfAPage()
 
             ).'<div style="clear: both;"></div>'
-            . $this->_getChart(array(
+            . $this->_getChart([
                 'type'=>'pie',
                 'data'=>$aChartItems
-            ))
+            ])
             . $this->_getHistoryCounter(['statusError','statusWarning','statusOk','statusTodo'])
 
         . $sResResult

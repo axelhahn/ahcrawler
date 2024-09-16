@@ -21,13 +21,13 @@ if(count($aPages)){
             . '<p>'.$this->lB('home.intro').'</p><br>';
     foreach($aPages as $sPagename=>$bActive){
         
-        $sReturn.=$bActive ? $this->_getLinkAsBox(array(
+        $sReturn.=$bActive ? $this->_getLinkAsBox([
                     'url'=>'?page=' . $sPagename.'&amp;lang='.$this->sLang,
                     'hint'=>$this->lB('nav.' . $sPagename . '.hint'),
                     'icon'=>$this->_aIcons['menu'][$sPagename],
                     'title'=>$this->lB('nav.' . $sPagename . '.label'),
                     'text'=>$this->lB('nav.' . $sPagename . '.hint'),
-                ))
+                ])
                 : ''
                 ;
         

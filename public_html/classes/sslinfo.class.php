@@ -48,35 +48,54 @@
  * @version 0.1
  * @author Axel Hahn <axel.hahn@axel-hahn.de>
  * @license GNU GPL 3.0
+ * 
+ * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
  */
-class sslinfo {
+class sslinfo
+{
     # ----------------------------------------------------------------------
     # CONFIG
     # ----------------------------------------------------------------------
 
-    protected $_sUrl=false;
-    protected $_aCertInfos = false;
-    
-    protected $_iWarnBeforeExpiration = 30;
-
     /**
-     * hostname
+     * Url of a website
      * @var string
      */
-    protected $_sHost = false;
+    protected string $_sUrl = '';
 
     /**
-     * port number
+     * Array with certificate infos
+     * @var 
+     */
+    protected array $_aCertInfos = [];
+
+    /**
+     * Configuration: warning level as number of days before expiration
+     * @var int
+     */
+    protected int $_iWarnBeforeExpiration = 30;
+
+    /**
+     * Hostname
+     * @var string
+     */
+    protected string $_sHost = '';
+
+    /**
+     * Port number
      * @var integer
      */
-    protected $_iPort = false;
+    protected int $_iPort = 0;
 
     # ----------------------------------------------------------------------
     # CONSTRUCT
     # ----------------------------------------------------------------------
 
-    function __construct() {
-        return true;
+    /**
+     * Constructor
+     */
+    function __construct()
+    {
     }
 
     # ----------------------------------------------------------------------
@@ -84,66 +103,71 @@ class sslinfo {
     # ----------------------------------------------------------------------
 
     /**
-     * get an array with certificate infos with a ssl socket connection 
+     * Get an array with certificate infos with a ssl socket connection 
+     * It returns a key _error if something went wrong.
      * 
      * @param string  $url  url to check; i.e. https://example.com or example.com:443
      * @return array
      */
-    public function getCertinfos($url=false) {
-        if($url){
+    public function getCertinfos(string $url = ''): array
+    {
+        if ($url) {
             $this->setUrl($url);
         }
-        if ($this->_aCertInfos){
+        if ($this->_aCertInfos) {
             return $this->_aCertInfos;
         }
-        
+
         $iTimeout = 3;
         if (!$this->_sHost || !$this->_iPort) {
             // die(__METHOD__. "ERROR: I need host AND port\n");
-            return array('_error' => 'ERROR: I need host AND port');
+            return ['_error' => 'ERROR: I need host AND port'];
         }
 
         // fetch data directly from the server
-        $aStreamOptions = stream_context_create(array(
-            'ssl' => array(
-                'capture_peer_cert' => true,
-                'verify_peer'       => false,
-                'verify_peer_name'  => false
-            ))
+        $aStreamOptions = stream_context_create(
+            [
+                'ssl' => [
+                    'capture_peer_cert' => true,
+                    'verify_peer' => false,
+                    'verify_peer_name' => false
+                ]
+            ]
         );
         if (!$aStreamOptions) {
-            return array('_error' => 'Error: Cannot create stream_context');
+            return ['_error' => 'Error: Cannot create stream_context'];
         }
-        
-        $errno=''; 
-        $errstr='';
+
+        $errno = '';
+        $errstr = '';
         $read = @stream_socket_client("ssl://$this->_sHost:$this->_iPort", $errno, $errstr, $iTimeout, STREAM_CLIENT_CONNECT, $aStreamOptions);
         if (!$read) {
-            return array('_error' => "Error $errno: $errstr; cannot create stream_context to ssl://$this->_sHost:$this->_iPort");
+            return ['_error' => "Error $errno: $errstr; cannot create stream_context to ssl://$this->_sHost:$this->_iPort"];
         }
         $cert = stream_context_get_params($read);
         if (!$cert) {
-            return array('_error' => "Error: socket was connected to ssl://$this->_sHost:$this->_iPort - but I cannot read certificate infos with stream_context_get_params ");
+            return ['_error' => "Error: socket was connected to ssl://$this->_sHost:$this->_iPort - but I cannot read certificate infos with stream_context_get_params "];
         }
         $this->_aCertInfos = openssl_x509_parse($cert['options']['ssl']['peer_certificate']);
-        
 
         // check chaining
-        $aStreamOptions2 = stream_context_create(array(
-            'ssl' => array(
-                'capture_peer_cert' => true,
-                'verify_peer'       => true,
-                'verify_peer_name'  => true
-            ))
+        $aStreamOptions2 = stream_context_create(
+            [
+                'ssl' => [
+                    'capture_peer_cert' => true,
+                    'verify_peer' => true,
+                    'verify_peer_name' => true
+                ]
+            ]
         );
         $read2 = @stream_socket_client("ssl://$this->_sHost:$this->_iPort", $errno, $errstr, $iTimeout, STREAM_CLIENT_CONNECT, $aStreamOptions2);
-        $this->_aCertInfos['chaining']=$read2 ? true : false;
-        
+        $this->_aCertInfos['chaining'] = $read2 ? true : false;
+
         return $this->_aCertInfos;
     }
 
     /**
-     * get an array check results from a given url; 
+     * Get an array check results from a given url; 
      * Checks are:
      *     - start date of cert was reached
      *     - end date is larger 30d (=ok); below 30d (=warning) or expired (=error)
@@ -159,7 +183,8 @@ class sslinfo {
      * @param string  $url  url to check; i.e. https://example.com or example.com:443
      * @return array
      */
-    public function checkCertdata($url=false) {
+    public function checkCertdata(string $url = ''): array
+    {
         $aReturn = [
             'errors' => [],
             'warnings' => [],
@@ -167,7 +192,7 @@ class sslinfo {
             'keys' => [],
             'status' => false,
         ];
-        if($url){
+        if ($url) {
             $this->setUrl($url);
         }
 
@@ -193,50 +218,50 @@ class sslinfo {
 
         if ($iDaysleft > $this->_iWarnBeforeExpiration) {
             $aReturn['ok'][] = "Certificate is still valid for $iDaysleft more days.";
-            $aReturn['keys']['validto']='ok';
+            $aReturn['keys']['validto'] = 'ok';
         } elseif ($iDaysleft > 0) {
             $aReturn['warnings'][] = "Certificate expires in $iDaysleft days.";
-            $aReturn['keys']['validto']='warning';
+            $aReturn['keys']['validto'] = 'warning';
         } else {
             $aReturn['errors'][] = "Certificate is invalid for " . (-$iDaysleft) . " days.";
-            $aReturn['keys']['validto']='error';
+            $aReturn['keys']['validto'] = 'error';
         }
 
         // ----- check: is chaining OK?
-        $sCertType=$this->getCertType();
-        if ($sCertType && $sCertType!=='selfsigned' && isset($certinfo['chaining'])){
-            if ($certinfo['chaining']){
+        $sCertType = $this->getCertType();
+        if ($sCertType && $sCertType !== 'selfsigned' && isset($certinfo['chaining'])) {
+            if ($certinfo['chaining']) {
                 $aReturn['ok'][] = "Chaining is OK.";
-                $aReturn['keys']['chaining']='ok';
+                $aReturn['keys']['chaining'] = 'ok';
             } else {
                 $aReturn['warnings'][] = "Problem with chaining.";
-                $aReturn['keys']['chaining']='warning';
+                $aReturn['keys']['chaining'] = 'warning';
             }
         }
         // ----- current domain is part of dns names?
-        $bInDnsList=false;
+        $bInDnsList = false;
         $sHost = $this->_sHost;
         $sDNS = isset($certinfo['extensions']['subjectAltName']) ? $certinfo['extensions']['subjectAltName'] : false;
-        
-        $sDNS= str_replace('DNS:', '', $sDNS);
-        foreach (explode(',',$sDNS) as $sEntry){
-            if(strstr($sEntry, '*.')){
-                if(preg_match('/.'.trim($sEntry).'/', $sHost)){
-                    $bInDnsList=true;
+
+        $sDNS = str_replace('DNS:', '', $sDNS);
+        foreach (explode(',', $sDNS) as $sEntry) {
+            if (strstr($sEntry, '*.')) {
+                if (preg_match('/.' . trim($sEntry) . '/', $sHost)) {
+                    $bInDnsList = true;
                 }
             } else {
-                if(trim($sEntry)===$sHost){
-                    $bInDnsList=true;
+                if (trim($sEntry) === $sHost) {
+                    $bInDnsList = true;
                 }
             }
         }
-        
+
         if ($bInDnsList) {
             $aReturn['ok'][] = "Domain $sHost is included as DNS alias in the certificate.";
-            $aReturn['keys']['DNS']='ok';
+            $aReturn['keys']['DNS'] = 'ok';
         } else {
             $aReturn['errors'][] = "Domain $sHost is not included as DNS alias in the certificate.";
-            $aReturn['keys']['DNS']='error';
+            $aReturn['keys']['DNS'] = 'error';
         }
 
         /*
@@ -271,13 +296,14 @@ class sslinfo {
     }
 
     /**
-     * get an array of cert infos with simplified keys
+     * Get an array of cert infos with simplified keys
      * 
      * @param string  $url  url to check; i.e. https://example.com or example.com:443
      * @return array
      */
-    public function getSimpleInfosFromUrl($url=false) {
-        if($url){
+    public function getSimpleInfosFromUrl(string $url = ''): array
+    {
+        if ($url) {
             $this->setUrl($url);
         }
 
@@ -304,7 +330,7 @@ class sslinfo {
 
             $aInfos['type'] = $this->getCertType();
             $aInfos['subject'] = $certinfo['subject'];
-            
+
             $aInfos['validfrom'] = date("Y-m-d H:i", $certinfo['validFrom_time_t']);
             $aInfos['validto'] = date("Y-m-d H:i", $certinfo['validTo_time_t']);
             $aInfos['signatureTypeSN'] = $certinfo['signatureTypeSN'];
@@ -317,74 +343,70 @@ class sslinfo {
     }
 
     /**
-     * get type of ssl certificate; it returns one of
-     *  - false
+     * Get type of ssl certificate; it returns one of
+     *  - "" (empty string)
      *  - "EV"
      *  - "Business SSL"
      *  - "selfsigned"
      * @return string
      */
-    public function getCertType(){
+    public function getCertType(): string
+    {
         $certinfo = $this->getCertinfos();
         if (isset($certinfo['_error']) && $certinfo['_error']) {
-            return false;
+            return '';
         }
         $sReturn = 'selfsigned';
-        if(isset($certinfo['subject']['jurisdictionC'])){
+        if (isset($certinfo['subject']['jurisdictionC'])) {
             $sReturn = 'EV';
-        } else if (isset($certinfo['extensions']['authorityInfoAccess'])){
+        } else if (isset($certinfo['extensions']['authorityInfoAccess'])) {
             $sReturn = 'Business SSL';
         }
         return $sReturn;
     }
-    
+
     # ----------------------------------------------------------------------
     # PUBLIC :: SETTER
     # ----------------------------------------------------------------------
 
     /**
-     * set an url to memorize it for getter functions
+     * Set an url to memorize it for getter functions
+     * 
      * @param string  $sUrl  url, i.e. ssl://[hostname]:[port]
      * @return boolean
      */
-    public function setUrl($sUrl) {
-        if($sUrl && $sUrl===$this->_sUrl){
+    public function setUrl(string $sUrl): bool
+    {
+        if ($sUrl && $sUrl === $this->_sUrl) {
             return false;
         }
-        $this->_sUrl = false;
-        $this->_aCertInfos = false;
-        
+        $this->_sUrl = '';
+        $this->_aCertInfos = [];
+
         $aUrldata = parse_url($sUrl);
         $this->_sHost = isset($aUrldata['host']) ? $aUrldata['host'] : false;
         $this->_iPort = isset($aUrldata['port']) ? $aUrldata['port'] : ((isset($aUrldata['scheme']) && $aUrldata['scheme'] === 'https') ? 443 : false);
-        if(!$this->_sHost || !$this->_iPort){
-            die(__METHOD__ . 'ERROR: cannot detect hostname and port number in given url '.$sUrl);
+        if (!$this->_sHost || !$this->_iPort) {
+            die(__METHOD__ . 'ERROR: cannot detect hostname and port number in given url ' . $sUrl);
         }
         $this->_sUrl = $sUrl;
         return true;
     }
-    
+
     # ----------------------------------------------------------------------
     # EXPERIMENTAL SECTION
     # PUBLIC :: get items ... requires to setUrl() first
     # ----------------------------------------------------------------------
 
     /**
-     * get status as string error|warning|ok
+     * Get status as string error|warning|ok|(empty)
      * 
-     * @return boolean
+     * @return string
      */
-    public function getStatus() {
-        $aChecks=$this->checkCertdata();
-        return isset($aChecks['status']) ? $aChecks['status']: false;
+    public function getStatus(): string
+    {
+        $aChecks = $this->checkCertdata();
+        return $aChecks['status'] ?: '';
     }
-    /**
-     * experimental
-     * 
-     * @return boolean
-     */
-    public function isOK() {
-        $aChecks=$this->checkCertdata();
-        return isset($aChecks['status']) ? $aChecks['status']==='ok' : false;
-    }
+
 }

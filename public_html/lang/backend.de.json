@@ -796,6 +796,7 @@
     "update.welcome.description": "Der nachfolgende Assistent begleitet Sie durch den den Aktualisierungs-Prozess.<br>Starten wir mit dem Versionsvergleich.",
     "update.welcome.available-yes": "Es ist ein Update auf Version %s verf&uuml;gbar. Bitte Folgen Sie dem Assistenten, um die Software zu aktualisieren.",
     "update.welcome.available-no": "Die Software ist auf dem aktuellen Stand. Dem Update-Assistenten zu folgen, ist nicht zwingend notwendig.",
+    "update.welcome.available-check": "Der Updater konnte die aktuelle Version nicht ermitteln. Sie sollten es sp&auml;ter nochmals versuchen.<br>F&uuml;r Entwickler: Bei Entwicklungsversionen kann kein Update ermittelt werden. Brechen Sie bitte ab.",
     "update.welcome.version-on-client": "Deine Version",
     "update.welcome.version-latest": "Aktuelle Version",
     "update.welcome.unusedLibs": "Hinweis: es gibt <strong>%s<\/strong> ungenutze Vendor-Bibliotheken, die man l&ouml;schen kann.",

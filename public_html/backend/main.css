@@ -33,16 +33,18 @@
     */
     --color-border-active:#89a;
     --color-border-click:#cde;
-    --color-h1:#346;
-    --color-h2:#457;
-    --color-h3:#589;
+    --color-h1:#444;
+    --color-h2:#555;
+    --color-h3:#777;
     --color-h3-border-top:#ccc;
-    --color-h4:#8ab;
+    --color-h4:#aaa;
     --color-h4-border-bottom:#eee;
     --color-hr:#ddd;
-    --color-shadow-default:#c0d0d8;
 
-    --context-head-bg:#78a;
+    --color-pacman: #999;
+    --color-shadow-default:#d0d0d0;
+
+    --context-head-bg:#999;
     --context-head-fg:var(--DEFAULT-markedelement-color);
 
     /* -- menu left -- */
@@ -50,16 +52,14 @@
     --sidebar-box-shadow: 0 0 2em #e0ecf0;
 
     --brand-title-bg: none;
-    --color-pacman: #69a;
 
     --navi-bg-l1:rgba(0,0,0,0.03);
-    --navi-bg-l1-active:#568;
-    --navi-bg-l2-active:#78a;
-    --navi-bg-l3-active:#567;
-    --navi-bg-on-hover:#c0d0dc;
-    --navi-bg-on-hover:rgba(160,170,190,0.1);
+    --navi-bg-l1-active:#666;
+    --navi-bg-l2-active:#888;
+    --navi-bg-l3-active:#999;
+    --navi-bg-on-hover:#eee;
 
-    --navi-icon-color:#808890;
+    --navi-icon-color: #666;
     --navi-icon-color-active:var(--DEFAULT-markedelement-color);
 
     --overlay-bg:rgba(0,0,0,0.1);
@@ -70,7 +70,7 @@
     --overlay-dialog-title-bg:#789;
     --overlay-dialog-title-color:var(--DEFAULT-markedelement-color);
 
-    --pagehint-bg:#d0e8e0;
+    --pagehint-bg:#fff;
 
     /* -- foooter -- */
     --footer-bg: var(--DEFAULT-darken-5);
@@ -93,13 +93,12 @@
     --button-varname-color: #838;
     --button-value-color: #388;
 
-    --color-bg-boxes:#f0f4f4;
+    --color-bg-boxes:#f4f4f4;
 
-    --color-childitem-i: #808890;
-    --color-childitem-i: #568;
+    --color-childitem-i: #666;
     --color-childitem-background: var(--color-bg-boxes);
     --color-childitem-border: var(--DEFAULT-darken-5);
-    --color-childitem-title: #589;
+    --color-childitem-title: #888;
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
 
@@ -186,12 +185,12 @@
     --status-color-todo:#778;
 
     --table-bg: #fff;
-    --table-head-bg: #8ab;
-    --table-head-color: #eff;
-    --table-head-hover-bg: #9bc;
+    --table-head-bg: #777;
+    --table-head-color: #eee;
+    --table-head-hover-bg: #888;
+    --table-head-select-bg: #555;
     --table-head-hover-color: #f8f8f8;
-    --table-head-select-bg: #568;
-    --table-head-select-color: #cde;
+    --table-head-select-color: #ddd;
 
     --table-td-key-color:#009999;
     --table-td-key-color:#995599;
@@ -213,8 +212,8 @@
 
     --table-tr-marked-bg:#cde;
 
-    --tile-bg:radial-gradient(#fff,#b8c0d2);
-    --tile-color:#78a;
+    --tile-bg:radial-gradient(#f8f8f8,#d0d0d0);
+    --tile-color:#888;
     --tile-border-color:var(--border1);
     --tile-shadow-hover: 1px 1px 2px var(--color-shadow-default);
     --tile-shadow:-2px -2px 5px #fff, 0 0 0.9em var(--color-shadow-default);
@@ -463,6 +462,8 @@ pre.logdata .message{border: none; margin:0;}
 
 pre span.linenumber{background: var(--DEFAULT-darken-10); display: inline-block; padding: 0.2em 0.5em; text-align: center; width: 1.7em; }
 
+pre.output{font-size: 100%;}
+
 /* --- tiles --- */
 
 a.childitem{
@@ -535,6 +536,7 @@ img.profile{
     border-radius: 0.5em;
     padding: 0;
     max-width: 100%;
+    opacity: 0.7
 }
 
 /* ----- toggle boxes for help/ legends) ----- */

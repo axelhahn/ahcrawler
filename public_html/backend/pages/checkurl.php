@@ -3,7 +3,6 @@
  * page analysis :: search for an url
  */
 $sReturn='';
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 
@@ -26,7 +25,7 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 if ($sQuery){
     $oRessources=new ressources($this->_sTab);
 
-    // $aData=$oRessources->getRessources('*', array('url'=>$sQuery), array('url'=>'ASC'));
+    // $aData=$oRessources->getRessources('*', ['url'=>$sQuery), ['url'=>'ASC']]);
     $aData=$oRessources->getRessourceDetailsByUrl($sQuery);
 
     if ($aData && count($aData)){

@@ -10,7 +10,9 @@
  * For more information see 
  * https://www.axel-hahn.de/docs/ahcrawler/searchform.htm
  * 
- *  
+ * ----------------------------------------------------------------------
+ * (...)
+ * 2024-09-10  v0.167  use short array syntax
  */
 require_once(__DIR__ . "/../classes/search.class.php");
 
@@ -38,11 +40,11 @@ $o->setLangFrontend($sLang);
 // echo $o->renderSearchForm();
 
 // with additional options
-echo $o->renderSearchForm(array(
+echo $o->renderSearchForm([
     'categories'=>1,
     'lang'=>1,
     'mode'=>1,
-))
+])
 .'<br>'
 ;
 // ------ (4) output of results

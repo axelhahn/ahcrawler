@@ -227,8 +227,19 @@ class ahwiupdatecheck {
      * @return boolean
      */
     public function hasUpdate(){
-        return $this->_aInfos['flag_update'];
+        return $this->_aInfos['flag_update'] ?? false;
     }
+
+    public function getError(){
+        if ($this->_aInfos['clientversion'] == "unknown" ){
+            return "ERROR: unable to detect your client version as a published version.";
+        }
+        if ($this->_aInfos['latest_version'] == "unknown" ){
+            return "ERROR: unable to detect the latest available version. Try again later.";
+        }
+
+        return '';
+    }    
     /**
      * get version of installed software
      * @return boolean

@@ -31,7 +31,7 @@
     // $bUseCache=false;
     $sRefFile=false;
     if($bUseCache){
-        require_once(__DIR__ . "/classes/cache.class.php");
+        require_once(__DIR__ . "/vendor/ahcache/cache.class.php");
         $sRefFile=__DIR__. '/data/indexlog-siteid-'.$iSiteId.'.log';
         $aGetParams=$_GET;
         unset($aGetParams['page']);
@@ -62,16 +62,16 @@
     header("X-CACHE-DELIVERY: NO");
     ob_start();
 
-    require_once(__DIR__ . "/classes/cdnorlocal.class.php");
+    require_once(__DIR__ . "/vendor/cdnorlocal/cdnorlocal.class.php");
 
     $oRenderer = new ressourcesrenderer();
 
     global $oCdn;
-    $oCdn=new axelhahn\cdnorlocal(array(
+    $oCdn=new axelhahn\cdnorlocal([
         'vendordir'=>__DIR__.'/vendor/cache',
         'vendorurl'=>($bIsBackend ? '..' :'') . '/vendor/cache',
         'debug'=>0,
-        ));
+        ]);
 
     $oCdn->setLibs([
         "pure/3.0.0",
@@ -92,9 +92,9 @@
      * @param array $aQueryParams
      * @return string
      */
-    function getNewQs($aQueryParams = array()) {
+    function getNewQs($aQueryParams = []) {
         $s = false;
-        $aDelParams = array("doinstall");
+        $aDelParams = ["doinstall"];
 
         if ($_GET) {
             $aDefaults = $_GET;

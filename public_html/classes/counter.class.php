@@ -32,69 +32,84 @@ require_once 'crawler-base.class.php';
  * // cleanup after $_iKeepDays days:
  * $oCounter->cleanup();
  * </code>
-
+ * 
  * ----------------------------------------------------------------------------
+ * 
+ * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
  * */
-class counter extends crawler_base {
+class counter extends crawler_base
+{
 
     /**
-     * array with urls to crawl
-     * @var array
+     * name of database table for counters
+     * @var string
      */
-    private $_db_table = 'counters';
-    private $_db_reltable = 'counteritems';
-    
+    private string $_db_table = 'counters';
+
     /**
-     * use only last counter set on a day
+     * Name of rel table
+     * @var string
+     */
+    private string $_db_reltable = 'counteritems';
+
+    /**
+     * Flag: Use only last counter set on a day
      * @var boolean
      */
-    private $_bOneValuePerDay = true;
-    
+    private bool $_bOneValuePerDay = true;
+
     /**
-     * remove older counter values if older than N days
+     * Remove older counter values if older than N days
      * @var integer
      */
-    private $_iKeepDays = 90;
-
-    private $_iWebId = 1;
-
-    // ----------------------------------------------------------------------
+    private int $_iKeepDays = 90;
 
     /**
-     * new crawler
-     * @param integer  $iSiteId  site-id of search index
-      public function __construct() {
-      return true;
-      }
+     * Web ID of site
+     * @var int
      */
+    private int $_iWebId = 1;
+
     // ----------------------------------------------------------------------
-    // private function
+    // private functions
     // ----------------------------------------------------------------------
 
+    protected function _setDbIfNeeded(){
+        if(!isset($this->oDB)){
+            // echo "ERROS: no database object set - use method setSiteId() first." . __LINE__ . "<br>";
+            $this->setSiteId($this->_iWebId);
+        }
+        if(!isset($this->oDB)){
+            die("ERROR: No database object was set ... and counters class was unable to init it. Use method setSiteId() first.");
+        }
+    }
+
     /**
-     * get id of a counter item as integer. If it does not exist and 
+     * Get id of a counter item as integer. If it does not exist and 
      * bAutoCreate is true then it will be generated.
      * Otherwise it returns false.
      * 
-     * @param type $sCounterItem
-     * @param type $bAutoCreate
+     * @param string  $sCounterItem  Name of the counter
+     * @param boolean $bAutoCreate   Flag: create counter item if it does not exist; default: false (=NO)
      * @return boolean
      */
-    protected function _getCounterId($sCounterItem, $bAutoCreate = false) {
+    protected function _getCounterId(string $sCounterItem, bool $bAutoCreate = false): bool|int
+    {
+        $this->_setDbIfNeeded();
         $aResult = $this->oDB->select(
-                $this->_db_reltable,
-                array('id', 'label'),
-                array('label' => $sCounterItem)
+            $this->_db_reltable,
+            ['id', 'label'],
+            ['label' => $sCounterItem]
         );
-        if ($aResult && isset($aResult[0]['id']) && (int)$aResult[0]['id']) {
+        if ($aResult && isset($aResult[0]['id']) && (int) $aResult[0]['id']) {
             return $aResult[0]['id'];
         }
         if ($bAutoCreate) {
             $aInsert = $this->oDB->insert(
-                    $this->_db_reltable,
-                    array('label' => $sCounterItem)
+                $this->_db_reltable,
+                ['label' => $sCounterItem]
             );
-            return $this->oDB->id();
+            return (int) $this->oDB->id();
         } else {
             return false;
         }
@@ -105,46 +120,56 @@ class counter extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * add a counter value
+     * Add a counter value.
+     * Give a name and a value. It will be stored with a timestamp.
+     * If global value _bOneValuePerDay is true then all other values of the current day will be deleted.
+     * It returns a PDOStatement object if the counter item was added.
+     * It returns false if the counter item does not exist.
+     * 
      * @param string $sCounterItem  Name of the counter
-     * @param string $sValue        Value of the counter as int/ astring/ json/ ...
+     * @param mixed $sValue         Value of the counter as int/ string/ json/ ...
+     * @return PDOStatement|null|boolean
      */
-    public function add($sCounterItem, $sValue) {
+    public function add(string $sCounterItem, mixed $sValue): PDOStatement|null|bool
+    {
         $iCouterId = $this->_getCounterId($sCounterItem, true);
         if ($iCouterId) {
-            
+
             // optional: delete all values of the current day
-            if($this->_bOneValuePerDay){
+            if ($this->_bOneValuePerDay) {
                 $aResult = $this->oDB->delete(
                     $this->_db_table,
-                    array(
+                    [
                         'siteid' => $this->_iWebId,
                         'counterid' => $iCouterId,
                         'ts[>]' => date("Y-m-d"),
-                    )
+                    ]
                 );
             }
             $aResult = $this->oDB->insert(
                 $this->_db_table,
-                array(
+                [
                     'siteid' => $this->_iWebId,
                     'counterid' => $iCouterId,
                     'value' => $sValue,
                     'ts' => date("Y-m-d H:i:s"),
-                )
+                ]
             );
             return $aResult;
         }
         return false;
     }
-    
+
     /**
-     * set siteid for counters
-     * @param type $iSiteId
-     * @return type
+     * Set siteid for counters
+     * 
+     * @param int $iSiteId
+     * @return bool
      */
-    public function mysiteid($iSiteId) {
-        return $this->_iWebId=(int)$iSiteId;
+    public function mysiteid(int $iSiteId): bool
+    {
+        $this->_iWebId = (int) $iSiteId;
+        return true;
     }
 
     // ----------------------------------------------------------------------
@@ -152,106 +177,118 @@ class counter extends crawler_base {
     // ----------------------------------------------------------------------
 
     /**
-     * cleanup older counter values of the current web
+     * Cleanup older counter values of the current web
      * @return boolean
      */
-    public function cleanup(){
-        $sDeleteBefore=date("Y-m-d", date("U") - $this->_iKeepDays*24*60*60);
+    public function cleanup()
+    {
+        $sDeleteBefore = date("Y-m-d", date("U") - $this->_iKeepDays * 24 * 60 * 60);
         $aResult = $this->oDB->delete(
             $this->_db_table,
-            array(
+            [
                 'siteid' => $this->_iWebId,
                 // 'counterid' => $iCouterId,
                 'ts[<]' => $sDeleteBefore,
-            )
+            ]
         );
         return true;
     }
-    
-    public function dump() {
+
+    /**
+     * Dump all counters in an HTML table
+     * It generates output with echo.
+     * 
+     * @return void
+     */
+    public function dump(): void
+    {
         echo '<pre>'
-        . print_r($this->oDB->select(
+            . print_r(
+                $this->oDB->select(
                     $this->_db_table,
-                    array('[>]' . $this->_db_reltable => array('counterid' => 'id')),
-                    array(
-                        $this->_db_table.'.siteid',
-                        $this->_db_table.'.counterid',
-                        $this->_db_reltable.'.label',
-                        $this->_db_table.'.value',
-                        $this->_db_table.'.ts',
-                    )
+                    ["[>]$this->_db_reltable" => ['counterid' => 'id']],
+                    [
+                        "$this->_db_table.siteid",
+                        "$this->_db_table.counterid",
+                        "$this->_db_reltable.label",
+                        "$this->_db_table.value",
+                        "$this->_db_table.ts",
+                    ]
                 )
-                , 1)
-        . 'SQL: ' . $this->oDB->last().'<br>'
-        . '</pre>'
+                ,
+                1
+            )
+            . 'SQL: ' . $this->oDB->last() . '<br>'
+            . '</pre>'
         ;
     }
-    
+
     /**
-     * get ids of existing counters
+     * Get ids of existing counters.
+     * If no $mySiteIdOnly is false it returns *all* counter names.
+     * Otherwise it returns only the counter names of the current site.
+     * 
+     * 
      * @param boolean $bMySiteIdOnly   optional: flag to get only counters of the current site
      * @return array
      */
-    public function getCounterItems($bMySiteIdOnly=false) {
-
-        if(!$bMySiteIdOnly){
+    public function getCounterItems(bool $bMySiteIdOnly = false): array|null
+    {
+        $this->_setDbIfNeeded();
+        if (!$bMySiteIdOnly) {
             return $this->oDB->select($this->_db_reltable, 'label');
         }
-        $aReturn=[];
-        $aTmp=$this->oDB->select(
-                $this->_db_table,
-                array('[>]' . $this->_db_reltable => array('counterid' => 'id')),
-                array(
-                    '@'.$this->_db_reltable.'.label',  // @ is DISTINCT
-                ),
-                array(
-                    $this->_db_table.'.siteid'=>$this->_iWebId
-                )
-            );
-        foreach(array_values($aTmp) as $aData){
-            $aReturn[]=$aData['label'];
+        $aReturn = [];
+        $aTmp = $this->oDB->select(
+            $this->_db_table,
+            ["[>]$this->_db_reltable" => ['counterid' => 'id']],
+            [
+                "@$this->_db_reltable.label",  // @ is DISTINCT
+            ],
+            [
+                "$this->_db_table.siteid" => $this->_iWebId
+            ]
+        );
+        foreach (array_values($aTmp) as $aData) {
+            $aReturn[] = $aData['label'];
         }
         sort($aReturn);
-        
+
         return $aReturn;
     }
 
     /**
-     * get last set value of given counters
-     * @param array  $aItems  list of wanted counters; default: all
-     */
-    public function getCountersLastitem($aItems = array()) {
-        
-    }
-
-    /**
-     * get last set values of given counter ids
+     * Get last set values of given counter id
+     * 
      * @param string  $sCounter  name of counter
+     * @param int     $iMax      max count of last values to fetch; default: 30
+     * @return array
      */
-    public function getCountersHistory($sCounter, $iMax=30) {
-        $aReturn=$this->oDB->select(
+    public function getCountersHistory(string $sCounter, int $iMax = 30): array
+    {
+        $this->_setDbIfNeeded();
+        $aReturn = $this->oDB->select(
             $this->_db_table,
-            array('[>]' . $this->_db_reltable => array('counterid' => 'id')),
-            array(
+            [ "[>]$this->_db_reltable" => ['counterid' => 'id']],
+            [
                 // $this->_db_table.'.siteid',
                 // $this->_db_table.'.counterid',
                 // $this->_db_reltable.'.label',
-                $this->_db_table.'.value',
-                $this->_db_table.'.ts',
-            ),
-            array(
-                $this->_db_table.'.siteid'=>$this->_iWebId,
-                $this->_db_reltable.'.label'=>$sCounter,
-            ),[
-                "LIMIT" => array(0, $iMax),
+                "$this->_db_table.value",
+                "$this->_db_table.ts",
+            ],
+            [
+                $this->_db_table . '.siteid' => $this->_iWebId,
+                $this->_db_reltable . '.label' => $sCounter,
+            ],
+            [
+                "LIMIT" => [0, $iMax],
             ]
         );
         // echo 'SQL: ' . $this->oDB->last().'<br>';
         return $aReturn;
     }
-    // ----------------------------------------------------------------------
-    // VISUALS
-    // ----------------------------------------------------------------------
 
+    // ----------------------------------------------------------------------
 
 }

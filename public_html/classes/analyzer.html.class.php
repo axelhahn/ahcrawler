@@ -44,27 +44,65 @@
  * $oHtml=new analyzerHtml($sHtml, $sUrl);<br>
  * print_r($oHtml->getReport());</pre>
  * 
+ * 2024-08-29  v0.167  php8 only; add typed variables; use short array syntax
  * */
-class analyzerHtml {
+class analyzerHtml
+{
 
-    private $_sHtml = false;
-    private $_oDom = false;
-    private $_sUrl = false;
-    private $_sBaseHref = false;
-    private $_sScheme = false;
-    private $_sDomain = false;
-    private $_aHttpResponseHeader = [];
+    /**
+     * HTML code
+     * @var string
+     */
+    private string $_sHtml = '';
+
+
+    /**
+     * DOM object of an html page
+     * @var object
+     */
+    private object $_oDom;
+
+    /**
+     * url to analyze
+     * @var string
+     */
+    private string $_sUrl = '';
+
+    /**
+     * base href of the current html documenmt
+     * @var string
+     */
+    private string $_sBaseHref = '';
+
+    /**
+     * current http scheme
+     * @var string
+     */
+    private string $_sScheme = '';
+
+    /**
+     * current domain
+     * @var string
+     */
+    private string $_sDomain = '';
+
+    /**
+     * http response header as array
+     * @var array
+     */
+    private array $_aHttpResponseHeader = [];
 
     // ----------------------------------------------------------------------
 
     /**
-     * new instance
+     * Constructor
+     * 
      * @param string  $sHtmlcode  html document
      * @param string  $sUrl       url
-     * @return type
      */
-    public function __construct($sHtmlcode = false, $sUrl = false) {
-        return $this->setHtml($sHtmlcode, $sUrl);
+    public function __construct(string $sHtmlcode = '', string $sUrl = '')
+    {
+        $this->setHtml($sHtmlcode, $sUrl);
     }
 
     // ----------------------------------------------------------------------
@@ -74,23 +112,26 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
-     * get base url from url of the document or base href
-     * @return boolean
+     * Get base url from url of the document or base href.
+     * It returns false if no DOm was found
+     * 
+     * @return boolean|string
      */
-    private function _getBaseHref(){
-        $this->_sBaseHref = false;
-        $partsBaseHref=[];
-        if (!$this->_oDom){
+    private function _getBaseHref(): bool|string
+    {
+        $this->_sBaseHref = '';
+        $partsBaseHref = [];
+        if (!$this->_oDom) {
             return false;
         }
-        $anchors=$this->_getNodesByTagAndAttribute('base', 'href');
+        $anchors = $this->_getNodesByTagAndAttribute('base', 'href');
         /*
         if (!count(($anchors))){
             return false;
         }
          * 
          */
-        if (count(($anchors))){
+        if (count(($anchors))) {
             foreach ($anchors as $element) {
                 $sBaseHref = $element->getAttribute('_href');
                 break;
@@ -99,53 +140,56 @@ class analyzerHtml {
         }
         $partsUrl = parse_url($this->_sUrl);
         $this->_sBaseHref = ''
-                
-                // start with scheme
-                .(isset($partsBaseHref['scheme']) ? $partsBaseHref['scheme'] : $partsUrl['scheme'])
-                .'://'
-                
-                // add user + password ... if they exist "[user]:[pass]@"
-                .(isset($partsBaseHref['user']) 
-                    ? $partsBaseHref['user'].':'.$partsBaseHref['pass'].'@' 
-                    : (isset($partsUrl['user'])
-                        ? $partsUrl['user'].':'.$partsUrl['pass'].'@'
-                        : ''
-                    )
-                 )
-                 // 
-                .(isset($partsBaseHref['host']) ? $partsBaseHref['host']     : (isset($partsUrl['host']) ? $partsUrl['host']     : ''))
-                .(isset($partsBaseHref['port']) ? ':'.$partsBaseHref['port'] : (isset($partsUrl['port']) ? ':'.$partsUrl['port'] : ''))
-                .(isset($partsBaseHref['path']) ? $partsBaseHref['path']     : (isset($partsUrl['path']) ? $partsUrl['path']     : ''))
-            
-            ;
+
+            // start with scheme
+            . (isset($partsBaseHref['scheme']) ? $partsBaseHref['scheme'] : $partsUrl['scheme'])
+            . '://'
+
+            // add user + password ... if they exist "[user]:[pass]@"
+            . (isset($partsBaseHref['user'])
+                ? $partsBaseHref['user'] . ':' . $partsBaseHref['pass'] . '@'
+                : (isset($partsUrl['user'])
+                    ? $partsUrl['user'] . ':' . $partsUrl['pass'] . '@'
+                    : ''
+                )
+            )
+            // 
+            . (isset($partsBaseHref['host']) ? $partsBaseHref['host'] : (isset($partsUrl['host']) ? $partsUrl['host'] : ''))
+            . (isset($partsBaseHref['port']) ? ':' . $partsBaseHref['port'] : (isset($partsUrl['port']) ? ':' . $partsUrl['port'] : ''))
+            . (isset($partsBaseHref['path']) ? $partsBaseHref['path'] : (isset($partsUrl['path']) ? $partsUrl['path'] : ''))
+
+        ;
         return $this->_sBaseHref;
     }
-    
+
     /**
-     * set a new html document with its sourcecode and url;
+     * Set a new html document with its sourcecode and url;
      * If you don't have the html source then use the method fetchUrl($sUrl)
      * 
      * @see fetchUrl($sUrl)
+     * 
      * @param string  $sHtmlcode  html body
      * @param string  $sUrl       optional: url (used to generate full urls of internal links)
      * @return boolean
      */
-    public function setHtml($sHtmlcode = false, $sUrl = false) {
+    public function setHtml(string $sHtmlcode = '', string $sUrl = ''): bool
+    {
 
         $this->_sHtml = $sHtmlcode;
         $this->_sUrl = $sUrl;
-        $this->_sBaseHref = false;
-        $this->_sScheme = false;
-        $this->_sDomain = false;
-        $this->_oDom = false;
+        $this->_sBaseHref = '';
+        $this->_sScheme = '';
+        $this->_sDomain = '';
+        unset($this->_oDom);
+        
         if ($sUrl) {
             $parts = parse_url($this->_sUrl);
             $this->_sScheme = isset($parts['scheme']) ? $parts['scheme'] : false;
-            $this->_sDomain = isset($parts['host'])   ? $parts['host']   : false;
+            $this->_sDomain = isset($parts['host']) ? $parts['host'] : false;
         }
 
-        if(!$sHtmlcode){
-            $this->_oDom = false;
+        if (!$sHtmlcode) {
+            unset($this->_oDom);
             return false;
         }
         // echo __METHOD__. " ... $sUrl". PHP_EOL ."html size: " . strlen($sHtmlcode) . ' byte'. PHP_EOL;
@@ -155,21 +199,23 @@ class analyzerHtml {
         if (!$this->_oDom) {
             echo "WARNING: this is no valid DOM $sUrl \n<br>";
             return false;
-        } else if ($sHtmlcode){
+        } else if ($sHtmlcode) {
             $this->_getBaseHref();
         }
         return true;
     }
 
     /**
-     * fetch a given url as html document
+     * Fetch a given url as html document
      * If you have the html source already then use the method setHtml(($sHtmlcode, $sUrl)
      * 
      * @see setHtml($sHtmlcode = false, $sUrl=false)
-     * @param string  $sUrl  url
+     * 
+     * @param string  $sUrl  url to fetch
      * @return boolean¨
      */
-    public function fetchUrl($sUrl) {
+    public function fetchUrl(string $sUrl): bool
+    {
         require_once __DIR__ . './../vendor/rolling-curl/src/RollingCurl/RollingCurl.php';
         require_once __DIR__ . './../vendor/rolling-curl/src/RollingCurl/Request.php';
         $this->_aHttpResponseHeader = [];
@@ -177,19 +223,19 @@ class analyzerHtml {
         $rollingCurl = new \RollingCurl\RollingCurl();
         $self = $this;
         $rollingCurl->setOptions([
-                    CURLOPT_FOLLOWLOCATION => true,
-                    // CURLOPT_HEADER => true,
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36',
-                    CURLOPT_VERBOSE => false,
-                    // TODO: this is unsafe .. better: let the user configure it
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                ])
-                ->get($sUrl)
-                ->setCallback(function(\RollingCurl\Request $request) use ($self) {
-                    $self->processResponse($request);
-                })
-                ->execute()
+            CURLOPT_FOLLOWLOCATION => true,
+            // CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.109 Safari/537.36',
+            CURLOPT_VERBOSE => false,
+            // TODO: this is unsafe .. better: let the user configure it
+            CURLOPT_SSL_VERIFYPEER => 0,
+        ])
+            ->get($sUrl)
+            ->setCallback(function (\RollingCurl\Request $request) use ($self) {
+                $self->processResponse($request);
+            })
+            ->execute()
         ;
         /*
           $request = new \RollingCurl\Request($sUrl);
@@ -202,14 +248,16 @@ class analyzerHtml {
     }
 
     /**
-     * callback function for rollingCurl
+     * Callback function for rollingCurl: set html code for analysis
+     * 
      * @param object  $response  content
-     * @param array   $info      http reposnse header
+     * @return void
      */
-    public function processResponse($response) {
+    public function processResponse(object $response): void
+    {
         $url = $response->getUrl();
         $this->_aHttpResponseHeader = $response->getResponseInfo();
-        $this->setHtml($response->getResponseText(), $url);        
+        $this->setHtml($response->getResponseText(), $url);
     }
 
     // ---------------------------------------------------------------------- 
@@ -220,25 +268,29 @@ class analyzerHtml {
 
     /**
      * helper function: get html header from html document as string
+     * It returns false if no '<head>...</head>' section was found
      * 
      * @param string   $sItem   header element to extract
      * @return boolean|array
      */
-    public function getHtmlHead() {
+    public function getHtmlHead()
+    {
         preg_match("@<head[^>]*>(.*?)<\/head>@si", $this->_sHtml, $regs);
         if (!is_array($regs) || count($regs) < 2) {
             return false;
         }
         return $regs[1];
     }
-    
+
     /**
-     * helper function: get a value from html header
+     * helper function: get a value from html header eg.
+     * description, keywords, robots generator, title
      * 
      * @param string   $sItem   header element to extract
-     * @return boolean|array
+     * @return boolean|string
      */
-    private function _getMetaHead($sItem) {
+    private function _getMetaHead(string $sItem): bool|string
+    {
         /*
         preg_match("@<head[^>]*>(.*?)<\/head>@si", $this->_sHtml, $regs);
         if (!is_array($regs) || count($regs) < 2) {
@@ -260,24 +312,27 @@ class analyzerHtml {
         }
         return false;
     }
-    
+
     /**
-     * get url of canonical link from html -> head -> <link rel="canonical" ...>
+     * Get url of canonical link from html -> head -> <link rel="canonical" ...>
+     * It returns false if no "<link ...>" was found
+     * 
      * @return string|boolean
      */
-    public function getCanonicalUrl(){
-        if (preg_match("/<link +rel *=[\"']?canonical[\"'].*\>?/i", $this->getHtmlHead(), $aFoundLinks)){
+    public function getCanonicalUrl(): string|bool
+    {
+        if (preg_match("/<link +rel *=[\"']?canonical[\"'].*\>?/i", $this->getHtmlHead(), $aFoundLinks)) {
             preg_match("/<link.*href=[\"']?([^<>'\"]+)[\"']?/i", $aFoundLinks[0], $res);
-            if (isset($res[1])){
-                $aUrl= parse_url($res[1]);
+            if (isset($res[1])) {
+                $aUrl = parse_url($res[1]);
                 return ''
-                    . (isset($aUrl['scheme']) ? $aUrl['scheme'].'://' : '')
-                    . (isset($aUrl['user'])   ? $aUrl['user'].':'.$aUrl['passwort'].'@' : '' )
-                    . (isset($aUrl['host'])   ? $aUrl['host'] : '')
-                    . (isset($aUrl['port'])   ? ':'.$aUrl['port'] : '' )
-                    . (isset($aUrl['path'])   ? $aUrl['path'] : '/' )
-                    . (isset($aUrl['query'])  ? '?'.$aUrl['query'] : '' )
-                    ;
+                    . (isset($aUrl['scheme']) ? $aUrl['scheme'] . '://' : '')
+                    . (isset($aUrl['user']) ? $aUrl['user'] . ':' . $aUrl['passwort'] . '@' : '')
+                    . (isset($aUrl['host']) ? $aUrl['host'] : '')
+                    . (isset($aUrl['port']) ? ':' . $aUrl['port'] : '')
+                    . (isset($aUrl['path']) ? $aUrl['path'] : '/')
+                    . (isset($aUrl['query']) ? '?' . $aUrl['query'] : '')
+                ;
             }
         }
         return false;
@@ -286,15 +341,17 @@ class analyzerHtml {
     /**
      * helper function: cleanup /.. in a path and build the realpath of it
      * used in getFullUrl()
+     * 
      * @param string  $path  path
      * @return string
      */
-    private function url_remove_dot_segments($path) {
+    private function url_remove_dot_segments(string $path): string
+    {
         // multi-byte character explode
         $inSegs = preg_split('!/!u', $path);
         $outSegs = [];
         foreach ($inSegs as $seg) {
-            if ($seg == '' || $seg == '.'){
+            if ($seg == '' || $seg == '.') {
                 continue;
             }
             if ($seg == '..') {
@@ -308,22 +365,26 @@ class analyzerHtml {
             $outPath = '/' . $outPath;
         }
         // compare last multi-byte character against '/'
-        if ($outPath != '/' 
-            && (mb_strlen($path) - 1) == mb_strrpos($path, '/', 0, 'UTF-8'))
-        {
+        if (
+            $outPath != '/'
+            && (mb_strlen($path) - 1) == mb_strrpos($path, '/', 0, 'UTF-8')
+        ) {
             $outPath .= '/';
         }
         return $outPath;
     }
 
     /**
-     * get an absolute url with fqdn from any relative or absolute url; 
-     * it requres that the url of the document is known
+     * Get an absolute url with fqdn from any relative or absolute url; 
+     * It requries that the url of the document is known.
+     * It returns false if the docurl was not given and not found.
+     * 
      * @param string   $sRelUrl   url
      * @param string   $sDocUrl   optional: url of the current document to override
      * @return string
      */
-    public function getFullUrl($sRelUrl, $sDocUrl=false) {
+    public function getFullUrl(string $sRelUrl, string $sDocUrl = ''): string
+    {
 
         $aPartsRelUrl = parse_url($sRelUrl);
 
@@ -331,9 +392,9 @@ class analyzerHtml {
         if (isset($aPartsRelUrl['scheme'])) {
             return $sRelUrl;
         }
-        if(!$sDocUrl){
+        if (!$sDocUrl) {
             // $sDocUrl=$this->_sUrl;
-            $sDocUrl=$this->_sBaseHref;
+            $sDocUrl = $this->_sBaseHref;
         }
 
         if (!$sDocUrl) {
@@ -342,9 +403,9 @@ class analyzerHtml {
         $aPartsDoc = parse_url($sDocUrl);
 
         // --- handle relative path values
-        
+
         $sPath = isset($aPartsRelUrl['path']) ? $aPartsRelUrl['path'] : '';
-        if ($sPath){
+        if ($sPath) {
             if (strpos($sPath, '../') === 0) {
                 $base = (($aPartsDoc['path'][strlen($aPartsDoc['path']) - 1]) !== '/') ? dirname($aPartsDoc['path']) . '/' : $aPartsDoc['path'];
                 $sPath = $this->url_remove_dot_segments($base . $sPath);
@@ -356,46 +417,46 @@ class analyzerHtml {
                 }
                 $sPath = str_replace('./', '', $sPath);
             }
-            $aPartsRelUrl['path']=$sPath;
+            $aPartsRelUrl['path'] = $sPath;
         }
 
         // --- create parts for target url
-        
+
         $aPartsReturn = $aPartsRelUrl;
-        foreach (['scheme', /* 'user', 'pass', */ 'host', 'port', /*'path' , 'query', 'fragment' */] as $sKey){
-            if(!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])){
-                $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
+        foreach (['scheme', /* 'user', 'pass', */ 'host', 'port', /*'path' , 'query', 'fragment' */] as $sKey) {
+            if (!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])) {
+                $aPartsReturn[$sKey] = $aPartsDoc[$sKey];
             }
         }
-        
+
         // no host an no path $sRelUrl --> then it is a relative path and we add it from current document
-        if(!isset($aPartsRelUrl['host']) && !isset($aPartsRelUrl['path'])){
-            $aPartsReturn['path']=$aPartsDoc['path'];
+        if (!isset($aPartsRelUrl['host']) && !isset($aPartsRelUrl['path'])) {
+            $aPartsReturn['path'] = $aPartsDoc['path'];
         }
-        
+
         // take user + password ... only if scheme + host match
         if (
-                $aPartsReturn['scheme']===$aPartsDoc['scheme']
-                && $aPartsReturn['host']===$aPartsDoc['host']
-                ){
-            foreach (['user', 'pass'] as $sKey){
-                if(!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])){
-                    $aPartsReturn[$sKey]=$aPartsDoc[$sKey];
+            $aPartsReturn['scheme'] === $aPartsDoc['scheme']
+            && $aPartsReturn['host'] === $aPartsDoc['host']
+        ) {
+            foreach (['user', 'pass'] as $sKey) {
+                if (!isset($aPartsReturn[$sKey]) && isset($aPartsDoc[$sKey])) {
+                    $aPartsReturn[$sKey] = $aPartsDoc[$sKey];
                 }
             }
         }
-        
+
         // --- create url from target target parts
         $sUrl = $aPartsReturn['scheme'] . '://'
-                . (isset($aPartsReturn['user'])     ? $aPartsReturn['user'].':' : '')
-                . (isset($aPartsReturn['pass'])     ? $aPartsReturn['pass'].'' : '')
-                . ((isset($aPartsReturn['user']) || isset($aPartsReturn['pass'])) ? '@' : '')
-                . $aPartsReturn['host']
-                . (isset($aPartsReturn['port'])     ? ':'.$aPartsReturn['port'] : '')
-                . (isset($aPartsReturn['path'])     ? $aPartsReturn['path'] : '')
-                . (isset($aPartsReturn['query'])    ? '?'.$aPartsReturn['query'] : '')
-                . (isset($aPartsReturn['fragment']) ? '#'.$aPartsReturn['fragment'] : '')
-                ;
+            . (isset($aPartsReturn['user']) ? $aPartsReturn['user'] . ':' : '')
+            . (isset($aPartsReturn['pass']) ? $aPartsReturn['pass'] . '' : '')
+            . ((isset($aPartsReturn['user']) || isset($aPartsReturn['pass'])) ? '@' : '')
+            . $aPartsReturn['host']
+            . (isset($aPartsReturn['port']) ? ':' . $aPartsReturn['port'] : '')
+            . (isset($aPartsReturn['path']) ? $aPartsReturn['path'] : '')
+            . (isset($aPartsReturn['query']) ? '?' . $aPartsReturn['query'] : '')
+            . (isset($aPartsReturn['fragment']) ? '#' . $aPartsReturn['fragment'] : '')
+        ;
         // echo "DEBUG: " . $sRelUrl . " -- " . print_r($aPartsRelUrl, 1) ." NEW \n". print_r($aPartsReturn, 1) . "\n--> $sUrl\n\n";
         return $sUrl;
     }
@@ -411,10 +472,12 @@ class analyzerHtml {
      *      other     other protocol than http(s)
      * 
      * @see getValidUrlTypes()
+     * 
      * @param string  $sHref
      * @return string
      */
-    public function getUrlType($sHref) {
+    public function getUrlType(string $sHref): string
+    {
 
         $sType = 'internal';
         $aParse = parse_url($sHref);
@@ -444,21 +507,21 @@ class analyzerHtml {
                     }
                 }
                 return 'internal';
-                break;
+                // break;
             case 'mailto':
                 return 'mailto';
-                break;
+                // break;
             case 'javascript':
             case 'jscript':
             case 'vbscript':
                 return 'script';
-                break;
+                // break;
             case 'data':
                 return 'local';
-                break;
+                // break;
             case 'file':
                 return 'file';
-                break;
+                // break;
             /*
             case 'tel':
                 return 'phone';
@@ -471,13 +534,15 @@ class analyzerHtml {
     }
 
     /**
-     * return array of valid url types; by these types are grouped all
+     * Get array of valid url types; by these types are grouped all
      * css-files, script-files, images, links
      * 
      * @see _getUrlType()
+     * 
      * @return array
      */
-    public function getValidUrlTypes() {
+    public function getValidUrlTypes()
+    {
         return [
             'local',
             'internal',
@@ -504,10 +569,13 @@ class analyzerHtml {
      *     mailto:axel@example.com?subject=23&to=fred@example.com
      *     mailto:?subject=23&to=axel@example.com
      * 
-     * @param string  $sHref
+     * It returns false if the scheme in given link is not "mailto"
+     * 
+     * @param string  $sHref  Link (in href attribute) to analyze
      * @return array
      */
-    private function _parseEmail($sHref) {
+    private function _parseEmail(string $sHref): bool|array
+    {
         // echo "\n" . __FUNCTION__ .  "($sHref)\n\n";
         $aReturn = [];
         $aUrl = parse_url($sHref);
@@ -539,14 +607,18 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
-     * get follow links information from html head area
-     * it returns true if is allowed to follow the links in the document
-     * @return string
+     * Get response header from $this->_aHttpResponseHeader
+     * It returns false if response header is not detected or url doen't mact 
+     * the current url.
+     * 
+     * @return bool|string
      */
-    public function getHttpResponseHeader($bAllowRedirect=false) {
-        if ($this->_sUrl 
-                && count($this->_aHttpResponseHeader) 
-                && ($bAllowRedirect ? true : $this->_aHttpResponseHeader['url'] == $this->_sUrl)
+    public function getHttpResponseHeader(bool $bAllowRedirect = false): bool|string
+    {
+        if (
+            $this->_sUrl
+            && count($this->_aHttpResponseHeader)
+            && ($bAllowRedirect ? true : $this->_aHttpResponseHeader['url'] == $this->_sUrl)
         ) {
             return $this->_aHttpResponseHeader;
         }
@@ -561,112 +633,132 @@ class analyzerHtml {
      * helper function - return boolean if an initialized html page exists 
      * including its url - and that page contains a canonical url that 
      * differs to the url of the document.
+     * 
      * @return boolean
      */
-    public function hasOtherCanonicalUrl(){
-        if($this->_sUrl && $this->_sHtml 
-                && $this->getCanonicalUrl() 
-                && $this->getCanonicalUrl()!==$this->_sUrl){
+    public function hasOtherCanonicalUrl(): bool
+    {
+        if (
+            $this->_sUrl && $this->_sHtml
+            && $this->getCanonicalUrl()
+            && $this->getCanonicalUrl() !== $this->_sUrl
+        ) {
             return true;
         }
         return false;
     }
+
     /**
-     * get follow links information from html head area and X-Robots-Tag
+     * Get follow links information from html head area and X-Robots-Tag
      * it returns true if is allowed to follow the links in the document
-     * @return string
+     * 
+     * @return bool
      */
-    public function canFollowLinks() {
-        $aHttpHeader=$this->getHttpResponseHeader();
-        $sRobots =(isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'].',' : '')
-         . $this->_getMetaHead('robots');
-        if ($sRobots && (
+    public function canFollowLinks(): bool
+    {
+        $aHttpHeader = $this->getHttpResponseHeader();
+        $sRobots = (isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'] . ',' : '')
+            . $this->_getMetaHead('robots');
+        if (
+            $sRobots && (
                 strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
                 || strpos($sRobots, 'nofollow') === 0 || strpos($sRobots, 'nofollow') > 0)
         ) {
             return false;
         }
-        if($this->hasOtherCanonicalUrl()){
+        if ($this->hasOtherCanonicalUrl()) {
             return false;
         }
-        
+
         return true;
     }
 
     /**
-     * get follow links information from html head area and X-Robots-Tag
+     * Get follow links information from html head area and X-Robots-Tag
      * it returns true if is allowed to follow the links in the document
-     * @return string
+     * 
+     * @return bool
      */
-    public function canIndexContent() {
-        $aHttpHeader=$this->getHttpResponseHeader();
-        $sRobots =(isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'].',' : '')
-         . $this->_getMetaHead('robots');
-        if ($sRobots && (
+    public function canIndexContent(): bool
+    {
+        $aHttpHeader = $this->getHttpResponseHeader();
+        $sRobots = (isset($aHttpHeader['X-Robots-Tag']) ? $aHttpHeader['X-Robots-Tag'] . ',' : '')
+            . $this->_getMetaHead('robots');
+        if (
+            $sRobots && (
                 strpos($sRobots, 'none') === 0 || strpos($sRobots, 'none') > 0
                 || strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)
         ) {
             return false;
         }
-        if($this->hasOtherCanonicalUrl()){
+        if ($this->hasOtherCanonicalUrl()) {
             return false;
         }
         return true;
     }
-    /**
-     * TODO get words of a given string
-     * @return string
-     */
-    public function getWords($sString) {
-        $characterMap='À..ÿ'; // chars #192 .. #255
-        $aWords=[];
-        foreach(str_word_count(
-                str_replace("'", '',$sString)
-                ,2,$characterMap) as $sWord ){
 
-            $sKey=$sWord;
-            if(strlen($sKey)>2){
-                if(!isset($aWords[$sKey])){
-                    $aWords[$sKey]=1;
+    /**
+     * UNUSED 
+     * Get words of a given string (html content)
+     * 
+     * @return array
+     */
+    public function getWords(string $sString): array
+    {
+        $characterMap = 'À..ÿ'; // chars #192 .. #255
+        $aWords = [];
+        foreach (str_word_count(str_replace("'", '', $sString), 2, $characterMap) as $sWord) {
+
+            $sKey = $sWord;
+            if (strlen($sKey) > 2) {
+                if (!isset($aWords[$sKey])) {
+                    $aWords[$sKey] = 1;
                 } else {
                     $aWords[$sKey]++;
                 }
             }
         }
         arsort($aWords);
-        
+
         return $aWords;
     }
 
     /**
-     * get description from html head area
-     * @return string
+     * Get description from html head area
+     * 
+     * @return bool|string
      */
-    public function getMetaDescription() {
+    public function getMetaDescription(): bool|string
+    {
         return $this->_getMetaHead('description');
     }
 
     /**
-     * get keywords from html head area
-     * @return string
+     * Get keywords from html head area
+     * 
+     * @return bool|string
      */
-    public function getMetaKeywords() {
+    public function getMetaKeywords(): bool|string
+    {
         return $this->_getMetaHead('keywords');
     }
 
     /**
-     * get generator  from html head area
-     * @return string
+     * Get generator from html head area
+     * @return bool|string
      */
-    public function getMetaGenerator() {
+    public function getMetaGenerator(): bool|string
+    {
         return $this->_getMetaHead('generator');
     }
 
     /**
-     * get index content from html head area
-     * @return string
+     * Get if content can be indexed from html head area
+     * 
+     * @return bool
      */
-    public function getMetaIndex() {
+    public function getMetaIndex(): bool
+    {
         $sRobots = $this->_getMetaHead('robots');
         if ($sRobots && (strpos($sRobots, 'noindex') === 0 || strpos($sRobots, 'noindex') > 0)) {
             return false;
@@ -675,10 +767,12 @@ class analyzerHtml {
     }
 
     /**
-     * get title from html head area
-     * @return string
+     * Get title of html document from html head area
+     * 
+     * @return bool|string
      */
-    public function getMetaTitle() {
+    public function getMetaTitle(): bool|string
+    {
         return $this->_getMetaHead('title');
     }
 
@@ -687,16 +781,19 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
-     * get all directly linked css files of this document
+     * Get all directly linked css files of this html document
+     * 
      * @return array
      */
-    public function getCss() {
+    public function getCss(): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = $this->_oDom->getElementsByTagName('link');
             foreach ($anchors as $element) {
-                if ($element->getAttribute('rel') == 'stylesheet' 
+                if (
+                    $element->getAttribute('rel') == 'stylesheet'
                     && $element->getAttribute('href')
                 ) {
                     $sHref = $element->getAttribute('href');
@@ -714,11 +811,13 @@ class analyzerHtml {
     }
 
     /**
-     * get all images from IMG tags in this document
+     * Get all images from IMG tags in this document
+     * 
      * @param string  $sFilterByType  return links of this type only
      * @return array
      */
-    public function getImages($sFilterByType = false) {
+    public function getImages(string $sFilterByType = ''): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
@@ -745,7 +844,7 @@ class analyzerHtml {
             // thumbs in <link rel="image_src" href="[...]">
             $anchors = $this->_oDom->getElementsByTagName('link');
             foreach ($anchors as $element) {
-                if ($element->getAttribute('rel')==='image_src' && $element->getAttribute('href')){
+                if ($element->getAttribute('rel') === 'image_src' && $element->getAttribute('href')) {
                     $sHref = $element->getAttribute('href');
                     $sType = $this->getUrlType($sHref);
                     if ($sFilterByType && $sFilterByType != $sType) {
@@ -762,11 +861,11 @@ class analyzerHtml {
                     ]);
                 }
             }
-            
+
             // thumbs in <meta property="og:image" content="[...]" />
             $anchors = $this->_oDom->getElementsByTagName('meta');
             foreach ($anchors as $element) {
-                if ($element->getAttribute('property')==='og:image' && $element->getAttribute('content')){
+                if ($element->getAttribute('property') === 'og:image' && $element->getAttribute('content')) {
                     $sHref = $element->getAttribute('content');
                     $sType = $this->getUrlType($sHref);
                     if ($sFilterByType && $sFilterByType != $sType) {
@@ -786,7 +885,7 @@ class analyzerHtml {
             // thumbs in <video poster="[...]" />
             $anchors = $this->_oDom->getElementsByTagName('video');
             foreach ($anchors as $element) {
-                if ($element->getAttribute('poster')>''){
+                if ($element->getAttribute('poster') > '') {
                     $sHref = $element->getAttribute('poster');
                     $sType = $this->getUrlType($sHref);
                     if ($sFilterByType && $sFilterByType != $sType) {
@@ -808,15 +907,17 @@ class analyzerHtml {
     }
 
     /**
-     * get all SOURCEs from AUDIO and VIDEO tags in this document
+     * Get all SOURCEs from AUDIO and VIDEO tags in this document
+     * 
      * @param string  $sFilterByType  return links of this type only
      * @return array
      */
-    public function getMedia($sFilterByType = false) {
+    public function getMedia(string $sFilterByType = ''): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
-            foreach(['audio', 'video'] as $sMediaTag){
+            foreach (['audio', 'video'] as $sMediaTag) {
                 $allAudio = $this->_oDom->getElementsByTagName($sMediaTag);
                 // var_dump($allAudio);
                 foreach ($allAudio as $media) {
@@ -843,12 +944,15 @@ class analyzerHtml {
         }
         return $aReturn;
     }
+
     /**
-     * get all scripts of this document
+     * Get all scripts of this document
+     * 
      * @param string  $sFilterByType  return links of this type only
      * @return array
      */
-    public function getScripts($sFilterByType = false) {
+    public function getScripts(string $sFilterByType = ''): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
@@ -877,10 +981,15 @@ class analyzerHtml {
      * helper: get links by tag name and attribute from already loaded html document
      * and return as array of dom objects
      * used in getLinks()
+     * 
      * @see getLinks
+     * 
+     * @param string  $sTag  tag name
+     * @param string  $sTag  attribute
      * @return array
      */
-    public function _getNodesByTagAndAttribute($sTag, $sAttribute) {
+    public function _getNodesByTagAndAttribute(string $sTag, string $sAttribute): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
@@ -920,23 +1029,25 @@ class analyzerHtml {
      * @param string  $bShowNofollow  skip links with attribute rel="nofollow"? default: return nofollow links
      * @return array
      */
-    public function getLinks($sFilterByType = false, $bShowNofollow=true) {
+    public function getLinks(string $sFilterByType = '', bool $bShowNofollow = true): array
+    {
         $aReturn = [];
         if ($this->_oDom) {
 
             $anchors = array_merge(
-                    $this->_getNodesByTagAndAttribute('a', 'href'), 
-                    $this->_getNodesByTagAndAttribute('area', 'href'), 
-                    $this->_getNodesByTagAndAttribute('link', 'href'), 
-                    $this->_getNodesByTagAndAttribute('frame', 'src'), 
-                    $this->_getNodesByTagAndAttribute('iframe', 'src')
+                $this->_getNodesByTagAndAttribute('a', 'href'),
+                $this->_getNodesByTagAndAttribute('area', 'href'),
+                $this->_getNodesByTagAndAttribute('link', 'href'),
+                $this->_getNodesByTagAndAttribute('frame', 'src'),
+                $this->_getNodesByTagAndAttribute('iframe', 'src')
             );
 
             foreach ($anchors as $element) {
                 $sHref = $element->getAttribute('_href');
 
                 // skip link tag with rel="stylesheet" - these are fetched in getCss
-                if ($element->getAttribute('rel') && (
+                if (
+                    $element->getAttribute('rel') && (
                         $element->getAttribute('rel') === 'stylesheet'
                         || $element->getAttribute('rel') === 'dns-prefetch'
                         || $element->getAttribute('rel') === 'preconnect'
@@ -945,7 +1056,7 @@ class analyzerHtml {
                         || $element->getAttribute('rel') === 'pingback'
                         || $element->getAttribute('rel') === 'preload'
                         || (!$bShowNofollow && $element->getAttribute('rel') === 'nofollow')
-                        )
+                    )
                 ) {
                     continue;
                 }
@@ -996,8 +1107,18 @@ class analyzerHtml {
         return $aReturn;
     }
 
-    private function _add2Array(&$aArray, $aNewItem) {
-        $aReturn = $aArray;
+    /**
+     * Helper: add a new item to an given array with resources items.
+     * If key "_url" was added already it increases the field 
+     * refcount by and adds the new item to the list of items
+     * It returns the array or false if a url was not found in the new item
+     * 
+     * @param null|array $aArray    array to collect all resources an its count
+     * @param array      $aNewItem  new item to add
+     * @return bool|array
+     */
+    private function _add2Array(null|array &$aArray, array $aNewItem = []): bool|array
+    {
         $bFound = false;
 
         if (!isset($aNewItem['_url'])) {
@@ -1011,7 +1132,7 @@ class analyzerHtml {
         if (is_array($aArray) && count($aArray)) {
             for ($i = 0; $i < count($aArray); $i++) {
                 if ($aArray[$i]['_url'] === $aNewItem['_url']) {
-                    $aArray[$i]['refcount'] ++;
+                    $aArray[$i]['refcount']++;
                     $aArray[$i]['items'][] = $aAddItem;
                     $bFound = true;
                     continue;
@@ -1023,7 +1144,7 @@ class analyzerHtml {
                 'ressourcetype' => $aNewItem['ressourcetype'],
                 '_url' => $aNewItem['_url'],
                 'refcount' => 1,
-                'items' => array($aAddItem),
+                'items' => [$aAddItem],
             ];
             $aArray[] = $aBase;
         }
@@ -1037,10 +1158,11 @@ class analyzerHtml {
     // ----------------------------------------------------------------------
 
     /**
-     * return array with full report
+     * Get array with full report
      * @return array
      */
-    public function getReport() {
+    public function getReport(): array
+    {
         /*
           $this->_getFullUrl('tel:0049123456');
           $this->_getFullUrl('/absolute/path/test.html');

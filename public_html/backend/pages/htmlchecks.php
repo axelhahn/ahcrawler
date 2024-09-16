@@ -12,9 +12,7 @@ $iMinKeywordsLength=$aOptions['analysis']['MinKeywordsLength'];
 $iMaxPagesize=$aOptions['analysis']['MaxPagesize'];
 $iMaxLoadtime=$aOptions['analysis']['MaxLoadtime']; 
 
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '?page=analysis');
-
-$aCountByStatuscode=$this->_getStatusinfos(array('_global','htmlchecks'));
+$aCountByStatuscode=$this->_getStatusinfos(['_global','htmlchecks']);
 $iPagesTotalCount=$aCountByStatuscode['_global']['pages']['value'];
 if (!$iPagesTotalCount) {
     return $sReturn.'<br>'
@@ -117,17 +115,17 @@ if ($iCountShortDescr) {
             order by length, words, description'                        
             /*
             ,
-            array(
+            [
                 'pages',
-                array('description',  $this->oDB->raw('length(description) as length'),'title', 'url'),
-                array(
-                    'AND'=>array(
+                ['description',  $this->oDB->raw('length(description) as length'),'title', 'url'],
+                [
+                    'AND'=>[
                         'siteid'=>$this->_sTab,
                         'length(title)[<]'=>$iMinTitleLength,
-                    ),
-                    'ORDER' => array("length"=>"ASC", 'description'=>'ASC'),
-                )
-            )
+                    ],
+                    'ORDER' => ["length"=>"ASC", 'description'=>'ASC'],
+                ]
+            ]
              * 
              */
             ,

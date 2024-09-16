@@ -8,8 +8,6 @@
 # (2) run "docker-compose up" to startup
 # 
 # ======================================================================
-version: '3.9'
-
 networks:
   ahcrawler-network:
 

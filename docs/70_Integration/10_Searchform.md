@@ -34,11 +34,11 @@ For (3) you can add an array to show the extended options by setting the flag to
 ```php
 (...)
 // ----- (3) show form to enter search term with additional options
-echo $o->renderSearchForm(array(
+echo $o->renderSearchForm([
     'categories'=>1,
     'lang'=>1,
     'mode'=>1,
-));
+]);
 (...)
 ```
 
@@ -86,7 +86,7 @@ $o->setLangFrontend('de');
         <div class="col-sm-12">
             <?php echo $o->renderLabelSearch() ?>
             <div class="input-group">
-                <?php echo $o->renderInput(array('class'=>'form-control')) ?>
+                <?php echo $o->renderInput(['class'=>'form-control']) ?>
                 <span class="input-group-btn">
 
                     <button class="btn btn-success" type="submit">
@@ -101,13 +101,13 @@ $o->setLangFrontend('de');
     <br>
     <?php echo $o->lF('label.searchoptions'); ?>:<br>
         <div class="col-sm-4">
-            <?php echo $o->renderLabelCategories() . $o->renderSelectCategories(array('class'=>'form-control')) ?>
+            <?php echo $o->renderLabelCategories() . $o->renderSelectCategories(['class'=>'form-control']) ?>
         </div>
         <div class="col-sm-2">
-            <?php echo $o->renderLabelLang() . $o->renderSelectLang(array('class'=>'form-control')) ?>
+            <?php echo $o->renderLabelLang() . $o->renderSelectLang(['class'=>'form-control']) ?>
         </div>
         <div class="col-sm-5">
-            <?php echo $o->renderLabelMode() . $o->renderSelectMode(array('class'=>'form-control')) ?>
+            <?php echo $o->renderLabelMode() . $o->renderSelectMode(['class'=>'form-control']) ?>
         </div>
     </div>
 
@@ -164,7 +164,7 @@ Next to ist PHP doc you see the description for the parameter $aParams.
     *                  result {string}  html template code for each result
     * @return string
     */
-renderSearchresults($aParams = array()) {}
+renderSearchresults($aParams = []) {}
 ```
 
 ### head
