@@ -2069,7 +2069,7 @@ class backend extends crawler_base
         }
         return '
             <div id="' . $sDomIdDiv . '" class="piechart piechart-' . $aOptions['type'] . '">
-		<canvas id="' . $sDomIdCanvas . '"></canvas>
+		        <canvas id="' . $sDomIdCanvas . '"></canvas>
             </div>
             <script>
                 var ' . $sVarChart . ' = {
