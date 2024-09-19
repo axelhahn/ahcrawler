@@ -778,7 +778,7 @@
     "update.available-no": "The software is up to date.",
     "update.singlestepupdate": "The update is running ... please wait ...",
     "update.output": "Console output",
-    "update.refresh-info": "Hint: After the update you should reload the browser page with Shift + Reload. This will force the browser to refresh Css and javascript.",
+    "update.hints-after-update": "Hints:<br>-After the update you should reload the browser page with Shift + Reload. This will force the browser to refresh Css and javascript.<br>- see <a href=https://www.axel-hahn.de/docs/ahcrawler/Changelog/Last_changes.html>Changelog</a> for changes",
     "overlay.viewIndexItem": "Data of a single indexed web page",
     "overlay.updateIndexItem": "Update a single URL",
     "overlay.deleteIndexItem": "Delete a single URL",

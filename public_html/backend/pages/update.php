@@ -198,7 +198,7 @@ switch ($sStepName) {
                 $sOutput=implode('<br>', $aResult[1]);
                 if ($iRc==0){
                     $sReturn.=$this->lB('update.gitpull.ok').'<br>'
-                        . $this->lB('update.refresh-info').'<br>'
+                        . $this->lB('update.hints-after-update').'<br>'
                         . '<br>'
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
@@ -255,7 +255,7 @@ switch ($sStepName) {
             
             if ($bInstall){
                 $sReturn.=$this->lB('update.extract.ok').'<br>'
-                    . $this->lB('update.refresh-info').'<br>'
+                    . $this->lB('update.hints-after-update').'<br>'
                     . '<br>'
                     . $sBtnBack.$sBtnNext.$sScriptContinue
                     ;
