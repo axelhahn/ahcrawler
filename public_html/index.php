@@ -16,7 +16,7 @@
         $oBackend = new backend();
     } else {
         // echo "DEBUG: fronmtend<br>";
-        $oBackend = new backend(false, 'public');
+        $oBackend = new backend(0, 'public');
     }
     
     if(!$oBackend->installationWasDone() && !$bIsBackend){
@@ -76,9 +76,9 @@
     $oCdn->setLibs([
         "pure/3.0.0",
         "datatables/1.10.21",
-        "font-awesome/6.4.0",
-        "jquery/3.6.4",
-        "Chart.js/3.9.1" // available: "Chart.js/4.3.0"
+        "font-awesome/6.6.0",
+        "jquery/3.7.1",
+        "Chart.js/4.4.1"
     ]);
     // $oCdn->dump(); exit(0);
 
@@ -120,6 +120,7 @@
 
     $sHtmlHead=''
         
+            // pure css
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/pure-min.css") . "\n"
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/buttons-min.css") . "\n"
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/grids-responsive-min.css") . "\n"
@@ -129,12 +130,15 @@
         
             // jQuery
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('jquery')."/jquery.min.js") . "\n"
+
             // datatables
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('datatables')."/css/jquery.dataTables.min.css") . "\n"
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('datatables')."/js/jquery.dataTables.min.js") . "\n"
 
             // Chart.js
-            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/chart.min.js") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/chart.umd.js") . "\n"
+
+            // more
             .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/skins/'.$oBackend->getSkin().'/skin.css">'

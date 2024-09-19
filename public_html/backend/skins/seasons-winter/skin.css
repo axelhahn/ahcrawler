@@ -1,0 +1,41 @@
+/**
+
+    SKIN AUTUMN
+
+**/
+
+:root{
+
+    --color-bg-boxes: #f0f8f6;
+    --color-childitem-i: #679;
+    --color-childitem-title: #69b;
+
+    --color-h1:#468;
+    --color-h2:#69b;
+    --color-h3: #468;
+    --color-h4: #8bc;
+
+    --color-pacman:#8bc;
+    --context-head-bg: #357;
+
+    --navi-icon-color: #468;
+    --navi-bg-l1-active: #357;
+    --navi-bg-l2-active: #579;
+    --navi-bg-l3-active: #f98;
+    --navi-bg-on-hover:#e0f8ff;
+
+    --pagehint-bg:var(--color-bg-boxes);
+
+    --statusbar-bg: #e0f8ff;
+
+    --tile-bg: radial-gradient(#e8f4f8 0%, #d0d8e0 100%);
+    --tile-color: #579;
+
+}
+ 
+body, .contextbox, .piechart, h2{
+    background-image: url('bg_main.png');
+}
+h2{
+    box-shadow: 0 0.7em 1em #fff; 
+}

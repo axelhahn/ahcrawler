@@ -197,8 +197,9 @@ switch ($sStepName) {
                 $iRc=$aResult[0];
                 $sOutput=implode('<br>', $aResult[1]);
                 if ($iRc==0){
-                    $sReturn.=$this->lB('update.gitpull.ok')
-                        . '<br><br>'
+                    $sReturn.=$this->lB('update.gitpull.ok').'<br>'
+                        . $this->lB('update.hints-after-update').'<br>'
+                        . '<br>'
                         . $sBtnBack.$sBtnNext.$sScriptContinue
                         ;
                 } else {
@@ -253,8 +254,9 @@ switch ($sStepName) {
             ob_end_clean();
             
             if ($bInstall){
-                $sReturn.=$this->lB('update.extract.ok')
-                    . '<br><br>'
+                $sReturn.=$this->lB('update.extract.ok').'<br>'
+                    . $this->lB('update.hints-after-update').'<br>'
+                    . '<br>'
                     . $sBtnBack.$sBtnNext.$sScriptContinue
                     ;
             } else {

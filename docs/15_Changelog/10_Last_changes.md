@@ -2,6 +2,17 @@
 
 ### 2024
 
+#### 2024-09-20: v0.168
+
+* 💣 FIX: json errors in vietnamese backend translation
+* 🟢 ADDED: 4 skins for a demo for light skins
+* ↗️ UPDATE: reload after 2 sec if saving of settings was OK
+* ↗️ UPDATE: chartjs -> 4.4.1
+* ↗️ UPDATE: jquery -> 3.7.1
+* ↗️ UPDATE: font-awesome -> 6.6.0
+* ↗️ UPDATE: Medoo -> 2.1.12
+* ↗️ UPDATE: Show additional text after update: reload browser, link to changelog
+
 #### 2024-09-16: v0.167
 
 * 🟢 ADDED: Vietnamese translation was contributed by [[https://github.com/saosangmo|saosangmo]]. Thanks a lot! He was added as contributor.
@@ -31,10 +42,3 @@
 
 * 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
 * ↗️ UPDATE: add DOCKER_USER_UID in docker env
-
-#### 2023-07-06: v0.163
-
-* ↗️ UPDATE: ahCache class
-* ↗️ UPDATE: ah web updater classes
-* ↗️ UPDATE: html analyzer class
-
