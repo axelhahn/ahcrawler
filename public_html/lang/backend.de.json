@@ -826,6 +826,7 @@
     "update.available-no": "Die Software ist auf dem aktuellen Stand.",
     "update.singlestepupdate": "Das Update in einem Schritt ist aktiv ... bitte warten ...",
     "update.output": "Konsolen-Ausgabe",
+    "update.refresh-info": "Hinweis: Nach erfolgtem Update sollte im Webbrower die Seite mit Shift + Reload frisch geladen werden, um aktualisierte Javascript und CSS zu aktivieren.",
     "overlay.viewIndexItem": "Daten einer einzelnen indexierten Webseite",
     "overlay.updateIndexItem": "Aktualisieren einer einzelnen URL",
     "overlay.deleteIndexItem": "L\u00f6schen einer einzelnen URL",
