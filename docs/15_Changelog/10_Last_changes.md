@@ -4,7 +4,7 @@
 
 #### 2024-09-20: v0.168
 
-* 💣 FIX: json errors in vietnames backend translation
+* 💣 FIX: json errors in vietnamese backend translation
 * 🟢 ADDED: 4 skins for a demo for light skins
 * ↗️ UPDATE: reload after 2 sec if saving of settings was OK
 * ↗️ UPDATE: chartjs -> 4.4.1
