@@ -826,7 +826,7 @@
     "update.available-no": "Die Software ist auf dem aktuellen Stand.",
     "update.singlestepupdate": "Das Update in einem Schritt ist aktiv ... bitte warten ...",
     "update.output": "Konsolen-Ausgabe",
-    "update.hints-after-update": "Hinweise:<br>- Nach erfolgtem Update sollte im Webbrower die Seite mit Shift + Reload frisch geladen werden, um aktualisierte Javascript und CSS zu aktivieren.<br>- Schauen Sie in die <a href=https://www.axel-hahn.de/docs/ahcrawler/Changelog/Last_changes.html>Changelogs</a> (en))",
+    "update.hints-after-update": "Hinweise:<br>- Nach erfolgtem Update sollte im Webbrower die Seite mit Shift + Reload frisch geladen werden, um aktualisierte Javascript und CSS zu aktivieren.<br>- Schauen Sie in die <a href=https://www.axel-hahn.de/docs/ahcrawler/Changelog/Last_changes.html>Changelogs</a> (en)",
     "overlay.viewIndexItem": "Daten einer einzelnen indexierten Webseite",
     "overlay.updateIndexItem": "Aktualisieren einer einzelnen URL",
     "overlay.deleteIndexItem": "L\u00f6schen einer einzelnen URL",
