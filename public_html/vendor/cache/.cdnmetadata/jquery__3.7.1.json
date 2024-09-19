@@ -1,0 +1,26 @@
+{
+    "name": "jquery",
+    "version": "3.7.1",
+    "rawFiles": [
+        "jquery.js",
+        "jquery.min.js",
+        "jquery.min.map",
+        "jquery.slim.js",
+        "jquery.slim.min.js",
+        "jquery.slim.min.map"
+    ],
+    "files": [
+        "jquery.js",
+        "jquery.min.js",
+        "jquery.min.map",
+        "jquery.slim.js",
+        "jquery.slim.min.js",
+        "jquery.slim.min.map"
+    ],
+    "sri": {
+        "jquery.js": "sha512-+k1pnlgt4F1H8L7t3z95o3\/KO+o78INEcXTbnoJQ\/F2VqDVhWoaiVml\/OEHv9HsVgxUaVW+IbiZPUJQfF\/YxZw==",
+        "jquery.min.js": "sha512-v2CJ7UaYy4JwqLDIrZUI\/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2\/4hpQINQ\/g==",
+        "jquery.slim.js": "sha512-docBEeq28CCaXCXN7cINkyQs0pRszdQsVBFWUd+pLNlEk3LDlSDDtN7i1H+nTB8tshJPQHS0yu0GW9YGFd\/CRg==",
+        "jquery.slim.min.js": "sha512-sNylduh9fqpYUK5OYXWcBleGzbZInWj8yCJAU57r1dpSK9tP2ghf\/SRYCMj+KsslFkCOt3TvJrX2AV\/Gc3wOqA=="
+    }
+}
