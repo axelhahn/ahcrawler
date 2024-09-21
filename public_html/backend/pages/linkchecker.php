@@ -11,6 +11,8 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 
 $aCountByStatuscode=$this->_getStatusinfos(['_global','linkchecker']);
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
 
 $iRessourcesCount=$aCountByStatuscode['_global']['ressources']['value'];
 if (!$iRessourcesCount) {

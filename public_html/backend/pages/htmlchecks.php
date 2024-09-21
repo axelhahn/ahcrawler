@@ -25,6 +25,9 @@ $oCrawler=new crawler($this->_sTab);
 // top area: tiles
 // ----------------------------------------------------------------------
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $sReturn.=''
         . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
         ;

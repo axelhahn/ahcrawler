@@ -30,6 +30,10 @@ if (isset($_POST['action'])) {
 
 $aCookies = $oHttpheader->parseCookiefile($this->sCookieFilename);
 $iCookieCount = count($aCookies['cookies']);
+
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $sReturn .= ''
         . '<h3>' . sprintf($this->lB('cookies.headline'), $iCookieCount) . '</h3>'
         . '<p>' . $this->lB('cookies.hint') . '</p>'

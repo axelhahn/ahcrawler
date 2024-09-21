@@ -29,6 +29,9 @@ $sPatternNumber='^[0-9]*';
 // handle POST DATA
 // ----------------------------------------------------------------------
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 if(isset($_POST['action'])){
     // $sReturn.='DEBUG: <pre>POST '.print_r($_POST, 1).'</pre>';
     $aNewProfile=$_POST;

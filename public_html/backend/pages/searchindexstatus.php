@@ -28,6 +28,9 @@ if (!$iUrls) {
 
 $sBackUrl="javascript:history.back();";
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $iPageId = $this->_getRequestParam('id', false, 'int');
 if ($iPageId) {
     $aItem = $this->oDB->select(

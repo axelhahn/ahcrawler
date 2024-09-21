@@ -22,6 +22,9 @@ $oRenderer=new ressourcesrenderer($this->_sTab);
 // handle POST requests
 // ----------------------------------------------------------------------
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 if(isset($_POST) && count($_POST) && isset($_POST['blacklistitem']) ){
     $iProfileId=$this->_getTab();
     $this->setSiteId($iProfileId);

@@ -13,7 +13,8 @@ $aHeaderIndex = ['id', 'ts', 'url', 'title', 'errorcount', 'lasterror'];
 // get deta for tiles
 // ----------------------------------------------------------------------
 
-
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
 
 $oCrawler=new crawler($this->_sTab);
 $iUrls = $oCrawler->getCount();        
@@ -22,7 +23,6 @@ if(!$iUrls){
     return $sReturn;
 }
 
-;
 
     // ----------------------------------------------------------------------
     // search form

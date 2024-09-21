@@ -79,6 +79,9 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
     // backend: show header of starting page or by given id
     // ----------------------------------------------------------------------
 
+    // add profiles navigation
+    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
     $aCountByStatuscode = $this->_getStatusinfos(['_global']);
     $iRessourcesCount = $aCountByStatuscode['_global']['ressources']['value'];
     $iPagesCount = $aCountByStatuscode['_global']['pages']['value'];

@@ -12,6 +12,9 @@ $aFields = ['ts', 'query', 'searchset', 'results', 'host', 'ua', 'referrer'];
 // basic infos
 // ----------------------------------------------------------------------
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $iSearches = $this->oDB->count(
         'searches',
         [
