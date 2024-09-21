@@ -281,7 +281,7 @@ body, .contextbox, .piechart{
         margin: -0.7em 0 0 0.7em;
         position: absolute;
     }
-    .brand-title span{font-size: 0.5em; font-weight: normal; position: absolute; right: 0.5em;}
+    .brand-title span{font-size: 0.5em; font-weight: normal; position: absolute; right: 0.5em; text-align: right;}
     .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */

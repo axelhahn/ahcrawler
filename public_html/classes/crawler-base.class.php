@@ -40,7 +40,7 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.168',
+        'version' => '0.169-dev',
         'date' => '2024-09-20',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
