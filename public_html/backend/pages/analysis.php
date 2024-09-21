@@ -6,7 +6,6 @@ $sReturn='';
 $iProfileId=$this->_getTab();
 $this->setSiteId($iProfileId);
 
-
 $sReturn.=''
         // add profiles navigation
         .$this->_getNavi2($this->_getProfiles(), false, '')
