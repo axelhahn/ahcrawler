@@ -2,6 +2,11 @@
 
 ### 2023
 
+#### 2023-08-03: v0.164
+
+* 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
+* ↗️ UPDATE: add DOCKER_USER_UID in docker env
+
 #### 2023-07-06: v0.163
 
 * ↗️ UPDATE: ahCache class

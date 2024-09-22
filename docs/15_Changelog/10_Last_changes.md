@@ -2,6 +2,12 @@
 
 ### 2024
 
+#### 2024-09-xx: v0.169
+
+* ↗️ UPDATE: add profiles navigation in pages that need it
+* ↗️ UPDATE: skin autumn
+* ↗️ UPDATE: in page link checker the urls are linked to the search index now
+
 #### 2024-09-20: v0.168
 
 * 💣 FIX: json errors in vietnamese backend translation
@@ -37,8 +43,3 @@
 * ↗️ UPDATE: Medoo to v 2.1.10 (AcCrawler is compatible with PHP 8.2 with it)
 * ↗️ UPDATE: dark skin
 * ↗️ UPDATE: docker dev environment
-
-#### 2023-08-03: v0.164
-
-* 🟢 ADDED: on failed connections (http status code 0 (zero)) the curl error is shown.
-* ↗️ UPDATE: add DOCKER_USER_UID in docker env
