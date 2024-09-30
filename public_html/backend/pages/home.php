@@ -90,10 +90,18 @@ if(!$this->_configExists() ){
                     if($aMsg['target']!==$sLastTarget){
                         $sSpacer=($aMsg['target']==='_global') ? '0' : '5';
                         $sHints.=($sHints ? '<br><hr>' : '') 
-                                . ($aMsg['target']==='_global' ? '' : $this->_getLink2Navitem($aMsg['target']).'<br>');
+                                . ($aMsg['target']==='_global' 
+                                    ? '' 
+                                    : ''
+                                        // . '<h4>'.$this->lB('nav.'.$aMsg['target'].'.label').'</h4>'
+                                        . $this->_getLink2Navitem($aMsg['target']).'<br>'
+                                        . '<p>'.$this->lB('nav.'.$aMsg['target'].'.hint').'</p>'
+                                );
                         $sLastTarget=$aMsg['target'];
                     }
-                    $sHints.='<div style="margin-left: '.$sSpacer.'em;">'.$oRenderer->renderMessagebox($aMsg['message'], $sMyKey).'</div>';
+                    $sHints.='<div style="margin-left: '.$sSpacer.'em;">'
+                            .$oRenderer->renderMessagebox($aMsg['message'], $sMyKey)
+                        .'</div>';
                 }        
             }
             
