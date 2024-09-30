@@ -41,18 +41,19 @@ $sPatternNumber='^[0-9]*';
  * @param string $sItem     menu key
  * @param array  $aOptions  array of options
  * @param string $sSubkey   one of menu|menu-public
- * @param prefix $sPrefix   html code for spacing before checkbox
+ * @param string  $sPrefix   html code for spacing before checkbox
  * @return string
  */
-function _renderCB($sItem, $aOptions, $sSubkey, $sPrefix=''){
+function _renderCB(string $sItem, array $aOptions, string $sSubkey, string $sPrefix='', string $sLabel = ''){
     $sReturn='';
     $val=$aOptions['options'][$sSubkey][$sItem];
     $cbid='cbMenu'.$sSubkey.$sItem;
+    $sLabel=$sLabel ?? $sItem;
     $sReturn.=''
         . '<label for="'.$cbid.'" class="align-left">'
         . $sPrefix
         . '<input type="checkbox" name="options['.$sSubkey.']['.$sItem.']" value="true" id="'.$cbid.'"'.($val ? ' checked="checked"' : '').'>'
-        . ' '. $sItem// . $this->lB('setup.section.backend.debug.off')
+        . ' '. $sLabel// . $this->lB('setup.section.backend.debug.off')
         . '</label><br>'
     ;
     return $sReturn;
@@ -300,11 +301,11 @@ $sMenuVisibility='';
 $sFrontendVisibility='';
 foreach ($this->_aMenu as $sItem=>$aSubItems) {
     $val=$aOptions['options']['menu'][$sItem];
-    $sMenuVisibility.=_renderCB($sItem, $aOptions, 'menu', '');
+    $sMenuVisibility.=_renderCB($sItem, $aOptions, 'menu', '', $this->lB('nav.'.$sItem.'.label'));
 
     if (isset($aSubItems['children']) && count($aSubItems['children'])){
         foreach ($aSubItems['children'] as $sItem2=>$aSubItems2) {
-            $sMenuVisibility.=_renderCB($sItem2, $aOptions, 'menu', '&nbsp;&nbsp;&nbsp;&nbsp;');
+            $sMenuVisibility.=_renderCB($sItem2, $aOptions, 'menu', '&nbsp;&nbsp;&nbsp;&nbsp;', $this->lB('nav.'.$sItem2.'.label'));
         }
     }
     $sMenuVisibility.='<br>';
@@ -313,7 +314,7 @@ $sMenuVisibility='<div>'.$sMenuVisibility.'</div>';
 
 
 foreach ($aOptions['options']['menu-public'] as $sItem=>$val) {
-    $sFrontendVisibility.=_renderCB($sItem, $aOptions, 'menu-public', '');;
+    $sFrontendVisibility.=_renderCB($sItem, $aOptions, 'menu-public', '', $this->lB('nav.'.$sItem.'.label'));;
 }
 $sFrontendVisibility='<div>'.$sFrontendVisibility.'</div>';
 
@@ -410,6 +411,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ], $aSkinOptions)
             . '</div>'
 
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
@@ -674,6 +676,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . ' '.$this->lB('setup.section.search')
             .'</h3>'
             . $this->lB('setup.section.search.hint').'<br><br>'
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">';
 
@@ -700,7 +703,9 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                             ;
                     }
                 }
-            $sReturn.='</div>';
+            $sReturn.='</div>'
+                . '<br>'
+            ;
         
             // ------------------------------------------------------------
             // setup options - analysis constants
@@ -713,6 +718,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             .'</h3>'
             . $this->lB('setup.section.analysis.hint').'<br><br>'
 
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
         
@@ -791,6 +797,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     ], false)
                 . '</div>'
             . '</div>'
+            . '<br>'
 
             // ------------------------------------------------------------
             // setup options - public services without login
@@ -802,6 +809,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             .'</h3>'
             . $this->lB('setup.section.public-services.hint').'<br><br>'
 
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
@@ -819,7 +827,8 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                      */
                     . '</div>'
             . '</div>'
-        
+            . '<br>'
+
 
             // ------------------------------------------------------------
             // setup options - database
@@ -831,6 +840,7 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                 . ' '.$this->lB('setup.section.database')
             .'</h3>'
             . $this->lB('setup.section.database.hint').'<br><br>'
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
 
