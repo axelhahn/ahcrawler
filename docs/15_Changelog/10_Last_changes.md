@@ -2,7 +2,7 @@
 
 ### 2024
 
-#### 2024-09-xx: v0.169
+#### 2024-10-01: v0.169
 
 * ↗️ UPDATE: add profiles navigation in pages that need it
 * ↗️ UPDATE: in page home: added hints per section for found errors and warnings
