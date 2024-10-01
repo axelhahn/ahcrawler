@@ -43,6 +43,11 @@ services:
 
     user: ${DOCKER_USER_UID}
 
+    mem_limit: 512m
+    mem_reservation: 128M
+    memswap_limit: 512m
+    cpus: "0.5"
+
     # --- 8< --- {{CUTTER_NO_DATABASE}} --- 8< ---
     depends_on:
       {{APP_NAME}}-db:
@@ -70,6 +75,11 @@ services:
       retries: 5
     networks:
       - {{APP_NAME}}-network
+
+    mem_limit: 512m
+    mem_reservation: 128M
+    memswap_limit: 512m
+    cpus: "0.5"
 
 # volumes:
 #   db_data:

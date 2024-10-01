@@ -42,6 +42,11 @@ services:
 
     user: ${DOCKER_USER_UID}
 
+    mem_limit: 512m
+    mem_reservation: 128M
+    memswap_limit: 512m
+    cpus: "0.5"
+
     # --- 8< --- CUT-HERE-FOR-NO-DATABASE --- 8< ---
     depends_on:
       ahcrawler-db:
@@ -69,6 +74,11 @@ services:
       retries: 5
     networks:
       - ahcrawler-network
+
+    mem_limit: 512m
+    mem_reservation: 128M
+    memswap_limit: 512m
+    cpus: "0.5"
 
 # volumes:
 #   db_data:

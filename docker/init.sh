@@ -23,6 +23,7 @@
 # 2024-07-26  v1.16 <axel.hahn@unibe.ch>      hide unnecessary menu items (WIP)
 # 2024-07-29  v1.17 <www.axel-hahn.de>        hide unnecessary menu items; reorder functions
 # 2024-08-14  v1.18 <www.axel-hahn.de>        update container view
+# 2024-09-20  v1.19 <www.axel-hahn.de>        detect dockerd-rootless (hides menu item to set permissions)
 # ======================================================================
 
 cd "$( dirname "$0" )" || exit 1
@@ -36,7 +37,7 @@ _self=$( basename "$0" )
 # shellcheck source=/dev/null
 . "${_self}.cfg" || exit 1
 
-_version="1.18"
+_version="1.19"
 
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
@@ -61,6 +62,9 @@ DC_REPO=1
 DC_CONFIG_CHANGED=0
 
 DC_WEB_URL=""
+
+isDockerRootless=0
+ps -ef | grep  dockerd-rootless | grep -q $USER && isDockerRootless=1
 
 # ----------------------------------------------------------------------
 # FUNCTIONS
@@ -136,7 +140,10 @@ function showMenu(){
         echo "${_spacer}$( _key g ) - remove git data of starterkit"
         echo
     fi
-    echo "${_spacer}$( _key i ) - init application: set permissions"
+
+    if [ $isDockerRootless -eq 1 ] || [ $_bAll -eq 1 ]; then
+        echo "${_spacer}$( _key i ) - init application: set permissions"
+    fi
 
     if [ $DC_CONFIG_CHANGED -eq 1 ] || [ $_bAll -eq 1 ]; then
         echo "${_spacer}$( _key t ) - generate files from templates"
@@ -488,6 +495,7 @@ function _showContainers(){
 function _wait(){
     local _wait=15
     echo -n "... press RETURN ... or wait $_wait sec > "; read -r -t $_wait
+    echo
 }
 
 # ----------------------------------------------------------------------
@@ -557,7 +565,6 @@ while true; do
             fi
             echo
 
-            _wait
             ;;
         s)
             h2 "Stopping..."
