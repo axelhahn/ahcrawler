@@ -5,8 +5,10 @@
 #### 2024-09-xx: v0.169
 
 * ↗️ UPDATE: add profiles navigation in pages that need it
-* ↗️ UPDATE: skin autumn
+* ↗️ UPDATE: in page home: added hints per section for found errors and warnings
 * ↗️ UPDATE: in page link checker the urls are linked to the search index now
+* ↗️ UPDATE: in page setup: show menu labels to enable visible items (before: keys have been shown), more buttons for toggling extended view
+* ↗️ UPDATE: season skins and default skin
 
 #### 2024-09-20: v0.168
 
