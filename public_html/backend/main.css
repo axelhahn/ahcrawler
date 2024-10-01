@@ -615,6 +615,13 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .chartcolor-4{color:#a8c;}
 .chartcolor-5{color:#eb6;}
 
+.request-time {border: 1px solid;  padding: 0.5em;}
+.request-time div{height: 2em; border: 1px dotted; float: left;}
+.request-time .namelookup{ background-color: #009999;}
+.request-time .connect{ background-color: #35a;}
+.request-time .handshake{ background-color: #8a8;}
+.request-time .onserver{ background-color: #ea4;}
+.request-time .transfer{ background-color: #a5a;}
 
 /* 
 --------------------------------------------------------------------------------

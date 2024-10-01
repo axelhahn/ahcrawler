@@ -49,6 +49,40 @@ if ($iPageId) {
         
         $iResId=$this->getIdByUrl($aItem[0]['url'],'ressources');
 
+        // --- timings
+        // see https://ops.tips/gists/measuring-http-response-times-curl/
+        //
+        $aCurlHeader=json_decode($aItem[0]['header'], 1);
+        $iTimeMultiplicator=1/1000;
+        $aTimers=[
+            'namelookup' => $aCurlHeader['namelookup_time_us'] * $iTimeMultiplicator, 
+            'connect' => $aCurlHeader['connect_time_us'] * $iTimeMultiplicator,
+            'appconnect' => $aCurlHeader['appconnect_time_us'] * $iTimeMultiplicator, // The time, in seconds, it took from the start until the SSL/SSH/etc connect/handshake to the remote host was completed.
+            'pretransfer' => $aCurlHeader['pretransfer_time_us'] * $iTimeMultiplicator, 
+            'redirect' => $aCurlHeader['redirect_time_us'] * $iTimeMultiplicator, 
+            'starttransfer' => $aCurlHeader['starttransfer_time_us'] * $iTimeMultiplicator, 
+            'total' => $aCurlHeader['total_time_us'] * $iTimeMultiplicator, 
+        ];
+        $aTimers['_handshake']=$aTimers['appconnect'] - $aTimers['connect'] - $aTimers['namelookup'];
+        $aTimers['_onserver']=$aTimers['starttransfer'] - $aTimers['pretransfer'];
+        $aTimers['_transfer']=$aTimers['total'] - $aTimers['starttransfer'];
+
+        $sConnect='<div class="request-time">'
+                .'<div class="namelookup" style="width:'.$aTimers['namelookup'].'px" title="lookup: '.$aTimers['namelookup'].' ms"></div>'
+                .'<div class="connect" style="width:'.$aTimers['connect'].'px" title="connect: '.$aTimers['connect'].' ms"></div>'
+                .'<div class="handshake" style="width:'.$aTimers['_handshake'].'px" title="handshake: '.$aTimers['_handshake'].' ms"></div>'
+                //.'<div class="appconnect" style="width:'.$aTimers['appconnect'].'px"></div>'
+                .'<br><br>'
+                .'<div style="margin-left:'.$aTimers['pretransfer'].'px"></div>'
+                .'<div class="onserver" style="width:'.$aTimers['_onserver'].'px" title="on server: '.$aTimers['_onserver'].' ms"></div>'
+                .'<br><br>'
+                .'<div style="margin-left:'.$aTimers['starttransfer'].'px"></div>'
+                .'<div class="transfer" style="width:'.$aTimers['_transfer'].'px" title="transfer: '.$aTimers['_transfer'].' ms"></div>'
+
+            .'</div>'
+            ;
+
+
         // --- general infos
         $aTableInfos=[
             [
@@ -149,6 +183,8 @@ if ($iPageId) {
                 // ---- basic page data
                 . '<h4>'.($aItem[0]['title'] ? $aItem[0]['title'] : $aItem[0]['url']).'</h4>'
                 . $this->_getSimpleHtmlTable($aTableInfos).'<br>'
+
+                // . $sConnect . '<pre>' . print_r($aTimers, 1) .'</pre>'
 
                 // ---- http header
                 .$oRenderer->renderToggledContent(
