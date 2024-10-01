@@ -115,6 +115,9 @@ if ($this->_bIsPublic){
 // SSL certificate infos
 // ------------------------------------------------------------
 
+    // add profiles navigation
+    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
     // --- http only?
     $aSslInfos=['type'=>'none'];
     if(!$sMyUrl){

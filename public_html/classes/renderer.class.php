@@ -661,14 +661,14 @@ class ressourcesrenderer extends crawler_base
         return $this->oHtml->getTag('a', [
             'href' => '#',
             'id' => 'btn-extend-on',
-            'class' => 'pure-button btn-extend',
+            'class' => 'pure-button btn-extend btn-extend-on',
             'onclick' => 'toggleExtendedView(); return false',
             'label' => $this->_getIcon('ico.toggle-on') . $this->lB('button.extended-on'),
         ])
         . $this->oHtml->getTag('a', [
             'href' => '#',
             'id' => 'btn-extend-off',
-            'class' => 'pure-button btn-extend',
+            'class' => 'pure-button btn-extend btn-extend-off',
             'onclick' => 'toggleExtendedView(); return false',
             'label' => $this->_getIcon('ico.toggle-off') . $this->lB('button.extended-off'),
         ]);

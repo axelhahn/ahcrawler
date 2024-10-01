@@ -106,13 +106,15 @@ function initExtendedView(){
     var bShow=localStorage.getItem('crawler_showExtended');
     $('.btn-extend').hide();
     if(bShow==1){
-        $('#btn-extend-on').show();
+        $('.btn-extend-on').show();
+        $('.btn-extend-off').hide();
         $('.hintextended').hide();
         $('.extended').slideDown();
     } else {
         $('.extended').hide();
         $('.hintextended').show();
-        $('#btn-extend-off').show();
+        $('.btn-extend-on').hide();
+        $('.btn-extend-off').show();
     }
 }
 function toggleExtendedView(){

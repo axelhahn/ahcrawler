@@ -7,6 +7,9 @@ $iRessourceId = (int)$this->_getRequestParam('id');
 
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 // $aData=$oRessources->getRessources('*', ['url'=>$sQuery], ['url'=>'ASC']);
 $oRessources=new ressources($this->_sTab);
 $aData=$oRessources->getRessourceDetails($iRessourceId);

@@ -2344,9 +2344,21 @@ class backend extends crawler_base
      */
     private function _getHtmlchecksTable(string $sQuery, string $sTableId = ''): string
     {
+        $oRenderer=new ressourcesrenderer($this->_sTab);
         $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
         $aTable = [];
         foreach ($aTmp as $aRow) {
+            // $aRow['_']=print_r($aRow, 1);
+            $sUrl = $aRow['url'];
+            $aRow['url'] = '<a 
+                href="./?page=searchindexstatus&siteid=' . $this->_sTab . '&id=' . $aRow['id'] . '" 
+                >' . str_replace('/', '/&shy;', $sUrl) . '</a>';
+
+            $aRow['actions'] = ''
+                . '<a href="' . $sUrl . '" target="_blank" class="pure-button" title="' . $this->lB('ressources.link-to-url') . '">' . $oRenderer->_getIcon('link-to-url') . '</a>';
+
+            unset($aRow['id']);
+
             $aTable[] = $aRow;
             /*
             $aData[]=[

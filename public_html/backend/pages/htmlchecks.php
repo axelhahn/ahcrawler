@@ -25,6 +25,9 @@ $oCrawler=new crawler($this->_sTab);
 // top area: tiles
 // ----------------------------------------------------------------------
 
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $sReturn.=''
         . '<h3>' . $this->lB('htmlchecks.overview') . '</h3>'
         ;
@@ -49,7 +52,7 @@ if ($iCountCrawlererrors) {
     $sReturn.= '<h3 id="tblcrawlererrors">' . sprintf($this->lB('htmlchecks.tableCrawlererrors'), $iCountCrawlererrors) . '</h3>'
         .'<p>'.$this->lB('htmlchecks.tableCrawlererrors.description').'</p>'
         .$this->_getHtmlchecksChart($iPagesTotalCount, $iCountCrawlererrors)    
-        .$this->_getHtmlchecksTable('select title, length(title) as length, url
+        .$this->_getHtmlchecksTable('select id, title, length(title) as length, url
             from pages 
             where siteid='.$this->_sTab.' and length(title)<'.$iMinTitleLength.'
             order by length(title)',
@@ -80,7 +83,7 @@ if ($iCountShortTitles) {
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinTitleLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select title, length(title) as length, title_wc as words, url
+        .$this->_getHtmlchecksTable('select id, title, length(title) as length, title_wc as words, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and length(title) < '.$iMinTitleLength.'
             order by length, words, title',
@@ -109,7 +112,7 @@ if ($iCountShortDescr) {
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinDescriptionLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select description, length(description) as length,  description_wc as words, title, url
+        .$this->_getHtmlchecksTable('select id, description, length(description) as length,  description_wc as words, title, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and length(description)<'.$iMinDescriptionLength.'
             order by length, words, description'                        
@@ -155,7 +158,7 @@ if ($iCountShortKeywords) {
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinKeywordsLength).'</p>'
         .'<div style="clear: both;"></div>'
-        .$this->_getHtmlchecksTable('select keywords, length(keywords) as length, keywords_wc as words, title, url
+        .$this->_getHtmlchecksTable('select id, keywords, length(keywords) as length, keywords_wc as words, title, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and length(keywords)<'.$iMinKeywordsLength.'
             order by length, words, keywords',
@@ -200,7 +203,7 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
     .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxLoadtime.' ms').'</p>'
 
     .($iCountLongload
-        ? $this->_getHtmlchecksTable('select title, time, size, url
+        ? $this->_getHtmlchecksTable('select id, title, time, size, url
             from pages 
             where siteid='.$this->_sTab.' and errorcount=0 and time>'.$iMaxLoadtime.'
             order by time',
@@ -245,7 +248,7 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMaxPagesize.'').'</p>'
 
         .($iCountLargePages
-            ? $this->_getHtmlchecksTable('select title, size, time, url
+            ? $this->_getHtmlchecksTable('select id, title, size, time, url
                 from pages 
                 where siteid='.$this->_sTab.' and errorcount=0 and size>'.$iMaxPagesize.'
                 order by size',

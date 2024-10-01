@@ -7,6 +7,10 @@ $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');
 
 $aProfiles=$this->_getProfiles();
+
+// add profiles navigation
+$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 $sReturn.= '<h3>' . $this->lB('ressources.searchurl-head') . '</h3>'
         . '<div div class="actionbox">'
             . $this->lB('ressources.searchurl-hint').'<br><br>'

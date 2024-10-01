@@ -9,11 +9,7 @@ public_html/tmp/*.tmp
 .vscode/
 public_html/~cache/
 public_html/tmp/__latest.zip
-public_html/vendor/cache/Chart.js
-public_html/vendor/cache/datatables
-public_html/vendor/cache/font-awesome
-public_html/vendor/cache/jquery
-public_html/vendor/cache/pure
+public_html/vendor/cache/*
 public_html/vendor/vendor-updater.sh
 public_html/_update_release.php
 public_html/vendor/medoo/tests/AggregateTest.php
@@ -36,6 +32,7 @@ public_html/vendor/medoo/.php_cs.dist
 public_html/vendor/medoo/phpunit.xml
 public_html/vendor/medoo/composer.json
 public_html/classes/shared/*
-public_html/backend/skins/spring/*
 
 static/*
+
+public_html/vendor/data/~cache/*
