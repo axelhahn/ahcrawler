@@ -30,7 +30,7 @@ $sPatternNumber='^[0-9]*';
 // ----------------------------------------------------------------------
 
 // add profiles navigation
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+$sReturn.=$this->_getNavi2($this->_getProfiles(), true, '');
 
 if(isset($_POST['action'])){
     // $sReturn.='DEBUG: <pre>POST '.print_r($_POST, 1).'</pre>';
@@ -392,6 +392,18 @@ $sReturn.='
                     'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
                     ], true)
                 . '</div>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
+                . $oRenderer->oHtml->getTag('input', [
+                    'type'=>'text',
+                    'id'=>'searchindex-iMaxUrls', 
+                    'name'=>'searchindex[iMaxUrls]',
+                    'size'=>$iSizeInInput,
+                    'pattern'=>$sPatternNumber,
+                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
+                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
+                    ], false)
+                . '</div>'
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
@@ -475,18 +487,6 @@ $sReturn.='
                     . '</div>'
 
                 . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
-                . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'text',
-                        'id'=>'searchindex-iMaxUrls', 
-                        'name'=>'searchindex[iMaxUrls]',
-                        'size'=>$iSizeInInput,
-                        'pattern'=>$sPatternNumber,
-                        'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
-                        'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
-                        ], false)
-                    . '</div>'
 
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', [
