@@ -24,5 +24,15 @@ Enter the connection data.
 
 If you continue the connection will be checked.
 
-![Screenshot: Done](/images/installer-04-done.png)
+**Hint** when using docker with Mariadb:
 
+Have a look to the docker environment file `docker/.env` too. The default parameters are:
+
+* Server: ahcrawler-db
+* Port: leave empty
+* Scheme: ahcrawler
+* Username: ahcrawler
+* Password: mypassword
+* Charset: utf8
+
+![Screenshot: Done](/images/installer-04-done.png)

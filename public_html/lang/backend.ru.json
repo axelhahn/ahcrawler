@@ -295,7 +295,7 @@
     "profile.userpwd": "optional: user and password",
     "profile.overrideDefaults": "The next variables override the defaults for all profiles (see program settings).",
     "profile.searchindex.stickydomain": "Sticky domain for the crawler",
-    "profile.searchindex.urls2crawl": "List of start urls of the crawler<br>(one url per line)",
+    "profile.searchindex.urls2crawl": "List of start urls for the crawler<br>(one url per line)",
     "profile.searchindex.iDepth": "max. depth of directories for the scan",
     "profile.searchindex.iMaxUrls": "For initial tests: max. count of urls to scan<br>(0 = no limit)",
     "profile.searchindex.include": "List of regex that must match the <em>full url<\/em>",
