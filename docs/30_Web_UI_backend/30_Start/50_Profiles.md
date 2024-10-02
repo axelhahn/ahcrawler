@@ -38,6 +38,11 @@ Enter one or more urls as a list of urls (one per line) here. These will be the 
 The spider will stay on the given Hostname(s) and mark them as "internal". All elements like css or javascript files or links that do not match any hostname of the starting urls are "external" resources.
 One url in most cases is enough because the spider follows all allowed links. You can add more urls if you have several tools on your domain that are not linked or you want to merge several domains into one search index. As an example if you have a website www.example.com and a blog in blog.example.com.
 
+**max. pages to scan**
+
+Before scanning a larger website you can make test with a limited number of pages by entering a low number here, i.e. "3".
+Enter "0" (zero) for no limit.
+
 **List of regex that must match the full url**
 
 You can place additional rules to describe what must match to be part in the search index.
@@ -84,14 +89,7 @@ Index contents marked with NoIndex anyway (default value: OFF)
 
 Follow all links and ignore nofollow tagging (default value: OFF)
 
-
 The next variables override the defaults for all profiles (see program settings).
-
-
-**max. count of urls to scan**
-
-Before scanning a larger website you can make test with a limited number of pages by entering a low number here, i.e. "3".
-Enter "0" (zero) for no limit.
 
 **search index scan - simultanous Requests (overrides the default of [N])**
 

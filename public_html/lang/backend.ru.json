@@ -297,7 +297,7 @@
     "profile.searchindex.stickydomain": "Sticky domain for the crawler",
     "profile.searchindex.urls2crawl": "List of start urls for the crawler<br>(one url per line)",
     "profile.searchindex.iDepth": "max. depth of directories for the scan",
-    "profile.searchindex.iMaxUrls": "For initial tests: max. count of urls to scan<br>(0 = no limit)",
+    "profile.searchindex.iMaxUrls": "For initial tests: max. pages to scan<br>(0 = no limit)",
     "profile.searchindex.include": "List of regex that must match the <em>full url<\/em>",
     "profile.searchindex.includepath": "List of regex that need to match to the <em>path<\/em> of a url",
     "profile.searchindex.exclude": "List of exclude regex for the path applied after the include regex above",
