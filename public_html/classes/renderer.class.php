@@ -165,7 +165,7 @@ class ressourcesrenderer extends crawler_base
      * Constructor
      * @param integer $iSiteId  id of the web project
      */
-    public function __construct(int $iSiteId = 0)
+    public function __construct(int|string $iSiteId = 0)
     {
         $this->oHtml = new htmlelements();
         $this->setLangBackend();
@@ -725,7 +725,7 @@ class ressourcesrenderer extends crawler_base
      * @param string  $sMoreUrlParams    optional: more url params for href target
      * @return string
      */
-    public function renderLink2Page(string $sMenuItem, string $sIcon = '', int $iSiteId = 0, string $sMoreUrlParams = ''): string
+    public function renderLink2Page(string $sMenuItem, string $sIcon = '', int|string $iSiteId = 0, string $sMoreUrlParams = ''): string
     {
         return $this->oHtml->getTag('a', [
             'class' => 'pure-button',
