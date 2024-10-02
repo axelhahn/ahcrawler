@@ -317,7 +317,7 @@ $sReturn.='
                     ], true)
                 . '</div>'
 
-            . '<div class="pure-control-group">'
+                . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', ['for'=>'profileimagedata', 'label'=>$this->lB('profile.image')])
                 . '<div id="myimagediv">'
                     . ($this->getProfileImage() 
@@ -328,50 +328,58 @@ $sReturn.='
                                         'label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 
                                         'class'=>'pure-button button-error',
                                         'id'=>'profileimagedelete',
-                                      ])
+                                    ])
                                     . '<br><br>'
                         
-                                : '. . .'
-                      )
+                                : 'TODO: no image was set.'
+                    )
                     . '</div>'
                 . '</div>'
-            . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['label'=>''])
-                . '<div>'
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'hidden', 
-                        'name'=>'profileimagedatacurrent', 
-                        'placeholder'=>'',
-                        'value'=>isset($this->aProfileSaved['profileimagedata']) ? $this->aProfileSaved['profileimagedata'] : '',
-                        ], true)
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'hidden', 
-                        'id'=>'profileimagedata', 
-                        'name'=>'profileimagedatanew', 
-                        'placeholder'=>'',
-                        'value'=>'',
-                        ], true)
-                    . $oRenderer->oHtml->getTag('div', [
-                        'id'=>'profileimageinserter', 
-                        'class'=>'insertimage', 
-                        'contentEditable'=>'true',
-                        'label'=>$this->lB('profile.image.add'),
-                        ], true)
-                . '</div>'
-                . '<br>'
-                . '</div>'
-            . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['label'=>''])
-                . '<div>'
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'file', 
-                        'id'=>'profileimagefile', 
-                        'name'=>'profileimagefile', 
-                        'placeholder'=>'',
-                        'accept'=>'image/*',
-                        'value'=>'',
-                        ], true)
-                . '</div>'
+
+                .(function_exists('imagecreatefromstring')
+                    ? 
+                            '<div class="pure-control-group">'
+                                . $oRenderer->oHtml->getTag('label', ['label'=>''])
+                            . '<div>'
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'hidden', 
+                                    'name'=>'profileimagedatacurrent', 
+                                    'placeholder'=>'',
+                                    'value'=>isset($this->aProfileSaved['profileimagedata']) ? $this->aProfileSaved['profileimagedata'] : '',
+                                    ], true)
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'hidden', 
+                                    'id'=>'profileimagedata', 
+                                    'name'=>'profileimagedatanew', 
+                                    'placeholder'=>'',
+                                    'value'=>'',
+                                    ], true)
+                                . $oRenderer->oHtml->getTag('div', [
+                                    'id'=>'profileimageinserter', 
+                                    'class'=>'insertimage', 
+                                    'contentEditable'=>'true',
+                                    'label'=>$this->lB('profile.image.add'),
+                                    ], true)
+                            . '</div>'
+                            . '<br>'
+                            . '</div>'
+                        . '<div class="pure-control-group">'
+                                . $oRenderer->oHtml->getTag('label', ['label'=>'&nbsp;'])
+                            . '<div>'
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'file', 
+                                    'id'=>'profileimagefile', 
+                                    'name'=>'profileimagefile', 
+                                    'placeholder'=>'',
+                                    'accept'=>'image/*',
+                                    'value'=>'',
+                                    ], true)
+                            . '</div>'
+                        . '</div>'
+                    : '<div class="pure-control-group">'. $oRenderer->oHtml->getTag('label', ['label'=>''])
+                            . '<div>TODO: No image upload - GD module is not installed ( function imagecreatefromstring needed).</div>'
+                            .'</div>'
+            )
 
             // ------------------------------------------------------------
             // search index
