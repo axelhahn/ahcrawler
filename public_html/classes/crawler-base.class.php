@@ -30,6 +30,7 @@ require_once 'httpheader.class.php';
  * ----------------------------------------------------------------------------
  * ...
  * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-09-03  v0.170  Fixes for installer
  * */
 class crawler_base
 {
@@ -40,8 +41,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.169',
-        'date' => '2024-10-01',
+        'version' => '0.170',
+        'date' => '2024-10-02',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1460,10 +1461,10 @@ class crawler_base
      * Set the id of the active project
      * This method loads the profile too
      * 
-     * @param integer $iSiteId
+     * @param integer|string $iSiteId
      * @return boolean
      */
-    public function setSiteId(int $iSiteId = 0): bool
+    public function setSiteId(int|string $iSiteId = 0): bool
     {
         $this->logAdd(__METHOD__ . '(' . htmlentities($iSiteId) . ') start');
         $iSiteId = preg_replace('/[^a-z0-9]/', '', $iSiteId);
@@ -1472,7 +1473,7 @@ class crawler_base
         $this->aProfileSaved = [];
         $this->aDefaultOptions['crawler']['userAgent'] = $this->aAbout['product'] . ' ' . $this->aAbout['version'] . ' (GNU GPL crawler and linkchecker for your website; ' . $this->aAbout['urlDocs'] . ')';
 
-        $aOptions = $this->_loadConfigfile();
+        $aOptions = $this->_loadConfigfile() ?: [];
 
         $this->getEffectiveOptions($aOptions);
 

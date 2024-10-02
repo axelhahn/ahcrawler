@@ -30,7 +30,7 @@ $sPatternNumber='^[0-9]*';
 // ----------------------------------------------------------------------
 
 // add profiles navigation
-$sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+$sReturn.=$this->_getNavi2($this->_getProfiles(), true, '');
 
 if(isset($_POST['action'])){
     // $sReturn.='DEBUG: <pre>POST '.print_r($_POST, 1).'</pre>';
@@ -153,7 +153,7 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             // new profile image
             // --------------------------------------------------
-            $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'];
+            $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'] ?? '';
             $sPostedImg = false;
             
             if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew']=='DELETE'){
@@ -317,7 +317,7 @@ $sReturn.='
                     ], true)
                 . '</div>'
 
-            . '<div class="pure-control-group">'
+                . '<div class="pure-control-group">'
                 . $oRenderer->oHtml->getTag('label', ['for'=>'profileimagedata', 'label'=>$this->lB('profile.image')])
                 . '<div id="myimagediv">'
                     . ($this->getProfileImage() 
@@ -328,50 +328,58 @@ $sReturn.='
                                         'label'=>$this->_getIcon('button.delete') . $this->lB('button.delete'), 
                                         'class'=>'pure-button button-error',
                                         'id'=>'profileimagedelete',
-                                      ])
+                                    ])
                                     . '<br><br>'
                         
-                                : '. . .'
-                      )
+                                : $this->lB("profile.noImageYet")
+                    )
                     . '</div>'
                 . '</div>'
-            . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['label'=>''])
-                . '<div>'
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'hidden', 
-                        'name'=>'profileimagedatacurrent', 
-                        'placeholder'=>'',
-                        'value'=>isset($this->aProfileSaved['profileimagedata']) ? $this->aProfileSaved['profileimagedata'] : '',
-                        ], true)
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'hidden', 
-                        'id'=>'profileimagedata', 
-                        'name'=>'profileimagedatanew', 
-                        'placeholder'=>'',
-                        'value'=>'',
-                        ], true)
-                    . $oRenderer->oHtml->getTag('div', [
-                        'id'=>'profileimageinserter', 
-                        'class'=>'insertimage', 
-                        'contentEditable'=>'true',
-                        'label'=>$this->lB('profile.image.add'),
-                        ], true)
-                . '</div>'
-                . '<br>'
-                . '</div>'
-            . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['label'=>''])
-                . '<div>'
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'file', 
-                        'id'=>'profileimagefile', 
-                        'name'=>'profileimagefile', 
-                        'placeholder'=>'',
-                        'accept'=>'image/*',
-                        'value'=>'',
-                        ], true)
-                . '</div>'
+
+                .(function_exists('imagecreatefromstring')
+                    ? 
+                            '<div class="pure-control-group">'
+                                . $oRenderer->oHtml->getTag('label', ['label'=>''])
+                            . '<div>'
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'hidden', 
+                                    'name'=>'profileimagedatacurrent', 
+                                    'placeholder'=>'',
+                                    'value'=>isset($this->aProfileSaved['profileimagedata']) ? $this->aProfileSaved['profileimagedata'] : '',
+                                    ], true)
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'hidden', 
+                                    'id'=>'profileimagedata', 
+                                    'name'=>'profileimagedatanew', 
+                                    'placeholder'=>'',
+                                    'value'=>'',
+                                    ], true)
+                                . $oRenderer->oHtml->getTag('div', [
+                                    'id'=>'profileimageinserter', 
+                                    'class'=>'insertimage', 
+                                    'contentEditable'=>'true',
+                                    'label'=>$this->lB('profile.image.add'),
+                                    ], true)
+                            . '</div>'
+                            . '<br>'
+                            . '</div>'
+                        . '<div class="pure-control-group">'
+                                . $oRenderer->oHtml->getTag('label', ['label'=>'&nbsp;'])
+                            . '<div>'
+                                . $oRenderer->oHtml->getTag('input', [
+                                    'type'=>'file', 
+                                    'id'=>'profileimagefile', 
+                                    'name'=>'profileimagefile', 
+                                    'placeholder'=>'',
+                                    'accept'=>'image/*',
+                                    'value'=>'',
+                                    ], true)
+                            . '</div>'
+                        . '</div>'
+                    : '<div class="pure-control-group">'. $oRenderer->oHtml->getTag('label', ['label'=>''])
+                            . '<div>'.$this->lB("profile.noImageUpload").'</div>'
+                            .'</div>'
+            )
 
             // ------------------------------------------------------------
             // search index
@@ -391,6 +399,18 @@ $sReturn.='
                     'rows'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? count($this->aProfileSaved['searchindex']['urls2crawl'])+1 : 3 ,
                     'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
                     ], true)
+                . '</div>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
+                . $oRenderer->oHtml->getTag('input', [
+                    'type'=>'text',
+                    'id'=>'searchindex-iMaxUrls', 
+                    'name'=>'searchindex[iMaxUrls]',
+                    'size'=>$iSizeInInput,
+                    'pattern'=>$sPatternNumber,
+                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
+                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
+                    ], false)
                 . '</div>'
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
@@ -475,18 +495,6 @@ $sReturn.='
                     . '</div>'
 
                 . '<p>' . $this->lB('profile.overrideDefaults') . '</p>'
-                . '<div class="pure-control-group">'
-                    . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
-                    . $oRenderer->oHtml->getTag('input', [
-                        'type'=>'text',
-                        'id'=>'searchindex-iMaxUrls', 
-                        'name'=>'searchindex[iMaxUrls]',
-                        'size'=>$iSizeInInput,
-                        'pattern'=>$sPatternNumber,
-                        'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
-                        'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
-                        ], false)
-                    . '</div>'
 
                 . '<div class="pure-control-group">'
                     . $oRenderer->oHtml->getTag('label', [

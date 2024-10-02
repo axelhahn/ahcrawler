@@ -2,6 +2,12 @@
 
 ### 2024
 
+#### 2024-10-02: v0.170
+
+* 💣 FIX: Installer did not work anymore (PHP error message)
+* 💣 FIX: Profile page - handle missing php-gd; show button new project]
+* ↗️ UPDATE: Profile page - move input max count of webpages to crawl into non extended view
+
 #### 2024-10-01: v0.169
 
 * ↗️ UPDATE: add profiles navigation in pages that need it
@@ -37,11 +43,3 @@
 * ↗️ UPDATE: AhCrawler runs on PHP 8.3
 * ↗️ UPDATE: dark skin - login page is not white anymore
 * ↗️ UPDATE: German texts for counters
-
-#### 2023-10-29: v0.165
-
-* 🟢 ADDED: viewer page for all counters
-* 🟢 ADDED: LICENSE file (licence didn't change - but now licence text is in project root too)
-* ↗️ UPDATE: Medoo to v 2.1.10 (AcCrawler is compatible with PHP 8.2 with it)
-* ↗️ UPDATE: dark skin
-* ↗️ UPDATE: docker dev environment

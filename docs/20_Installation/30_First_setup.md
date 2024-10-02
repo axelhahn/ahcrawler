@@ -12,7 +12,7 @@ Go to the [Profiles] and set up a web page.
 As minimum you need:
 
 * A label (Short title)
-* List of start urls of the crawler - i.e. `https://www.example.com/`
+* List of start urls for the crawler - i.e. `https://www.example.com/`
 * optional: you have a larger website (>50 web pages) you can limit the count url to crawl in the first few test runs.
 * press [create]
 
