@@ -153,7 +153,7 @@ if(isset($_POST['action'])){
             // --------------------------------------------------
             // new profile image
             // --------------------------------------------------
-            $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'];
+            $aNewProfile['profileimagedata']=$aNewProfile['profileimagedatacurrent'] ?? '';
             $sPostedImg = false;
             
             if(isset($aNewProfile['profileimagedatanew']) && $aNewProfile['profileimagedatanew']=='DELETE'){
@@ -331,7 +331,7 @@ $sReturn.='
                                     ])
                                     . '<br><br>'
                         
-                                : 'TODO: no image was set.'
+                                : $this->lB("profile.noImageYet")
                     )
                     . '</div>'
                 . '</div>'
@@ -377,7 +377,7 @@ $sReturn.='
                             . '</div>'
                         . '</div>'
                     : '<div class="pure-control-group">'. $oRenderer->oHtml->getTag('label', ['label'=>''])
-                            . '<div>TODO: No image upload - GD module is not installed ( function imagecreatefromstring needed).</div>'
+                            . '<div>'.$this->lB("profile.noImageUpload").'</div>'
                             .'</div>'
             )
 

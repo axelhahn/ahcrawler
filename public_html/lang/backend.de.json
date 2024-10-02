@@ -410,6 +410,8 @@
     "profile.description": "Beschreibung des Projekts",
     "profile.image": "Bildschirmfoto\/ Profilbild",
     "profile.image.add": "Zum Hinzuf&uuml;gen\/ Ersetzen des Profil-Bildes: hier Bilddaten aus der Zwischenablage einf&uuml;gen.",
+    "profile.noImageYet": "Es ist noch kein Bild definiert.",
+    "profile.noImageUpload": "Hinweis: der Bild-Upload ist deaktiviert, da das PHP-Modul php-gd nicht installiert/ aktiviert ist.",
     "profile.overrideDefaults": "Die nachfolgenden Einstellungen &uuml;bersteuern die f&uuml;r alle Profile geltenden Default-Vorgaben in den Programmeinstellungen.",
     "profile.searchindex.stickydomain": "Crawler bleibt auf der Domain",
     "profile.searchindex.urls2crawl": "Liste der Start-URLs des Crawlers<br>(je eine URL pro Zeile)",
