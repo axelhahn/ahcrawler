@@ -2,6 +2,13 @@
 
 ### 2024
 
+#### 2024-10-03: v0.171
+
+* 💣 FIX: resource scan created duplicates of pages as links
+* ↗️ UPDATE: optimize resource scan
+* ↗️ UPDATE: hide skip messages in crawler runs (can be enabled in the options)
+* ↗️ UPDATE: on error code 0 the curl error is shown
+
 #### 2024-10-02: v0.170
 
 * 💣 FIX: Installer did not work anymore (PHP error message)
@@ -36,10 +43,3 @@
 * ↗️ UPDATE: main.css and default skin were updated to simplify creation light skins (coming in next release)
 * ↗️ UPDATE: missing translated items will show the english version added by "(en)"
 
-### 2023
-
-#### 2023-12-03: v0.166
-
-* ↗️ UPDATE: AhCrawler runs on PHP 8.3
-* ↗️ UPDATE: dark skin - login page is not white anymore
-* ↗️ UPDATE: German texts for counters

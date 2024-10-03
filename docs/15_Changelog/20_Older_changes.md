@@ -2,6 +2,12 @@
 
 ### 2023
 
+#### 2023-12-03: v0.166
+
+* ↗️ UPDATE: AhCrawler runs on PHP 8.3
+* ↗️ UPDATE: dark skin - login page is not white anymore
+* ↗️ UPDATE: German texts for counters
+
 #### 2023-10-29: v0.165
 
 * 🟢 ADDED: viewer page for all counters
