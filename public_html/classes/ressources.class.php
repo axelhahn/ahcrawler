@@ -731,12 +731,13 @@ class ressources extends crawler_base
         // check deny klist
         $sMatchingRegex = $this->isInDenyList($sUrl);
         if ($sMatchingRegex) {
-            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches deny list regex [$sMatchingRegex]\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('warning', "... don't adding $sUrl - it matches deny list regex [$sMatchingRegex]\n" );
+            }
             // sleep(3);
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            // $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         } else {
             // $this->cliprint('cli', "... adding $sUrl\n");

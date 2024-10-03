@@ -208,7 +208,11 @@ if(isset($_POST['action'])){
            
             $aOptions['profiles'][$iProfileId]=$aNewProfile;
             if ($this->_saveConfig($aOptions)){
-                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.save.ok'), $aNewProfile['label']), 'ok');
+                $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.save.ok'), $aNewProfile['label']), 'ok')
+                    .'<script>
+                        window.setTimeout("window.location.href = \''.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'\'", 3000);
+                    </script>'
+                ;
                 
             } else {
                 $sReturn.= $oRenderer->renderMessagebox(sprintf($this->lB('profile.save.error'), $aNewProfile['label']), 'error');
@@ -412,6 +416,8 @@ $sReturn.='
                     'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
                     ], false)
                 . '</div>'
+            .'<br>'
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
                 . '<div class="pure-control-group">'
@@ -533,6 +539,7 @@ $sReturn.='
                 // . $oRenderer->oHtml->getTag('i', ['class'=>'fa fa-user']) 
                 . ' '.$this->lB('profile.section.frontend')
             .'</h3>'
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
 
@@ -570,6 +577,7 @@ $sReturn.='
                     // . $oRenderer->oHtml->getTag('i', ['class'=>'fa fa-user']) 
                     . ' '.$this->lB('profile.section.ressources')
                 .'</h3>'
+            .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
 

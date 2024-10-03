@@ -321,8 +321,8 @@ class crawler extends crawler_base
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Skip)) {
-            if ($this->aOptions['crawler']['showSkip']) {
-                $this->cliprint('cli', $bDebug ? "... was marked to skip already: $sUrl\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('cli', "... was marked to skip already: $sUrl\n" );
             }
             return false;
         }
@@ -391,7 +391,9 @@ class crawler extends crawler_base
 
         $curr_depth = substr_count(str_replace("//", "/", $sPath), "/");
         if ($this->aProfileEffective['searchindex']['iDepth'] && $curr_depth > $this->aProfileEffective['searchindex']['iDepth']) {
-            $this->cliprint('info', $bDebug ? "... don't adding $sUrl - max depth is " . $this->aProfileEffective['searchindex']['iDepth'] . "\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('info', "SKIP: Don't adding $sUrl - max depth is " . $this->aProfileEffective['searchindex']['iDepth'] . "\n");
+            }
             return false;
         }
 
@@ -576,10 +578,14 @@ class crawler extends crawler_base
         } else {
             if ($oHtml->hasOtherCanonicalUrl()) {
                 $sCanonicalUrl = $oHtml->getCanonicalUrl();
-                $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl ... adding $sCanonicalUrl\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl ... adding $sCanonicalUrl\n");
+                }
                 $this->_addUrl2Crawl($sCanonicalUrl);
             } else {
-                $this->cliprint('warning', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('info', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");
+                }
             }
         }
 
