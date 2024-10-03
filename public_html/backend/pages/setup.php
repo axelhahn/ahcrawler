@@ -359,6 +359,16 @@ if (isset($aOptions['options']['cache']) && $aOptions['options']['cache']==false
     unset($aCbNocache['checked']);
 }
 
+$aCbShowSkip=[
+    'id'=>$sIdPrefixOther.'showSkip', 
+    'type'=>'checkbox',
+    'name'=>'options[crawler][showSkip]',
+    'value'=>'false',
+];
+if (isset($aOptions['options']['crawler']['showSkip']) && $aOptions['options']['crawler']['showSkip']==true){
+    $aCbShowSkip['checked']='checked';
+}
+
 $sSubmit=(isset($aOptionDefaults['options']['searchindex'])
     ? $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'])
     : $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'])
@@ -666,6 +676,15 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
                     // 'label'=>$sValueSearchCategories,
                     'label'=> isset($aOptions['options']['searchindex']['defaultUrls']) ? implode("\n", $aOptions['options']['searchindex']['defaultUrls']) : '',
                     ], true)
+                . '</div>'
+            . '<div class="pure-control-group">'
+                . '<label>'.$this->lB('setup.section.crawler.logging').'</label>'
+                . '<div>'
+                    . '<label class="align-left">'
+                        . $oRenderer->oHtml->getTag('input', $aCbShowSkip, false)
+                        .' '.$this->lB('setup.section.crawler.showSkip')
+                    . '</label><br>'
+                . '</div>'
                 . '</div>'
 
             // ------------------------------------------------------------

@@ -30,7 +30,8 @@ require_once 'httpheader.class.php';
  * ----------------------------------------------------------------------------
  * ...
  * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
- * 2024-09-03  v0.170  Fixes for installer
+ * 2024-10-02  v0.170  Fixes for installer
+ * 2024-09-03  v0.171  Hide SKIP messages during crawling
  * */
 class crawler_base
 {
@@ -41,8 +42,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.170',
-        'date' => '2024-10-02',
+        'version' => '0.171',
+        'date' => '2024-10-03',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -121,6 +122,7 @@ class crawler_base
             'ressources' => [
                 'simultanousRequests' => 3,
             ],
+            'showSkip' => false,
         ],
         'searchindex' => [
             'ignoreNoindex' => false,

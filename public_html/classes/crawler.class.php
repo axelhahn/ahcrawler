@@ -43,7 +43,8 @@ require_once 'analyzer.html.class.php';
  * $o->updateSingleUrl('https://example.com/mypage.html');
  * 
  * 2024-09-06  v0.167  php8 only; add typed variables; use short array syntax
- **/
+ * 2024-10-03  v0.171  Hide SKIP messages during crawling
+  **/
 class crawler extends crawler_base
 {
 
@@ -320,14 +321,18 @@ class crawler extends crawler_base
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Skip)) {
-            $this->cliprint('cli', $bDebug ? "... was marked to skip already: $sUrl\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('cli', "... was marked to skip already: $sUrl\n" );
+            }
             return false;
         }
 
         // check if the given url matches any vhost in the start urls
 
         if (!$this->_checkRegexArray('_vhosts', $sUrl)) {
-            $this->cliprint('info', "... SKIP outside search url(s): $sUrl\n");
+            if ($this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('info', "... SKIP outside search url(s): $sUrl\n");
+            }
             return false;
         }
 
@@ -338,15 +343,21 @@ class crawler extends crawler_base
         if ($bFound) {
             if ($this->_checkRegexArray('includepath', $sPath)) {
                 if ($bFound && $this->_checkRegexArray('exclude', $sUrl, false)) {
-                    $this->cliprint('cli', "... SKIP Found in exclude for $sUrl\n");
+                    if ($this->aOptions['crawler']['showSkip']) {
+                        $this->cliprint('cli', "... SKIP Found in exclude for $sUrl\n");
+                    }
                     return false;
                 }
             } else {
-                $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any includepath rule: $sUrl\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any includepath rule: $sUrl\n");
+                }
                 return false;
             }
         } else {
-            $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any include: $sUrl\n");
+            if ($this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('cli', "... SKIP found in a vhost of start url(s) but does not match any include: $sUrl\n");
+            }
             return false;
         }
         /*
@@ -360,7 +371,9 @@ class crawler extends crawler_base
             // echo "check regex $sRegex on $sUrl\n";
             if (preg_match('#' . $sRegex . '#', $sUrl)) {
                 // $this->cliprint('info', $bDebug ? "... SKIP - it matches exclude $sRegex \n" : "\n");
-                $this->cliprint('info', "... SKIP - it matches exclude $sRegex \n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('info', "... SKIP - it matches exclude $sRegex \n");
+                }
                 return false;
             }
         }
@@ -369,14 +382,18 @@ class crawler extends crawler_base
 
         if (preg_match($sSkipExtensions, $sPath)) {
             // $this->cliprint('cli', $bDebug ? "... SKIP by extension: $sUrl\n" : "");
-            $this->cliprint('cli', "... SKIP by extension: $sPath from $sUrl\n");
+            if ($this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('cli', "... SKIP by extension: $sPath from $sUrl\n");
+            }
             return false;
         }
 
 
         $curr_depth = substr_count(str_replace("//", "/", $sPath), "/");
         if ($this->aProfileEffective['searchindex']['iDepth'] && $curr_depth > $this->aProfileEffective['searchindex']['iDepth']) {
-            $this->cliprint('info', $bDebug ? "... don't adding $sUrl - max depth is " . $this->aProfileEffective['searchindex']['iDepth'] . "\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('info', "SKIP: Don't adding $sUrl - max depth is " . $this->aProfileEffective['searchindex']['iDepth'] . "\n");
+            }
             return false;
         }
 
@@ -388,7 +405,9 @@ class crawler extends crawler_base
                 $iMax
                 && count($this->_aUrls2Crawl) >= $this->aProfileEffective['searchindex']['iMaxUrls']
             ) {
-                $this->cliprint('warning', "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('warning', "... SKIP: maximum of $iMax urls to crawl was reached. I do not add $sUrl\n");
+                }
                 $this->_aUrls2Skip[$sUrl] = true;
                 return false;
             }
@@ -559,10 +578,14 @@ class crawler extends crawler_base
         } else {
             if ($oHtml->hasOtherCanonicalUrl()) {
                 $sCanonicalUrl = $oHtml->getCanonicalUrl();
-                $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl ... adding $sCanonicalUrl\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('info', "SKIP: do not index because canonical url was found: $sCanonicalUrl ... adding $sCanonicalUrl\n");
+                }
                 $this->_addUrl2Crawl($sCanonicalUrl);
             } else {
-                $this->cliprint('warning', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('info', "SKIP: a noindex flag was found (see html head section or http response header): $url\n");
+                }
             }
         }
 

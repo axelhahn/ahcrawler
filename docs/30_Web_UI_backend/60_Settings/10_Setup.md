@@ -66,6 +66,28 @@ Write 1 line per regex. These regex are not casesensitive.
 <style[^>]*>.*?</style>
 ```
 
+**Default files of a website**\
+UNUSED yet. In a future release you can select those default files to view them.
+
+**Logging**\
+You can influence the detail of the logging.
+
+* Show SKIP messages in the log output for debugging purposes.\
+Default: disabled\
+Enable it to get more details in the log output for debugging reasons. It shows if a url was skipped which can have different reasons.
+
+  * Search index: 
+    * An exclude rule matches
+    * All Include rules don't match
+    * A canonical url was found which is not the current url
+    * Found extension is in the skip list
+    * Max number of pages was reached
+    * max depth of directories was reached
+    * noindex flag was found in http reaponse header, html header or rel attribute
+  * resource:
+    * The url was added already
+    * The url matches an antry in the deny list
+
 ### Search Frontend
 
 Settings for finetuning of search result ranking. They will be used if you build in the search frontend in your website. Depending on place and kind of match exist different multipliers.

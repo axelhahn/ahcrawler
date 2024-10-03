@@ -30,7 +30,7 @@ require_once 'analyzer.html.class.php';
  * require_once("../ressources.class.php");
  * 
  * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
- * 
+ * 2024-09-03  v0.171  Hide SKIP messages during crawling; prevent duplicate "page" rows as "link"
  */
 class ressources extends crawler_base
 {
@@ -229,7 +229,9 @@ class ressources extends crawler_base
         if ($bExists) {
             if ($bSkipIfExist) {
                 // v 0.139 skip displaying this
-                $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
+                if ($this->aOptions['crawler']['showSkip']) {
+                    $this->cliprint('cli', 'SKIP resource ' . $sUrl . " (exists)\n");
+                }
             } else {
                 $this->cliprint('info', 'UPDATE existing resource ' . $sUrl . "\n");
                 /*
@@ -729,12 +731,13 @@ class ressources extends crawler_base
         // check deny klist
         $sMatchingRegex = $this->isInDenyList($sUrl);
         if ($sMatchingRegex) {
-            $this->cliprint('warning', $bDebug ? "... don't adding $sUrl - it matches deny list regex [$sMatchingRegex]\n" : "");
+            if ($bDebug && $this->aOptions['crawler']['showSkip']) {
+                $this->cliprint('warning', "... don't adding $sUrl - it matches deny list regex [$sMatchingRegex]\n" );
+            }
             // sleep(3);
             return false;
         }
         if (array_key_exists($sUrl, $this->_aUrls2Crawl)) {
-            // $this->cliprint('cli', $bDebug ? "... don't adding $sUrl - it was added already\n" : "");
             return false;
         } else {
             // $this->cliprint('cli', "... adding $sUrl\n");
@@ -745,7 +748,7 @@ class ressources extends crawler_base
     }
 
     /**
-     * Get the urls that are known to be crawled (their count can increase
+     * Get the urls that are left to be crawled (their count can increase
      * during crawl process by analysing links in pages)
      * 
      * @return array
@@ -773,9 +776,12 @@ class ressources extends crawler_base
     {
         // echo __FUNCTION__."($sUrl)\n";
         // FIX for PHP8: do not return the variable setting
+        /*
         if (isset($this->_aUrls2Crawl[$sUrl]) && $this->_aUrls2Crawl[$sUrl]) {
             $this->_aUrls2Crawl[$sUrl] = 0;
         }
+        */
+        $this->_aUrls2Crawl[$sUrl] = 0;
         return true;
     }
 
@@ -854,14 +860,17 @@ class ressources extends crawler_base
             // add url
             // if(array_key_exists('redirect_url', $info)){
             if ($sNewUrl) {
-                $aRel = $this->_prepareRelitem([
-                    'url' => $sNewUrl,
-                    // 'ressourcetype' => 'page',
-                    'ressourcetype' => 'link',
-                ], $iId);
-                $aResult = $this->oDB->insert('ressources_rel', $aRel);
-                $this->_checkDbResult($aResult);
-                $this->_addUrl2Crawl($sNewUrl, true);
+                // v0.171 insert as link if it does not exist yet
+                if($this->_addUrl2Crawl($sNewUrl, true)){
+                    $aRel = $this->_prepareRelitem([
+                        'url' => $sNewUrl,
+                        // 'ressourcetype' => 'page',
+                        'ressourcetype' => 'link',
+                    ], $iId);
+                    $aResult = $this->oDB->insert('ressources_rel', $aRel);
+                    $this->_checkDbResult($aResult);
+    
+                }
             }
         }
         if (!$oHttpstatus->isError() && !$oHttpstatus->isRedirect()) {
@@ -887,6 +896,8 @@ class ressources extends crawler_base
 
             // detect reason for status no connection
             if ($oHttpstatus->getHttpcode() === 0) {
+                // $this->cliprint('error', "... ".print_r($info, 1).".\n");
+                $this->cliprint('error', "... Curl error #".$info['_curlerrorcode'].": ".$info['_curlerror']."\n");
 
                 // check: does the domain exist
                 $sTargetHost = parse_url($url, PHP_URL_HOST);
@@ -931,42 +942,26 @@ class ressources extends crawler_base
 
         $aUrls = $this->oDB->select(
             'ressources',
-            'url',
+            ['url', 'rescan', 'http_code'],
             [
-                'AND' => [
-                    'siteid' => $this->iSiteId,
-                    'OR' => [
-                        'rescan' => 1,
-                        'http_code[<]' => 1,
-                        'http_code[>=]' => 500,
-                    ],
-                ],
-                // "LIMIT" => 2,
+                'siteid' => $this->iSiteId,
             ]
         );
-        foreach ($aUrls as $sUrl) {
-            $this->_addUrl2Crawl($sUrl, true);
+        foreach ($aUrls as $aRow) {
+            if ($aRow['rescan'] == 1 || $aRow['http_code'] < 1 || $aRow['http_code'] >= 500) { 
+                $this->_addUrl2Crawl($aRow['url'], true);    
+            } else {
+                // $this->_removeUrlFromCrawling($aRow['url']);
+                $this->_aRessourceIDs[$aRow['url']] = 1;
+            }
         }
 
-        /*
-        $aUrlsDone = $this->oDB->select(
-                'ressources', 'url', [
-                    'AND' => [
-                        'siteid' => $this->iSiteId,
-                        'OR' => [
-                            'rescan' => 0,
-                            'http_code[>]' => 0,
-                            'http_code[<]' => 500,
-                        ],
-                    ],
-                ]
-        );
-        // echo $this->oDB->last()."\n"; die("STOP in ".__FUNCTION__);
+            echo PHP_EOL;
+            echo "TOTAL: " . count($aUrls) . " urls ... to crawl: " . count($this->_getUrls2Crawl()) . PHP_EOL; 
+            echo PHP_EOL;
 
-        foreach ($aUrlsDone as $sUrl) {
-            $this->_aRessourceIDs[$sUrl]=1;
-        }
-         */
+            // print_r($this->_getUrls2Crawl()); exit();
+
 
         $this->cliprint('info', "--- Starting http $sHttpMethod requests - $iSimultanous parallel" . PHP_EOL);
         $rollingCurl = new \RollingCurl\RollingCurl();

@@ -377,6 +377,8 @@
     "setup.section.crawler.timeout": "Timeout in [s]",
     "setup.section.crawler.userAgent": "User Agent beim Crawlen",
     "setup.section.crawler.userAgent.button": "aktuelle Browserkennung als User Agent verwenden",
+    "setup.section.crawler.logging": "Log-Ausgabe",
+    "setup.section.crawler.showSkip": "Zeige SKIP Meldungen im Log zur erweiterten Analyse.",
     "setup.section.searchindex.regexToRemove": "Zu entfernender Content im Suchindex<br>(je 1 Zeile pro Regex; nicht casesensitiv)",
     "setup.section.searchindex.defaultUrls": "Default-Files eines Webaufritts<br>(je 1 Zeile pro Eintrag)",
     "setup.section.search": "Such Frontend",
