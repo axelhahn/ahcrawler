@@ -14,7 +14,7 @@ WORKDIR /var/www/ahcrawler
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 # RUN install-php-extensions gd pdo_mysql bcmath zip intl opcache
-RUN install-php-extensions curl pdo_mysql mbstring xml zip xdebug
+RUN install-php-extensions curl pdo_mysql gd xml zip xdebug
 
 
 # create shared group id (local machine and inside container)
