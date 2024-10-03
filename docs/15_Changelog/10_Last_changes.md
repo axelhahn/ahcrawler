@@ -4,8 +4,8 @@
 
 #### 2024-10-03: v0.171
 
-* 💣 FIX: resource scan created duplicates of pages with same url as typ "links"
-* 🟢 ADDED: hide skip messages in crawler runs. This shortens the log output by default. It can be enabled in the global options.
+* 💣 FIX: resource scan created duplicates of pages with same url as type "links"
+* 🟢 ADDED: hide skip messages during crawler runs. This shortens the log output by default. It can be enabled in the global options.
 * 🟢 ADDED: profile - more bottons to toggle extended options (like in global settings)
 * 🟢 ADDED: profile - after successful save it shows the options aftrer 3 sec (like in global settings)
 * 🟢 ADDED: on no response the curl error is shown in the log
