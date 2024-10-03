@@ -360,6 +360,8 @@
     "setup.section.crawler": "Crawler defaults",
     "setup.section.crawler.hint": "These settings are the default for all projects but can be overrided.",
     "setup.section.crawler.searchindex.simultanousRequests": "search index - simultanous requests<br>Http GET",
+    "setup.section.crawler.logging": "Logging",
+    "setup.section.crawler.showSkip": "Show SKIP messages in the log output for debugging purposes.",
     "setup.section.search": "Search Frontend",
     "setup.section.search.hint": "Settings for finetuning of search result ranking. They will be used if you build in the search frontend in your website. Depending on place and kind of match exist different multipliers.",
     "setup.section.search.section.matchWord": "Exact hit of a whole word",
