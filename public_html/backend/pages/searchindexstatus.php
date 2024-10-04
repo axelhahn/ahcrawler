@@ -68,16 +68,17 @@ if ($iPageId) {
         $aTimers['_transfer']=$aTimers['total'] - $aTimers['starttransfer'];
 
         $sConnect='<div class="request-time">'
-                .'<div class="namelookup" style="width:'.$aTimers['namelookup'].'px" title="lookup: '.$aTimers['namelookup'].' ms"></div>'
-                .'<div class="connect" style="width:'.$aTimers['connect'].'px" title="connect: '.$aTimers['connect'].' ms"></div>'
-                .'<div class="handshake" style="width:'.$aTimers['_handshake'].'px" title="handshake: '.$aTimers['_handshake'].' ms"></div>'
+                .'<div class="namelookup" style="width:'.$aTimers['namelookup'].'px" title="'.$this->lB("curl.timer.lookup").': '.$aTimers['namelookup'].' ms"></div>'
+                .'<div class="connect" style="width:'.$aTimers['connect'].'px" title="'.$this->lB("curl.timer.connect").': '.$aTimers['connect'].' ms"></div>'
+                .'<div class="handshake" style="width:'.$aTimers['_handshake'].'px" title="'.$this->lB("curl.timer.handshake").': '.$aTimers['_handshake'].' ms"></div>'
                 //.'<div class="appconnect" style="width:'.$aTimers['appconnect'].'px"></div>'
                 .'<br><br>'
-                .'<div style="margin-left:'.$aTimers['pretransfer'].'px"></div>'
-                .'<div class="onserver" style="width:'.$aTimers['_onserver'].'px" title="on server: '.$aTimers['_onserver'].' ms"></div>'
+                .'<span style="margin-left:'.$aTimers['pretransfer'].'px"></span>'
+                .'<div class="onserver" style="width:'.$aTimers['_onserver'].'px" title="'.$this->lB("curl.timer.onserver").': '.$aTimers['_onserver'].' ms"></div>'
                 .'<br><br>'
-                .'<div style="margin-left:'.$aTimers['starttransfer'].'px"></div>'
-                .'<div class="transfer" style="width:'.$aTimers['_transfer'].'px" title="transfer: '.$aTimers['_transfer'].' ms"></div>'
+                .'<span style="margin-left:'.$aTimers['starttransfer'].'px"></span>'
+                .'<div class="transfer" style="width:'.$aTimers['_transfer'].'px" title="'.$this->lB("curl.timer.transfer").': '.$aTimers['_transfer'].' ms"></div>'
+                .'<br><br>'
 
             .'</div>'
             ;
@@ -86,9 +87,9 @@ if ($iPageId) {
         // --- general infos
         $aTableInfos=[
             [
-                $this->_getIcon('url').$this->lB('db-pages.url'), 
+                '<nobr>'.$this->_getIcon('url').$this->lB('db-pages.url').'</nobr>',
                 $aItem[0]['url']
-                    . ' '
+                    . '<span class="float-right">&nbsp;'
                     .($iResId 
                         ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
                             . ' title="'.$this->lB('status.link-to-res').'"'
@@ -96,31 +97,38 @@ if ($iPageId) {
                         : ''
                     )
                     . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
+                    . '</span>'
             ],
             [
-                $this->_getIcon('description').$this->lB('db-pages.description'), 
+                '<nobr>'.$this->_getIcon('description').$this->lB('db-pages.description').'</nobr>',
                 ($aItem[0]['description'] 
                     ? $aItem[0]['description']
                     : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-description').')', 'warning')
                 )
             ],
             [
-                $this->_getIcon('keywords').$this->lB('db-pages.keywords'), 
+                '<nobr>'.$this->_getIcon('keywords').$this->lB('db-pages.keywords').'</nobr>',
                 ($aItem[0]['keywords'] 
                     ? $aItem[0]['keywords'].'<br>' 
                     : $oRenderer->renderMessagebox('('.$this->lB('htmlchecks.tile-check-no-keywords').')', 'warning')
                 )
             ],
             [
-                $this->_getIcon('lang').$this->lB('db-pages.lang'), 
+                '<nobr>'.$this->_getIcon('lang').$this->lB('db-pages.lang').'</nobr>',
                 ($aItem[0]['lang'] 
                     ? $aItem[0]['lang'].'<br>' 
                     : ''
                 )
             ],
             [
-                $this->_getIcon('ts').$this->lB('db-pages.ts'), 
+                '<nobr>'.$this->_getIcon('ts').$this->lB('db-pages.ts').'</nobr>',
                 $aItem[0]['ts']
+            ],
+            [
+                '<nobr>'.$this->_getIcon('time').$this->lB('curl.timers').'</nobr>',
+                $this->lB("curl.timer.total").': <strong>'.$aTimers['total'].'</strong> ms<br>'
+                    . $this->lB("curl.timer.onserver").': <strong>'.$aTimers['_onserver'].'</strong> ms ('.round($aTimers['_onserver']*100/$aTimers['total']).'%)<br>'
+                    .$sConnect 
             ],
         ];
 
@@ -185,6 +193,7 @@ if ($iPageId) {
                 . $this->_getSimpleHtmlTable($aTableInfos).'<br>'
 
                 // . $sConnect . '<pre>' . print_r($aTimers, 1) .'</pre>'
+                // .'<pre>'.print_r($aCurlHeader, 1).'</pre>'
 
                 // ---- http header
                 .$oRenderer->renderToggledContent(
