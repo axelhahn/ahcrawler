@@ -49,55 +49,13 @@ if ($iPageId) {
         
         $iResId=$this->getIdByUrl($aItem[0]['url'],'ressources');
 
-        // --- timings
-        // see https://ops.tips/gists/measuring-http-response-times-curl/
-        //
-        $aCurlHeader=json_decode($aItem[0]['header'], 1);
-        $iTimeMultiplicator=1/1000;
-        $aTimers=[
-            'namelookup' => $aCurlHeader['namelookup_time_us'] * $iTimeMultiplicator, 
-            'connect' => $aCurlHeader['connect_time_us'] * $iTimeMultiplicator,
-            'appconnect' => $aCurlHeader['appconnect_time_us'] * $iTimeMultiplicator, // The time, in seconds, it took from the start until the SSL/SSH/etc connect/handshake to the remote host was completed.
-            'pretransfer' => $aCurlHeader['pretransfer_time_us'] * $iTimeMultiplicator, 
-            'redirect' => $aCurlHeader['redirect_time_us'] * $iTimeMultiplicator, 
-            'starttransfer' => $aCurlHeader['starttransfer_time_us'] * $iTimeMultiplicator, 
-            'total' => $aCurlHeader['total_time_us'] * $iTimeMultiplicator, 
-        ];
-        $aTimers['_handshake']=$aTimers['appconnect'] - $aTimers['connect'] - $aTimers['namelookup'];
-        $aTimers['_onserver']=$aTimers['starttransfer'] - $aTimers['pretransfer'];
-        $aTimers['_transfer']=$aTimers['total'] - $aTimers['starttransfer'];
-
-        $sConnect='<div class="request-time">'
-                .'<div class="namelookup" style="width:'.$aTimers['namelookup'].'px" title="'.$this->lB("curl.timer.lookup").': '.$aTimers['namelookup'].' ms"></div>'
-                .'<div class="connect" style="width:'.$aTimers['connect'].'px" title="'.$this->lB("curl.timer.connect").': '.$aTimers['connect'].' ms"></div>'
-                .'<div class="handshake" style="width:'.$aTimers['_handshake'].'px" title="'.$this->lB("curl.timer.handshake").': '.$aTimers['_handshake'].' ms"></div>'
-                //.'<div class="appconnect" style="width:'.$aTimers['appconnect'].'px"></div>'
-                .'<br><br>'
-                .'<span style="margin-left:'.$aTimers['pretransfer'].'px"></span>'
-                .'<div class="onserver" style="width:'.$aTimers['_onserver'].'px" title="'.$this->lB("curl.timer.onserver").': '.$aTimers['_onserver'].' ms"></div>'
-                .'<br><br>'
-                .'<span style="margin-left:'.$aTimers['starttransfer'].'px"></span>'
-                .'<div class="transfer" style="width:'.$aTimers['_transfer'].'px" title="'.$this->lB("curl.timer.transfer").': '.$aTimers['_transfer'].' ms"></div>'
-                .'<br><br>'
-
-            .'</div>'
-            ;
-
+        $aOptions = $this->getEffectiveOptions();
 
         // --- general infos
         $aTableInfos=[
             [
-                '<nobr>'.$this->_getIcon('url').$this->lB('db-pages.url').'</nobr>',
-                $aItem[0]['url']
-                    . '<span class="float-right">&nbsp;'
-                    .($iResId 
-                        ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
-                            . ' title="'.$this->lB('status.link-to-res').'"'
-                            . '>'.$oRenderer->_getIcon('switch-search-res').'</a> ' 
-                        : ''
-                    )
-                    . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
-                    . '</span>'
+                '<nobr>'.$this->_getIcon('title').$this->lB('db-pages.title').'</nobr>',
+                $aItem[0]['title']
             ],
             [
                 '<nobr>'.$this->_getIcon('description').$this->lB('db-pages.description').'</nobr>',
@@ -121,14 +79,19 @@ if ($iPageId) {
                 )
             ],
             [
+                '<nobr>'.$this->_getIcon('size').$this->lB('db-pages.size').'</nobr>',
+                ($aItem[0]['size'] 
+                    ? $oRenderer->renderValue('_size_download1', $oRenderer->hrSize($aItem[0]['size'])).'<br>' 
+                    : ''
+                )
+            ],
+            [
                 '<nobr>'.$this->_getIcon('ts').$this->lB('db-pages.ts').'</nobr>',
                 $aItem[0]['ts']
             ],
             [
-                '<nobr>'.$this->_getIcon('time').$this->lB('curl.timers').'</nobr>',
-                $this->lB("curl.timer.total").': <strong>'.$aTimers['total'].'</strong> ms<br>'
-                    . $this->lB("curl.timer.onserver").': <strong>'.$aTimers['_onserver'].'</strong> ms ('.round($aTimers['_onserver']*100/$aTimers['total']).'%)<br>'
-                    .$sConnect 
+                '<nobr>'.$this->_getIcon('time').$this->lB('db-ressources.timers').'</nobr>',
+                $oRenderer->renderNetworkTimer($aItem[0]['header'])
             ],
         ];
 
@@ -176,6 +139,10 @@ if ($iPageId) {
         $sReposneHeaderAsString= strlen($aHeaderJson['_responseheader'][0])!=1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
         $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
         
+        $sCurl=isset($aItem[0]['header'])
+            ? '<pre>' . print_r(json_decode($aItem[0]['header'], 1), 1) . '</pre>'
+            : '-'
+            ;
         // print_r($aItem[0]);
         return $sReturn 
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
@@ -189,7 +156,17 @@ if ($iPageId) {
                 */
                 
                 // ---- basic page data
-                . '<h4>'.($aItem[0]['title'] ? $aItem[0]['title'] : $aItem[0]['url']).'</h4>'
+                . '<span class="float-right">&nbsp;'
+                .($iResId 
+                    ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
+                        . ' title="'.$this->lB('status.link-to-res').'"'
+                        . '>'.$oRenderer->_getIcon('switch-search-res').'</a> ' 
+                    : ''
+                )
+                . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
+                . '</span>'
+                . '<strong>'.($aItem[0]['url']).'</strong><br><br>'
+
                 . $this->_getSimpleHtmlTable($aTableInfos).'<br>'
 
                 // . $sConnect . '<pre>' . print_r($aTimers, 1) .'</pre>'
@@ -206,7 +183,13 @@ if ($iPageId) {
                     ,
                     false
                 )
-
+                // --- curl metadata
+                . $oRenderer->renderToggledContent(
+                    $this->lB('ressources.curl-metadata-h3'),
+                    $sCurl,
+                    false
+                )
+                
                 // ---- wordlist
                 . $oRenderer->renderToggledContent(
                         $this->lB('status.detail.words'),
