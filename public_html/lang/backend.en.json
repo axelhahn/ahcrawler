@@ -221,7 +221,7 @@
     "curl.timer.connect": "Connect",
     "curl.timer.handshake": "Handshake",
     "curl.timer.onserver": "On server",
-    "curl.timer.transfer": "Transfer zum Client",
+    "curl.timer.transfer": "Transfer to the client",
     "curl.timer.total": "Total",
 
     "db-pages.url": "Url",
@@ -272,6 +272,7 @@
     "db-ressources._dlspeed": "Speed",
     "db-ressources._size_download": "Size",
     "db-ressources._meta_total_time": "Total time of request [s]",
+    "db-ressources.timers": "Measured times",
     "db-search.id": "Id",
     "db-search.summary": "Summary",
     "db-search.ranking": "Ranking",
