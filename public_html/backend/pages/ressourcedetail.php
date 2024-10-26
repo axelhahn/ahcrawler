@@ -1,6 +1,6 @@
 <?php
 /**
- * page analysis
+ * page resource detail
  */
 $sReturn='';
 $iRessourceId = (int)$this->_getRequestParam('id');

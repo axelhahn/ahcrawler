@@ -42,8 +42,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.172-dev',
-        'date' => '2024-10-nn',
+        'version' => '0.172',
+        'date' => '2024-10-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1021,7 +1021,7 @@ class crawler_base
     public function getIdByUrl(string $sUrl, string $sTable): int
     {
         $iReturn = 0;
-        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl'";
+        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl' and siteid=" . $this->iSiteId;
         $aData = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
 
         // return isset($aData[0]['id']) ? $aData[0]['id'] : false;

@@ -30,6 +30,7 @@ require_once 'htmlelements.class.php';
  * @author hahn
  * 
  * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-10-27  v0.172  fix site id for current object
  */
 class ressourcesrenderer extends crawler_base
 {
@@ -208,6 +209,7 @@ class ressourcesrenderer extends crawler_base
         if ($iSiteId) {
             $this->oRes->setSiteId($iSiteId);
             $this->oCrawler->setSiteId($iSiteId);
+            $this->setSiteId($iSiteId);
         }
         return true;
     }
