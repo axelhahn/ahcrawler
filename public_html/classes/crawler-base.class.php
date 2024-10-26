@@ -56,26 +56,26 @@ class crawler_base
 
         // contributors @since v0.136
         'thanks' => [
-            'testing' => [
-                [
-                    'label' => '',
-                    'name' => 'Roberto José de Amorim',
-                    'image' => '',
-                    'url' => ''
-                ],
-            ],
             'translation' => [
+                [
+                    'label' => 'Vietnamese',
+                    'name' => 'Dzung Do',
+                    'image' => '',
+                    'url' => 'https://github.com/saosangmo'
+                ],
                 [
                     'label' => 'Russian',
                     'name' => 'Artone Ozhiganov',
                     'image' => '',
                     'url' => 'https://github.com/Ozhiganov'
                 ],
+            ],
+            'testing' => [
                 [
-                    'label' => 'Vietnamese',
-                    'name' => 'Dzung Do',
+                    'label' => '',
+                    'name' => 'Roberto José de Amorim',
                     'image' => '',
-                    'url' => 'https://github.com/saosangmo'
+                    'url' => ''
                 ],
             ],
         ],
