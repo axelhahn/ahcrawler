@@ -2,6 +2,11 @@
 
 ### 2024
 
+#### 2024-10-27: v0.172
+
+* 💣 FIX: flip between search index detail and resource item (and back)
+* 🟢 ADDED: show network times to prepare, process and sending response in the detail pages of a search index item and a resource item.
+
 #### 2024-10-03: v0.171
 
 * 💣 FIX: resource scan created duplicates of pages with same url as type "links"
@@ -34,13 +39,3 @@
 * ↗️ UPDATE: font-awesome -> 6.6.0
 * ↗️ UPDATE: Medoo -> 2.1.12
 * ↗️ UPDATE: Show additional text after update: reload browser, link to changelog
-
-#### 2024-09-16: v0.167
-
-* 🟢 ADDED: Vietnamese translation was contributed by [[https://github.com/saosangmo|saosangmo]]. Thanks a lot! He was added as contributor.
-* ↗️ UPDATE: AhCrawler runs on PHP 8+ only: All classes were updated to use typed variables. Arrays were rewritten to short array syntax
-* ↗️ UPDATE: My own external classes were moved to vendor subdir
-* ↗️ UPDATE: The updater detects a developer branch and shows a warning
-* ↗️ UPDATE: main.css and default skin were updated to simplify creation light skins (coming in next release)
-* ↗️ UPDATE: missing translated items will show the english version added by "(en)"
-

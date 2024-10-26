@@ -45,6 +45,13 @@ You get details with
 * Keywords - from html head section
 * Language - from lang attribute in html tag
 * Time - timestamp of the crawling
+* Measured times - It shows a few network timers for this request. You see the method, url and http status code as text. Followed by a graph for 
+  * time to prepare:
+    * DNS lookup
+    * connect
+    * handshake
+  * on server: The time that was used on server to process the request. This is the time you could optimize in your application.
+  * Transfer to the client
 
 A missing description or keywords will be marked.
 
@@ -53,6 +60,12 @@ A missing description or keywords will be marked.
 Shows the http header if the crawler visited the url.
 
 With the button below you can check the current http reaponse header. This feature requires that you enabled the http header check as a public page.
+
+### Curl metadata
+
+Show raw data of collected curl metadata.
+
+Among them are http status code, download speed, timers for the connection, certificate information and more.
 
 ### Wordlist
 
