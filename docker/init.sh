@@ -24,6 +24,8 @@
 # 2024-07-29  v1.17 <www.axel-hahn.de>        hide unnecessary menu items; reorder functions
 # 2024-08-14  v1.18 <www.axel-hahn.de>        update container view
 # 2024-09-20  v1.19 <www.axel-hahn.de>        detect dockerd-rootless (hides menu item to set permissions)
+# 2024-10-16  v1.20 <axel.hahn@unibe.ch>      add db import and export
+# 2024-10-25  v1.21 <axel.hahn@unibe.ch>      create missing subdir dbdumps
 # ======================================================================
 
 cd "$( dirname "$0" )" || exit 1
@@ -37,7 +39,7 @@ _self=$( basename "$0" )
 # shellcheck source=/dev/null
 . "${_self}.cfg" || exit 1
 
-_version="1.19"
+_version="1.21"
 
 # git@git-repo.iml.unibe.ch:iml-open-source/docker-php-starterkit.git
 selfgitrepo="docker-php-starterkit.git"
@@ -62,6 +64,8 @@ DC_REPO=1
 DC_CONFIG_CHANGED=0
 
 DC_WEB_URL=""
+
+DC_DUMP_DIR=dbdumps
 
 isDockerRootless=0
 ps -ef | grep  dockerd-rootless | grep -q $USER && isDockerRootless=1
@@ -99,6 +103,13 @@ function _getStatus_docker(){
     DC_DB_UP=0
     grep -q "${APP_NAME}-server" <<< "$_out" && DC_WEB_UP=1
     grep -q "${APP_NAME}-db"     <<< "$_out"  && DC_DB_UP=1
+
+    if [ "$DB_ADD" != "false" ] && [ ! -d "${DC_DUMP_DIR}" ]; then
+        echo "INFO: creating subdir ${DC_DUMP_DIR} to import/ export databases ..."
+        mkdir "${DC_DUMP_DIR}" || exit 1
+    return
+fi
+
 }
 
 function _getWebUrl(){
@@ -152,7 +163,7 @@ function showMenu(){
         echo "${_spacer}$( _key T ) - remove generated files"
     fi
     echo
-    if [ $DC_WEB_UP -eq 0 ] || [ $_bAll -eq 1 ]; then
+    if [ $DC_WEB_UP -eq 0 ] || [ $DC_DB_UP -eq 0 ] || [ $_bAll -eq 1 ]; then
         if [ $DC_CONFIG_CHANGED -eq 0 ] || [ $_bAll -eq 1 ]; then
             echo "${_spacer}$( _key u ) - startup containers    docker-compose ... up -d"
             echo "${_spacer}$( _key U ) - startup containers    docker-compose ... up -d --build"
@@ -160,13 +171,19 @@ function showMenu(){
             echo "${_spacer}$( _key r ) - remove containers     docker-compose rm -f"
         fi
     fi
-    if [ $DC_WEB_UP -eq 1 ] || [ $_bAll -eq 1 ]; then
+    if [ $DC_WEB_UP -eq 1 ] || [ $DC_DB_UP -eq 1 ] || [ $_bAll -eq 1 ]; then
         echo "${_spacer}$( _key s ) - shutdown containers   docker-compose stop"
         echo
         echo "${_spacer}$( _key m ) - more infos"
         echo "${_spacer}$( _key o ) - open app [${APP_NAME}] $DC_WEB_URL"
         echo "${_spacer}$( _key c ) - console (bash)"
+    fi
+    if [ $DC_WEB_UP -eq 1 ] || [ $_bAll -eq 1 ]; then
         echo "${_spacer}$( _key p ) - console check with php linter"
+    fi
+    if [ $DC_DB_UP -eq 1 ] || [ $_bAll -eq 1 ]; then
+        echo "${_spacer}$( _key d ) - Dump container database"
+        echo "${_spacer}$( _key D ) - Import Dump into container database"
     fi
     echo
     echo "${_spacer}$( _key q ) - quit"
@@ -498,6 +515,75 @@ function _wait(){
     echo
 }
 
+# DB TOOL - dump db from container
+function _dbDump(){
+    local _iKeepDumps;
+    typeset -i _iKeepDumps=5
+    local _iStart;
+    typeset -i _iStart=$_iKeepDumps+1;
+
+    if [ $DC_DB_UP -eq 0 ]; then
+        echo "Database container is not running. Aborting."
+        return
+    fi
+    outfile=${DC_DUMP_DIR}/${MYSQL_DB}_$( date +%Y%m%d_%H%M%S ).sql
+    echo -n "dumping ${MYSQL_DB} ... "
+    if docker exec -i "${APP_NAME}-db" mysqldump -uroot -p${MYSQL_ROOT_PASS} ${MYSQL_DB} > "$outfile"; then
+        echo -n "OK ... Gzip ... "
+        if gzip "${outfile}"; then
+            echo "OK"
+            ls -l "$outfile.gz"
+
+            # CLEANUP
+            echo
+            echo "--- Cleanup: keep $_iKeepDumps files."
+            ls -1t ${DC_DUMP_DIR}/* | sed -n "$_iStart,\$p" | while read -r delfile
+            do 
+                echo "CLEANUP: Deleting $delfile ... "
+                rm -f "$delfile"
+            done
+            echo
+            echo -n "Size of dump directory: "
+            du -hs ${DC_DUMP_DIR} | awk '{ print $1 }'
+
+        else
+            echo "ERROR"
+            rm -f "$outfile"
+        fi
+    else
+        echo "ERROR"
+        rm -f "$outfile"
+    fi
+}
+
+# DB TOOL - import local database dump into container
+function _dbImport(){
+    echo "--- Available dumps:"
+    ls -ltr ${DC_DUMP_DIR}/*.gz | sed "s#^#    #g"
+    if [ $DC_DB_UP -eq 0 ]; then
+        echo "Database container is not running. Aborting."
+        return
+    fi
+    echo -n "Dump file to import into ${MYSQL_DB} > "
+    read -r dumpfile
+    if [ -z "$dumpfile" ]; then
+        echo "Abort - no value was given."
+        return
+    fi
+    if [ ! -f "$dumpfile" ]; then
+        echo "Abort - wrong filename."
+        return
+    fi
+
+    echo -n "Importing $dumpfile ... "
+    if zcat "$dumpfile" | docker exec -i "${APP_NAME}-db" mysql -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
+    then
+        echo "OK"
+    else
+        echo "ERROR"
+    fi
+}
+
 # ----------------------------------------------------------------------
 # MAIN
 # ----------------------------------------------------------------------
@@ -611,6 +697,14 @@ while true; do
             else
                 echo "Start your docker container first."
             fi
+            ;;
+        d) 
+            h2 "DB tools :: dump"
+            _dbDump
+            ;;
+        D) 
+            h2 "DB tools :: import"
+            _dbImport
             ;;
         o) 
             h2 "Open app ..."

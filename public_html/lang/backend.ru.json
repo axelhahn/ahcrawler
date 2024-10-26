@@ -162,7 +162,7 @@
     "db-ressources.url.description": "Url of the page or item\/ resource",
     "db-ressources._dlspeed": "Speed",
     "db-ressources._size_download": "Size",
-    "db-ressources._meta_total_time": "Total time of transfer [s]",
+    "db-ressources._meta_total_time": "Total time of request [s]",
     "db-search.id": "Id",
     "db-search.summary": "Summary",
     "db-search.ranking": "Ranking",

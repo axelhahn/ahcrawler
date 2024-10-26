@@ -224,7 +224,14 @@
     "counter.statusWarning.description" :"Anzahl Http Warnungen beim Linkcheck",
     "counter.statusWarning[].label" :"Warnungen mit Http-Code %s",
     "counter.statusWarning[].description" :"Warnungen mit Http-Code %s beim Linkcheck; %s",
-    
+
+    "curl.timer.lookup": "DNS Lookup",
+    "curl.timer.connect": "Aufbau der Verbindung",
+    "curl.timer.handshake": "Handshake",
+    "curl.timer.onserver": "Verarbeitung am Server",
+    "curl.timer.transfer": "Transfer zum Client",
+    "curl.timer.total": "Gesamt",
+
     "db-pages.url": "Url",
     "db-pages.url.description": "Url der Seite oder des Elements",
     "db-pages.title": "Titel",
@@ -272,7 +279,8 @@
     "db-ressources.url.description": "URL der Seite \/ Ressource",
     "db-ressources._dlspeed": "Geschwindigkeit",
     "db-ressources._size_download": "Gr&ouml;sse",
-    "db-ressources._meta_total_time": "Transferdauer [s]",
+    "db-ressources._meta_total_time": "Zeit des Requests [s]",
+    "db-ressources.timers": "Zeitmessung",
     "db-search.id": "ID",
     "db-search.summary": "Zusammenfassung",
     "db-search.ranking": "Ranking",
@@ -564,6 +572,7 @@
     "ressources.referenced-in": "verwendet in (%s)",
     "ressources.redirects-to": "leitet weiter zu...",
     "ressources.size-is-zero": "[nicht im Suchindex]",
+    "ressources.curl-metadata-h3": "Curl Metadaten",
     "ressources.references-h3-in": "Verwendet in (%s)",
     "ressources.references-in": "Verwendet in",
     "ressources.references-h3-out": "verlinkte Ressourcen (%s)",

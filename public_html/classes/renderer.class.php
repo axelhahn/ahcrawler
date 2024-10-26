@@ -30,6 +30,7 @@ require_once 'htmlelements.class.php';
  * @author hahn
  * 
  * 2024-09-13  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-10-27  v0.172  fix site id for current object
  */
 class ressourcesrenderer extends crawler_base
 {
@@ -208,6 +209,7 @@ class ressourcesrenderer extends crawler_base
         if ($iSiteId) {
             $this->oRes->setSiteId($iSiteId);
             $this->oCrawler->setSiteId($iSiteId);
+            $this->setSiteId($iSiteId);
         }
         return true;
     }
@@ -398,8 +400,9 @@ class ressourcesrenderer extends crawler_base
         $sReturn = '';
         foreach ($aArraykeys as $sKey) {
             if (array_key_exists($sKey, $aItem)) {
+                $sLangKey=strstr($sKey, '.') ? $sKey : 'db-ressources.' . $sKey;
                 $sReturn .= '<tr>'
-                    . '<td>' . $this->_getIcon($sKey, true) . ' ' . $this->lB("db-ressources." . $sKey) . '</td>'
+                    . '<td>' . $this->_getIcon($sKey, true) . ' ' . $this->lB($sLangKey) . '</td>'
                     . '<td>' . $this->renderValue($sKey, $aItem[$sKey]) . '</td>'
                     . '</tr>';
             }
@@ -748,6 +751,73 @@ class ressourcesrenderer extends crawler_base
             . $sMessage
             . '</div>';
     }
+
+    public function renderNetworkTimer(string $sCurlheader): string
+    {
+        // --- timings
+        // see https://ops.tips/gists/measuring-http-response-times-curl/
+        //
+        $iMaxLoadTime=$this->aOptions['analysis']['MaxLoadtime'];
+
+        $aCurlHeader=json_decode($sCurlheader, 1);
+        if(!$aCurlHeader){
+            return '-';
+        }
+        // print_r($aCurlHeader);
+        $iTimeMultiplicator=1/1000;
+        $aTimers=[
+            'namelookup' => $aCurlHeader['namelookup_time_us'] * $iTimeMultiplicator, 
+            'connect' => $aCurlHeader['connect_time_us'] * $iTimeMultiplicator,
+            'appconnect' => $aCurlHeader['appconnect_time_us'] * $iTimeMultiplicator, // The time, in seconds, it took from the start until the SSL/SSH/etc connect/handshake to the remote host was completed.
+            'pretransfer' => $aCurlHeader['pretransfer_time_us'] * $iTimeMultiplicator, 
+            'redirect' => $aCurlHeader['redirect_time_us'] * $iTimeMultiplicator, 
+            'starttransfer' => $aCurlHeader['starttransfer_time_us'] * $iTimeMultiplicator, 
+            'total' => $aCurlHeader['total_time_us'] * $iTimeMultiplicator, 
+        ];
+        $aTimers['_handshake']=$aTimers['appconnect'] - $aTimers['connect'] - $aTimers['namelookup'];
+        $aTimers['_onserver']=$aTimers['starttransfer'] - $aTimers['pretransfer'];
+        $aTimers['_transfer']=$aTimers['total'] - $aTimers['starttransfer'];
+
+        // print_r($aCurlHeader);
+        $sIntro=''
+            .($aCurlHeader['effective_method'] ? '<strong>'.$aCurlHeader['effective_method'].'</strong>' : '?').' '
+            .($aCurlHeader['url'] ?? '?').' '
+            .($aCurlHeader['http_code'] ?  $this->renderValue('http_code', $aCurlHeader['http_code']) : '').' '
+            ;
+        $sIntro.= $sIntro ? '<br>' : '';
+
+        return ''
+            . $sIntro
+            .($aTimers['total']>$iMaxLoadTime 
+                ? $this->renderMessagebox($this->lB('counter.countLongLoad.label'), 'warning')
+                : ''
+            )
+            . $this->lB("curl.timer.total").': <strong>'.$aTimers['total'].'</strong> ms'
+                .'<br>'
+            . $this->lB("curl.timer.onserver").': <strong>'.$aTimers['_onserver'].'</strong> ms ('.round($aTimers['_onserver']*100/$aTimers['total']).'%)<br>'
+
+            .'<div class="request-time">'
+                // . '<pre>'.print_r($aTimers, 1).'</pre>'
+                . ( $iMaxLoadTime ? '<div class="maxloadtime" style="margin-left:'.$iMaxLoadTime.'px" title="'.$iMaxLoadTime.' ms"></div>' : '' )
+                .'<div class="maxloadtime2" style="width:'.$iMaxLoadTime.'px" ></div><br>'
+                .'<div class="total" style="width:'.$aTimers['total'].'px" title="'.$this->lB("curl.timer.total").': '.$aTimers['total'].' ms"></div>'
+                .'<br><br>'
+                .'<div class="namelookup" style="width:'.$aTimers['namelookup'].'px" title="'.$this->lB("curl.timer.lookup").': '.$aTimers['namelookup'].' ms"></div>'
+                .'<div class="connect" style="width:'.$aTimers['connect'].'px" title="'.$this->lB("curl.timer.connect").': '.$aTimers['connect'].' ms"></div>'
+                .'<div class="handshake" style="width:'.$aTimers['_handshake'].'px" title="'.$this->lB("curl.timer.handshake").': '.$aTimers['_handshake'].' ms"></div>'
+                //.'<div class="appconnect" style="width:'.$aTimers['appconnect'].'px"></div>'
+                .'<br><br>'
+                .'<span style="margin-left:'.$aTimers['pretransfer'].'px"></span>'
+                .'<div class="onserver" style="width:'.$aTimers['_onserver'].'px" title="'.$this->lB("curl.timer.onserver").': '.$aTimers['_onserver'].' ms"></div>'
+                .'<br><br>'
+                .'<span style="margin-left:'.$aTimers['starttransfer'].'px"></span>'
+                .'<div class="transfer" style="width:'.$aTimers['_transfer'].'px" title="'.$this->lB("curl.timer.transfer").': '.$aTimers['_transfer'].' ms"></div>'
+                .'<br><br>'
+
+            .'</div>'
+            ;
+
+    }
     /**
      * Get html code for report item with redirects and and its references
      * 
@@ -820,10 +890,10 @@ class ressourcesrenderer extends crawler_base
         }
 
         // add head metadata
-        $aResponsemetadata = json_decode($aRessourceItem['header'], 1);
+        $aCurlHeader = json_decode($aRessourceItem['header'], 1);
         foreach (['total_time', 'namelookup_time', 'connect_time', 'pretransfer_time', 'starttransfer_time', 'redirect_time'] as $sKey) {
-            if ($aResponsemetadata && is_array($aResponsemetadata) && array_key_exists($sKey, $aResponsemetadata)) {
-                $aRessourceItem['_meta_' . $sKey] = $aResponsemetadata[$sKey];
+            if ($aCurlHeader && is_array($aCurlHeader) && array_key_exists($sKey, $aCurlHeader)) {
+                $aRessourceItem['_meta_' . $sKey] = $aCurlHeader[$sKey];
             }
         }
         return $aRessourceItem;
@@ -834,7 +904,7 @@ class ressourcesrenderer extends crawler_base
      * 
      * @param array  $aRessourceItem  array of the ressource item
      * @return string
-     */
+     */ 
     public function renderRessourceItemAsBox(array $aRessourceItem): string
     {
         $sReturn = '';
@@ -881,6 +951,11 @@ class ressourcesrenderer extends crawler_base
 
         ;
 
+        // $oRenderer->renderNetworkTimer($aItem[0]['header'], $aOptions['analysis']['MaxLoadtime'])
+        // $aRessourceItem['curl.timers'] = $this->renderNetworkTimer($aRessourceItem['header']);
+
+        $aRessourceItem['timers'] = $this->renderNetworkTimer($aRessourceItem['header']);
+
         $sReturn .= $this->_renderItemAsTable($aRessourceItem, [
             // 'id',
             'http_code',
@@ -889,9 +964,14 @@ class ressourcesrenderer extends crawler_base
             'content_type',
             '_size_download',
             'ts',
-            '_meta_total_time',
+            'timers'
+            // '_meta_total_time',
+            // 'curl.timers',
             // 'errorcount', 
         ])
+
+        // . $this->renderNetworkTimer($aRessourceItem['header'])
+        // .'<pre>'.print_r($aRessourceItem, 1).'</pre>'
         ;
 
         /*
@@ -1328,6 +1408,18 @@ class ressourcesrenderer extends crawler_base
                 );
         }
 
+        // --------------------------------------------------
+        // curl metadata
+        // --------------------------------------------------
+        $sCurl=isset($aItem['header'])
+            ? '<pre>' . print_r(json_decode($aItem['header'], 1), 1) . '</pre>'
+            : '-'
+        ;
+        $sReturn .= $this->renderToggledContent(
+            $this->lB('ressources.curl-metadata-h3'),
+            $sCurl,
+            false
+        );
 
         // --------------------------------------------------
         // where it is linked
@@ -1337,6 +1429,7 @@ class ressourcesrenderer extends crawler_base
             $this->_renderRessourceListWithGroups($aIn, false, true),
             false
         );
+
         /*
         $sReturn.='<h3 id="listIn">' . sprintf($this->lB('ressources.references-h3-in'), count($aIn)) . '</h3>'
                 . $this->_renderRessourceListWithGroups($aIn, false, false)

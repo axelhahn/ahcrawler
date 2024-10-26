@@ -42,8 +42,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.171',
-        'date' => '2024-10-03',
+        'version' => '0.172',
+        'date' => '2024-10-27',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -56,26 +56,26 @@ class crawler_base
 
         // contributors @since v0.136
         'thanks' => [
-            'testing' => [
-                [
-                    'label' => '',
-                    'name' => 'Roberto José de Amorim',
-                    'image' => '',
-                    'url' => ''
-                ],
-            ],
             'translation' => [
+                [
+                    'label' => 'Vietnamese',
+                    'name' => 'Dzung Do',
+                    'image' => '',
+                    'url' => 'https://github.com/saosangmo'
+                ],
                 [
                     'label' => 'Russian',
                     'name' => 'Artone Ozhiganov',
                     'image' => '',
                     'url' => 'https://github.com/Ozhiganov'
                 ],
+            ],
+            'testing' => [
                 [
-                    'label' => 'Vietnamese',
-                    'name' => 'Dzung Do',
+                    'label' => '',
+                    'name' => 'Roberto José de Amorim',
                     'image' => '',
-                    'url' => 'https://github.com/saosangmo'
+                    'url' => ''
                 ],
             ],
         ],
@@ -1021,7 +1021,7 @@ class crawler_base
     public function getIdByUrl(string $sUrl, string $sTable): int
     {
         $iReturn = 0;
-        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl'";
+        $sSql = "SELECT id FROM $sTable WHERE url = '$sUrl' and siteid=" . $this->iSiteId;
         $aData = $this->oDB->query($sSql)->fetchAll(PDO::FETCH_ASSOC);
 
         // return isset($aData[0]['id']) ? $aData[0]['id'] : false;
