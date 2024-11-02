@@ -21,6 +21,6 @@
             "Axels Docs": "https://www.axel-hahn.de/docs/"
         },
         "theme": "daux-blue",
-        "search": false
+        "search": true
     }
 }
