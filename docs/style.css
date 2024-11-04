@@ -1,7 +1,7 @@
 /*
 
     patch css elements of daux.io blue theme
-    version 2024-11-02
+    version 2024-11-04
 
 */
 
@@ -22,7 +22,7 @@
 
     --sidebar-background:var(--body-background);
     --sidebar-border-color: none;
-    --sidebar-link-active-background: #fcf0e0;
+    --sidebar-link-active-background: #f4f8f8;
     
     --table-border: #eee;
     --table-header-background: #d8e8e8;
@@ -41,6 +41,7 @@
     --axel_brand-background: none;
     --axel_brand-pre-background: #8ce;
     --axel_brand-pre-background-hover: #adf;
+    --axel_sidebar-link-active-background: linear-gradient(20deg,#fdf4e8, #f8ecf4,#f0f4ff);
 
     --axel_h1_header: none;
 
@@ -146,6 +147,10 @@ a.Brand {
 }
 
 
+.Nav__item--open > a, .Nav__item--active > a {
+	background: var(--axel_sidebar-link-active-background);
+}
+
 /* ---------- page header: breadcrumb ---------- */
 
 .Page__header{border: none;}
@@ -153,6 +158,11 @@ a.Brand {
 .Page__header h1{font-size: 1.3em;}
 
 /* ---------- page content ---------- */
+
+h2::before{ content: ': : '; opacity: 0.5;}
+h3::before{ content: '> '; opacity: 0.4;}
+h4::before{ content: '_ '; opacity: 0.3;}
+h5::before{ content: '. '; opacity: 0.2;}
 
 .s-content{padding-top: 1em;}
 .s-content h1{background: var(--axel_h1-bg); color: var(--axel_h1); font-size: 200%; font-weight:bold; margin-bottom: 2em; margin-top: 0em; border-bottom: var(--axel_h1-bottom);}
@@ -194,6 +204,7 @@ article nav{border-top: var(--axel-article-nav-border-top); margin: 8em 0 5em;}
 
 div.hero{background: var(--axel_hero_bg);border-radius: 2em; padding: 5em 2em;text-align: center;} 
 div.hero h2{background: none; _border: none; text-align: center; font-size: 300%; margin: 0 0 2em;}
+div.hero h2::before{content: none;}
 div.hero p.center{text-align: center;}
 
 /* ---------- TOC ---------- */
