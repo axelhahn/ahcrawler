@@ -211,6 +211,8 @@ function initDatatables(){
         // langedit
         'tblLangtexts':{       'lengthMenu':[[-1]], 'bStateSave': true},
         
+        // counters
+        'tblCounterdata':{    'aaSorting':[[0,'desc']], 'bStateSave': false},
         // ressources output list
         // 'tableResData'
 
