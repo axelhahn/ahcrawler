@@ -1,7 +1,7 @@
-# AHCLI
+# CDN or local
 
-PHP class to handle command line argments.
+PHP class to load a ressource from CDNJS or from own domain (if it exist)
 
 👤 Author: Axel Hahn
-🧾 Source: <https://github.com/axelhahn/ahcli/>
+🧾 Source: <https://github.com/axelhahn/cdnorlocal/>
 📜 License: GNU GPL 3.0

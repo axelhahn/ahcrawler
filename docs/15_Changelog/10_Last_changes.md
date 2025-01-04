@@ -1,5 +1,14 @@
 ## Last changes
 
+### 2025
+
+#### 2025-01-04: v0.173
+
+* 🟢 ADDED: select2 component for searchable drodowns
+* ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
+* ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
+* ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
+
 ### 2024
 
 #### 2024-10-27: v0.172
@@ -28,14 +37,3 @@
 * ↗️ UPDATE: in page link checker the urls are linked to the search index now
 * ↗️ UPDATE: in page setup: show menu labels to enable visible items (before: keys have been shown), more buttons for toggling extended view
 * ↗️ UPDATE: season skins and default skin
-
-#### 2024-09-20: v0.168
-
-* 💣 FIX: json errors in vietnamese backend translation
-* 🟢 ADDED: 4 skins for a demo for light skins
-* ↗️ UPDATE: reload after 2 sec if saving of settings was OK
-* ↗️ UPDATE: chartjs -> 4.4.1
-* ↗️ UPDATE: jquery -> 3.7.1
-* ↗️ UPDATE: font-awesome -> 6.6.0
-* ↗️ UPDATE: Medoo -> 2.1.12
-* ↗️ UPDATE: Show additional text after update: reload browser, link to changelog

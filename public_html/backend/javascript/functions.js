@@ -211,6 +211,8 @@ function initDatatables(){
         // langedit
         'tblLangtexts':{       'lengthMenu':[[-1]], 'bStateSave': true},
         
+        // counters
+        'tblCounterdata':{    'aaSorting':[[0,'desc']], 'bStateSave': false},
         // ressources output list
         // 'tableResData'
 
@@ -403,6 +405,9 @@ function initTextareas(){
     }); 
 }
 
+function initSelect2(){
+    $('select').select2();
+}
 // ----------------------------------------------------------------------
 // init
 // ----------------------------------------------------------------------
@@ -420,6 +425,8 @@ window.addEventListener('load', function() {
 
     initTextareas();
 
+    initSelect2();
+    
     // detect public frontend or backend
     var sMyPath=document.location.pathname.replace(/(.*\/)[a-z0-0\.]*$/, '$1');
     if(sMyPath.indexOf('/backend/')>=0 && sMyPath.indexOf('/backend/') > sMyPath.length-10){

@@ -779,10 +779,20 @@ form.pure-form label{min-width: 20em;}
 .pure-form select {height: auto;}
 .pure-form-aligned .pure-control-group label.align-left{text-align: left;}
 div.pure-control-group > div > label:hover{opacity: 0.7; background: var(--form-label-hover-bg);} 
+
+/*
+
+disabled when using select2
+
 #selectProject span {display: inline-block; margin: 1em 0.2em 1em 0 ;}
 #selectProject select{font-size: 110%; font-weight: bold; background: none;  color: var(--color-default); border-width: 0px; opacity: 0.6;}
 #selectProject select option {font-size: 90%; font-weight: normal;padding: 0.4em;}
 #selectProject select:hover{background: var(--form-select-hover-bg);}
+*/
+#selectProject span.selection > span{ border: none;}
+#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-default); border-width: 0px; opacity: 0.6;}
+#selectProject .select2-container--default .select2-selection--single{background: none;}
+.select2-container--default .select2-results > .select2-results__options {max-height: 25em;}
 
 .pure-control-group div {vertical-align: top; display: inline-block; min-width: 36em;}
 .insertimage {background: var(--form-insertimage-bg); border: 3px dashed var(--form-insertimage-border); display: inline-block; max-width: 30em; padding: 1em; }
