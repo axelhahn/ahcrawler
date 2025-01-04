@@ -803,6 +803,7 @@
     "about.thanks.medoo": "<strong>Medoo<\/strong><br>Leichtgewichtiger PHP PDO-Datenbank Wrapper",
     "about.thanks.pure": "<strong>Yahoo Pure.CSS<\/strong><br>Set von kleinen, responsive CSS Modulen",
     "about.thanks.rollingcurl": "<strong>Rolling-curl<\/strong><br>Eine effiziente Multi-curl Library f&uuml;r PHP (non-blocking)",
+    "about.thanks.select2": "<strong>Select2<\/strong><br>jQuery Komponente f&uuml;r Auswahlboxen",
     "about.phpinfo": "PHP Informationen",
     "about.phpinfo-hint": "Die Tabelle zeigt die installierte PHP Version und auf dem System installierte PHP-Module.",
     "update.welcome.label": "Willkommen bei der Software-Aktualisierung!",

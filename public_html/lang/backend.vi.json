@@ -740,6 +740,7 @@
     "about.thanks.medoo": "Một framework cơ sở dữ liệu PHP nhẹ giúp tăng tốc quá trình phát triển.",
     "about.thanks.pure": "Một bộ các module CSS nhỏ và đáp ứng mà bạn có thể sử dụng trong mọi dự án web.",
     "about.thanks.rollingcurl": "Một thư viện multi-curl không chặn hiệu quả cho PHP, hỗ trợ việc gửi các yêu cầu HTTP đa luồng.",
+    "about.thanks.select2": "<strong>Select2<\/strong><br>The jQuery replacement for select boxes",
     "about.phpinfo": "Thông tin ",
     "about.phpinfo-hint": "Bảng hiển thị phiên bản PHP đã cài đặt và các mô-đun PHP đã cài đặt.",
     "update.welcome.label": "Trình cập nhật phần mềm!",
