@@ -6,8 +6,8 @@
 
 * 🟢 ADDED: select2 component for searchable drodowns
 * ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
-* ↗️ UPDATE: Docker dev environment changed to PHP 8.4 - last version was compatible with PHP 8.4 already
 * ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
+* ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
 
 ### 2024
 

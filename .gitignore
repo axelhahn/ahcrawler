@@ -10,6 +10,7 @@ public_html/tmp/*.tmp
 public_html/~cache/
 public_html/tmp/__latest.zip
 public_html/vendor/cache/*
+!public_html/vendor/cache/.keep
 public_html/vendor/vendor-updater.sh
 public_html/_update_release.php
 public_html/vendor/medoo/tests/AggregateTest.php
@@ -36,3 +37,4 @@ public_html/classes/shared/*
 static/*
 
 public_html/vendor/data/~cache/*
+docker/dbdumps/*
