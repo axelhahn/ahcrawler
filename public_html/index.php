@@ -78,6 +78,7 @@
         "datatables/1.10.21",
         "font-awesome/6.6.0",
         "jquery/3.7.1",
+        "select2/4.0.13",
         "Chart.js/4.4.1"
     ]);
     // $oCdn->dump(); exit(0);
@@ -138,6 +139,13 @@
             // Chart.js
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('Chart.js')."/chart.umd.js") . "\n"
 
+            // select2
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('select2')."/css/select2.min.css") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('select2')."/js/select2.min.js") . "\n"
+
+            // <link href="vendor/select2/dist/css/select2.min.css" rel="stylesheet" />
+            // <script src="vendor/select2/dist/js/select2.min.js"></script>
+
             // more
             .'<script src="'.$sBackendRel.'/javascript/functions.js"></script>'
             .'<link rel="stylesheet" href="'.$sBackendRel.'/main.css">'
@@ -194,6 +202,7 @@
         }
         $branchname = $branchname ? '<br>('.$branchname.')' : '';
     }
+    $oBackend->getMoreJS();
     
 ?><!doctype html>
 <html>
