@@ -8,7 +8,7 @@
 
 #### 2025-01-04: v0.173
 
-* 🟢 ADDED: select2 component for searchable drodowns
+* 🟢 ADDED: select2 component for searchable dropdowns
 * ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
 * ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
 * ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
