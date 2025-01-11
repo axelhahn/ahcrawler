@@ -2,6 +2,10 @@
 
 ### 2025
 
+#### 2025-01-04: v0.174
+
+* ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
+
 #### 2025-01-04: v0.173
 
 * 🟢 ADDED: select2 component for searchable drodowns
@@ -29,11 +33,3 @@
 * 💣 FIX: Installer did not work anymore (PHP error message)
 * 💣 FIX: Profile page - handle missing php-gd; show button new project]
 * ↗️ UPDATE: Profile page - move input max count of webpages to crawl into non extended view
-
-#### 2024-10-01: v0.169
-
-* ↗️ UPDATE: add profiles navigation in pages that need it
-* ↗️ UPDATE: in page home: added hints per section for found errors and warnings
-* ↗️ UPDATE: in page link checker the urls are linked to the search index now
-* ↗️ UPDATE: in page setup: show menu labels to enable visible items (before: keys have been shown), more buttons for toggling extended view
-* ↗️ UPDATE: season skins and default skin

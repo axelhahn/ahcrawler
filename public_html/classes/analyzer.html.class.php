@@ -45,6 +45,7 @@
  * print_r($oHtml->getReport());</pre>
  * 
  * 2024-08-29  v0.167  php8 only; add typed variables; use short array syntax
+ * 2024-01-11  v0.174  exclude href links with rel= dns-prefetch
  * */
 class analyzerHtml
 {
@@ -999,6 +1000,14 @@ class analyzerHtml
                     $domAttribute = $this->_oDom->createAttribute('_attribute');
                     $domAttribute->value = $sAttribute;
                     $element->appendChild($domAttribute);
+
+                    // @since 0.174: skip dns-prefetch
+                    if($sTag == 'link' && $sAttribute == 'href') {
+                        $sRel = $element->getAttribute('rel');
+                        if(strstr($sRel, 'dns-prefetch')){
+                            continue;
+                        }
+                    }
 
                     $sHref = $element->getAttribute($sAttribute);
                     $domAttribute2 = $this->_oDom->createAttribute('_href');
