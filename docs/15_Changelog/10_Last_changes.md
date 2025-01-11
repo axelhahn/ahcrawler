@@ -2,7 +2,7 @@
 
 ### 2025
 
-#### 2025-01-04: v0.174
+#### 2025-01-11: v0.174
 
 * ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
 
