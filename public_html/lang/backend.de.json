@@ -636,6 +636,7 @@
     "httpheader.tag.cache": "Caching",
     "httpheader.tag.compression": "Kompression",
     "httpheader.tag.deprecated": "deprecated",
+    "httpheader.tag.experimental": "experimentell",
     "httpheader.tag.feature": "Feature",
     "httpheader.tag.httpversion": "Http version",
     "httpheader.tag.httpstatus": "Http-Status",

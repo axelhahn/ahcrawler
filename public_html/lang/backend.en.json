@@ -1037,6 +1037,7 @@
     "httpheader.tag.cache": "caching",
     "httpheader.tag.compression": "compression",
     "httpheader.tag.deprecated": "deprecated",
+    "httpheader.tag.experimental": "experimental",
     "httpheader.tag.feature": "feature",
     "httpheader.tag.httpversion": "Http version",
     "httpheader.tag.httpstatus": "Http status",

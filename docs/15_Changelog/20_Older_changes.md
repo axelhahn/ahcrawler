@@ -2,6 +2,12 @@
 
 ### 2024
 
+#### 2024-10-02: v0.170
+
+* 💣 FIX: Installer did not work anymore (PHP error message)
+* 💣 FIX: Profile page - handle missing php-gd; show button new project]
+* ↗️ UPDATE: Profile page - move input max count of webpages to crawl into non extended view
+
 #### 2024-10-01: v0.169
 
 * ↗️ UPDATE: add profiles navigation in pages that need it

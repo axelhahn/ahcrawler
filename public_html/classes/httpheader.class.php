@@ -269,7 +269,7 @@ class httpheader
             $aTags[] = 'unknown';
         }
         // echo "DEBUG: $varname: $val - ".print_r($aTags, 1).'<br>';
-        return [$aTags, $aRegex];
+        return [array_unique($aTags), $aRegex];
     }
 
     /**

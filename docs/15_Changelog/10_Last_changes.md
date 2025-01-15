@@ -2,6 +2,13 @@
 
 ### 2025
 
+#### 2025-01-16: v0.175
+
+* 🟢 ADDED: http headeranalysis got a filter bar
+* ↗️ UPDATE: http header meta data
+* ↗️ UPDATE: analyzerHtml class - fix type in getHttpResponseHeader()
+* ↗️ UPDATE: http headers - remove double tag values
+
 #### 2025-01-11: v0.174
 
 * ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
@@ -27,9 +34,3 @@
 * 🟢 ADDED: profile - more bottons to toggle extended options (like in global settings)
 * 🟢 ADDED: profile - after successful save it shows the options aftrer 3 sec (like in global settings)
 * 🟢 ADDED: on no response the curl error is shown in the log
-
-#### 2024-10-02: v0.170
-
-* 💣 FIX: Installer did not work anymore (PHP error message)
-* 💣 FIX: Profile page - handle missing php-gd; show button new project]
-* ↗️ UPDATE: Profile page - move input max count of webpages to crawl into non extended view
