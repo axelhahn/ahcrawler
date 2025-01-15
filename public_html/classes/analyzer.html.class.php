@@ -612,9 +612,9 @@ class analyzerHtml
      * It returns false if response header is not detected or url doen't mact 
      * the current url.
      * 
-     * @return bool|string
+     * @return bool|array
      */
-    public function getHttpResponseHeader(bool $bAllowRedirect = false): bool|string
+    public function getHttpResponseHeader(bool $bAllowRedirect = false): bool|array
     {
         if (
             $this->_sUrl
