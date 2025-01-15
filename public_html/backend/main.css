@@ -201,6 +201,10 @@
     --table-tr-cache-color:#44a;
     --table-tr-compression-bg:#ede;
     --table-tr-compression-color:#848;
+    --table-tr-deprecated-bg:#faa;
+    --table-tr-deprecated-color:#844;
+    --table-tr-experimental-color:#345;
+    --table-tr-experimental-bg:#def;
     --table-tr-nonstandard-bg:#fdb;
     --table-tr-nonstandard-color:#975;
     --table-tr-security-bg:#cdc;
@@ -765,12 +769,17 @@ mark.mark5{background:#fcc;}
 /* --- ssl checks ---  */
 
 /* --- http response header tags ---  */
-.pure-table tr.cache{background:  var(--table-tr-cache-bg); color: var(--table-tr-cache-color);}
-.pure-table tr.compression{background: var(--table-tr-compression-bg); color: var(--table-tr-compression-color);}
-.pure-table tr.non-standard{background: var(--table-tr-nonstandard-bg); color: var(--table-tr-nonstandard-color);}
-.pure-table tr.security{background: var(--table-tr-security-bg); color:  var(--table-tr-security-color);}
-.pure-table tr.unknown{color: var(--table-tr-unknown-color);}
-.pure-table tr.unwanted{background: var(--table-tr-unwanted-bg); color: var(--table-tr-unwanted-color);}
+a.cache, .pure-table tr.cache{background:  var(--table-tr-cache-bg); color: var(--table-tr-cache-color);}
+a.compression, .pure-table tr.compression{background: var(--table-tr-compression-bg); color: var(--table-tr-compression-color);}
+a.deprecated, .pure-table tr.deprecated{background: var(--table-tr-deprecated-bg); color: var(--table-tr-deprecated-color);}
+a.experimental, .pure-table tr.experimental{background: var(--table-tr-experimental-bg); color: var(--table-tr-experimental-color);}
+a.non-standard, .pure-table tr.non-standard{background: var(--table-tr-nonstandard-bg); color: var(--table-tr-nonstandard-color);}
+a.security, .pure-table tr.security{background: var(--table-tr-security-bg); color:  var(--table-tr-security-color);}
+a.unknown, .pure-table tr.unknown{color: var(--table-tr-unknown-color);}
+a.unwanted, .pure-table tr.unwanted{background: var(--table-tr-unwanted-bg); color: var(--table-tr-unwanted-color);}
+
+.filterbar a{ border-top: 3px solid rgba(0,0,0,0);}
+.filterbar a.active{ border-top: 3px solid;}
 
 tr.mark{background: var(--table-tr-marked-bg) !important;}
 /* --- form --- */

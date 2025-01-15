@@ -1021,6 +1021,7 @@
     "httpheader.tag.cache": "lưu trữ tạm thời",
     "httpheader.tag.compression": "nén",
     "httpheader.tag.deprecated": "Không dùng nữa",
+    "httpheader.tag.experimental": "experimentell",
     "httpheader.tag.feature": "tính năng",
     "httpheader.tag.httpversion": "Phiên bản http",
     "httpheader.tag.httpstatus": "Trạng thái http",

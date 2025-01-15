@@ -269,17 +269,9 @@ class ressourcesrenderer extends crawler_base
             return '';
         }
         $sReturn = '';
+        $aTags=[];
         foreach ($aHeaderWithChecks as $aEntry) {
-            $sIcon = '';
-            $sIcon = $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-' . $aEntry['found'])
-                /*
-            . ($aEntry['obsolete']   ? $this->_getIcon('ico.obsolete', false, 'ico-obsolete') : '')
-            . ($aEntry['deprecated'] ? $this->_getIcon('ico.deprecated', false, 'ico-deprecated') : '')
-            . ($aEntry['unwanted']   ? $this->_getIcon('ico.', false, 'ico-warn') : '')
-            . (array_search('security', $aEntry['tags'])!==false ? $this->_getIcon('ico.security', false, 'ico-security') : '')
-                 * 
-                 */
-            ;
+            $sIcon = $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-' . $aEntry['found']);
             foreach (['unwanted', 'badvalue', /*'unknown',*/ 'obsolete'] as $sMyTag) {
                 $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
             }
@@ -287,7 +279,12 @@ class ressourcesrenderer extends crawler_base
             $sComment = '';
             if (count($aEntry['tags'])) {
                 foreach ($aEntry['tags'] as $sTag) {
-                    $sComment .= ($sTag === 'http' ? '' : $this->_getIcon('ico.tag') . $this->lB('httpheader.tag.' . $sTag) . ' ');
+                    if ($sTag !== 'http'){
+                        $sComment .= $this->_getIcon('ico.tag')
+                            . $this->lB('httpheader.tag.' . $sTag) . ' '
+                            ;
+                        $aTags[$this->lB('httpheader.tag.' . $sTag)]=$sTag;
+                    }
                 }
             }
             $sReturn .= '<tr title="' . htmlentities($aEntry['var'] . ': ' . $aEntry['value']) . '" '
@@ -301,7 +298,24 @@ class ressourcesrenderer extends crawler_base
                 . '</tr>'
             ;
         }
-        return '<table class="pure-table pure-table-horizontal">'
+        
+        ksort($aTags,SORT_FLAG_CASE + SORT_NATURAL);
+        $sFilterbar='';
+        foreach($aTags as $sLabel => $sKey){
+            $sFilterbar.='<a href="#" class="pure-button button-filter" data-tagname="'.$sKey.'">'.$this->_getIcon('ico.tag') . $sLabel.'</a> ';
+        }
+        if($sFilterbar){
+            $sFilterbar=''
+                .'<div class="filterbar">'
+                    .$sFilterbar
+                .'</div><br>'
+                ;
+        }
+
+        return ''
+            // . '<pre>'.print_r($aTags, 1).'</pre>'
+            . $sFilterbar
+            . '<table class="pure-table pure-table-horizontal" id="httpheader-table">'
             . '<tr>'
             . '<th>' . $this->lB('httpheader.thvariable') . '</th>'
             . '<th>' . $this->lB('httpheader.thvalue') . '</th>'

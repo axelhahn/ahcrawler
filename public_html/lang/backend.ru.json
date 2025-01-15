@@ -882,6 +882,7 @@
     "httpheader.tag.cache": "caching",
     "httpheader.tag.compression": "compression",
     "httpheader.tag.deprecated": "deprecated",
+    "httpheader.tag.experimental": "experimentell",
     "httpheader.tag.feature": "feature",
     "httpheader.tag.non-standard": "non-standard",
     "httpheader.tag.security": "security",
