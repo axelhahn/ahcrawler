@@ -83,6 +83,23 @@
     --http-code-color: rgba(0,0,0,0.7);
     --http-code-5xx-bg:#b6b;
 
+    /* --- icons --- */
+    --ico-security-color:#493;
+    --ico-http-color:#083;
+    --ico-unknown-color:#444;
+    --ico-error-color:#e66;
+    --ico-warn-color:#fa2;
+    --ico-warning-color:#fa2;
+    /* http header */
+    --ico-non-standard-color:#083;
+    --ico-obsolete-color:#eaa;
+    --ico-deprecated-color:#aaa;
+    --ico-unwanted-color:#fa2;
+    --ico-badvalue-color:#fa2;
+
+    --ico-miss-color:#c42;
+    --ico-found-color:#083;
+    
     --status-bg-error:radial-gradient(#322,#422);
     --status-bg-error-flat:rgb(114, 59, 59);
     --status-bg-warning:radial-gradient(#503020,#643);
@@ -103,6 +120,26 @@
     --table-head-hover-color: #f8f8f8;
     --table-head-select-bg: #345;
     --table-head-select-color: #cde;
+
+    /* --- http response header tags ---  */
+    --table-tr-cache-bg:#334;
+    --table-tr-cache-color:rgba(255,255,255,0.4);
+    --table-tr-compression-bg:#424;
+    --table-tr-compression-color:rgba(255,255,255,0.4);
+    --table-tr-deprecated-bg:#844;
+    --table-tr-deprecated-color:#faa;
+    --table-tr-experimental-color:#abc;
+    --table-tr-experimental-bg:#345;
+    --table-tr-nonstandard-bg:#534;
+    --table-tr-nonstandard-color:rgba(255,255,255,0.4);
+    --table-tr-security-bg:#343;
+    --table-tr-security-color:rgba(255,255,255,0.4);;
+    --table-tr-unknown-bg: #222;
+    --table-tr-unknown-color:#444;
+    --table-tr-unwanted-bg:#531;
+    --table-tr-unwanted-color:#b97;
+    --table-tr-badvalue-bg:#531;
+    --table-tr-badvalue-color:#b97;
 
     --table-tr-marked-bg: #303438;
 
@@ -182,15 +219,6 @@ a.childitem:hover{
 }
 
 div.pure-control-group > div > label:hover{opacity: 1; background: rgba(255,255,255,0.02);} 
-
-/* --- http response header tags ---  */
-.pure-table tr.cache{background: #334; color:rgba(255,255,255,0.4);}
-.pure-table tr.compression{background: #424; color:rgba(255,255,255,0.4);}
-.pure-table tr.non-standard{background: #543; color:rgba(255,255,255,0.4);}
-.pure-table tr.security{background: #343; color:rgba(255,255,255,0.4);}
-.pure-table tr.unknown{color:#444;}
-.pure-table tr.unwanted{background: #432; color:rgba(255,255,255,0.4);}
-
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.current, .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
 	color: var(--color-default) !important;
