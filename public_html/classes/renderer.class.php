@@ -129,6 +129,7 @@ class ressourcesrenderer extends crawler_base
 
         'ico.found' => 'fa-solid fa-check',
         'ico.miss' => 'fa-solid fa-ban',
+        'ico.close' => 'fa-solid fa-xmark',
 
         // http response header
         'ico.unknown' => 'fa-solid fa-question-circle',
@@ -302,11 +303,15 @@ class ressourcesrenderer extends crawler_base
         ksort($aTags,SORT_FLAG_CASE + SORT_NATURAL);
         $sFilterbar='';
         foreach($aTags as $sLabel => $sKey){
-            $sFilterbar.='<a href="#" class="pure-button button-filter" data-tagname="'.$sKey.'">'.$this->_getIcon('ico.tag') . $sLabel.'</a> ';
+            $sFilterbar.='<a href="#" class="pure-button button-filter" data-tagname="'.$sKey.'">'
+                .$this->_getIcon('ico.tag') . $sLabel
+                .' <span class="close">'.$this->_getIcon('ico.close').'</span>'
+                .'</a> '
+                ;
         }
         if($sFilterbar){
             $sFilterbar=''
-                .'<div class="filterbar">'
+                .'<div class="filterbarHttpHeader">'
                     .$sFilterbar
                 .'</div><br>'
                 ;

@@ -781,8 +781,10 @@ a.unknown, .pure-table tr.unknown{background: var(--table-tr-unknown-bg); color:
 a.unwanted, .pure-table tr.unwanted{background: var(--table-tr-unwanted-bg); color: var(--table-tr-unwanted-color);}
 a.badvalue, .pure-table tr.badvalue{background: var(--table-tr-badvalue-bg); color: var(--table-tr-badvalue-color);}
 
-.filterbar a{ border-top: 3px solid rgba(0,0,0,0);}
-.filterbar a.active{ border-top: 3px solid;}
+.filterbarHttpHeader a{ border-top: 3px solid rgba(0,0,0,0);}
+.filterbarHttpHeader a span.close{color: #800; opacity: 0; display: none;;}
+.filterbarHttpHeader a.active{ border-top: 3px solid;}
+.filterbarHttpHeader a.active span.close{opacity: 1; display: inline-block;}
 
 tr.mark{background: var(--table-tr-marked-bg) !important;}
 /* --- form --- */
