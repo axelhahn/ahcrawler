@@ -1320,6 +1320,32 @@ class ressourcesrenderer extends crawler_base
         }
         return "$sReturn<br><br>$sFilter$sOut";
     }
+
+
+    /**
+     * Get html code for curl meta infos
+     * 
+     * @param array $aItem  ressource item
+     * @return string
+     */
+    public function renderCurlMetadata(array $aItem=[]): string
+    {
+        if(!isset($aItem['header'])){
+            return '-';
+        }
+        $aHeader=json_decode($aItem['header'], 1);
+        $sRemoveKey='_responseheader';
+
+        if(isset($aHeader[$sRemoveKey])){
+            unset($aHeader[$sRemoveKey]);
+        }
+        
+        return '<pre>' 
+            . print_r($aHeader, 1) 
+            . '</pre>'
+            ;
+    }
+
     /**
      * Get html code for full detail of a ressource with properties, in and outs
      * 
@@ -1429,6 +1455,8 @@ class ressourcesrenderer extends crawler_base
             ? '<pre>' . print_r(json_decode($aItem['header'], 1), 1) . '</pre>'
             : '-'
         ;
+        $sCurl = $this->renderCurlMetadata($aItem);
+
         $sReturn .= $this->renderToggledContent(
             $this->lB('ressources.curl-metadata-h3'),
             $sCurl,
