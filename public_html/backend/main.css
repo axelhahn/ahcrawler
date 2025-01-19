@@ -142,19 +142,9 @@
     --http-status-redirect-color:#975;
 
     /* --- icons --- */
-    --ico-security-color:#493;
-    --ico-http-color:#083;
-    --ico-unknown-color:#aaa;
     --ico-error-color:#e66;
     --ico-warn-color:#fa2;
     --ico-warning-color:#fa2;
-    /* http header */
-    --ico-non-standard-color:#083;
-    --ico-obsolete-color:#eaa;
-    --ico-deprecated-color:#aaa;
-    --ico-unwanted-color:#fa2;
-    --ico-badvalue-color:#fa2;
-
     --ico-miss-color:#c42;
     --ico-found-color:#083;
 
@@ -201,7 +191,7 @@
     --table-tr-cache-color:#44a;
     --table-tr-compression-bg:#ede;
     --table-tr-compression-color:#848;
-    --table-tr-deprecated-bg:#faa;
+    --table-tr-deprecated-bg:#fdd;
     --table-tr-deprecated-color:#844;
     --table-tr-experimental-color:#345;
     --table-tr-experimental-bg:#def;
@@ -667,18 +657,10 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .type-local{color: var(--type-local-color);}
 
 /* --- icons --- */
-.ico-security{color:var(--ico-security-color);}
-.ico-http{color:var(--ico-http-color);}
-.ico-unknown{color:var(--ico-unknown-color);}
 .ico-error{color:var(--ico-error-color);}
 .ico-warn{color:var(--ico-warn-color);}
 .ico-warning{color:var(--ico-warning-color);}
 /* http header */
-.ico-non-standard{color:var(--ico-non-standard-color);}
-.ico-obsolete{color:var(--ico-obsolete-color);}
-.ico-deprecated{color:var(--ico-deprecated-color);}
-.ico-unwanted{color:var(--ico-unwanted-color);}
-.ico-badvalue{color:var(--ico-badvalue-color);}
 
 .ico-miss{color:var(--ico-miss-color);}
 .ico-found{color:var(--ico-found-color);}

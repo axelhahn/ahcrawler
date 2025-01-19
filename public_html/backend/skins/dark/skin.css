@@ -84,19 +84,9 @@
     --http-code-5xx-bg:#b6b;
 
     /* --- icons --- */
-    --ico-security-color:#493;
-    --ico-http-color:#083;
-    --ico-unknown-color:#444;
     --ico-error-color:#e66;
     --ico-warn-color:#fa2;
     --ico-warning-color:#fa2;
-    /* http header */
-    --ico-non-standard-color:#083;
-    --ico-obsolete-color:#eaa;
-    --ico-deprecated-color:#aaa;
-    --ico-unwanted-color:#fa2;
-    --ico-badvalue-color:#fa2;
-
     --ico-miss-color:#c42;
     --ico-found-color:#083;
     
