@@ -248,7 +248,7 @@ return [
         'URI' => [],
         'User-Agent' => ['request' => true],
         'Variant-Vary' => [],
-        'Vary' => ['response' => true, 'tags'=>['experimental']],
+        'Vary' => ['response' => true],
         'Via' => ['request' => true,  'response' => true],
         'Viewport-Width' => ['request' => true, 'tags' => ['deprecated', 'non-standard']],
         'Want-Digest' => ['response' => true],
