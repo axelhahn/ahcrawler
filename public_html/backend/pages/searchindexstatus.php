@@ -139,11 +139,8 @@ if ($iPageId) {
         $sReposneHeaderAsString= strlen($aHeaderJson['_responseheader'][0])!=1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
         $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
         
-        $sCurl=isset($aItem[0]['header'])
-            ? '<pre>' . print_r(json_decode($aItem[0]['header'], 1), 1) . '</pre>'
-            : '-'
-            ;
-        // print_r($aItem[0]);
+        $sCurl=$oRenderer->renderCurlMetadata($aItem[0]);
+
         return $sReturn 
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
                 /*

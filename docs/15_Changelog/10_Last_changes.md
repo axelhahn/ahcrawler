@@ -2,6 +2,18 @@
 
 ### 2025
 
+#### 2025-01-19: v0.176
+
+* 🟢 ADDED: more colors for http header types and icons
+* 🟢 ADDED: show count of found experimental http reponse headers on start page
+* 🟢 ADDED: counter for experimantal http response headers
+* ↗️ UPDATE: (doubled) http response header was removed in curl meta infos
+* ↗️ UPDATE: remove a column in http response header table
+* ↗️ UPDATE: css for dark mode
+* 💣 FIX: typos in http header metadata
+* 💣 FIX: filter buttons of http header in resource detail page
+* 💣 FIX: Remove project list from public ssl check page
+
 #### 2025-01-16: v0.175
 
 * 🟢 ADDED: http headeranalysis got a filter bar
@@ -26,11 +38,3 @@
 
 * 💣 FIX: flip between search index detail and resource item (and back)
 * 🟢 ADDED: show network times to prepare, process and sending response in the detail pages of a search index item and a resource item.
-
-#### 2024-10-03: v0.171
-
-* 💣 FIX: resource scan created duplicates of pages with same url as type "links"
-* 🟢 ADDED: hide skip messages during crawler runs. This shortens the log output by default. It can be enabled in the global options.
-* 🟢 ADDED: profile - more bottons to toggle extended options (like in global settings)
-* 🟢 ADDED: profile - after successful save it shows the options aftrer 3 sec (like in global settings)
-* 🟢 ADDED: on no response the curl error is shown in the log

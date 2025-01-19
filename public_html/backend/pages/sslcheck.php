@@ -105,18 +105,19 @@ if ($this->_bIsPublic){
     // verify host
     $sMyHost=( preg_replace('/^[a-zA-Z0-9\.\-]*$/i', '', $sMyHost) !== $sMyHost) ? $sMyHost : '';
     $sMyUrl=($sMyHost && $sMyPort) ? 'ssl://'.$sMyHost.':'.$sMyPort : false;
-    
+
 } else {
     $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
     $sMyUrl=isset($this->aProfileSaved['searchindex']['urls2crawl'][0]) ? $this->aProfileSaved['searchindex']['urls2crawl'][0] : false;
+
+    // add profiles navigation
+    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
+
 }
 
 // ------------------------------------------------------------
 // SSL certificate infos
 // ------------------------------------------------------------
-
-    // add profiles navigation
-    $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
 
     // --- http only?
     $aSslInfos=['type'=>'none'];
