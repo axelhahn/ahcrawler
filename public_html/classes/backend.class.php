@@ -1419,6 +1419,7 @@ class backend extends crawler_base
                             $iUnwanted = $aMyCounters['responseheaderUnwanted'];
                             $iDeprecated = $aMyCounters['responseheaderDeprecated'];
                             $iNonStandard = $aMyCounters['responseheaderNonStandard'];
+                            $iExperimental = $aMyCounters['responseheaderExperimental'];
                             $iCacheInfos = $aMyCounters['responseheaderCache'];
                             $iCompressionInfos = $aMyCounters['responseheaderCompression'];
                             $iSecHeader = $aMyCounters['responseheaderSecurity'];
@@ -1477,6 +1478,15 @@ class backend extends crawler_base
                                 'tfoot' => $this->_getPercent($iNonStandard / $iTotalHeaders),
                                 'thash' => ($iNonStandard ? '#warnnonstandard' : ''),
                             ];
+                            $aMsg['experimental'] = [
+                                'counter' => $iCounter++,
+                                'status' => ($iExperimental ? 'warning' : 'ok'),
+                                'value' => $iExperimental,
+                                'message' => false,
+                                'thead' => $this->lB('httpheader.header.experimental'),
+                                'tfoot' => $iTotalHeaders ? $this->_getPercent($iExperimental / $iTotalHeaders) : '',
+                                'thash' => ($iExperimental ? '#warnexperimental' : ''),
+                            ];                            
                             $aMsg['httpversion'] = [
                                 'counter' => $iCounter++,
                                 'status' => $aMyCounters['responseheaderVersionStatus'],

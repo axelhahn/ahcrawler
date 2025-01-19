@@ -1167,6 +1167,7 @@ class crawler_base
             'responseheaderUnwanted',
             'responseheaderDeprecated',
             'responseheaderNonStandard',
+            'responseheaderExperimental',
         ];
         $aErrotCounterIds = [
             'statusError',
@@ -1202,10 +1203,10 @@ class crawler_base
             $aReturn['TotalErrors'] = 0;
             $aReturn['TotalWarnings'] = 0;
             foreach ($aErrotCounterIds as $sCounterId) {
-                $aReturn['TotalErrors'] += isset($aReturn[$sCounterId]) ? $aReturn[$sCounterId] : 0;
+                $aReturn['TotalErrors'] += $aReturn[$sCounterId] ?? 0;
             }
             foreach ($aWarningCounterIds as $sCounterId) {
-                $aReturn['TotalWarnings'] += isset($aReturn[$sCounterId]) ? $aReturn[$sCounterId] : 0;
+                $aReturn['TotalWarnings'] += $aReturn[$sCounterId] ?? 0;
             }
 
             // add warning if a counter is zero
@@ -1332,22 +1333,24 @@ class crawler_base
 
                     $iTotalHeaders = count($oHttpheader->getHeaderAsArray());
                     $iKnown = $aFoundTags['http'];
-                    $iUnkKnown = isset($aFoundTags['unknown']) ? $aFoundTags['unknown'] : 0;
-                    $iUnwanted = isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
-                    $iDeprecated = isset($aFoundTags['deprecated']) ? $aFoundTags['deprecated'] : 0;
-                    $iNonStandard = isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
+                    $iUnknown = $aFoundTags['unknown'] ?? 0;
+                    $iUnwanted = $aFoundTags['unwanted'] ?? 0;
+                    $iDeprecated = $aFoundTags['deprecated'] ?? 0;
+                    $iNonStandard = $aFoundTags['non-standard'] ?? 0;
+                    $iExperimental = $aFoundTags['experimental'] ?? 0;
 
-                    $iCacheInfos = isset($aFoundTags['cache']) ? $aFoundTags['cache'] : 0;
-                    $iCompressionInfos = isset($aFoundTags['compression']) ? $aFoundTags['compression'] : 0;
+                    $iCacheInfos = $aFoundTags['cache'] ?? 0;
+                    $iCompressionInfos = $aFoundTags['compression'] ?? 0;
 
-                    $iSecHeader = isset($aFoundTags['security']) ? $aFoundTags['security'] : 0;
+                    $iSecHeader = $aFoundTags['security'] ?? 0;
 
                     $aReturn['responseheaderCount'] = $iTotalHeaders;
                     $aReturn['responseheaderKnown'] = $iKnown;
-                    $aReturn['responseheaderUnknown'] = $iUnkKnown;
+                    $aReturn['responseheaderUnknown'] = $iUnknown;
                     $aReturn['responseheaderUnwanted'] = $iUnwanted;
                     $aReturn['responseheaderDeprecated'] = $iDeprecated;
                     $aReturn['responseheaderNonStandard'] = $iNonStandard;
+                    $aReturn['responseheaderExperimental'] = $iExperimental;
                     $aReturn['responseheaderCache'] = $iCacheInfos;
                     $aReturn['responseheaderCompression'] = $iCompressionInfos;
                     $aReturn['responseheaderSecurity'] = $iSecHeader;

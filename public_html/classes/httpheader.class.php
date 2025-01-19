@@ -236,7 +236,7 @@ class httpheader
         if ($varname == '_status') {
             // $sVersionStatus = $this->getHttpVersionStatus();
             $aTags[] = 'http';
-            $aTags[] = 'httpversion';
+            // $aTags[] = 'httpversion';
             $aTags[] = 'httpstatus';
             return [$aTags, $aRegex];
         }
@@ -320,6 +320,15 @@ class httpheader
     public function getDeprecatedHeaders(): array
     {
         return $this->getHeadersWithGivenTag('deprecated');
+    }
+
+    /**
+     * Get array of experimental http response headers
+     * @return array
+     */
+    public function getExperimentalHeaders(): array
+    {
+        return $this->getHeadersWithGivenTag('experimental');
     }
 
     /**

@@ -132,7 +132,7 @@ class ressourcesrenderer extends crawler_base
         'ico.close' => 'fa-solid fa-xmark',
 
         // http response header
-        'ico.unknown' => 'fa-solid fa-question-circle',
+        // 'ico.unknown' => 'fa-solid fa-question-circle',
         'ico.http' => 'fa-solid fa-check',
         'ico.non-standard' => 'fa-regular fa-check-circle',
         'ico.security' => 'fa-solid fa-lock',
@@ -142,6 +142,14 @@ class ressourcesrenderer extends crawler_base
         'ico.badvalue' => 'fa-solid fa-exclamation-triangle',
 
         'ico.tag' => 'fa-solid fa-tag',
+
+        'ico.experimental' => 'fa-solid fa-flask-vial',
+        'ico.cache' => 'fa-solid fa-gauge-high',
+        'ico.compression' => 'fa-solid fa-file-zipper',
+        'ico.feature' => 'fa-regular fa-sun',
+        'ico.unknown' => 'fa-solid fa-question',
+        'ico.httpstatus' => 'fa-regular fa-lightbulb',
+        'ico.httpversion' => 'fa-regular fa-lightbulb',
 
         'ico.error' => 'fa-solid fa-bolt',
         'ico.ok' => 'fa-solid fa-check',
@@ -273,15 +281,17 @@ class ressourcesrenderer extends crawler_base
         $aTags=[];
         foreach ($aHeaderWithChecks as $aEntry) {
             $sIcon = $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-' . $aEntry['found']);
-            foreach (['unwanted', 'badvalue', /*'unknown',*/ 'obsolete'] as $sMyTag) {
-                $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
-            }
+            // foreach (['unwanted', 'badvalue', /*'unknown',*/ 'obsolete'] as $sMyTag) {
+            //     $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
+            // }
 
             $sComment = '';
             if (count($aEntry['tags'])) {
                 foreach ($aEntry['tags'] as $sTag) {
                     if ($sTag !== 'http'){
-                        $sComment .= $this->_getIcon('ico.tag')
+                        $sComment .= 
+                            // $this->_getIcon('ico.tag')
+                            $this->_getIcon('ico.'.$sTag)
                             . $this->lB('httpheader.tag.' . $sTag) . ' '
                             ;
                         $aTags[$this->lB('httpheader.tag.' . $sTag)]=$sTag;
@@ -293,7 +303,7 @@ class ressourcesrenderer extends crawler_base
                 . '>'
                 . '<td>' . (strstr($aEntry['var'], '_') ? '' : htmlentities($aEntry['var'])) . '</td>'
                 . '<td style="max-width: 30em; overflow: hidden;">' . htmlentities($aEntry['value']) . '</td>'
-                . '<td>' . $sIcon . '</td>'
+                // . '<td>' . $sIcon . '</td>'
                 . '<td>' . $sComment . '</td>'
                 // . '<td>'. print_r(array_values($aEntry['tags']),1) .'</td>'
                 . '</tr>'
@@ -304,7 +314,9 @@ class ressourcesrenderer extends crawler_base
         $sFilterbar='';
         foreach($aTags as $sLabel => $sKey){
             $sFilterbar.='<a href="#" class="pure-button button-filter" data-tagname="'.$sKey.'">'
-                .$this->_getIcon('ico.tag') . $sLabel
+                // .$this->_getIcon('ico.tag') 
+                .$this->_getIcon('ico.'.$sKey) 
+                . $sLabel
                 .' <span class="close">'.$this->_getIcon('ico.close').'</span>'
                 .'</a> '
                 ;
@@ -324,7 +336,7 @@ class ressourcesrenderer extends crawler_base
             . '<tr>'
             . '<th>' . $this->lB('httpheader.thvariable') . '</th>'
             . '<th>' . $this->lB('httpheader.thvalue') . '</th>'
-            . '<th></th>'
+            // . '<th></th>'
             . '<th>' . $this->lB('httpheader.thcomment') . '</th>'
             . '</tr>'
             . $sReturn
