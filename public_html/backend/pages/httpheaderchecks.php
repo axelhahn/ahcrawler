@@ -165,6 +165,7 @@ $iSecHeader = isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
 $iUnkKnown = isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted = isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
 $iDeprecated = isset($aFoundTags['deprecated']) ? $aFoundTags['deprecated'] : 0;
+$iExperimental = $aFoundTags['experimental'] ?? 0;
 $iNonStandard = isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
 
 $sTiles = $this->_getTilesOfAPage();
@@ -242,6 +243,20 @@ if ($iDeprecated) {
         . $this->_getHistoryCounter(['responseheaderDeprecated'])
         . '<ul>';
     foreach ($aDepr as $sKey => $aHeaderitem) {
+        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+    }
+    $sWarnings .= '</ul><br>';
+}
+// --- experimental header vars
+if ($iExperimental) {
+    $aExperimental = $oHttpheader->getExperimentalHeaders();
+    $iWarnings += $iExperimental;
+    $sWarnings .= ''
+        . '<h4 id="warnexperimental">' . $this->lB('httpheader.header.experimental') . '</h4>'
+        . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.experimental'), 'warning') . '<br>'
+        . $this->_getHistoryCounter(['responseheaderExperimental'])
+        . '<ul>';
+    foreach ($aExperimental as $sKey => $aHeaderitem) {
         $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
     }
     $sWarnings .= '</ul><br>';
