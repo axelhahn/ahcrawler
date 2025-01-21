@@ -1051,21 +1051,22 @@ class backend extends crawler_base
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
 
         $sRight='';
+        if(BACKEND && ($this->_aHelpPages[$this->_sPage] ?? false)) {
+            $sRight.=$this->_getButton([
+                'href' => $this->_sBaseHelpUrl. $this->_aHelpPages[$this->_sPage],
+                'label' => 'button.help',
+                'class' => 'button-secondary',
+                'target' => 'help'
+            ]).' ';
+        }
+
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
             $sRight.=$this->_getButton([
                 'href' => './?page=logoff',
                 'class' => 'button-secondary',
                 'label' => 'button.logoff',
                 'popup' => false
-            ]);
-        }
-
-        if($this->_aHelpPages[$this->_sPage] ?? false) {
-            $sRight=$this->_getButton([
-                'href' => $this->_sBaseHelpUrl. $this->_aHelpPages[$this->_sPage],
-                'label' => 'button.help',
-                'target' => 'help'
-            ]);
+            ]).' ';
         }
         
 
