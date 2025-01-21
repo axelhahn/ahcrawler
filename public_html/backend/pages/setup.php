@@ -378,8 +378,6 @@ $sReturn.=(!isset($_SERVER['HTTPS'])
             ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning')
             : ''
         ).'
-        <br>
-        '.$oRenderer->renderExtendedView().'
         <form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
             '
             . $oRenderer->oHtml->getTag('input', [
