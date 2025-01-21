@@ -6,6 +6,7 @@
 //
 // Keys:
 //   'client' => {bool}
+//   'request' => {bool}
 //   'response' => {bool}
 //   'fetch-Meta' => {bool}
 //   'tags' => {array}
@@ -55,7 +56,7 @@ return [
         'Content-Base' => [],
         'Content-Digest' => [],
         'Content-Disposition' => ['response' => true],
-        'Content-DPR' => ['tags' => ['deprecated', 'obsolete']],
+        'Content-DPR' => ['tags' => ['deprecated', 'mon-standard']],
         'Content-Encoding' => ['response' => true, 'tags' => ['compression']],
         'Content-ID' => [],
         'Content-Language' => ['response' => true],
@@ -90,8 +91,8 @@ return [
         'DNT' => ['tags' => ['deprecated', 'non-standard']],
         'Downlink' => ['tags' => ['experimental']],
         'DPR' => ['tags' => ['deprecated', 'non-standard']],
-        'Early-Data' => ['tags' => ['experimental']],
-        'ECT' => ['tags' => ['experimental']],
+        'Early-Data' => ['request' => true, 'tags' => ['experimental']],
+        'ECT' => ['request' => true, 'tags' => ['experimental']],
         'ETag' => ['response' => true, 'tags' => ['cache']],
         'Expect' => ['response' => true],
         'Expect-CT' => ['response' => true, 'tags' => ['deprecated']],
@@ -170,7 +171,7 @@ return [
         'Permissions-Policy' => ['tags' => ['experimental']],
         'PICS-Label' => [],
         'Position' => [],
-        'Pragma' => ['response' => true, 'tags' => ['cache', 'deprecated']],
+        'Pragma' => ['request'=>true, 'response' => true, 'tags' => ['cache', 'deprecated']],
         'Priority' => [],
         'ProfileObject' => [],
         'Protocol' => [],
@@ -189,8 +190,8 @@ return [
         'Referer' => ['response' => true],
         'Referrer-Policy' => ['response' => true, 'tags' => ['security']],
         'Refresh' => ['response' => true],
+        'Report-To' => ['response' => true, 'tags' => ['deprecated', 'non-standard']],
         'Reporting-Endpoints' => ['response' => true, 'tags' => ['experimental']],
-        'Repr-Digest' => ['request' => true, 'response' => true],
         'Retry-After' => ['response' => true],
         'RTT' => ['request' => true, 'tags' => ['experimental']],
         'Safe' => [],
@@ -198,6 +199,7 @@ return [
         'Sec-Browsing-Topics' => ['request' => true, 'tags' => ['experimental', 'non-standard']],
         'Sec-CH-Prefers-Color-Scheme' => ['request' => true, 'tags' => ['experimental']],
         'Sec-CH-Prefers-Reduced-Motion' => ['request' => true, 'tags' => ['experimental']],
+        'Sec-CH-Prefers-Reduced-Transparency' => ['request' => true, 'tags' => ['experimental']],
         'Sec-CH-UA' => ['request' => true, 'tags' => ['experimental']],
         'Sec-CH-UA-Arch' => ['request' => true, 'tags' => ['experimental']],
         'Sec-CH-UA-Bitness' => ['request' => true, 'tags' => ['experimental']],
@@ -252,7 +254,7 @@ return [
         'Via' => ['request' => true,  'response' => true],
         'Viewport-Width' => ['request' => true, 'tags' => ['deprecated', 'non-standard']],
         'Want-Digest' => ['response' => true],
-        'Warning' => ['request' => true, 'response' => true, 'tags' => ['deprecated', 'non-standard']],
+        'Warning' => ['request' => true, 'response' => true, 'tags' => ['deprecated']],
         'Width' => ['request' => true, 'tags' => ['deprecated', 'non-standard']],
         'WWW-Authenticate' => ['response' => true],
 
@@ -269,9 +271,9 @@ return [
         'X-Pingback' => ['response' => true, 'tags' => ['non-standard']], // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
         'X-Powered-By' => ['response' => true, 'tags' => ['non-standard', 'unwanted'], 'unwantedregex' => '[0-9]*\.[0-9\.]*'],
         'X-Request-ID' => ['response' => true, 'tags' => ['non-standard']],
-        'X-Robots-Tag' => ['response' => true, 'tags' => ['deprecated', 'non-standard']],
+        'X-Robots-Tag' => ['response' => true],
 
-        'X-XSS-Protection' => ['response' => true, 'tags' => ['security']],
+        'X-XSS-Protection' => ['response' => true, 'tags' => ['deprecated', 'non-standard']],
 
         'X-UA-Compatible' => ['response' => true, 'tags' => ['non-standard']],
         'X-WebKit-CSP' => ['response' => true, 'tags' => ['non-standard']],
