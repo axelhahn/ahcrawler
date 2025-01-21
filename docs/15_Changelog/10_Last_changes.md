@@ -2,6 +2,12 @@
 
 ### 2025
 
+#### 2025-01-21: v0.177
+
+* 🟢 ADDED: link to online help in backend pages
+* ↗️ UPDATE: http response header metadata
+* ↗️ UPDATE: web ui - replace "X-Frame-Options: SAMEORIGIN" with "Content-Security-Policy: frame-ancestors deny"
+
 #### 2025-01-19: v0.176
 
 * 🟢 ADDED: more colors for http header types and icons
@@ -31,10 +37,3 @@
 * ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
 * ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
 * ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
-
-### 2024
-
-#### 2024-10-27: v0.172
-
-* 💣 FIX: flip between search index detail and resource item (and back)
-* 🟢 ADDED: show network times to prepare, process and sending response in the detail pages of a search index item and a resource item.
