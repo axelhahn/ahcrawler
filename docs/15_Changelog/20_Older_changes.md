@@ -2,6 +2,11 @@
 
 ### 2024
 
+#### 2024-10-27: v0.172
+
+* 💣 FIX: flip between search index detail and resource item (and back)
+* 🟢 ADDED: show network times to prepare, process and sending response in the detail pages of a search index item and a resource item.
+
 #### 2024-10-03: v0.171
 
 * 💣 FIX: resource scan created duplicates of pages with same url as type "links"

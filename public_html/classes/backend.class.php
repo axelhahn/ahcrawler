@@ -42,6 +42,8 @@ require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
 class backend extends crawler_base
 {
 
+    protected string $_sBaseHelpUrl='https://www.axel-hahn.de/docs/ahcrawler/Web_UI_backend/';
+
     /**
      * Array of menu items
      * @var array
@@ -281,6 +283,43 @@ class backend extends crawler_base
             'button.updatesinglestep' => 'fa-solid fa-chevron-right',
             'button.view' => 'fa-regular fa-eye',
         ],
+    ];
+    private array $_aHelpPages = [
+        
+        'about' => 'About/index.html',
+        'analysis' => '',
+        'bookmarklet' => 'Tools_and_information/Bookmarklets.html',
+        'checkurl' => 'Analysis/Search_url.html',
+        'cookies' => 'Analysis/Cookies.html',
+        'counters' => 'Analysis/Counters.html',
+        'crawlerlog' => 'Start/Crawler_log.html',
+        'error404' => '',
+        'home' => 'Start/index.html',
+        'htmlchecks' => 'Analysis/Html_checks.html',
+        'httpheaderchecks' => 'Analysis/Http_header_check.html',
+        'httpstatuscode' => 'Tools_and_information/Http_status_codes.html',
+        'installer' => '',
+        'langedit' => 'Tools_and_information/Language_texts.html',
+        'linkchecker' => 'Analysis/Link_checker.html',
+        'logoff' => '',
+        'profiles' => 'Start/Profiles.html',
+        'public_about' => '',
+        'public_home' => '',
+        'public_httpheaderchecks' => '',
+        'public_sslcheck' => '',
+        'ressourcedetail' => 'Analysis/Resource_details.html',
+        'ressources' => 'Analysis/Resources.html',
+        'searches' => 'Start/Search_terms.html',
+        'searchindexstatus' => 'Start/Search_index.html',
+        'searchindextester' => 'Start/Search_test.html',
+        'settings' => '',
+        'setup' => 'Settings/Setup.html',
+        'showicons' => '',
+        'sslcheck' => 'Analysis/SSL_check.html',
+        'tools' => '',
+        'update' => 'Tools_and_information/Update.html',
+        'userprofile' => '',
+        'vendor' => 'Settings/Vendor_libs.html',
     ];
 
     /**
@@ -1011,20 +1050,32 @@ class backend extends crawler_base
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
 
+        $sRight='';
+        if(BACKEND && ($this->_aHelpPages[$this->_sPage] ?? false)) {
+            $sRight.=$this->_getButton([
+                'href' => $this->_sBaseHelpUrl. $this->_aHelpPages[$this->_sPage],
+                'label' => 'button.help',
+                'class' => 'button-secondary',
+                'target' => 'help'
+            ]).' ';
+        }
+
+        if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
+            $sRight.=$this->_getButton([
+                'href' => './?page=logoff',
+                'class' => 'button-secondary',
+                'label' => 'button.logoff',
+                'popup' => false
+            ]).' ';
+        }
+        
+
+        $sRight=$sRight ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'.$sRight.'</span>' : '';
+
 
         $this->logAdd(__METHOD__ . ' H2 = "' . $sH2 . '"');
         return ''
-            . (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()
-                ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'
-                . $this->_getButton([
-                    'href' => './?page=logoff',
-                    'class' => 'button-secondary',
-                    'label' => 'button.logoff',
-                    'popup' => false
-                ])
-                . '</span>'
-                : ''
-            )
+            . $sRight
             . (isset($sH2) && $sH2 ? '<h2>' : '')
             . (isset($this->_aIcons['menu'][$this->_sPage])
                 ? '<i class="' . $this->_aIcons['menu'][$this->_sPage] . '"></i> '
