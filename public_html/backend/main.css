@@ -425,7 +425,7 @@ div.contextbox .content{margin: 1em;}
 /* --- setup page: extended areas for pro features --- */
 
 .hintextended{background: var(--extended-bg); }
-.extended{background: var(--extended-bg);}
+.extended{background: var(--extended-bg); padding: 1em 0;}
 
 /* --- status for running actions --- */
 

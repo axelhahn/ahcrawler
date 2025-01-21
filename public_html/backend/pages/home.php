@@ -114,6 +114,8 @@ if(!$this->_configExists() ){
                 .$this->_getNavi2($this->_getProfiles(), false, '')
                     
                 // ----- context box
+                . '<br>'
+                . '<br>'
                 .$oRenderer->renderContextbox(
                         ($this->aProfileSaved['label'] ? '<strong>'.$this->aProfileSaved['label'].'</strong><br>' : '')
                         .($this->aProfileSaved['description'] ? '<em>'.$this->aProfileSaved['description'].'</em>' : '')

@@ -241,7 +241,7 @@ if(isset($_POST['action'])){
 // ----------------------------------------------------------------------
 // MAIN
 // ----------------------------------------------------------------------
-$sSubmit='<br><br>'
+$sSubmit=''
 . ($this->_sTab==='add'
     ? $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'])
     : $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.save') . $this->lB('button.save'), 'class'=>'pure-button button-secondary'])
@@ -251,7 +251,7 @@ $sSubmit='<br><br>'
 ;
 
 $sReturn.=(!isset($_SERVER['HTTPS'])
-            ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
+            ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br>'
             : ''
         )
             /*
@@ -275,7 +275,6 @@ if(isset($this->aProfileSaved['searchcategories']) && count($this->aProfileSaved
 }
 
 $sReturn.='
-        <br>
         <form class="pure-form pure-form-aligned" method="POST"  enctype="multipart/form-data" action="?'.$_SERVER['QUERY_STRING'].'">
             '
             . $oRenderer->oHtml->getTag('input', [
@@ -293,7 +292,7 @@ $sReturn.='
             // metadata
             // ------------------------------------------------------------
             
-            .$oRenderer->renderExtendedView()
+            // .$oRenderer->renderExtendedView()
             . '<h3>'
                 // . $oRenderer->oHtml->getTag('i', ['class'=>'fa fa-user']) 
                 . ' '.$this->lB('profile.section.metadata')
@@ -319,6 +318,28 @@ $sReturn.='
                     'rows'=>3,
                     'label'=>isset($this->aProfileSaved['description']) ? $this->aProfileSaved['description'] : '',
                     ], true)
+                . '</div>'
+                . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-urls2crawl', 'label'=>$this->lB('profile.searchindex.urls2crawl')])
+                . $oRenderer->oHtml->getTag('textarea', [
+                    'id'=>'searchindex-urls2crawl', 
+                    'name'=>'searchindex[urls2crawl]',
+                    'cols'=>$iColsInTA,
+                    'rows'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? count($this->aProfileSaved['searchindex']['urls2crawl'])+1 : 3 ,
+                    'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
+                    ], true)
+                . '</div>'
+            . '<div class="pure-control-group">'
+                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
+                . $oRenderer->oHtml->getTag('input', [
+                    'type'=>'text',
+                    'id'=>'searchindex-iMaxUrls', 
+                    'name'=>'searchindex[iMaxUrls]',
+                    'size'=>$iSizeInInput,
+                    'pattern'=>$sPatternNumber,
+                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
+                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
+                    ], false)
                 . '</div>'
 
                 . '<div class="pure-control-group">'
@@ -394,29 +415,6 @@ $sReturn.='
                 . ' '.$this->lB('profile.section.searchindex')
             .'</h3>'
         
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-urls2crawl', 'label'=>$this->lB('profile.searchindex.urls2crawl')])
-                . $oRenderer->oHtml->getTag('textarea', [
-                    'id'=>'searchindex-urls2crawl', 
-                    'name'=>'searchindex[urls2crawl]',
-                    'cols'=>$iColsInTA,
-                    'rows'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? count($this->aProfileSaved['searchindex']['urls2crawl'])+1 : 3 ,
-                    'label'=>isset($this->aProfileSaved['searchindex']['urls2crawl']) && count($this->aProfileSaved['searchindex']['urls2crawl']) ? implode("\n", $this->aProfileSaved['searchindex']['urls2crawl']) : '',
-                    ], true)
-                . '</div>'
-            . '<div class="pure-control-group">'
-                . $oRenderer->oHtml->getTag('label', ['for'=>'searchindex-iMaxUrls', 'label'=>$this->lB('profile.searchindex.iMaxUrls')])
-                . $oRenderer->oHtml->getTag('input', [
-                    'type'=>'text',
-                    'id'=>'searchindex-iMaxUrls', 
-                    'name'=>'searchindex[iMaxUrls]',
-                    'size'=>$iSizeInInput,
-                    'pattern'=>$sPatternNumber,
-                    'placeholder'=>$this->aProfileDefault['searchindex']['iMaxUrls'],
-                    'value'=>isset($this->aProfileSaved['searchindex']['iMaxUrls']) ? (int)$this->aProfileSaved['searchindex']['iMaxUrls'] : $this->aProfileDefault['searchindex']['iMaxUrls'],
-                    ], false)
-                . '</div>'
-            .'<br>'
             .$oRenderer->renderExtendedView()
             . '<div class="hintextended">'.$this->lB('hint.extended').'</div>'
             . '<div class="extended">'
