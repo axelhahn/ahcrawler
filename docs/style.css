@@ -1,7 +1,7 @@
 /*
 
     patch css elements of daux.io blue theme
-    version 2024-11-04
+    version 2025-01-21
 
 */
 
@@ -15,7 +15,7 @@
     --hr-color: none;
 
     --pager-background-color: #f8fafc;
-    --pager-hover-background-color: #fcf0e0;
+    --pager-hover-background-color: #f8ecf4;
 
     --search-field-background: none;
     --search-field-border-color: none;
@@ -60,6 +60,7 @@
 
     --axel_hero_bg: #f8f8f8;
     --axel_hero_bg: linear-gradient(20deg, #f8ecf4, #f0faf8,#f0f4ff,#fdf4e8);
+    --axel_hero_shadow: 0.2em 0.2em 2em #cef;
     --axel_img-border: 2px dashed #cbc;
 
     --axel_nav-bg: #fcfcfc;
@@ -72,13 +73,17 @@
 .dark {
 
     /* Axels Overrides */
+    --body-background: #181c28;
     --color-text: #789;
     --link-color: #6bd;
 
-    --brand-color: var(--color-text);
+    --brand-color: #c92;
     --brand-background: var(--body-background);
     --hr-color: none;
     --code-tag-background-color_: #bcc;
+
+    --pager-background-color: #123;
+    --pager-hover-background-color: #111;
 
     --search-field-background: none;
     --search-field-border-color: none;
@@ -86,6 +91,8 @@
     --sidebar-background:var(--body-background);
     --sidebar-border-color: none;
     --sidebar-link-active-background: #333;
+    --sidebar-link-color: #89a;
+    --sidebar-link-hover-background: #182830;
 
     /* Axels custom values */
     --axel_bg-toc: var(--body-background);
@@ -95,17 +102,18 @@
     --axel_brand-background: none;
     --axel_brand-pre-background: #69a;
     --axel_brand-pre-background-hover: #6ab;
+    --axel_sidebar-link-active-background: #424;
 
     --axel_h1_header: none;
 
     --axel_h1: #777;
     --axel_h1-bg: none;
     --axel_h1-bottom: none;
-    --axel_h2: #666;
-    --axel_h2-bg: #282828;
+    --axel_h2: #484;
+    --axel_h2-bg: none;
     --axel_h2-bottom: 2px solid #256;
     --axel_h3: #838;
-    --axel_h3: #578;
+    --axel_h3: #476;
     --axel_h3-bg: none;
     --axel_h3-bottom: 1px solid #333;
     --axel_h4: #c74;
@@ -113,7 +121,8 @@
     --axel_h4-bg: none;
     --axel_h4-bottom: 1px dashed #333;
 
-    --axel_hero_bg: #242424;
+    --axel_hero_bg: none;
+    --axel_hero_shadow: 0.2em 0.2em 2em #245;
 
     --axel_img-border: 2px dashed #656;
 
@@ -202,7 +211,9 @@ article nav{border-top: var(--axel-article-nav-border-top); margin: 8em 0 5em;}
 .required{color:#a42;}
 .optional{color:#888;}
 
-div.hero{background: var(--axel_hero_bg);border-radius: 2em; padding: 5em 2em;text-align: center;} 
+div.hero{background: var(--axel_hero_bg);border-radius: 2em; border: 10px solid rgba(0,0,0,0.01); padding: 5em 2em;text-align: center;
+    box-shadow: var(--axel_hero_shadow);
+} 
 div.hero h2{background: none; _border: none; text-align: center; font-size: 300%; margin: 0 0 2em;}
 div.hero h2::before{content: none;}
 div.hero p.center{text-align: center;}

@@ -2,6 +2,18 @@
 
 ### 2025
 
+#### 2025-01-04: v0.173
+
+* 🟢 ADDED: select2 component for searchable dropdowns
+* ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
+* ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
+* ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
+
+#### 2025-01-21: v0.178
+
+* ↗️ UPDATE: fix position of context box
+* ↗️ UPDATE: profiles page has most relevant settings on top now
+
 #### 2025-01-21: v0.177
 
 * 🟢 ADDED: link to online help in backend pages
@@ -30,10 +42,3 @@
 #### 2025-01-11: v0.174
 
 * ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
-
-#### 2025-01-04: v0.173
-
-* 🟢 ADDED: select2 component for searchable dropdowns
-* ↗️ UPDATE: Analyze -> Counter: change order - show latest values on top
-* ↗️ UPDATE: fontAwesome 6.6.0 -> 6.7.2
-* ↗️ UPDATE: Docker dev environment changed to PHP 8.4 for testing: Medoo requires 8.3
