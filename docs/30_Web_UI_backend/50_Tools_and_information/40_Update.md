@@ -44,3 +44,7 @@ On each step you get a description and the console output of a command. The upda
 ![Screenshot: Updater](/images/updater-04-information-after-download.png)
 ![Screenshot: Updater](/images/updater-05-information-after-uncompress.png)
 ![Screenshot: Updater](/images/updater-06-done.png)
+
+Last but not least:
+
+Refresh your browser cache to load latest changes of css and javascript.
