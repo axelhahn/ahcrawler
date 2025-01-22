@@ -244,6 +244,7 @@ body, .contextbox, .piechart{
     background: var(--sidebar-bg);
     box-shadow: var(--sidebar-box-shadow);
     overflow: auto;
+    padding-bottom: 6em;
 }
 
 #content{
@@ -253,7 +254,7 @@ body, .contextbox, .piechart{
 }
 .maincontent{
     padding-left: 18em;
-    margin-bottom: 3em;
+    margin-bottom: 6em;
 }
 
 .brand-title,.brand-title a {color:var(--color-h1); text-decoration: none; }
@@ -410,7 +411,8 @@ code{background: #e0e4ea; padding: 0.2em;}
 
 /* --- context box --- */
 div.contextbox{
-    position: relative;
+    position: absolute;
+    right: 0;
     float: right;
     margin: 0 0 2em 2em;
     background: var(--color-bg-boxes);
@@ -425,7 +427,7 @@ div.contextbox .content{margin: 1em;}
 /* --- setup page: extended areas for pro features --- */
 
 .hintextended{background: var(--extended-bg); }
-.extended{background: var(--extended-bg);}
+.extended{background: var(--extended-bg); padding: 1em 0;}
 
 /* --- status for running actions --- */
 

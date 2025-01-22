@@ -1055,7 +1055,7 @@ class backend extends crawler_base
             $sRight.=$this->_getButton([
                 'href' => $this->_sBaseHelpUrl. $this->_aHelpPages[$this->_sPage],
                 'label' => 'button.help',
-                'class' => 'button-secondary',
+                'class' => 'button',
                 'target' => 'help'
             ]).' ';
         }

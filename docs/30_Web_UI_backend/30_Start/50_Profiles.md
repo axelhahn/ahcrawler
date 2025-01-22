@@ -12,6 +12,17 @@ A short name for the crawled website. It is used i.e. as title text in the tabs 
 
 Set a description of the project. It is visible on the starting page.
 
+**List of start urls for the crawler**
+
+Enter one or more urls as a list of urls (one per line) here. These will be the starting points to scan the website to generate the searchindex.
+The spider will stay on the given Hostname(s) and mark them as "internal". All elements like css or javascript files or links that do not match any hostname of the starting urls are "external" resources.
+One url in most cases is enough because the spider follows all allowed links. You can add more urls if you have several tools on your domain that are not linked or you want to merge several domains into one search index. As an example if you have a website www.example.com and a blog in blog.example.com.
+
+**max. pages to scan**
+
+Before scanning a larger website you can make test with a limited number of pages by entering a low number here, i.e. "3".
+Enter "0" (zero) for no limit.
+
 **Screenshot or profile image**
 
 You can add a single image for the profile.
@@ -30,18 +41,6 @@ If you save the profile the image will be down scaled to max. 600 px height and 
 ### Search index
 
 The spider already respects the rules for spiders, like robots.txt, x-robots tag, robots command in html header, rel attributes in links.
-
-
-**List of start urls for the crawler**
-
-Enter one or more urls as a list of urls (one per line) here. These will be the starting points to scan the website to generate the searchindex.
-The spider will stay on the given Hostname(s) and mark them as "internal". All elements like css or javascript files or links that do not match any hostname of the starting urls are "external" resources.
-One url in most cases is enough because the spider follows all allowed links. You can add more urls if you have several tools on your domain that are not linked or you want to merge several domains into one search index. As an example if you have a website www.example.com and a blog in blog.example.com.
-
-**max. pages to scan**
-
-Before scanning a larger website you can make test with a limited number of pages by entering a low number here, i.e. "3".
-Enter "0" (zero) for no limit.
 
 **List of regex that must match the full url**
 
