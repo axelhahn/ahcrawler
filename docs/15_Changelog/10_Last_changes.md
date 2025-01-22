@@ -2,7 +2,7 @@
 
 ### 2025
 
-#### 2025-01-21: v0.178
+#### 2025-01-22: v0.178
 
 * ↗️ UPDATE: fix position of context box
 * ↗️ UPDATE: profiles page has most relevant settings on top now
