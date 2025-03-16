@@ -737,6 +737,7 @@
     "about.thanks.datatables": "Một plugin cho jQuery để làm việc với các bảng dữ liệu",
     "about.thanks.fontawesome": "Một bộ ký tự biểu tượng và công cụ CSS nổi tiếng",
     "about.thanks.jquery": "Một thư viện JavaScript phổ biến giúp thao tác và tương tác với các phần tử HTML",
+    "about.thanks.lineawesome": "<strong>Line Awesome<\/strong><br>Iconic font",
     "about.thanks.medoo": "Một framework cơ sở dữ liệu PHP nhẹ giúp tăng tốc quá trình phát triển.",
     "about.thanks.pure": "Một bộ các module CSS nhỏ và đáp ứng mà bạn có thể sử dụng trong mọi dự án web.",
     "about.thanks.rollingcurl": "Một thư viện multi-curl không chặn hiệu quả cho PHP, hỗ trợ việc gửi các yêu cầu HTTP đa luồng.",

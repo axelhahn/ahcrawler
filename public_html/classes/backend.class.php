@@ -361,6 +361,9 @@ class backend extends crawler_base
             $this->aDefaultOptions['menu-public'][$sKey] = false;
         }
 
+        // override fotawsome icons
+        $this->_aIcons = include 'icons_lineawesome.php';
+
         if ($bIsPublic) {
             $this->setSiteId(false);
             $this->aOptions['menu'] = $this->aOptions['menu-public'];
@@ -798,7 +801,7 @@ class backend extends crawler_base
         // add HOME on non-home-level
         $sHomeLink = $this->_getLink2Navitem(array_key_first($this->_aMenu));
         if (!strstr($sNavi, $sHomeLink)) {
-            $sNavi = $sMyDelim . $sHomeLink . $sNavi;
+            $sNavi = "$sMyDelim$sHomeLink$sNavi";
         }
         return "<div class=\"breadcrumb\">$sNavi</div>";
     }

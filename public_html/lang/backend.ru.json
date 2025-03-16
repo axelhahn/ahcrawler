@@ -609,6 +609,7 @@
     "about.thanks.datatables": "<strong>Datatables<\/strong><br>Table plug-in for jQuery",
     "about.thanks.fontawesome": "<strong>FontAwesome<\/strong><br>The iconic font and CSS toolkit",
     "about.thanks.jquery": "<strong>jQuery<\/strong><br>JavaScript library",
+    "about.thanks.lineawesome": "<strong>Line Awesome<\/strong><br>Iconic font",
     "about.thanks.medoo": "<strong>Medoo<\/strong><br>The lightest PHP database framework to accelerate development",
     "about.thanks.pure": "<strong>Yahoo Pure.CSS<\/strong><br>A set of small, responsive CSS modules that you can use in every web project.",
     "about.thanks.rollingcurl": "<strong>Rolling-curl<\/strong><br>Efficient non-blocking multi-curl library for PHP",

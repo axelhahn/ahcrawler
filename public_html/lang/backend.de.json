@@ -807,6 +807,7 @@
     "about.thanks.fontawesome": "<strong>FontAwesome<\/strong><br>Icons als Font und CSS-Toolkit",
     "about.thanks.jquery": "<strong>jQuery<\/strong><br>JavaScript Bibliothek",
     "about.thanks.medoo": "<strong>Medoo<\/strong><br>Leichtgewichtiger PHP PDO-Datenbank Wrapper",
+    "about.thanks.lineawesome": "<strong>Line Awesome<\/strong><br>Icons als Font",
     "about.thanks.pure": "<strong>Yahoo Pure.CSS<\/strong><br>Set von kleinen, responsive CSS Modulen",
     "about.thanks.rollingcurl": "<strong>Rolling-curl<\/strong><br>Eine effiziente Multi-curl Library f&uuml;r PHP (non-blocking)",
     "about.thanks.select2": "<strong>Select2<\/strong><br>jQuery Komponente f&uuml;r Auswahlboxen",

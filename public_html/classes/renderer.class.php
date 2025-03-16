@@ -179,6 +179,10 @@ class ressourcesrenderer extends crawler_base
     {
         $this->oHtml = new htmlelements();
         $this->setLangBackend();
+
+        // override fotawsome icons
+        $this->_aIcons = include 'icons_lineawesome.php';
+
         if ($iSiteId) {
             $this->_initRessource($iSiteId);
         }

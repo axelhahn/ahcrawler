@@ -71,7 +71,7 @@
     --overlay-dialog-title-color:var(--DEFAULT-markedelement-color);
 
     --pagehint-bg:#fff;
-
+    
     /* -- foooter -- */
     --footer-bg: var(--DEFAULT-darken-5);
     --statusbar-bg: #ddd;
@@ -99,6 +99,8 @@
     --color-childitem-background: var(--color-bg-boxes);
     --color-childitem-border: var(--DEFAULT-darken-5);
     --color-childitem-title: #888;
+
+    --color-currentproject: var(--color-default);
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
 
@@ -277,8 +279,9 @@ body, .contextbox, .piechart{
     #pacman div{
         margin: -0.7em 0 0 0.7em;
         position: absolute;
+        font-weight: normal;
     }
-    .brand-title span{font-size: 0.5em; font-weight: normal; position: absolute; right: 0.5em; text-align: right;}
+    .brand-title span{font-size: 0.5em; font-weight: normal; position: absolute; right: 0.5em; text-align: right; opacity: 0.7;}
     .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */
@@ -287,7 +290,7 @@ body, .contextbox, .piechart{
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{}
 .header .pure-menu-link i{font-size: 130%;}
-.header .pure-menu-link{color:var(--color-default); padding: 0.6em; }
+.header .pure-menu-link{color:var(--color-default); padding: 0.4em; }
 .header .pure-menu-link:hover{background:var(--navi-bg-on-hover); border-color: var(--color-default); }
 .header .pure-menu-link:focus{border-color:var(--color-border-click); }
 .header .pure-menu-link-active, .header .pure-menu-link-active:hover{background: var(--navi-bg-l1-active); color:var(--navi-icon-color-active); border-color:var(--color-border-active); }
@@ -302,7 +305,7 @@ body, .contextbox, .piechart{
 .header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 0px dotted var(--color-default); border-left: 0px solid var(--color-default); margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
 .header .pure-menu-list .pure-menu-list .pure-menu-link {
     border-color: var(--color-default);
-    padding: 0.3em;
+    padding: 0.2em;
 }
 .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {background: var(--navi-bg-on-hover); border-color: var(--color-default); }
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active{
@@ -351,6 +354,7 @@ body, .contextbox, .piechart{
     */
     background: var(--button-bg);
     color: var(--button-text-color);
+    padding: 0.2em 0.7em;
 }
 .pure-button:hover {
     /*
@@ -387,6 +391,7 @@ h2{
     padding: 0.2em 0em 0.2em 0.5em; 
     margin: 0 0 0 -0.3em; 
     color:var(--color-h2);
+    font-weight: normal;
     position: fixed; 
     display: block; 
     width: 100%;
@@ -399,9 +404,9 @@ p.pageHint{
     padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 6em; 
 }
 p.pageHint:before{content: ':: ';}
-h3{ color:var(--color-h3); font-size: 170%; border-top: 2px dotted var(--color-h3-border-top); padding-top: 1em; margin: 2em 0 1.5em;}
+h3{ color:var(--color-h3); font-size: 170%; border-top: 2px dotted var(--color-h3-border-top); padding-top: 1em; margin: 2em 0 1.5em; font-weight: normal; }
 h3:first-of-type{ border-top: none; margin: 0 0 1.5em;}
-h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed var(--color-h4-border-bottom); margin: 2.5em 0 0.5em;}
+h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed var(--color-h4-border-bottom); margin: 2.5em 0 0.5em; font-weight: normal;}
 
 
 hr{border: 0; border-bottom: 2px dotted var(--color-hr);}
@@ -421,7 +426,7 @@ div.contextbox{
     margin-top: 1em;
     width: 30%;
 }
-div.contextbox .head{background: var(--context-head-bg); color:var(--context-head-fg); font-weight: bold; padding: 1em;border-top-left-radius: 1em;}
+div.contextbox .head{background: var(--context-head-bg); color:var(--context-head-fg); font-weight: normal; font-size: 120%; padding: 0.4em;border-top-left-radius: 0.5em;}
 div.contextbox .content{margin: 1em;}
 
 /* --- setup page: extended areas for pro features --- */
@@ -489,7 +494,7 @@ a.childitem:hover{
 }
 a.childitem:focus{box-shadow: none;}
 a.childitem i{color: var(--color-childitem-i); font-size: 300%; min-height: 1em; float: left; margin-right: 0.2em; text-align: center; width: 1.2em;}
-a.childitem strong{color: var(--color-childitem-title); font-size: 130%; display: block; min-height: 3em; margin-top: 0.2em;}
+a.childitem strong{color: var(--color-childitem-title); font-size: 130%; display: block; min-height: 3em; margin-top: 0.2em; font-weight: normal;;}
 
 
 /* --- tiles --- */
@@ -523,6 +528,7 @@ ul.tiles a.tile.nonclickable:hover{box-shadow: none;
 
 ul.tiles a.tile strong{
     font-size: 200%;
+    font-weight: normal
 }
 ul.tiles a.tile:hover{
     box-shadow: var(--tile-shadow-hover);
@@ -540,13 +546,15 @@ img.profile{
 /* ----- toggle boxes for help/ legends) ----- */
 .div-toggle-head{
     padding: 0em;
+    border-top-left-radius: 1em;
 }
 .div-toggle-head a{
     background: var(--toggle-head-a-bg);
     border: 1px solid var(--toggle-head-a-border);
+    border-top-left-radius: 1em;
     color:var(--toggle-head-a-color);
     display: block;
-    font-weight: bold;
+    font-weight: normal;
     margin-bottom: 1px;
     padding: 1em;
     text-decoration: none;
@@ -626,7 +634,6 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
 .request-time .onserver{ background-color: #ea4;}
 .request-time .transfer{ background-color: #a5a;}
 
-.float-right{float: right;}
 /* 
 --------------------------------------------------------------------------------
     action box
@@ -788,7 +795,7 @@ disabled when using select2
 #selectProject select:hover{background: var(--form-select-hover-bg);}
 */
 #selectProject span.selection > span{ border: none;}
-#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-default); border-width: 0px; opacity: 0.6;}
+#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; }
 #selectProject .select2-container--default .select2-selection--single{background: none;}
 .select2-container--default .select2-results > .select2-results__options {max-height: 1000em;}
 .select2-container--open .select2-dropdown--below {box-shadow: 0.3em 0.3em 1em var(--color-shadow-default);}
@@ -824,6 +831,12 @@ disabled when using select2
     position: absolute; top: 1000em; z-index: 200;
     padding: 1em; background: var(--debug-container-bg);
 }
+
+.float-left{float: left;}
+.float-right{float: right;}
+
+.w30{width: 30%;}
+
 /* 
 --------------------------------------------------------------------------------
     about
