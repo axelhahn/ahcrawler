@@ -49,10 +49,15 @@
 
     --page-home-navcolor:#abc;
     --page-analysis-navcolor:#fa8;
-    --page-analysis-navcolor:#fa8;
     --page-tools-navcolor:#c9c;
     --page-settings-navcolor:#c99;
     --page-about-navcolor:#6c6;
+
+    --page-home-navbg:rgb(243, 246, 250);
+    --page-analysis-navbg:rgb(248, 245, 244);
+    --page-tools-navbg:rgb(250, 242, 250);
+    --page-settings-navbg:rgb(247, 237, 237);
+    --page-about-navbg:rgb(241, 248, 241);
 
 }
 
@@ -64,9 +69,15 @@ h2{
 }
 
 
-a[href*="page=home"]      i, .page-home     h2 i { color: var(--page-home-navcolor);}
-a[href*="page=analysis"]  i, .page-analysis h2 i { color: var(--page-analysis-navcolor);}
-a[href*="page=tools"]     i, .page-tools    h2 i { color: var(--page-tools-navcolor);}
-a[href*="page=settings"]  i, .page-settings h2 i { color: var(--page-settings-navcolor);}
-a[href*="page=about"]     i, .page-about    h2 i { color: var(--page-about-navcolor);}
+a[href*="page=home"]      i, .page-home     h2 i ,.page-home     .pure-menu-list .pure-menu-list i, .page-home     a.childitem i{ color: var(--page-home-navcolor);}
+a[href*="page=analysis"]  i, .page-analysis h2 i ,.page-analysis .pure-menu-list .pure-menu-list i, .page-analysis a.childitem i{ color: var(--page-analysis-navcolor);}
+a[href*="page=tools"]     i, .page-tools    h2 i ,.page-tools    .pure-menu-list .pure-menu-list i, .page-tools    a.childitem i{ color: var(--page-tools-navcolor);}
+a[href*="page=settings"]  i, .page-settings h2 i ,.page-settings .pure-menu-list .pure-menu-list i, .page-settings a.childitem i{ color: var(--page-settings-navcolor);}
+a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list .pure-menu-list i, .page-about    a.childitem i{ color: var(--page-about-navcolor);}
+
+.page-home     .header .pure-menu-list .pure-menu-list {background: var(--page-home-navbg)}
+.page-analysis .header .pure-menu-list .pure-menu-list {background: var(--page-analysis-navbg)}
+.page-tools    .header .pure-menu-list .pure-menu-list {background: var(--page-tools-navbg)}
+.page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg)}
+.page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)}
 

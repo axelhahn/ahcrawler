@@ -790,6 +790,31 @@ class backend extends crawler_base
     }
 
     /**
+     * Get array of active navigation levels
+     * @param array $aNav  array with navigation items; default is $this->_aMenu
+     * @return array
+     */
+    public function getActiveNavLevels($aNav=null): array
+    {
+        $aReturn = [];
+        if(!isset($aNav)){
+            $aNav = $this->_aMenu;
+        }
+        foreach ($aNav as $sItem => $aSubItems) {
+            if (!$this->isNavitemHidden($sItem)) {
+
+                $bHasActiveSubitem = strpos($this->_getBreadcrumbitems($aSubItems['children']??[], '/'), 'pure-button');
+                $bIsActive = $this->_sPage == $sItem || $bHasActiveSubitem;
+                if ($bIsActive) {
+                    $aReturn[] = $sItem;
+                    $aReturn = array_merge($aReturn, $this->getActiveNavLevels($aSubItems['children']??[]));
+                }
+            }
+        }
+        return $aReturn;
+    }
+
+    /**
      * get html code for a breadcrumb navigation
      * @return string
      */

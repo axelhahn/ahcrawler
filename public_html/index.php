@@ -55,7 +55,6 @@
             header("X-CACHE-DELIVERY: YES");
             echo $oCache->read();
             return true;
-            exit(0);
         }
     }
     // ----- START PAGE
@@ -76,7 +75,8 @@
     $oCdn->setLibs([
         "pure/3.0.0",
         "datatables/1.10.21",
-        "font-awesome/6.7.2",
+        // "font-awesome/6.7.2",
+        "line-awesome/1.3.0",
         "jquery/3.7.1",
         "select2/4.0.13",
         "Chart.js/4.4.1"
@@ -127,8 +127,10 @@
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('pure')."/grids-responsive-min.css") . "\n"
 
             // fontawesome
-            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('font-awesome')."/css/all.css") . "\n"
-        
+            // .$oCdn->getHtmlInclude($oCdn->getLibRelpath('font-awesome')."/css/all.css") . "\n"
+            .$oCdn->getHtmlInclude($oCdn->getLibRelpath('line-awesome')."/line-awesome/css/line-awesome.min.css") . "\n"
+            
+
             // jQuery
             .$oCdn->getHtmlInclude($oCdn->getLibRelpath('jquery')."/jquery.min.js") . "\n"
 
@@ -201,6 +203,9 @@
     }
     $oBackend->getMoreJS();
     
+    $aNavPages=$oBackend->getActiveNavLevels();
+    $sBodyClasses="page-$aNavPages[0] page-". ($aNavPages[1]??'');
+    
 ?><!doctype html>
 <html>
     <head>
@@ -210,13 +215,12 @@
         <?php echo $sHtmlHead; ?>
     </head>
 
-    <body>
+    <body class="<?php echo $sBodyClasses; ?>">
 
         <div id="overlay">
             <div class="divdialog" >
-                <button class="button-error pure-button"
+                <button class="button-error pure-button float-right"
                    onclick="hideModal(); return false;"
-                   style="float: right"
                    > X </button>
                 <div id="dialogtitle">
                     TITLE
