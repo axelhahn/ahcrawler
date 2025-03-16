@@ -2,6 +2,10 @@
 
 ### 2024
 
+#### 2025-01-11: v0.174
+
+* ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
+
 #### 2025-01-04: v0.173
 
 * 🟢 ADDED: select2 component for searchable dropdowns

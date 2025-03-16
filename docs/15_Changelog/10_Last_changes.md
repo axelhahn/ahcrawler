@@ -2,6 +2,11 @@
 
 ### 2025
 
+#### 2025-03-NN: v0.179
+
+* ↗️ UPDATE: relace fontawesome with lineawesome icons
+* ↗️ UPDATE: bookmarklet page
+
 #### 2025-01-22: v0.178
 
 * ↗️ UPDATE: fix position of context box
@@ -31,7 +36,3 @@
 * ↗️ UPDATE: http header meta data
 * ↗️ UPDATE: analyzerHtml class - fix type in getHttpResponseHeader()
 * ↗️ UPDATE: http headers - remove double tag values
-
-#### 2025-01-11: v0.174
-
-* ↗️ UPDATE: Ignore linkcheck for link tags with rel *dns-prefetch* (before it often resulted in 404 errors)
