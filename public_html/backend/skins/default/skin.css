@@ -53,11 +53,11 @@
     --page-settings-navcolor:#c99;
     --page-about-navcolor:#6c6;
 
-    --page-home-navbg:rgb(243, 246, 250);
+    --page-home-navbg:rgb(243, 246, 248);
     --page-analysis-navbg:rgb(248, 245, 244);
-    --page-tools-navbg:rgb(250, 242, 250);
-    --page-settings-navbg:rgb(247, 237, 237);
-    --page-about-navbg:rgb(241, 248, 241);
+    --page-tools-navbg:rgb(248, 244, 248);
+    --page-settings-navbg:rgb(248, 243, 243);
+    --page-about-navbg:rgb(244, 248, 244);
 
 }
 
