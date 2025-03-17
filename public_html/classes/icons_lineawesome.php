@@ -223,7 +223,8 @@ return [
         'ico.tag' => 'las la-tag',
 
         'ico.experimental' => 'las la-flask-vial',
-        'ico.cache' => 'las la-gauge-high',
+        //'ico.cache' => 'las la-gauge-high',
+        'ico.cache' => 'las la-meteor',
         // 'ico.compression' => 'las la-file-zipper',
         'ico.compression' => 'lar la-file-archive',
         'ico.feature' => 'lar la-sun',
