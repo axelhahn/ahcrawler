@@ -204,7 +204,8 @@
     $oBackend->getMoreJS();
     
     $aNavPages=$oBackend->getActiveNavLevels();
-    $sBodyClasses="page-$aNavPages[0] page-". ($aNavPages[1]??'');
+    $sBodyClasses="";
+    $sBodyClasses.= $aNavPages[0]??false ? "page-$aNavPages[0]" : "";
     
 ?><!doctype html>
 <html>
