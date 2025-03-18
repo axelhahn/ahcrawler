@@ -1094,7 +1094,16 @@ class backend extends crawler_base
                 'class' => 'button-secondary',
                 'label' => 'button.logoff',
                 'popup' => false
-            ]).' ';
+            ]).' '
+            /*
+            . $this->_getButton([
+                'href' => './?page=userprofile',
+                'label' => 'button.userprofile',
+                'popup' => true
+            ])
+            */
+            ;
+            
         }
         
 
@@ -1922,7 +1931,7 @@ class backend extends crawler_base
     private function _getIcon(string $sKey, bool $bEmptyIfMissing = false): string
     {
         foreach (array_keys($this->_aIcons) as $sIconsection) {
-            if (array_key_exists($sKey, $this->_aIcons[$sIconsection])) {
+            if(isset($this->_aIcons[$sIconsection][$sKey])) {
                 return '<i class="' . $this->_aIcons[$sIconsection][$sKey] . '"></i> ';
             }
         }
