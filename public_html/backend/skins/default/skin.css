@@ -23,7 +23,7 @@
     --color-pacman: #69a;
     --color-currentproject: #578;
 
-    --context-head-bg:#78a;
+    --context-head-bg:#8ab;
 
     --navi-bg-l1-active:#568;
     --navi-bg-l2-active:#78a;
@@ -44,7 +44,7 @@
     --table-head-select-bg: #568;
     --table-head-select-color: #cde;
 
-    --tile-bg:radial-gradient(#f0f8ff,#c8d8e0);
+    --tile-bg:radial-gradient(#f0f8ff,#e0e4e8);
     --tile-color:#78a;
 
     --page-home-navcolor:#abc;

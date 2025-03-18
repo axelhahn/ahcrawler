@@ -80,7 +80,7 @@
         -----=====| PAGE ELEMENTS |=====-----
     */
     --actionbox-bg: rgba(140,160,180,0.1);
-    --border1: var(--DEFAULT-darken-10);
+    --border1: var(--DEFAULT-darken-5);
 
     --button-bg: #d8dce0;
     --button-text-color: #303438;
@@ -354,7 +354,7 @@ body, .contextbox, .piechart{
     */
     background: var(--button-bg);
     color: var(--button-text-color);
-    padding: 0.2em 0.7em;
+    padding: 0.5em 0.7em;
 }
 .pure-button:hover {
     /*
