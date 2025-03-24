@@ -34,6 +34,7 @@ return [
         'counters' => 'fa-solid fa-chart-simple',
         'about' => 'fa-solid fa-info-circle',
         'update' => 'fa-solid fa-cloud-download-alt',
+        'useradmin' => 'fa-solid fa-user',
         'userprofile' => 'fa-solid fa-user',
         'project' => 'fa-solid fa-book',
 

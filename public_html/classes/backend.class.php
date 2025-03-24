@@ -1,5 +1,6 @@
 <?php
 
+require_once 'adminacl.class.php';
 require_once 'analyzer.html.class.php';
 require_once 'crawler-base.class.php';
 require_once 'crawler.class.php';
@@ -83,8 +84,9 @@ class backend extends crawler_base
         ],
         'settings' => [
             'children' => [
+                'userprofile'=>[], // coming soon
                 'setup' => [],
-                // 'userprofile'=>[], // coming soon
+                'useradmin'=>[], // coming soon
                 'vendor' => [],
             ],
         ],
@@ -133,8 +135,13 @@ class backend extends crawler_base
      * The values are font-awesome class values for icons
      * @var array
      */
-    private array $_aIcons = [
+    private array $_aIcons = [];
+    /*
+        see icons_lineawesome.php
+
+        
         'menu' => [
+            '1111' => 'fa-solid fa-user-lock',
             'login' => 'fa-solid fa-user-lock',
             'home' => 'fa-solid fa-home',
             'settings' => 'fa-solid fa-cogs',
@@ -165,6 +172,7 @@ class backend extends crawler_base
             'counters' => 'fa-solid fa-chart-simple',
             'about' => 'fa-solid fa-info-circle',
             'update' => 'fa-solid fa-cloud-download-alt',
+            'useradmin' => 'fa-solid fa-user',
             'userprofile' => 'fa-solid fa-user',
             'project' => 'fa-solid fa-book',
 
@@ -218,31 +226,6 @@ class backend extends crawler_base
 
         ],
         'res' => [
-            /*
-            
-            // ressourcetype
-            'audio'=>'fa-regular fa-file-sound',
-            'css'=>'fa-regular fa-eyedropper',
-            'image'=>'fa-regular fa-file-image',
-            'link'=>'fa-solid fa-link',
-            'page'=>'fa-regular fa-sticky-note',
-            // 'redirect'=>'fa fa-mail-forward',
-            'redirect'=>'fa-solid fa-angle-double-right',
-            'script'=>'fa-regular fa-file-code',
-            
-            // type
-            'internal'=>'fa-solid fa-thumb-tack',
-            'external'=>'fa-solid fa-globe-americas',
-            
-            // content_type/ MIME
-            
-            // http_code
-            'http-code-0'=>'fa-solid fa-spinner',
-            'http-code-2xx'=>'fa-solid fa-check',
-            'http-code-3xx'=>'fa-solid fa-angle-double-right',
-            'http-code-4xx'=>'fa-regular fa-bolt',
-            'http-code-5xx'=>'fa-solid fa-spinner',
-             */
 
             'filter' => 'fa-solid fa-filter',
 
@@ -284,6 +267,8 @@ class backend extends crawler_base
             'button.view' => 'fa-regular fa-eye',
         ],
     ];
+    */
+
     private array $_aHelpPages = [
         
         'about' => 'About/index.html',
@@ -334,6 +319,8 @@ class backend extends crawler_base
      */
     public ahwiupdatecheck $oUpdate;
 
+    public adminacl $acl;
+
     // ----------------------------------------------------------------------
     /**
      * Constructor
@@ -352,8 +339,10 @@ class backend extends crawler_base
             if (!isset($_SESSION)) {
                 session_name('ahcrawler');
                 session_start();
-                session_write_close();
             }
+            $this->acl = new adminacl();
+            session_write_close();
+
         }
 
         // for settings: create a default array with all available menu items
@@ -723,7 +712,7 @@ class backend extends crawler_base
                 $sNavi .= '<li class="pure-menu-item">'
                     . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'
                     . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
-                    . '><i class="' . $this->_aIcons['menu'][$sItem] . '"></i>'
+                    . '><i class="' . ($this->_aIcons['menu'][$sItem]??$sItem) . '"></i>'
                     . '<span> ' . $this->lB('nav.' . $sItem . '.label') . '</span>'
                     . '</a>'
                     . ($bIsActive ? $sNaviNextLevel : '')
@@ -732,8 +721,8 @@ class backend extends crawler_base
                 $sNavi .= '</li>';
             }
         }
-        if ($sNavi || true) {
-            $sNavi = '<ul class="pure-menu-list">' . $sNavi . '</ul>';
+        if ($sNavi) {
+            $sNavi = "<ul class=\"pure-menu-list\">$sNavi</ul>";
         }
 
         return $sNavi;
@@ -1089,19 +1078,20 @@ class backend extends crawler_base
         }
 
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
-            $sRight.=$this->_getButton([
+            
+            $sRight.=/*
+            $this->_getButton([
                 'href' => './?page=logoff',
                 'class' => 'button-secondary',
                 'label' => 'button.logoff',
                 'popup' => false
             ]).' '
-            /*
-            . $this->_getButton([
+            */
+            $this->_getButton([
                 'href' => './?page=userprofile',
                 'label' => 'button.userprofile',
                 'popup' => true
             ])
-            */
             ;
             
         }

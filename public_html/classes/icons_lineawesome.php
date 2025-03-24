@@ -37,7 +37,9 @@ return [
         'counters' => 'las la-chart-bar',
         'about' => 'las la-info-circle',
         'update' => 'las la-cloud-download-alt',
+        'useradmin' => 'las la-user',
         'userprofile' => 'las la-user',
+        'usergroup' => 'las la-users',
         'project' => 'las la-book',
 
         'logoff' => 'las la-power-off',
@@ -153,6 +155,7 @@ return [
         'button.truncateindex' => 'las la-trash',
         'button.up' => 'las la-arrow-up',
         'button.updatesinglestep' => 'las la-chevron-right',
+        'button.userprofile' => 'las la-user',
         'button.view' => 'lar la-eye',
     ],
 

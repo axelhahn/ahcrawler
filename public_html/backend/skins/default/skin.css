@@ -21,7 +21,7 @@
     --color-h4-border-bottom:#eee;
 
     --color-pacman: #69a;
-    --color-currentproject: #578;
+    --color-currentproject: #457;
 
     --context-head-bg:#8ab;
 
@@ -47,11 +47,11 @@
     --tile-bg:radial-gradient(#f0f8ff,#e0e4e8);
     --tile-color:#78a;
 
-    --page-home-navcolor:#abc;
+    --page-home-navcolor:#89c;
     --page-analysis-navcolor:#fa8;
-    --page-tools-navcolor:#c9c;
-    --page-settings-navcolor:#c99;
-    --page-about-navcolor:#6c6;
+    --page-tools-navcolor:#b8c;
+    --page-settings-navcolor:#d88;
+    --page-about-navcolor:#9b7;
 
     --page-home-navbg:rgb(243, 246, 248);
     --page-analysis-navbg:rgb(248, 245, 244);
@@ -66,6 +66,7 @@ body, .contextbox, .piechart, h2{
 }
 h2{
     box-shadow: 0 0.7em 1em #fff; 
+    border-bottom: 2px solid;
 }
 
 
@@ -81,3 +82,8 @@ a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list
 .page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg)}
 .page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)}
 
+.page-home     h2{border-color: var(--page-home-navcolor)}
+.page-analysis h2{border-color: var(--page-analysis-navcolor)}
+.page-tools    h2{border-color: var(--page-tools-navcolor)}
+.page-settings h2{border-color: var(--page-settings-navcolor)}
+.page-about    h2{border-color: var(--page-about-navcolor)}

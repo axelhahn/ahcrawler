@@ -81,8 +81,9 @@
     */
     --actionbox-bg: rgba(140,160,180,0.1);
     --border1: var(--DEFAULT-darken-5);
-
+    
     --button-bg: #d8dce0;
+    --button-bg: rgba(220,228,230,0.5);
     --button-text-color: #303438;
     --button-textshadow-color: rgba(0, 0, 0, 0.4);
     --button-success-bg: var(--DEFAULT-mark-ok);
@@ -352,6 +353,7 @@ body, .contextbox, .piechart{
     box-shadow:  0.1em 0.1em 0.1em #aaa; 
     border: 1px solid rgba(0, 0, 0, 0.1);
     */
+    border-radius: 0.4em;
     background: var(--button-bg);
     color: var(--button-text-color);
     padding: 0.5em 0.7em;
