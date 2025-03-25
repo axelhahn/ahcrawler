@@ -239,6 +239,22 @@ class adminacl
         return $this->_aGroups;
     }
 
+    /**
+     * Get a list of permission names in all groups as array.
+     * @return array
+     */
+    public function getPermNames(): array
+    {
+        $aReturn=[];
+        foreach ($this->_aConfig['groups'] as $sApp => $perms) {
+            foreach(array_keys($perms) as $sPerm){
+                $aReturn[$sPerm] = 1;
+            }
+        }
+        return array_keys($aReturn);
+        
+    }
+
     // ----------------------------------------------------------------------
     // GET PERMISSIONS
     // ----------------------------------------------------------------------

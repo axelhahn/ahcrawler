@@ -408,6 +408,7 @@
     "setup.project.save.error": "ERROR: the project setings of %s could not be saved.",
     "userprofile.groups": "Usergroups",
     "userprofile.globalperms": "Global permissions",
+    "userprofile.globalperms-hint": "You have the following global permissions in each of the projects",
     "userprofile.webperms": "Web spezific permissions",
     "profile.new": "New project",
     "profile.section.metadata": "General data",

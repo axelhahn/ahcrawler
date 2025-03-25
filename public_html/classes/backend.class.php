@@ -485,7 +485,8 @@ class backend extends crawler_base
      */
     private function _getUser(): string
     {
-        return $_SESSION['AUTH_USER'] ?? '';
+        return $this->acl->getUser();
+        // return $_SESSION['AUTH_USER'] ?? '';
     }
 
     /**
@@ -1079,18 +1080,17 @@ class backend extends crawler_base
 
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
             
-            $sRight.=/*
-            $this->_getButton([
-                'href' => './?page=logoff',
-                'class' => 'button-secondary',
-                'label' => 'button.logoff',
-                'popup' => false
-            ]).' '
-            */
+            $sRight.=
             $this->_getButton([
                 'href' => './?page=userprofile',
                 'label' => 'button.userprofile',
                 'popup' => true
+            ]).' '
+            . $this->_getButton([
+                'href' => './?page=logoff',
+                'class' => 'button-secondary',
+                'label' => 'button.logoff',
+                'popup' => false
             ])
             ;
             

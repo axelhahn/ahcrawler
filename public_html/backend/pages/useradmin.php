@@ -5,10 +5,20 @@
 
 $sReturn = '';
 
+if ($this->_getRequestParam('user')) {
+  if($this->acl->setUser($this->_getRequestParam('user'))){
+    include(__DIR__ . '/userprofile.php');
+    return $sReturn;
+  }
+}
+
+function userlink($sUser){
+  return '<a href="'.$_SERVER['REQUEST_URI'].'&user='.$sUser.'">'.$sUser.'</a>';
+}
 
 
 
-$aPerms=["admin","manager","viewer"];
+$aPerms=$this->acl->getPermNames();
 
 
 $sTHead='<tr><th>Name</th><th>User</th>';
@@ -26,8 +36,8 @@ foreach($aAppPerms as $sUser => $aRoles){
   $iCountUser++;
       $sAdminTable.='<tr>'
         .($iCountUser==1
-          ? '<td colspan="'.(count($aPerms)+2).'"><strong>@global<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . $sUser.'</td>'
-          : '<td></td><td>'.$this->_getIcon('userprofile') . $sUser.'</td>'
+          ? '<td colspan="'.(count($aPerms)+2).'"><strong>@global<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
+          : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
         )
         ;
       foreach($aPerms as $sPerm){
@@ -51,8 +61,8 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
     $iCountUser++;
         $sGroupTable.='<tr>'
           .($iCountUser==1
-            ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . $sUser.'</td>'
-            : '<td></td><td>'.$this->_getIcon('userprofile') . $sUser.'</td>'
+            ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
+            : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
           )
           ;
         foreach($aPerms as $sPerm){
@@ -85,52 +95,3 @@ $sReturn.=''
 
 
 return $sReturn;
-
-
-// ignore everything below
-
-// otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
-
-/*
-
-  MODES:
-  (1) no User is authenticated --> abort with message
-  (2) user has no TOTP --> offer "add totp"
-  (3) totp exists: show details and offer delete
-
-
-
-
-$sInstance='ahCrawler%20'.$_SERVER['SERVER_NAME'];
-$sUser=isset($aOptions['options']['auth']['user']) ? $aOptions['options']['auth']['user'] : '[nouser]';
-$sSecret="GASWY3DPEHPK3PXP";
-$sIssuer="Axel%20Hahn";
-
-$sTotpUrl="otpauth://totp/$sInstance:$sUser?secret=$sSecret=&issuer=$sIssuer";
-
-
-$sReturn = '
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-
-Instance: '.$sInstance.'<br>
-user: '.$sUser.'<br>
-<br>
-url: '.$sTotpUrl.'<br>
-<br>
-
-
-<div id="qrcode"></div>
-
-<script>
-window.addEventListener("load", () => {
-  // var url="otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
-  var url="'.$sTotpUrl.'";
-  var qrc = new QRCode(document.getElementById("qrcode"), url);
-});
-</script>
-';
-
-return $sReturn;
-
-*/
