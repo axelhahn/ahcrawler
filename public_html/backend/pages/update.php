@@ -2,6 +2,11 @@
 /**
  * page about
  */
+
+if (!$this->_requiresPermission("globaladmin")){
+    return include __DIR__ . '/error403.php';
+}
+
 $oRenderer=new ressourcesrenderer();
 
 $sReturn = '';

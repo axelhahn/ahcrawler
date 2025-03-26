@@ -1,5 +1,9 @@
 <?php
 
+if (!$this->_requiresPermission("globaladmin")){
+    return include __DIR__ . '/error403.php';
+}
+
     $iCount=0;
     $iCountLocal=0;
     $iCountUnused=0;

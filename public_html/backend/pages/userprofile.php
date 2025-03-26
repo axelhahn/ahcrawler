@@ -5,7 +5,6 @@
 
 $sReturn = '';
 
-$sGlobalTable = '';
 $sGroupTable = '';
 
 $sGlobal = '';

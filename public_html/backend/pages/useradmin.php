@@ -5,15 +5,29 @@
 
 $sReturn = '';
 
+if (!$this->_requiresPermission("admin")){
+  return include __DIR__ . '/error403.php';
+}
+
+
 if ($this->_getRequestParam('user')) {
+
+  $this->_pageRequires('globaladmin');
+
   if($this->acl->setUser($this->_getRequestParam('user'))){
     include(__DIR__ . '/userprofile.php');
     return $sReturn;
+  } else {
+    // return include(__DIR__ . '/error403.php');
   }
 }
 
-function userlink($sUser){
-  return '<a href="'.$_SERVER['REQUEST_URI'].'&user='.$sUser.'">'.$sUser.'</a>';
+function userlink($sUser, $bLink=false){
+  
+  return $bLink 
+    ? '<a href="'.$_SERVER['REQUEST_URI'].'&user='.$sUser.'">'.$sUser.'</a>'
+    : $sUser
+    ;
 }
 
 
@@ -36,8 +50,8 @@ foreach($aAppPerms as $sUser => $aRoles){
   $iCountUser++;
       $sAdminTable.='<tr>'
         .($iCountUser==1
-          ? '<td colspan="'.(count($aPerms)+2).'"><strong>@global<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
-          : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
+          ? '<td colspan="'.(count($aPerms)+2).'"><strong>@global<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin() ).'</td>'
+          : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
         )
         ;
       foreach($aPerms as $sPerm){
@@ -61,8 +75,8 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
     $iCountUser++;
         $sGroupTable.='<tr>'
           .($iCountUser==1
-            ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
-            : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser).'</td>'
+            ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
+            : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
           )
           ;
         foreach($aPerms as $sPerm){

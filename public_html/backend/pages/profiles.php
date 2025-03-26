@@ -2,6 +2,11 @@
 /**
  * page searchindex :: profiles
  */
+
+if (!$this->_requiresPermission("admin")){
+    return include __DIR__ . '/error403.php';
+}
+
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
 $aOptions = $this->_loadConfigfile();
