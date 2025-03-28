@@ -7,6 +7,10 @@
  * - reindex --> $oCrawler = new crawler(1); $oCrawler->updateSingleUrl($sPageUrl);
  * 
  */
+if (!$this->_requiresPermission("viewer", $this->_sTab)){
+    return include __DIR__ . '/error403.php';
+}
+
 $oRenderer = new ressourcesrenderer($this->_sTab);
 
 $sReturn = '';

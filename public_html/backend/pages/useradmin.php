@@ -5,14 +5,14 @@
 
 $sReturn = '';
 
-if (!$this->_requiresPermission("admin")){
-  return include __DIR__ . '/error403.php';
-}
+// if (!$this->_requiresPermission("manager")){
+//   return include __DIR__ . '/error403.php';
+// }
 
 
 if ($this->_getRequestParam('user')) {
 
-  $this->_pageRequires('globaladmin');
+  $this->_requiresPermission('globaladmin');
 
   if($this->acl->setUser($this->_getRequestParam('user'))){
     include(__DIR__ . '/userprofile.php');
@@ -70,21 +70,24 @@ $sAdminTable=$sAdminTable ? '<table class="pure-table pure-table-horizontal data
 
 foreach($this->_getProfiles() as $iGroupId => $sApp){
   $aAppPerms=$this->acl->listUsers($iGroupId);
-  $iCountUser=0;
-  foreach($aAppPerms as $sUser => $aRoles){
-    $iCountUser++;
-        $sGroupTable.='<tr>'
-          .($iCountUser==1
-            ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
-            : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
-          )
-          ;
-        foreach($aPerms as $sPerm){
-            $sGroupTable.='<td>'.($aRoles[$sPerm]??'' ? '<span class="pure-button button-success"> X </span>' : '-').'</td>';
-        }
-        $sGroupTable.='</tr>';
+  if($this->_requiresPermission("viewer", $iGroupId)){
+    
+    $iCountUser=0;
+    foreach($aAppPerms as $sUser => $aRoles){
+      $iCountUser++;
+          $sGroupTable.='<tr>'
+            .($iCountUser==1
+              ? '<td colspan="'.(count($aPerms)+2).'"><strong>'.$this->_getIcon('project') . $sApp.'<strong></td></tr><tr><td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
+              : '<td></td><td>'.$this->_getIcon('userprofile') . userlink($sUser, $this->acl->isGlobalAdmin()).'</td>'
+            )
+            ;
+          foreach($aPerms as $sPerm){
+              $sGroupTable.='<td>'.($aRoles[$sPerm]??'' ? '<span class="pure-button button-success"> X </span>' : '-').'</td>';
+          }
+          $sGroupTable.='</tr>';
+    }
   }
-  if(count($aAppPerms)==0){
+  if(count($aAppPerms)==0 && $this->_requiresPermission("globaladmin")){
     $sGroupTable.='<tr><td colspan="'.(count($aPerms)+2).'">'.$this->_getIcon('project') . $sApp.'</td></tr>';
 
   }
@@ -96,15 +99,18 @@ $sGroupTable=$sGroupTable ? '<table class="pure-table pure-table-horizontal data
         <tbody>'.$sGroupTable.'
         </tbody>
         </table><br><br>' 
-    : 'NONE'
+    : ''
     ;
 
 // output
 $sReturn.=''
   .'<h3>'.$this->lB("userprofile.globalperms").'</h3>'
   .$sAdminTable
-  .'<h3>'.$this->lB("userprofile.webperms").'</h3>'
-    .$sGroupTable
+  .($sGroupTable 
+    ? '<h3>'.$this->_getIcon('project') .$this->lB("userprofile.webperms").'</h3>'
+      .$sGroupTable
+    : ''
+  )
   ;
 
 

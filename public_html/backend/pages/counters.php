@@ -2,6 +2,9 @@
 /**
  * SELECT COUNTERS AND SHOW HISTORY DATA
  */
+if (!$this->_requiresPermission("viewer", $this->_sTab)){
+    return include __DIR__ . '/error403.php';
+}
 require_once __DIR__ . '/../../classes/counter.class.php';
 
 $oRenderer=new ressourcesrenderer($this->_sTab);

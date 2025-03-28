@@ -107,6 +107,10 @@ if ($this->_bIsPublic){
     $sMyUrl=($sMyHost && $sMyPort) ? 'ssl://'.$sMyHost.':'.$sMyPort : false;
 
 } else {
+    if(!$this->_requiresPermission('viewer', $this->_sTab) ){
+        return include __DIR__ . '/error403.php';
+    }
+    
     $this->setSiteId($this->_sTab); // to load the profile into $this->aProfile
     $sMyUrl=isset($this->aProfileSaved['searchindex']['urls2crawl'][0]) ? $this->aProfileSaved['searchindex']['urls2crawl'][0] : false;
 

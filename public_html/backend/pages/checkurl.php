@@ -2,6 +2,10 @@
 /**
  * page analysis :: search for an url
  */
+if (!$this->_requiresPermission("viewer", $this->_sTab)){
+    return include __DIR__ . '/error403.php';
+}
+
 $sReturn='';
 $sQuery = $this->_getRequestParam('query');
 $bRedirect = $this->_getRequestParam('redirect');

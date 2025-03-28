@@ -11,10 +11,11 @@ $sGlobal = '';
 
 $sGroups = '';
 foreach ($this->acl->getGroups() as $sGroup) {
-    $sGroups .= $this->_getIcon('usergroup') . $sGroup . '<br>';
+    $sGroups .= '<li>'. $sGroup . '</li>';
 }
 
-$sGroups = $sGroups ? "<h4>" . $this->lB("userprofile.groups") . "</h4>$sGroups" : '';
+$sGroups = $sGroups ? "<h4>" . $this->_getIcon('usergroup').$this->lB("userprofile.groups") . "</h4><ul>$sGroups</ul>" : '';
+
 // --- global permissions
 
 $aGlobalPerms = $this->acl->getMyGlobalPermissions();
@@ -60,7 +61,7 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
   }
 
 $sGroupTable = $sGroupTable
-    ? '<h4>' . $this->lB("userprofile.webperms") . '</h4>
+    ? '<h4>' . $this->_getIcon('project') . $this->lB("userprofile.webperms") . '</h4>
         <table class="pure-table pure-table-horizontal datatable dataTable no-footer">
         <thead>' . $sTHead . '</thead>
         <tbody>' . $sGroupTable . '

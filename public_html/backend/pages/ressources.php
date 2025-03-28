@@ -3,6 +3,10 @@
  * page analysis :: ressources
  */
 
+if (!$this->_requiresPermission("viewer", $this->_sTab)){
+    return include __DIR__ . '/error403.php';
+}
+
 $sReturn = '';
 $aCounter = [];
 $aFilter=['http_code', 'ressourcetype','type', 'content_type'];

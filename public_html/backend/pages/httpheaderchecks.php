@@ -78,7 +78,10 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
     // ----------------------------------------------------------------------
     // backend: show header of starting page or by given id
     // ----------------------------------------------------------------------
-
+    if (!$this->_requiresPermission("viewer", $this->_sTab)){
+        return include __DIR__ . '/error403.php';
+    }
+    
     // add profiles navigation
     $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
 
