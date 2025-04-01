@@ -1,0 +1,51 @@
+<?php
+
+return [
+        // ---------- USER
+        'session_user'=>'AUTH_USER',
+        'userfield'=>'REMOTE_USER',
+        // 'displayname'=>['givenName', '_surname'],
+        'displayname'=>false,
+
+        // 'userfield'=>'mail', // set by shibbolethauthentication
+
+        // ---------- GROUPS
+        'groups'=>[
+
+            // global admins for all projects
+            'global'=>[
+                'admin'=>[
+                    'axel',
+                    'jules',
+                ],
+                'manager'=>[],
+                'viewer'=>[
+                    '@authenticated',
+                ],
+            ],
+
+            // project id 1
+            '1'=>[
+                'admin'=>[],
+                'manager'=>[
+                    'anton',
+                ],
+                'viewer'=>[
+                    'berta'
+                ],
+                    
+            ],
+
+            // project id 2
+            '2'=>[
+                'admin'=>[],
+                'manager'=>[
+                    'bodo',
+                ],
+                'viewer'=>[
+                    'anne',
+                ],
+                    
+            ],
+        ],
+];
