@@ -4,6 +4,7 @@
 
 #### 2025-03-NN: v0.179
 
+* 🟢 ADDED: user based access to projects with given role on installations with multi user access. This is a huge change. Please read the docs how to configure it.
 * ↗️ UPDATE: relace fontawesome with lineawesome icons
 * ↗️ UPDATE: bookmarklet page
 
