@@ -299,11 +299,12 @@ class backend extends crawler_base
         'searchindextester' => 'Start/Search_test.html',
         'settings' => '',
         'setup' => 'Settings/Setup.html',
+        'useradmin' => 'Settings/User_admin.html',
+        'userprofile' => 'Settings/My_profile.html',
         'showicons' => '',
         'sslcheck' => 'Analysis/SSL_check.html',
         'tools' => '',
         'update' => 'Tools_and_information/Update.html',
-        'userprofile' => '',
         'vendor' => 'Settings/Vendor_libs.html',
     ];
 
@@ -1143,18 +1144,11 @@ class backend extends crawler_base
             $sRight .=
                 $this->_getButton([
                     'href' => './?page=userprofile',
-                    'label' => 'button.userprofile',
+                    'class' => $this->_sPage == 'userprofile' ? 'button button-secondary' : 'button',
+                    'title' => $this->lB('button.userprofile'),
+                    'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
                     'popup' => true
                 ]) . ' '
-                . ($this->_getUser() !== 'nobody'
-                    ? $this->_getButton([
-                        'href' => './?page=logoff',
-                        'class' => 'button-secondary',
-                        'label' => 'button.logoff',
-                        'popup' => false
-                    ])
-                    : ''
-                )
 
             ;
 
@@ -1931,14 +1925,16 @@ class backend extends crawler_base
     }
 
     /**
-     * Get HTML code for a button
+     * Get HTML code for a button like link
      * 
      * @param array $aOptions  Options for the button; known subkeys are
-     *                         - href     {string}  target url
-     *                         - class    {string}  css class
-     *                         - target   {string}  target window
-     *                         - label    {string}  text of the button
-     *                         - onclick  {string}  onclick value
+     *                         - href        {string}  target url
+     *                         - class       {string}  css class
+     *                         - onclick     {string}  onclick value
+     *                         - target      {string}  target window
+     *                         - title       {string}  text in title attribue; default: lang specific text from 'label'
+     *                         - label       {string}  language key for the button tor ender icon + text
+     *                         - customlabel {string}  custom label
      * @return string
      */
     private function _getButton(array $aOptions = []): string
@@ -1965,13 +1961,24 @@ class backend extends crawler_base
             . 'class="pure-button ' . $aOptions['class'] . '" '
             . 'href="' . $aOptions['href'] . '" '
             . 'target="' . $aOptions['target'] . '" '
-            . 'title="' . $this->lB($aOptions['label'] . '.hint') . '" '
+            . 'title="' . ($aOptions['title']??false
+                ? $aOptions['title'] 
+                : $this->lB($aOptions['label'] . '.hint') 
+            )
+            . '" '
+
             . (isset($aOptions['onclick'])
                 ? 'onclick="' . $aOptions['onclick'] . '" '
                 : ''
             )
             // . ($aOptions['popup'] ? 'onclick="showModal(this.href); return false;"' : '')
-            . '>' . $this->_getIcon($aOptions['label']) . $this->lB($aOptions['label']) . '</a>';
+            . '>' 
+                . ($aOptions['customlabel']??false
+                    ? $aOptions['customlabel']
+                    : $this->_getIcon($aOptions['label']) . $this->lB($aOptions['label']) 
+                )
+            
+            . '</a>';
         return $sReturn;
     }
 
