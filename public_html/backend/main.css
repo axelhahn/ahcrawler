@@ -797,8 +797,8 @@ disabled when using select2
 #selectProject select:hover{background: var(--form-select-hover-bg);}
 */
 #selectProject span.selection > span{ border: none;}
-#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; }
-#selectProject .select2-container--default .select2-selection--single{background: none;}
+#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; line-height: 20px; }
+#selectProject .select2-container--default .select2-selection--single{background: none; min-width: 20em;;}
 .select2-container--default .select2-results > .select2-results__options {max-height: 1000em;}
 .select2-container--open .select2-dropdown--below {box-shadow: 0.3em 0.3em 1em var(--color-shadow-default);}
 
@@ -847,6 +847,21 @@ disabled when using select2
 
 div.person{border: 1px solid var(--person-border); background: var(--person-bg); height: 5em; display: block; float: left; margin: 0 1em 1em 0; padding: 1em; width: 19%; }
 div.person .name{font-weight: bold;}
+
+/* 
+--------------------------------------------------------------------------------
+    generic
+--------------------------------------------------------------------------------
+*/
+
+.float-left{float: left;}
+.float-right{float: left;}
+
+/* 
+--------------------------------------------------------------------------------
+    media
+--------------------------------------------------------------------------------
+*/
 
  @media print{
     body{font-size: 0.9em;}
