@@ -91,6 +91,16 @@ $sReturn .= '<br>'
         // 'class' => 'button-secondary',
         'popup' => false,
         'label' => 'button.back'
-        ]);
+        ])
+        . ($this->_getUser() !== 'nobody'
+        ? ' '.$this->_getButton([
+            'href' => './?page=logoff',
+            'class' => 'button-error',
+            'label' => 'button.logoff',
+            'popup' => false
+        ])
+        : ''
+    )
+        ;
 
 return $sReturn;
