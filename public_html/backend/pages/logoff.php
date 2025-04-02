@@ -3,4 +3,5 @@
  * LOGOFF
  */
 $this->_setUser('');
-return $this->_getLoginForm();
+header("location: ?");
+// return $this->_getLoginForm();

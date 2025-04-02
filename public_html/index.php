@@ -5,7 +5,7 @@ if (!defined('BACKEND')) {
 }
 
 
-// $_SERVER['REMOTE_USER'] = "anne";
+    // $_SERVER['REMOTE_USER'] = "anne";
 
 
 require_once(__DIR__ . "/classes/backend.class.php");
@@ -35,7 +35,7 @@ $bUseCache = $bIsBackend && $iSiteId && $oBackend->isCacheable() && $_SERVER['RE
 // $bUseCache=false;
 $sRefFile = false;
 if ($bUseCache) {
-    require_once(__DIR__ . "/vendor/ahcache/cache.class.php");
+    require_once(__DIR__ . "/vendor/ahcache/src/cache.class.php");
     $sRefFile = __DIR__ . '/data/indexlog-siteid-' . $iSiteId . '.log';
     $aGetParams = $_GET;
     unset($aGetParams['page']);

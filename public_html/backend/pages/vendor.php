@@ -107,7 +107,7 @@ if (!$this->_requiresPermission("globaladmin")){
     ).'<br>'
     . $sHtml
     . ($iCountUnused
-            ? sprintf($this->lB('vendor.DeleteUnused'), $iCountUnused).'<br><br>'
+            ? $oRenderer->renderMessagebox(sprintf($this->lB('vendor.DeleteUnused'), $iCountUnused), 'warning').'<br><br>'
             : ''
     )
     . $this->_getSimpleHtmlTable($aTable, true)

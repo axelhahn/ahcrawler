@@ -9,6 +9,8 @@ $sReturn = '';
 //   return include __DIR__ . '/error403.php';
 // }
 
+// ------------------------------------------------------------
+// if a linked user id was clicked -> show profile of selected user
 
 if ($this->_getRequestParam('user')) {
 
@@ -22,6 +24,10 @@ if ($this->_getRequestParam('user')) {
   }
 }
 
+// ------------------------------------------------------------
+// FUNCTIONS
+// ------------------------------------------------------------
+
 function userlink($sUser, $bLink=false){
   
   return $bLink 
@@ -31,6 +37,9 @@ function userlink($sUser, $bLink=false){
 }
 
 
+// ------------------------------------------------------------
+// PAGE
+// ------------------------------------------------------------
 
 $aPerms=$this->acl->getPermNames();
 
@@ -87,7 +96,7 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
           $sGroupTable.='</tr>';
     }
   }
-  if(count($aAppPerms)==0 && $this->_requiresPermission("globaladmin")){
+  if(count($aAppPerms)==0 && $this->_requiresPermission("viewer", $iGroupId)){
     $sGroupTable.='<tr><td colspan="'.(count($aPerms)+2).'">'.$this->_getIcon('project') . $sApp.'</td></tr>';
 
   }
