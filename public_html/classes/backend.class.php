@@ -11,7 +11,7 @@ require_once 'search.class.php';
 require_once 'sslinfo.class.php';
 require_once 'status.class.php';
 
-require_once __DIR__ . '/../vendor/ahcache/cache.class.php';
+require_once __DIR__ . '/../vendor/ahcache/src/cache.class.php';
 require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
 
 /**
@@ -56,7 +56,7 @@ class backend extends crawler_base
                 'searchindextester' => ['needs' => ['pages'], 'permission' => 'viewer'],
                 'searches' => ['needs' => ['searches'], 'permission' => 'viewer'],
                 'crawlerlog' => ['permission' => 'viewer'],
-                'profiles' => ['permission' => 'manager'],
+                'profiles' => ['permission' => 'admin'],
             ],
         ],
         // 'search'=>[],
@@ -84,9 +84,9 @@ class backend extends crawler_base
         ],
         'settings' => [
             'children' => [
-                'userprofile' => [], // coming soon
-                'setup' => ['permission' => 'globaladmin'],
+                'userprofile' => [],
                 'useradmin' => [],
+                'setup' => ['permission' => 'globaladmin'],
                 'vendor' => ['permission' => 'globaladmin'],
             ],
         ],
