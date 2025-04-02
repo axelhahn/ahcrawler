@@ -23,6 +23,7 @@
  * 2024-06-12        <axel>  first lines
  * 2024-11-05        <axel>  update PHPDOC, short syntax
  * 2025-01-23        <axel>  rename isAdmin to isGlobalAdmin
+ * 2025-04-02        <axel>  add handling for special group '@authenticated'
  * ======================================================================
  */
 
@@ -168,7 +169,10 @@ class adminacl
 
     public function getMyGlobalPermissions():array
     {
-        return $this->listUsers('global')[$this->_sUser]??[];
+        return array_merge(
+            $this->listUsers('global')[$this->_sUser]??[],
+            $this->listUsers('global')['@authenticated']??[],
+        );
     }
 
     // ----------------------------------------------------------------------
@@ -291,6 +295,7 @@ class adminacl
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->isGlobalAdmin()
             || array_search($sAppname . '_admin', $this->_aGroups) !== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['admin'])!== false
         ;
     }
 
@@ -305,6 +310,7 @@ class adminacl
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->isAppAdmin($sAppname)
             || array_search($sAppname . '_manager', $this->_aGroups) !== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['manager'])!== false
         ;
     }
 
@@ -319,6 +325,7 @@ class adminacl
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->canEdit($sAppname)
             || array_search($sAppname, $this->_aGroups) !== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['viewer'])!== false
         ;
     }
 }
