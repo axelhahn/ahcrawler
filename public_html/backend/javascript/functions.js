@@ -482,6 +482,7 @@ window.addEventListener('load', function () {
                 $(this).addClass(sTag);
                 $(this).addClass("active");
             }
+            $(this).blur();
 
             return false;
         })
