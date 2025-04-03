@@ -42,7 +42,7 @@
     --color-hr:#ddd;
 
     --color-pacman: #999;
-    --color-shadow-default:#d0d0d0;
+    --color-shadow-default:#bbb;
 
     --context-head-bg:#999;
     --context-head-fg:var(--DEFAULT-markedelement-color);
@@ -165,11 +165,11 @@
     --resource-report-hover-bg:var(--DEFAULT-darken-2);
     --resource-report-border:#888;
 
-    --status-bg-error:radial-gradient(#f8f0f0,#daa);
+    --status-bg-error:radial-gradient(#f8e8e8,#ebb);
     --status-bg-error-flat:#ebb;
-    --status-bg-ok:radial-gradient(#fff,#b0d0b8);
+    --status-bg-ok:radial-gradient(#efe,#b0d0b8);
     --status-bg-ok-flat: #c0dcc8;
-    --status-bg-warning:radial-gradient(#fff,#eb8);
+    --status-bg-warning:radial-gradient(#fff4e0,#eca);
     --status-bg-warning-flat:#fdb;
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
     --status-color-error:#855;
@@ -797,7 +797,7 @@ disabled when using select2
 #selectProject select:hover{background: var(--form-select-hover-bg);}
 */
 #selectProject span.selection > span{ border: none;}
-#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; line-height: 20px; }
+#selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; line-height: 24px; }
 #selectProject .select2-container--default .select2-selection--single{background: none; min-width: 20em;;}
 .select2-container--default .select2-results > .select2-results__options {max-height: 1000em;}
 .select2-container--open .select2-dropdown--below {box-shadow: 0.3em 0.3em 1em var(--color-shadow-default);}
