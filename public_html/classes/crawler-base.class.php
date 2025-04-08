@@ -32,6 +32,7 @@ require_once 'httpheader.class.php';
  * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
  * 2024-10-02  v0.170  Fixes for installer
  * 2024-09-03  v0.171  Hide SKIP messages during crawling
+ * 2025-04-08  v0.178  Do not allow disabling "home"
  * */
 class crawler_base
 {
@@ -43,7 +44,7 @@ class crawler_base
     public array $aAbout = [
         'product' => 'ahCrawler',
         'version' => '0.179-dev',
-        'date' => '2025-03-nn',
+        'date' => '2025-04-nn',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1584,6 +1585,9 @@ class crawler_base
                 ;
             }
         }
+
+        // hardcoded override: page "home" is always active
+        $this->aOptions['menu']['home'] = true;
 
         /*
         echo '<pre>aDefaultOptions = '. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre><hr>';
