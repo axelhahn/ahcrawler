@@ -80,6 +80,10 @@
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
 
+    --input-bg: rgba(255,255,255,0.1);
+    --input-border-color: #444;
+    --input-color: #8aa;
+
     --http-code-color: rgba(0,0,0,0.7);
     --http-code-5xx-bg:#b6b;
 
@@ -175,7 +179,6 @@ h2{box-shadow: none; color: var(--color-h2);}
 h3{border-top-color: rgba(255,255,255,0.1); }
 h4 {border-bottom: 1px dashed #444;}
 hr {border-bottom: 2px dotted #444;}
-input, option, select, textarea{background: rgba(255,255,255,0.3); border-color: var(--color-bg-default );}
 
 code,pre{background: rgba(0,0,0,0.1); }
 .message pre{ color: rgba(255,255,255,0.5); }

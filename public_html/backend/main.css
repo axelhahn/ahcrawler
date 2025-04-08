@@ -105,6 +105,10 @@
 
     --boxes-border:2px solid rgba(0,0,0,0.02);
 
+    --input-bg: #f8f8f8;
+    --input-border-color: #ddd;
+    --input-color: var(--color-default);
+
     --chart-background: none;
     --chart-border:5px solid var(--DEFAULT-markedelement-color);
     
@@ -309,7 +313,7 @@ body, .contextbox, .piechart{
     padding: 0.2em;
 }
 .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {background: var(--navi-bg-on-hover); border-color: var(--color-default); }
-.header .pure-menu-list .pure-menu-list .pure-menu-link-active{
+.header .pure-menu-list .pure-menu-list .pure-menu-link-active, .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {
     background: var(--navi-bg-l2-active);
     border-color: var(--color-default);
     color:#fff;
@@ -326,7 +330,7 @@ body, .contextbox, .piechart{
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:active
     {color:var(--color-default); text-decoration: none; padding: 0.2em;}
 .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:hover{text-decoration: underline; background: none;}
-.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link-active{
+.header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link-active, .header .pure-menu-list .pure-menu-list .pure-menu-list .pure-menu-link:hover{
     background: var(--navi-bg-on-hover);
     color:var(--color-default);
 }
@@ -412,6 +416,13 @@ h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed var(--col
 
 
 hr{border: 0; border-bottom: 2px dotted var(--color-hr);}
+input, input[type="checkbox"], input[type="radio"], select option, textarea, .select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    background: var(--input-bg); 
+    border-color: var(--input-border-color);
+    color: var(--input-color);
+}
+
 iframe{position: fixed; bottom: -3em; height: 1em; border: none;}
 pre{font-size: 95%; padding: 0.5em; background: #e0e4ea; color:var(--color-default);}
 code{background: #e0e4ea; padding: 0.2em;}
@@ -798,7 +809,7 @@ disabled when using select2
 */
 #selectProject span.selection > span{ border: none;}
 #selectProject span.selection > span > span{font-size: 110%; font-weight: bold; color: var(--color-currentproject); border-width: 0px; line-height: 24px; }
-#selectProject .select2-container--default .select2-selection--single{background: none; min-width: 20em;;}
+#selectProject .select2-container--default .select2-selection--single{background: none; min-width: 10em;;}
 .select2-container--default .select2-results > .select2-results__options {max-height: 1000em;}
 .select2-container--open .select2-dropdown--below {box-shadow: 0.3em 0.3em 1em var(--color-shadow-default);}
 
