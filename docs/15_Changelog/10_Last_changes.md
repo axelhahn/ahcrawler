@@ -7,11 +7,13 @@
 * 🟢 ADDED: user based access to projects with given role on installations with multi user access. This is a huge change. Please read the docs how to configure it.
 * ↗️ UPDATE: relace fontawesome with lineawesome icons
 * ↗️ UPDATE: default light theme got colors by main section
+* ↗️ UPDATE: dark theme
 * ↗️ UPDATE: bookmarklet page
 * ↗️ UPDATE: ahcache
 * ↗️ UPDATE: medoo 2.1.12 --> 2.2.0
 * ↗️ UPDATE: ahCrawler is PHP 8.4 ready
-* 💣 FIX: logoff 
+* 💣 FIX: navigation - active menu item doesn't lose color on hover anymore
+* 💣 FIX: logoff - don't show navigation after logging off
 
 #### 2025-01-22: v0.178
 
