@@ -185,6 +185,8 @@
     "hr-time-d": "day(s)",
     "hr-time-y": "year(s)",
     "hr-time-never": "(never)",
+    "error.403": "Доступ запрещен. Эта страница не активирована.",
+    "error.403.description": "403 В доступе отказано.",
     "error.404": "404 Page not found",
     "error.404.description": "The requested page does not exist.",
     "installer.back": "back",

@@ -285,6 +285,8 @@
     "hr-time-d": "ngày",
     "hr-time-y": "năm",
     "hr-time-never": "(chưa từng)",
+    "error.403": "Từ chối truy cập. Trang này không hoạt động.",
+    "error.403.description": "403 Từ chối truy cập.",
     "error.404": "404 Không tìm thấy trang",
     "error.404.description": "Trang yêu cầu không tồn tại.",
     "installer.back": "quay lại",
