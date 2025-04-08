@@ -175,8 +175,8 @@ header('Feature-Policy: sync-xhr \'self\'');
 if ($oBackend->isNavitemHidden()) {
     header('HTTP/1.0 403 Forbidden');
     $sHtmlContent = $oBackend->getHead()
-        . '<h3>' . $oBackend->lB('error.403.title') . '</h3>'
-        . $oRenderer->renderMessagebox($oBackend->lB('error.403.message'), 'warning')
+        . '<h3>' . $oBackend->lB('error.403') . '</h3>'
+        . $oRenderer->renderMessagebox($oBackend->lB('error.403.description'), 'warning')
     ;
 } else {
     $sHtmlContent = $oBackend->getHead()
