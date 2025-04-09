@@ -252,7 +252,7 @@ class ressourcesrenderer extends crawler_base
      * @param array   $aArray  array
      * @return string
      */
-    public function renderArrayValue($sKey, $aArray)
+    public function renderArrayValue(string $sKey, array $aArray): bool|string
     {
         if (array_key_exists($sKey, $aArray)) {
             return $this->renderValue($sKey, $aArray[$sKey]);
@@ -719,7 +719,7 @@ class ressourcesrenderer extends crawler_base
      * @param string  $sSiteId  site id
      * @return string
      */
-    public function renderIndexButton($sAction, $sWhat, $sSiteId): string
+    public function renderIndexButton(string $sAction, string $sWhat, string $sSiteId): string
     {
         return $this->oHtml->getTag(
             'a',
@@ -741,7 +741,7 @@ class ressourcesrenderer extends crawler_base
      * @param integer $sSiteId  Site id of the web
      * @return string
      */
-    public function renderIndexActions($sAction, $sWhat, $sSiteId): string
+    public function renderIndexActions(string $sAction, string $sWhat, string $sSiteId): string
     {
         return '<div class="actions-crawler">'
             . '<div class="running">'
@@ -1091,7 +1091,7 @@ class ressourcesrenderer extends crawler_base
      * @param string $sNodeId  optional id for the node (default is id in ressource item)
      * @return array
      */
-    private function _getVisNode(array $aItem, string $sNodeId = '')
+    private function _getVisNode(array $aItem, string $sNodeId = ''): array
     {
         $sNodeLabel = $aItem['url'] . "\n(" . $aItem['type'] . ' ' . $aItem['ressourcetype'] . '; ' . $aItem['http_code'] . ')';
         $sNodeId = $sNodeId ? $sNodeId : $aItem['id'];
@@ -1117,7 +1117,7 @@ class ressourcesrenderer extends crawler_base
      * @param string $sNodeId  optional id for the node (default is id in ressource item)
      * @return array
      */
-    private function _getVisEdge($aOptions)
+    private function _getVisEdge(array $aOptions): array
     {
         $aColors = [
             'in' => '#99bb99',
@@ -1373,10 +1373,10 @@ class ressourcesrenderer extends crawler_base
      * @param array $aItem  ressource item
      * @return string
      */
-    public function renderRessourceItemFull($aItem): string
+    public function renderRessourceItemFull(array $aItem): string
     {
         $sReturn = '';
-        $iId = $aItem['id'];
+        $iId = $aItem['id']??0;
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
 
@@ -1524,7 +1524,7 @@ class ressourcesrenderer extends crawler_base
      * 
      * @return string
      */
-    public function renderRessourceStatus()
+    public function renderRessourceStatus(): string
     {
         // $iRessourcesCount=$this->oDB->count('ressources',['siteid'=>$this->iSiteId]);
         $this->_initRessource();

@@ -1705,7 +1705,7 @@ class crawler_base
      * get an id of the cache module
      * @return string
      */
-    public function getCacheModule()
+    public function getCacheModule(): string
     {
         return "pages-siteid-$this->iSiteId";
     }
@@ -1966,7 +1966,7 @@ class crawler_base
      * @param string  $sMessage  string to show
      * @return bool
      */
-    public function clicolor(string $sColor)
+    public function clicolor(string $sColor): bool
     {
         $this->cliprint($sColor, '', '');
         return true;
@@ -1981,7 +1981,7 @@ class crawler_base
      * @param string  $sNextColor  color key after printing message; default is 'cli'
      * @return bool
      */
-    public function cliprint(string $sColor, string $sMessage = '', string $sNextColor = 'cli')
+    public function cliprint(string $sColor, string $sMessage = '', string $sNextColor = 'cli'): bool
     {
         static $oCli;
         if (php_sapi_name() !== "cli" && php_sapi_name() !== "cgi-fcgi") {

@@ -422,7 +422,7 @@ class httpheader
      * @param string $sVersion  optional: version number; default: take version from current http header
      * @return string
      */
-    public function getHttpVersionStatus(string $sVersion = '')
+    public function getHttpVersionStatus(string $sVersion = ''): string
     {
         if (!$sVersion) {
             $sVersion = $this->getHttpVersion();

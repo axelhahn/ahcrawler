@@ -37,7 +37,7 @@ return [
         'counters' => 'las la-chart-bar',
         'about' => 'las la-info-circle',
         'update' => 'las la-cloud-download-alt',
-        'useradmin' => 'las la-users-cog',
+        'userroles' => 'las la-users-cog',
         'userprofile' => 'las la-user',
         'usergroup' => 'las la-users',
         'project' => 'las la-book',

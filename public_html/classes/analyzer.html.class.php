@@ -274,7 +274,7 @@ class analyzerHtml
      * @param string   $sItem   header element to extract
      * @return boolean|array
      */
-    public function getHtmlHead()
+    public function getHtmlHead(): bool|array
     {
         preg_match("@<head[^>]*>(.*?)<\/head>@si", $this->_sHtml, $regs);
         if (!is_array($regs) || count($regs) < 2) {
@@ -542,7 +542,7 @@ class analyzerHtml
      * 
      * @return array
      */
-    public function getValidUrlTypes()
+    public function getValidUrlTypes(): array
     {
         return [
             'local',

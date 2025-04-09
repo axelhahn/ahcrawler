@@ -85,7 +85,7 @@ class backend extends crawler_base
         'settings' => [
             'children' => [
                 'userprofile' => [],
-                'useradmin' => [],
+                'userroles' => [],
                 'setup' => ['permission' => 'globaladmin'],
                 'vendor' => ['permission' => 'globaladmin'],
             ],
@@ -503,7 +503,7 @@ class backend extends crawler_base
      * @param string $sPermission  permission to check: one of globaladmin|appadmin|manager|viewer
      * @return bool
      */
-    protected function _requiresPermission(string $sPermission, string $sApp = '')
+    protected function _requiresPermission(string $sPermission, string $sApp = ''): bool
     {
         $bOK = false;
         $this->acl->setApp($sApp);
@@ -960,7 +960,7 @@ class backend extends crawler_base
      * 
      * @return string
      */
-    private function _getNavi2(array $aTabs = [], bool $bAddButton = false, string $sUpUrl = '')
+    private function _getNavi2(array $aTabs = [], bool $bAddButton = false, string $sUpUrl = ''): string
     {
         $sReturn = '';
         $sMore = '';
@@ -1073,7 +1073,7 @@ class backend extends crawler_base
      * @param array  $aNav  array with nav items
      * @return string The HTML code
      */
-    private function _renderChildItems($aNav)
+    private function _renderChildItems($aNav): string
     {
         $sReturn = '';
         if (!isset($aNav['children']) || !is_array($aNav['children']) || !count($aNav['children'])) {
@@ -1332,7 +1332,7 @@ class backend extends crawler_base
      * @param string $sMethod
      * @return string
      */
-    protected function _getCacheId($sMethod)
+    protected function _getCacheId($sMethod): string
     {
         return $sMethod;
     }
