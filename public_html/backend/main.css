@@ -170,11 +170,12 @@
     --resource-report-border:#888;
 
     --status-bg-error:radial-gradient(#f8e8e8,#ebb);
-    --status-bg-error-flat:#ebb;
+    --status-bg-error-flat:#f4d8d8;
     --status-bg-ok:radial-gradient(#efe,#b0d0b8);
-    --status-bg-ok-flat: #c0dcc8;
+    --status-bg-ok-flat: #c8e8d0;
     --status-bg-warning:radial-gradient(#fff4e0,#eca);
-    --status-bg-warning-flat:#fdb;
+    --status-bg-warning-flat:#f4e4cc;
+    
     --status-bg-todo:radial-gradient(#f0f0f8,#d0d0d8);
     --status-color-error:#855;
     --status-color-ok:#50705c;
