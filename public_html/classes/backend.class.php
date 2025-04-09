@@ -299,7 +299,7 @@ class backend extends crawler_base
         'searchindextester' => 'Start/Search_test.html',
         'settings' => '',
         'setup' => 'Settings/Setup.html',
-        'useradmin' => 'Settings/User_admin.html',
+        'userroles' => 'Settings/User_roles.html',
         'userprofile' => 'Settings/My_profile.html',
         'showicons' => '',
         'sslcheck' => 'Analysis/SSL_check.html',
