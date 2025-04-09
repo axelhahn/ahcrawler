@@ -1,4 +1,4 @@
-## page: User admin
+## page: User roles
 
 This page shows all users that have a relation for the projects you have access to.
 
