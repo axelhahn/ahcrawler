@@ -80,7 +80,9 @@ $oCdn->setLibs([
     "pure/3.0.0",
     "datatables/1.10.21",
     // "font-awesome/6.7.2",
-    "line-awesome/1.3.0",
+    // "line-awesome/1.3.0",
+    "tabler-icons/3.28.1",
+    // "remixicon/4.6.0",
     "jquery/3.7.1",
     "select2/4.0.13",
     "Chart.js/4.4.1"
@@ -133,7 +135,12 @@ $sHtmlHead = ''
 
     // fontawesome
     // .$oCdn->getHtmlInclude($oCdn->getLibRelpath('font-awesome')."/css/all.css") . "\n"
-    . $oCdn->getHtmlInclude($oCdn->getLibRelpath('line-awesome') . "/line-awesome/css/line-awesome.min.css") . "\n"
+
+    // tabler-icons
+    .$oCdn->getHtmlInclude($oCdn->getLibRelpath('tabler-icons')."/tabler-icons.min.css") . "\n"
+    
+    // line-awesome
+    // . $oCdn->getHtmlInclude($oCdn->getLibRelpath('line-awesome') . "/line-awesome/css/line-awesome.min.css") . "\n"
 
 
     // jQuery
