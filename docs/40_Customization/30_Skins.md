@@ -1,4 +1,4 @@
-## Skins (WIP)
+## Skins
 
 ### Directory for a skin
 
@@ -36,4 +36,4 @@ For a light colored skin you might to override the color values only.
 
 ### Select skin
 
-TODO
+Go to Settings -> Setup page. In the section "Settings for the backend" all known skins are selectable via dropdown.

@@ -2,7 +2,9 @@
 
 This page shows all users that have a relation for the projects you have access to.
 
-As a **global admin** you can edit `public_html/config/acl.php` and set global and app specific permissions. The reload this page to see the applied changes.
+As a **global admin** you can see the result of settings in `public_html/config/acl.php`.
+
+👉 See [Security User restrictions](../../60_Security/30_User_restriction.md)
 
 ### Global permissions
 
