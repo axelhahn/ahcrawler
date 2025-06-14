@@ -14,7 +14,10 @@ foreach ($this->acl->getGroups() as $sGroup) {
     $sGroups .= '<li>'. $sGroup . '</li>';
 }
 
-$sGroups = $sGroups ? "<h4>" . $this->_getIcon('usergroup').$this->lB("userprofile.groups") . "</h4><ul>$sGroups</ul>" : '';
+$sGroups = $sGroups ? 
+    "<h3>" . $this->_getIcon('usergroup').$this->lB("userprofile.groups") . "</h3>
+        <ul>$sGroups</ul>" 
+    : '';
 
 // --- global permissions
 
@@ -30,7 +33,7 @@ if (count($aGlobalPerms)) {
             : "<button class=\"pure-button\">-</button> $sPerm "
         ;
     }
-    $sGlobal = "<h4>" . $this->lB("userprofile.globalperms") . "</h4>
+    $sGlobal = "<h3>" . $this->lB("userprofile.globalperms") . "</h3>
         ".$this->lB("userprofile.globalperms-hint")."<br>
         <br>
         $sGlobal
@@ -61,7 +64,7 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
   }
 
 $sGroupTable = $sGroupTable
-    ? '<h4>' . $this->_getIcon('project') . $this->lB("userprofile.webperms") . '</h4>
+    ? '<h3>' . $this->_getIcon('project') . $this->lB("userprofile.webperms") . '</h3>
         <table class="pure-table pure-table-horizontal datatable dataTable no-footer">
         <thead>' . $sTHead . '</thead>
         <tbody>' . $sGroupTable . '
