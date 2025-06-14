@@ -34,8 +34,9 @@ return [
         'counters' => 'fa-solid fa-chart-simple',
         'about' => 'fa-solid fa-info-circle',
         'update' => 'fa-solid fa-cloud-download-alt',
-        'useradmin' => 'fa-solid fa-user',
+        'usergroup' => 'fa-solid fa-users',
         'userprofile' => 'fa-solid fa-user',
+        'userroles' => 'fa-solid fa-user-tag',
         'project' => 'fa-solid fa-book',
 
         'logoff' => 'fa-solid fa-power-off',
@@ -151,6 +152,7 @@ return [
         'button.truncateindex' => 'fa-solid fa-trash',
         'button.up' => 'fa-solid fa-arrow-up',
         'button.updatesinglestep' => 'fa-solid fa-chevron-right',
+        'button.userprofile' => 'fa-solid fa-user',
         'button.view' => 'fa-regular fa-eye',
     ],
 
