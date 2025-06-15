@@ -258,19 +258,6 @@ $sSubmit = ''
     )
 ;
 
-$sReturn .= (!isset($_SERVER['HTTPS'])
-    ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning') . '<br>'
-    : ''
-)
-    /*
-    . ($this->_sTab==='add'
-        ? '<h3>'.$this->lB('profile.new.searchprofile') . '</h3>'
-        : '' 
-    )
-     * 
-     */
-
-;
 $this->setSiteId($this->_sTab);
 // $sReturn.='<pre>' . print_r($this->aProfile, 1) . '</pre>';
 

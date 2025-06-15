@@ -323,7 +323,6 @@
     "home.hints.loadingtime-all-pages": "Thời gian tải của tất cả trang cá nhân (*) của trang web [ms]<br>(*) chỉ có nội dung html - không tải hình ảnh và các tài nguyên khác trên một trang",
     "home.starturls": "Các url bắt đầu cho quá trình thu thập thông tin :",
     "home.denyentries": "bỏ qua địa chỉ: %s",
-    "setup.error-no-ssl": "Cảnh báo bảo mật: Trang này không sử dụng SSL!<br>Trình duyệt web của bạn sẽ truyền dữ liệu mật khẩu dưới hình thức văn bản rõ ràng, không được mã hoá.",
     "setup.initial-save": "Cấu hình chưa được tạo. Cuộn xuống và lưu những cài đặ ban đầu.",
     "setup.program.save.ok": "OK, đã lưu lại những cài đặt.",
     "setup.program.save.error": "LỖI: không thể những cài đặt.",

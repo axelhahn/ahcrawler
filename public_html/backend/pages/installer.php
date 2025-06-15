@@ -183,11 +183,8 @@ switch ($iStep) {
             'password'=>(isset($aOptions['options']['database']['password']) ? $aOptions['options']['database']['password'] : ''),
             'charset'=>(isset($aOptions['options']['database']['charset']) ? $aOptions['options']['database']['charset'] : 'utf8'),
         ];
-        $sReturn.= (!isset($_SERVER['HTTPS'])
-                ?  $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning').'<br><br>'
-                : ''
-            )
-            .'<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
+        $sReturn.= 
+            '<form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">'
                 
                 . $this->lB('setup.section.database.hint').'<br><br>'
         

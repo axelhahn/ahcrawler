@@ -347,7 +347,6 @@
     "home.hints.nothing-was-found": "OK, sieht gut aus! Es wurde kein Hinweis gefunden.",
     "home.starturls": "Start-URL(s) des Crawlers:",
     "home.denyentries": "ignorierte Adressen: %s",
-    "setup.error-no-ssl": "Sicherheitswarnung: Diese Webseite verwendet kein SSL!<br>Der Webbrowser versendet die eingegebenen Daten inkl. Passwort unverschl&uuml;sselt \/ im Klartext.",
     "setup.initial-save": "Die Einstellungen wurden noch nicht angelegt. Gehe nach unten um sie erzeugen.",
     "setup.program.save.ok": "OK, die Programmeinstellungen wurden gespeichert.",
     "setup.program.save.error": "FEHLER: die Programmeinstellungen konnten nicht gespeichert werden.",
