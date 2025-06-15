@@ -1,4 +1,4 @@
-## page: About  
+## Page: About  
 
 You get several information 
 

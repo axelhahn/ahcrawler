@@ -1,4 +1,4 @@
-##  Page: Search test
+## Page: Search test
 
 Here you can search in the created search index to find out the behaviour of a search placed on your website. The search terms entered here in the backend won't be stored (tracked) in the database.
 

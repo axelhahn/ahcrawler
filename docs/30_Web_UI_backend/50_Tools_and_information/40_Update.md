@@ -1,4 +1,4 @@
-## page: Update
+## Page: Update
 
 The software Updater of the web ui.
 

@@ -1,4 +1,4 @@
-## page: My profile
+## Page: My profile
 
 This page shows the current user, its groups and project based permisions.
 You reach this page by clicking on the top right button "My profile".

@@ -1,4 +1,4 @@
-## page: Vendor Libs
+## Page: Vendor Libs
 
 To save space the application does not contain vendor libs for the frontend. They will be included via CDN. But if you want you can download one or all.
 

@@ -1,4 +1,4 @@
-## page: Settings
+## Page: Settings
 
 This is an overview page with its child items.
 

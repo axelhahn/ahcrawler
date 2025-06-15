@@ -1,4 +1,4 @@
-##  Page: Crawler log
+## Page: Crawler log
 
 You get access to the logs of crawler actions since the last reindex of all data.
 

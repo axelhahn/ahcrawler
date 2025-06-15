@@ -1,3 +1,3 @@
-## page: Tools and information
+## Page: Tools and information
 
 This is an overview page with its child items.

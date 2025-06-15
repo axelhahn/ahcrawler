@@ -1,4 +1,4 @@
-## page: Setup
+## Page: Setup
 
 Here are settings for the program.
 

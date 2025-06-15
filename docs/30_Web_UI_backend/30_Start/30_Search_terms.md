@@ -1,4 +1,4 @@
-##  Page: Search terms
+## Page: Search terms
 
 You get a statistics of the entered search terms of the visitors on your website. Therefore you need to add a search form on your website. Then minimum one search request must be done on the website.
 
