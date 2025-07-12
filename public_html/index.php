@@ -118,7 +118,7 @@ function getNewQs($aQueryParams = [])
         if ($value)
             $s .= "&amp;" . $var . "=" . urlencode($value);
     }
-    $s = "?" . $s;
+    $s = "?$s";
     return $s;
 }
 

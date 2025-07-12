@@ -272,7 +272,7 @@ class backend extends crawler_base
     private array $_aHelpPages = [
 
         'about' => 'About/index.html',
-        'analysis' => '',
+        'analysis' => 'Analysis/index.html',
         'bookmarklet' => 'Tools_and_information/Bookmarklets.html',
         'checkurl' => 'Analysis/Search_url.html',
         'cookies' => 'Analysis/Cookies.html',
@@ -297,13 +297,13 @@ class backend extends crawler_base
         'searches' => 'Start/Search_terms.html',
         'searchindexstatus' => 'Start/Search_index.html',
         'searchindextester' => 'Start/Search_test.html',
-        'settings' => '',
+        'settings' => 'Settings/index.html',
         'setup' => 'Settings/Setup.html',
         'userroles' => 'Settings/User_roles.html',
         'userprofile' => 'Settings/My_profile.html',
         'showicons' => '',
         'sslcheck' => 'Analysis/SSL_check.html',
-        'tools' => '',
+        'tools' => 'Tools_and_information/index.html',
         'update' => 'Tools_and_information/Update.html',
         'vendor' => 'Settings/Vendor_libs.html',
     ];
@@ -350,10 +350,7 @@ class backend extends crawler_base
         foreach ($this->_aMenuPublic as $sKey => $aItem) {
             $this->aDefaultOptions['menu-public'][$sKey] = false;
         }
-
-        // override fotawsome icons
-        $this->_aIcons = include 'icons_lineawesome.php';
-
+        
         if ($bIsPublic) {
             $this->setSiteId(false);
             $this->aOptions['menu'] = $this->aOptions['menu-public'];
@@ -388,6 +385,12 @@ class backend extends crawler_base
             ]);
             // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
         }
+
+        // print_r($this->aOptions); 
+        // override fotawsome icons
+        // $this->_aIcons = include 'icons_fontawesome.php';
+        $this->_aIcons = include 'icons_tabler.php';
+        // $this->_aIcons = include 'icons_lineawesome.php';
 
         $this->getPage();
         $this->logAdd(__METHOD__ . ' getPage was finished');
@@ -1142,13 +1145,23 @@ class backend extends crawler_base
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
 
             $sRight .=
-                $this->_getButton([
-                    'href' => './?page=userprofile',
-                    'class' => $this->_sPage == 'userprofile' ? 'button button-secondary' : 'button',
-                    'title' => $this->lB('button.userprofile'),
-                    'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
-                    'popup' => true
-                ]) . ' '
+                $this->_sPage == 'userprofile'
+                ? 
+                    $this->_getButton([
+                        'href' => 'javascript:history.back();',
+                        'class' => 'button button-secondary',
+                        'title' => $this->lB('button.userprofile'),
+                        'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
+                    ]) 
+                : 
+                    $this->_getButton([
+                        'href' => './?page=userprofile',
+                        'class' => 'button',
+                        'title' => $this->lB('button.userprofile'),
+                        'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
+                    ]) 
+                    
+                . ' '
 
             ;
 
