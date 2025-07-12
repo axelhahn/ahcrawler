@@ -143,7 +143,7 @@ return [
         'button.down' => 'ti ti-arrow-down',
         'button.download' => 'ti ti-cloud-download-alt',
         'button.edit' => 'ti ti-pencil',
-        'button.help' => 'ti ti-help-circle-filled',
+        'button.help' => 'ti ti-help',
         'button.home' => 'ti ti-home',
         'button.login' => 'ti ti-check',
         'button.logoff' => 'ti ti-power',

@@ -32,8 +32,7 @@
 
     --navi-icon-color: #568;
 
-    /* --pagehint-bg:#d0e8e0; */
-    --pagehint-bg:#ede4f0;
+    --pagehint-bg:#e0e8e8;
 
     --statusbar-bg: #cde;
 
@@ -47,9 +46,9 @@
     --tile-bg:radial-gradient(#f0f8ff,#d0d8e4);
     --tile-color:#78a;
 
-    --page-home-navcolor:#89c;
+    --page-home-navcolor:#abd;
     --page-analysis-navcolor:#fa8;
-    --page-tools-navcolor:#b8c;
+    --page-tools-navcolor:#cad;
     --page-settings-navcolor:#d88;
     --page-about-navcolor:#9b7;
 

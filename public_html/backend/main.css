@@ -294,7 +294,7 @@ body, .contextbox, .piechart{
 .pure-menu{margin-left: 0.5em; width: 95%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{}
-.header .pure-menu-link i{font-size: 130%;}
+.header .pure-menu-link i{font-size: 100%;}
 .header .pure-menu-link{color:var(--color-default); padding: 0.4em; }
 .header .pure-menu-link:hover{background:var(--navi-bg-on-hover); border-color: var(--color-default); }
 .header .pure-menu-link:focus{border-color:var(--color-border-click); }
@@ -348,7 +348,7 @@ body, .contextbox, .piechart{
 #nav2 .pure-menu-link:focus{border-color:var(--color-border-click);}
 #nav2 .pure-menu-link-active, #nav2 .pure-menu-link-active:hover{background:#f8f8f8; background: #cde; background: var(--color-default); color:#fff; border-color:var(--color-border-active); }
 
-.breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5);}
+.breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5); margin-top: -1em;;}
 .breadcrumb a{background: none;}
 
 .pure-button {
@@ -416,6 +416,7 @@ h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed var(--col
 
 
 hr{border: 0; border-bottom: 2px dotted var(--color-hr);}
+i.ti{font-size: 130%;}
 input, input[type="checkbox"], input[type="radio"], select option, textarea, .select2-container--default .select2-selection--single,
 .select2-container--default .select2-selection--single .select2-selection__rendered {
     background: var(--input-bg); 

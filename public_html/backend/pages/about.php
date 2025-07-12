@@ -178,10 +178,11 @@ $sReturn.=''
                     [$this->lB('about.thanks.fontawesome'), '<a target="_blank" href="https://fontawesome.com/">https://fontawesome.com/</a>'],
                     */
                     [$this->lB('about.thanks.jquery'),      '<a target="_blank" href="https://jquery.com/">https://jquery.com/</a>'],
-                    [$this->lB('about.thanks.lineawesome'), '<a target="_blank" href="https://icons8.com/line-awesome">https://icons8.com/line-awesome</a>'],
+                    // [$this->lB('about.thanks.lineawesome'), '<a target="_blank" href="https://icons8.com/line-awesome">https://icons8.com/line-awesome</a>'],
                     [$this->lB('about.thanks.medoo'),       '<a target="_blank" href="https://medoo.in/">https://medoo.in/</a>'],
                     [$this->lB('about.thanks.rollingcurl'), '<a target="_blank" href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'],
                     [$this->lB('about.thanks.select2'),     '<a target="_blank" href="https://select2.org/">https://select2.org/</a>'],
+                    [$this->lB('about.thanks.tablericons'), '<a target="_blank" href="https://tabler.io/icons">https://tabler.io/icons</a>'],
                     [$this->lB('about.thanks.pure'),        '<a target="_blank" href="https://purecss.io/">https://purecss.io/</a>'],
                 ]
         )
