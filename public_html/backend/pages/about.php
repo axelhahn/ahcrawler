@@ -135,6 +135,7 @@ $sReturn.=''
                 'icon'=>$this->_aIcons['res']['docs'],
                 'title'=>$this->lB('about.url.docs'),
                 'text'=>$this->aAbout['urlDocs'],
+                'target'=>'_blank',
             ])
         /*
         . $this->_getLinkAsBox([
@@ -151,6 +152,7 @@ $sReturn.=''
                 'icon'=>$this->_aIcons['res']['source'],
                 'title'=>$this->lB('about.url.source'),
                 'text'=>$this->aAbout['urlSource'],
+                'target'=>'_blank',
             ])
         .'<div style="clear: both"></div>'
         /*

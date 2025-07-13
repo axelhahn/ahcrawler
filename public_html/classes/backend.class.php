@@ -1031,6 +1031,7 @@ class backend extends crawler_base
      *                       class  optional css class - "pure-menu-disabled"
      *                       hint
      *                       icon
+     *                       target
      *                       title
      *                       text
      * @return string
@@ -1044,6 +1045,7 @@ class backend extends crawler_base
             . (isset($aLink['class']) ? ' ' . $aLink['class'] : '')
             . '"'
             . (isset($aLink['hint']) ? ' title="' . $aLink['hint'] . '"' : '')
+            . (isset($aLink['target']) ? ' target="' . $aLink['target'] . '"' : '')
             . '>'
             . (isset($aLink['icon']) ? '<i class="' . $aLink['icon'] . '"></i> ' : '')
             . (isset($aLink['title']) ? '<strong>' . $aLink['title'] . '</strong>' : '')
