@@ -22,6 +22,7 @@
 
     --color-pacman: #69a;
     --color-currentproject: #79a;
+    --color-shadow-default:#cde;
 
     --context-head-bg:#8ab;
 
@@ -32,7 +33,7 @@
 
     --navi-icon-color: #568;
 
-    --pagehint-bg:#e0e8e8;
+    --pagehint-bg:#badbd3;
 
     --statusbar-bg: #cde;
 
@@ -53,5 +54,5 @@ body, .contextbox, .piechart, h2{
 }
 h2{
     box-shadow: 0 0.7em 1em #fff; 
-    border-bottom: 2px solid;
+    border-bottom: 2px dotted;
 }
