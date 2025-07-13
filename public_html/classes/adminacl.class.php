@@ -70,8 +70,8 @@ class adminacl
     {
 
         // read config
-        $aCfg = include(__DIR__ . '/../config/acl.php');
-        $this->_aConfig = $aCfg ?? [];
+        $aCfg = @include(__DIR__ . '/../config/acl.php');
+        $this->_aConfig = $aCfg?:[];
 
         $this->_detectUser();
     }
@@ -150,10 +150,15 @@ class adminacl
     // admin
     // ----------------------------------------------------------------------
 
+    public function hasConfig(): bool
+    {
+        return !!count($this->_aConfig??[]);
+    }
+
     public function listUsers($sGroupId=''): array
     {
         $aReturn=[];
-        foreach ($this->_aConfig['groups'] as $sApp => $perms) {
+        foreach ($this->_aConfig['groups']??[] as $sApp => $perms) {
             if($sGroupId && $sGroupId!=$sApp){
                 continue;
             }
@@ -250,7 +255,7 @@ class adminacl
     public function getPermNames(): array
     {
         $aReturn=[];
-        foreach ($this->_aConfig['groups'] as $sApp => $perms) {
+        foreach ($this->_aConfig['groups']??[] as $sApp => $perms) {
             foreach(array_keys($perms) as $sPerm){
                 $aReturn[$sPerm] = 1;
             }

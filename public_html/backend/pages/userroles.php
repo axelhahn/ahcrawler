@@ -4,6 +4,7 @@
  */
 
 $sReturn = '';
+$oRenderer = new ressourcesrenderer($this->_sTab);
 
 // if (!$this->_requiresPermission("manager")){
 //   return include __DIR__ . '/error403.php';
@@ -73,8 +74,11 @@ $sAdminTable=$sAdminTable ? '<table class="pure-table pure-table-horizontal data
         <tbody>'.$sAdminTable.'
         </tbody>
         </table><br><br>' 
-    : 'NONE'
+    : '-'
     ;
+if(!$this->acl->hasConfig()){
+    $sAdminTable = $oRenderer->renderMessagebox($this->lB('userprofile.noacl'), 'ok');
+}
 
 
 foreach($this->_getProfiles() as $iGroupId => $sApp){
@@ -102,14 +106,18 @@ foreach($this->_getProfiles() as $iGroupId => $sApp){
   }
 }
 
+if($iCountUser){
 
-$sGroupTable=$sGroupTable ? '<table class="pure-table pure-table-horizontal datatable dataTable no-footer">
-        <thead>'.$sTHead.'</thead>
-        <tbody>'.$sGroupTable.'
-        </tbody>
-        </table><br><br>' 
-    : ''
-    ;
+  $sGroupTable=$sGroupTable ? '<table class="pure-table pure-table-horizontal datatable dataTable no-footer">
+          <thead>'.$sTHead.'</thead>
+          <tbody>'.$sGroupTable.'
+          </tbody>
+          </table><br><br>' 
+      : ''
+      ;
+} else {
+  $sGroupTable='';
+}
 
 // output
 $sReturn.=''

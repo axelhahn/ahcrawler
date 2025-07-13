@@ -290,6 +290,7 @@
     "userprofile.groups": "Usergroups",
     "userprofile.globalperms": "Global permissions",
     "userprofile.webperms": "Web spezific permissions",
+    "userprofile.noacl": "Keine ACL Konfigurtion vorhanden. Es besteht voller Admin Zugang für Sie und alle anderen Benutzer zu allen Projekten und Funktionalitäten",
     "profile.new": "New project",
     "profile.section.metadata": "General data",
     "profile.section.searchindex": "Search index",

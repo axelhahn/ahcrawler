@@ -411,6 +411,7 @@
     "userprofile.globalperms": "Global permissions",
     "userprofile.globalperms-hint": "You have the following global permissions in each of the projects",
     "userprofile.webperms": "Web spezific permissions",
+    "userprofile.noacl": "There is no ACL configuration. You and all other users have full admin access to all projects and features.",
     "profile.new": "New project",
     "profile.section.metadata": "General data",
     "profile.section.searchindex": "Search index",

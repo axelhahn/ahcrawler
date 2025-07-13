@@ -3,6 +3,7 @@
  * page userprofile
  */
 
+$oRenderer = new ressourcesrenderer($this->_sTab);
 $sReturn = '';
 
 $sGroupTable = '';
@@ -14,6 +15,10 @@ foreach ($this->acl->getGroups() as $sGroup) {
     $sGroups .= '<li>'. $sGroup . '</li>';
 }
 
+if(!$this->acl->hasConfig()){
+    $sGroups .= $oRenderer->renderMessagebox($this->lB('userprofile.noacl'), 'ok');
+}
+
 $sGroups = $sGroups ? 
     "<h3>" . $this->_getIcon('usergroup').$this->lB("userprofile.groups") . "</h3>
         <ul>$sGroups</ul>" 
@@ -22,7 +27,7 @@ $sGroups = $sGroups ?
 // --- global permissions
 
 $aGlobalPerms = $this->acl->getMyGlobalPermissions();
-// print_r($aGlobalPerms);
+// echo '<pre>'.print_r($aGlobalPerms, 1).'</pre>';
 
 
 if (count($aGlobalPerms)) {
