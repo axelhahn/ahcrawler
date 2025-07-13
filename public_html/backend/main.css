@@ -236,6 +236,20 @@
     --type-internal-color:#009999;
     --type-local-color:#aaaaaa;
 
+    /** --- new colors for each menu section - START--- **/
+    --page-home-navcolor:var(--navi-icon-color);
+    --page-analysis-navcolor:var(--navi-icon-color);
+    --page-tools-navcolor:var(--navi-icon-color);
+    --page-settings-navcolor:var(--navi-icon-color);
+    --page-about-navcolor:var(--navi-icon-color);
+
+    --page-home-navbg: var(--navi-bg-l1);
+    --page-analysis-navbg: var(--navi-bg-l1);
+    --page-tools-navbg: var(--navi-bg-l1);
+    --page-settings-navbg:var(--navi-bg-l1);
+    --page-about-navbg:var(--navi-bg-l1);
+    /** --- new colors for each menu section - END --- **/
+
 }
 
 body, .contextbox, .piechart{
@@ -350,6 +364,26 @@ body, .contextbox, .piechart{
 
 .breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5); margin-top: -1em;;}
 .breadcrumb a{background: none;}
+
+/** --- apply colors for each menu section - START --- **/
+a[href*="page=home"]      i, .page-home     h2 i ,.page-home     .pure-menu-list .pure-menu-list i, .page-home     a.childitem i{ color: var(--page-home-navcolor);}
+a[href*="page=analysis"]  i, .page-analysis h2 i ,.page-analysis .pure-menu-list .pure-menu-list i, .page-analysis a.childitem i{ color: var(--page-analysis-navcolor);}
+a[href*="page=tools"]     i, .page-tools    h2 i ,.page-tools    .pure-menu-list .pure-menu-list i, .page-tools    a.childitem i{ color: var(--page-tools-navcolor);}
+a[href*="page=settings"]  i, .page-settings h2 i ,.page-settings .pure-menu-list .pure-menu-list i, .page-settings a.childitem i{ color: var(--page-settings-navcolor);}
+a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list .pure-menu-list i, .page-about    a.childitem i{ color: var(--page-about-navcolor);}
+
+.page-home     .header .pure-menu-list .pure-menu-list {background: var(--page-home-navbg)}
+.page-analysis .header .pure-menu-list .pure-menu-list {background: var(--page-analysis-navbg)}
+.page-tools    .header .pure-menu-list .pure-menu-list {background: var(--page-tools-navbg)}
+.page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg)}
+.page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)}
+
+.page-home     h2{border-color: var(--page-home-navcolor)}
+.page-analysis h2{border-color: var(--page-analysis-navcolor)}
+.page-tools    h2{border-color: var(--page-tools-navcolor)}
+.page-settings h2{border-color: var(--page-settings-navcolor)}
+.page-about    h2{border-color: var(--page-about-navcolor)}
+/** --- apply colors for each menu section - END --- **/
 
 .pure-button {
     /*
