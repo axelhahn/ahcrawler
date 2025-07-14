@@ -6,7 +6,7 @@
     "nav.installer.label": "Installer",
     "nav.installer.hint": "Setup the application",
     "nav.login.label": "Login required",
-    "nav.login.hint": "Error: Access denied.",
+    "nav.login.hint": "Access was protected.",
     "nav.home.label": "Start",
     "nav.home.hint": "Homepage of the backend",
     "nav.settings.label": "Settings",

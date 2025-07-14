@@ -6,12 +6,15 @@ There are different levels of user restriction when using the ahCrawler backend.
 
 (1) **No user restriction**
 
-On a local system/ small network you can run the tool without user definition. You have access to the backend and the frontend.
+On a local system/ small network you can run the tool without user definition. You have full access to the backend and the frontend.
 
 (2) **Single user**
 
-If you install ahCrawler on a public system / shared Hosting you should set minimum an admin account to protect the backend.
-In the backend you can setup exactly one backend user.
+If you install ahCrawler on a public system / shared Hosting you should set minimum an admin account in the settings to protect the backend.
+
+Remark: In the backend you can setup exactly one backend user.
+
+Without definig acl rules this user has full access to all pages for all created projects.
 
 (3) **Multiple users - all with full access**
 
@@ -22,7 +25,6 @@ Choose any method you already support to limit a user based access.
 In very easy cases maybe a simple ip restriction is a possible choice.
 
 (4) **Multiple users - restrict everyone to specific projects with given roles**
-
 
 You need a logon to fetch a user id from the $_SERVER environment variable. For that you can use different methods
 
@@ -50,11 +52,13 @@ You can setup users in htauth users in files or database backends (like Mysql or
 
 ### ACL
 
-You can setup an ACL for the backend.
+You can setup an ACL for the backend. This allows you to protect the backend for specific users. For each user you can define its visibility of projects and its permissions per project.
+
+Additionally you can define a list of users with global access to all projects.
 
 #### Requirements
 
-* You need to setup an external authentication to fetch a user id from any $_SERVER environment variable.
+* You need to setup an external authentication to fetch a user id from any $_SERVER environment variable. Many use "REMOTE_USER".
 * In a php configuration (= there is no web ui for it) you need to define
     * global access for defined admin users
     * project based access for users with defined roles (one of admin, manager, view)
@@ -83,10 +87,10 @@ return [
         // ---------- USER
         'session_user'=>'AUTH_USER',
         'userfield'=>'REMOTE_USER',
-        // 'displayname'=>['givenName', '_surname'],
-        'displayname'=>false,
-
         // 'userfield'=>'mail', // set by shibbolethauthentication
+
+        'displayname'=>false,
+        // 'displayname'=>['givenName', '_surname'],
 
         // ---------- GROUPS
         'groups'=>[...],

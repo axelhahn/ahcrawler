@@ -89,33 +89,37 @@ class adminacl
         $this->_aGroups = ['@anonymous'];
         $this->_sUserDisplayname = '';
 
-        if (!count($this->_aConfig)) {
-            $this->_sUser = 'superuser';
-            $this->_aGroups = ['admin'];
-            return true;
-        }
+        $sSessionField=$this->_aConfig['session_user']??'AUTH_USER';
+        $sUserField=$this->_aConfig['userfield']??'REMOTE_USER';
 
         // a detected user in $_SERVER scope will overwrite a user in $_SESSION
-        if(isset($_SERVER[$this->_aConfig['userfield']])){
-            $_SESSION[$this->_aConfig['session_user']] = $_SERVER[$this->_aConfig['userfield']];
+        if(isset($_SERVER[$sUserField])){
+            $_SESSION[$sSessionField] = $_SERVER[$sUserField];
         }
-
-        if (
-            isset($this->_aConfig['userfield']) 
-            && (
-                isset($_SERVER[$this->_aConfig['userfield']])
-                || isset($_SESSION[$this->_aConfig['session_user']])
-            )
         
+        if (
+            ($_SERVER[$sUserField]??false)
+            || ($_SESSION[$sSessionField]??false)
         ) {
-            $this->_sUser = $_SERVER[$this->_aConfig['userfield']]??$_SESSION[$this->_aConfig['session_user']];
-            if (isset($this->_aConfig['displayname']) && is_array($this->_aConfig['displayname'])) {
+            $this->_sUser = $_SERVER[$sUserField]??$_SESSION[$sSessionField];
+            if (is_array($this->_aConfig['displayname']??false)) {
                 foreach ($this->_aConfig['displayname'] as $sKey) {
                     $this->_sUserDisplayname .= $this->_sUserDisplayname ? ' ' : '';
                     $this->_sUserDisplayname .= isset($_SERVER[$sKey]) ? $_SERVER[$sKey] : '';
                 }
             }
             $this->_detectGroups();
+            return true;
+        }
+        // if (!count($this->_aConfig)) {
+        //     $this->_sUser = 'superuser';
+        //     $this->_aGroups = ['admin'];
+        //     return true;
+        // }
+
+        if (!count($this->_aConfig)) {
+            $this->_sUser = 'superuser';
+            $this->_aGroups = ['admin'];
             return true;
         }
 
@@ -130,6 +134,10 @@ class adminacl
     {
 
         $this->_aGroups = ['@authenticated'];
+        if(! ($this->_aConfig['groups']??false)){
+            $this->_aGroups[] = 'admin';
+            return true;
+        }
         if (isset($this->_aConfig['groups']) && count($this->_aConfig['groups'])) {
             foreach ($this->_aConfig['groups'] as $sApp => $groups) {
                 foreach ($groups as $sGroup => $members) {
@@ -299,8 +307,8 @@ class adminacl
     {
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->isGlobalAdmin()
-            || array_search($sAppname . '_admin', $this->_aGroups) !== false
-            || array_search('@authenticated', $this->_aConfig['groups']['global']['admin'])!== false
+            || array_search($sAppname . '_admin', $this->_aGroups??[]) !== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['admin']??[])!== false
         ;
     }
 
@@ -315,7 +323,7 @@ class adminacl
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->isAppAdmin($sAppname)
             || array_search($sAppname . '_manager', $this->_aGroups) !== false
-            || array_search('@authenticated', $this->_aConfig['groups']['global']['manager'])!== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['manager']??[])!== false
         ;
     }
 
@@ -329,8 +337,8 @@ class adminacl
     {
         $sAppname = $sAppname ?: $this->_sApp;
         return $this->canEdit($sAppname)
-            || array_search($sAppname, $this->_aGroups) !== false
-            || array_search('@authenticated', $this->_aConfig['groups']['global']['viewer'])!== false
+            || array_search($sAppname, $this->_aGroups??[]) !== false
+            || array_search('@authenticated', $this->_aConfig['groups']['global']['viewer']??[])!== false
         ;
     }
 }
