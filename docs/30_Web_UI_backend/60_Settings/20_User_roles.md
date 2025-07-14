@@ -8,7 +8,7 @@ As a **global admin** you can see the result of settings in `public_html/config/
 
 ### Global permissions
 
-This sections shows all users with global permissions. A global permission is applied toe each project.
+This sections shows all users with global permissions. A global permission is applied to each project.
 
 ### Web spezific permissions
 
