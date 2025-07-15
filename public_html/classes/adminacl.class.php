@@ -85,7 +85,7 @@ class adminacl
      */
     protected function _detectUser(): bool
     {
-        $this->_sUser = 'nobody';
+        $this->_sUser = '';
         $this->_aGroups = ['@anonymous'];
         $this->_sUserDisplayname = '';
 

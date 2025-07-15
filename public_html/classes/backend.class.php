@@ -452,42 +452,38 @@ class backend extends crawler_base
             return true;
         }
         $aOptions = $this->_loadConfigfile();
-        if (
-            !isset($aOptions['options']['auth']['user']) || $this->_getUser() !== 'nobody'
-        ) {
-            return true;
+
+        // handle POST request from login page
+        if ( $_POST['AUTH_USER']??false  && $_POST['AUTH_PW']??false) {
+            if(
+                $aOptions['options']['auth']['user'] == $_POST['AUTH_USER']
+                && password_verify($_POST['AUTH_PW'], $aOptions['options']['auth']['password'])
+            )
+            {
+                $this->_setUser($_POST['AUTH_USER']);
+                header('Location: ?' . $_SERVER['QUERY_STRING']);
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (
-            array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST)
-            && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER']
-            && password_verify($_POST['AUTH_PW'], $aOptions['options']['auth']['password'])
-        ) {
-            $this->_setUser($_POST['AUTH_USER']);
-            header('Location: ?' . $_SERVER['QUERY_STRING']);
-            return true;
+                
+
+        // if there is no acl config
+        if(!$this->acl->hasConfig()) 
+        {
+            if (!isset($aOptions['options']['auth']['user']))
+            {
+                // no user in config + no acl --> superuser access without login
+                return true;
+            } else {
+                // get current logged in user
+                return !!$this->_getUser();
+            }
         }
 
-        /*
-        if (
-            array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) 
-            && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] 
-            && $aOptions['options']['auth']['password'] == md5($_POST['AUTH_PW'])
-        ) {
-            die('SORRY, the password handler function was exchanged by a stronger variant.<br>'
-                . '<br>'
-                . 'In config/crawler.config.json ...<br>'
-                . '<br>'
-                . 'remove the entry options -> auth -> user.<br>'
-                . 'Then reload and go to the settings to set the user and password again.<br>'
-                . '<br>'
-                . 'OR<br>'
-                . '<br>'
-                . 'Get a new password hash on commandline by<br>'
-                . '<code> php -r "echo password_hash(\'mypassword\', PASSWORD_DEFAULT);"</code><br>'
-                . 'and enter the output into options -> auth -> password');
-        }
-        */
-        return false;
+        return !!$this->acl->getUser();
+
     }
 
     /**
@@ -496,8 +492,10 @@ class backend extends crawler_base
      */
     private function _getUser(): string
     {
-        return $this->acl->getUser();
-        // return $_SESSION['AUTH_USER'] ?? '';
+        if(!$this->acl->hasConfig()){
+            return $_SESSION['AUTH_USER'] ?? '';
+        }
+        return $this->acl->getUser()?? $_SESSION['AUTH_USER'];
     }
 
     /**
@@ -541,7 +539,7 @@ class backend extends crawler_base
         session_start();
         if (!$sNewUser) {
             // ... means: logoff
-            // unset($_SESSION['AUTH_USER']);
+            unset($_SESSION['AUTH_USER']);
             session_destroy();
             return false;
         }
