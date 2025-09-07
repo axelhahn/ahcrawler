@@ -378,7 +378,7 @@ a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list
 .page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg)}
 .page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)}
 
-.page-home     h2{border-color: var(--page-home-navcolor)}
+.page-home     h2{border-color: var()}
 .page-analysis h2{border-color: var(--page-analysis-navcolor)}
 .page-tools    h2{border-color: var(--page-tools-navcolor)}
 .page-settings h2{border-color: var(--page-settings-navcolor)}

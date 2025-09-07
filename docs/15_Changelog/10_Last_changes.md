@@ -6,6 +6,7 @@
 
 * 🟢 ADDED: user based access to projects with given role on installations with multi user access. This is a huge change! You can limit user access to projects and functionality. Please read the docs how to configure it. 👉 See [Security User restrictions](../60_Security/30_User_restriction.md)
 * ↗️ UPDATE: ahCrawler is PHP 8.4 ready
+* ↗️ UPDATE: PHP versions below v2 are marked as error because http 1 .1 has security issues
 * ↗️ UPDATE: replace fontawesome with tabler icons
 * ↗️ UPDATE: default light theme got colors by main section
 * ↗️ UPDATE: themes: more colors in navigation bar in deault and default dark theme. You can switch to the older look when setting the `[name] - simple` theme.
