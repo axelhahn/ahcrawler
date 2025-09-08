@@ -19,21 +19,6 @@ require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $sReturn = '';
 
-$aIcons=[
-    'testing'=>'fa-solid fa-stethoscope',
-    'translation'=>'fa-solid fa-flag',
-];
-
-/*
-// see view-source:https://allcontributors.org/docs/en/emoji-key
-$aIcons=[
-    'testing'=>'⚠️',
-    'translation'=>'🌍',
-];
- * 
- */
-
-
 $sPeople='';
 
 $oRenderer=new ressourcesrenderer((int)$this->_sTab);
@@ -90,7 +75,7 @@ if (isset($this->aAbout['thanks'])){
     foreach ($this->aAbout['thanks'] as $sSection=>$aPeople ){
         if(count($aPeople)){
             $sPeople.='<h4>'
-                    .(isset($aIcons[$sSection]) ? '<i class="'.$aIcons[$sSection].'"></i> ': '')
+                    .'<i class="'.$this->_aIcons['res'][$sSection].'"></i> '
                     // .(isset($aIcons[$sSection]) ? $aIcons[$sSection].' ' : '')
                     .$this->lB('about.contributors.section-'.$sSection)
                     .'</h4>'
@@ -129,6 +114,15 @@ $sReturn.=''
 
         // update info
         . '<p>' . $this->lB('about.info') . '</p>'
+        . $this->_getLinkAsBox([
+                'url'=>$this->aAbout['urlChangelog'],
+                'hint'=>"",
+                'icon'=>$this->_aIcons['res']['docs'],
+                'title'=>$this->lB('about.url.changelog'),
+                'text'=>$this->aAbout['urlDocs'],
+                'target'=>'_blank',
+            ])
+
         . $this->_getLinkAsBox([
                 'url'=>$this->aAbout['urlDocs'],
                 'hint'=>$this->aAbout['urlDocs'],

@@ -731,6 +731,7 @@
     "httpstatus-todo": "Cách khắc ",
     "about.info": "Công cụ này là một dự án sở thích của Axel Hahn. Nó là một công cụ tìm kiếm các trang web và bộ công cụ để phân tích các trang web.<br> \r\n Đây là phần mềm miễn phí và là nguồn mở. Nó được cấp phép theo GNU GPL 3.0.<br>Bạn có thể sử dụng miễn phí và cài đặt nó trên máy chủ của riêng bạn.<br> \r\n <br> \r\n Tôi sẵn sàng đón nhận phản hồi, gợi ý và cải tiến. Nếu bạn thích nó thì hãy nói chuyện. về nó và chia sẻ nó!<br> \r\n <br> \r\n Các nguồn tài nguyên khác:",
     "about.url.project": "Trang web dự ",
+    "about.url.changelog": "Last changes",
     "about.url.docs": "tài liệu",
     "about.url.source": "",
     "about.contributors": "Người đóng góp",

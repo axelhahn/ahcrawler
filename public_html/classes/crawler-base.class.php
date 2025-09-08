@@ -44,12 +44,13 @@ class crawler_base
     public array $aAbout = [
         'product' => 'ahCrawler',
         'version' => '0.179-dev',
-        'date' => '2025-07-14',
+        'date' => '2025-09-09',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
+        'urlChangelog' => 'https://www.axel-hahn.de/docs/ahcrawler/Changelog/Last_changes.html',
         'requirements' => [
             'phpversion' => '8.0',
             'phpextensions' => ['curl', 'PDO', 'xml', 'zip']

@@ -122,6 +122,8 @@ return [
         'url' => 'ti ti-link',
         'docs' => 'ti ti-book',
         'source' => 'ti ti-code',
+        'testing'=>'ti ti-stethoscope',
+        'translation'=>'ti ti-flag',
 
         'ressources.showtable' => 'ti ti-table',
         'ressources.showreport' => 'ti ti-file',
