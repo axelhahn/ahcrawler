@@ -29,11 +29,11 @@
     --navi-bg-l1-active:#568;
     --navi-bg-l2-active:#78a;
     --navi-bg-l3-active:#567;
-    --navi-bg-on-hover:rgba(160,170,190,0.1);
+    --navi-bg-on-hover:rgba(160,170,190,0.25);
 
     --navi-icon-color: #568;
 
-    --pagehint-bg:#badbd3;
+    --pagehint-bg:#d8e8e6;
 
     --statusbar-bg: #cde;
 
