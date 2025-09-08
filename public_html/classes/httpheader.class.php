@@ -427,7 +427,8 @@ class httpheader
         if (!$sVersion) {
             $sVersion = $this->getHttpVersion();
         }
-        return $sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning');
+        // return $sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning');
+        return $sVersion >= '2' ? 'ok' : 'error';
     }
 
     /**
