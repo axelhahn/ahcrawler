@@ -14,6 +14,7 @@
 * ↗️ UPDATE: ahcache
 * ↗️ UPDATE: medoo 2.1.12 --> 2.2.0
 * ↗️ UPDATE: remove warning if no https was found
+* ↗️ UPDATE: Docker dev environment
 * 💣 FIX: navigation - active menu item doesn't lose color on hover anymore
 * 💣 FIX: logoff - don't show navigation after logging off
 
