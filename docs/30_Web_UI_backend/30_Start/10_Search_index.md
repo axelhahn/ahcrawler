@@ -1,4 +1,4 @@
-##  Page: Search index
+## Page: Search index
 
 ### Status overview
 

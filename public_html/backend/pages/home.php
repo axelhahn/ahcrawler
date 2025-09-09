@@ -2,6 +2,11 @@
 /**
  * HOME
  */
+
+if(!$this->_requiresPermission('viewer', $this->_sTab) ){
+    return include __DIR__ . '/error403.php';
+}
+
 $oRenderer=new ressourcesrenderer($this->_sTab);
 $sHtml='';
 $sTable='';
@@ -129,9 +134,15 @@ if(!$this->_configExists() ){
                             ? '<hr>'.sprintf($this->lB('home.denyentries'), '<strong>'. count($this->aProfileSaved['ressources']['blacklist']).'</strong>') . '<br><br>'
                             : ''
                         )
-                        . $this->_getLink2Navitem('profiles')
-                        . '<hr>'
-                        . $oRenderer->renderIndexActions('reindex', 'searchindex', $this->_sTab)
+                        . ($this->_requiresPermission("admin", $this->_sTab) 
+                            ? $this->_getLink2Navitem('profiles')
+                            : ''
+                        )
+                        . ($this->_requiresPermission("manager", $this->_sTab) 
+                            ? '<hr>'
+                                . $oRenderer->renderIndexActions('reindex', 'searchindex', $this->_sTab)
+                            : ''
+                        )
                         ,
                     
                         $this->lB('context.infos')

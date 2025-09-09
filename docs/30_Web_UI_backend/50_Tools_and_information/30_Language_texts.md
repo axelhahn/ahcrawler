@@ -1,4 +1,4 @@
-## page: Language texts
+## Page: Language texts
 
 Here you can ompare and edit language texts.
 The edit function is for contributors that want to apply new language files or just changes in it.

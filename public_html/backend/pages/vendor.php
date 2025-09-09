@@ -1,5 +1,9 @@
 <?php
 
+if (!$this->_requiresPermission("globaladmin")){
+    return include __DIR__ . '/error403.php';
+}
+
     $iCount=0;
     $iCountLocal=0;
     $iCountUnused=0;
@@ -103,7 +107,7 @@
     ).'<br>'
     . $sHtml
     . ($iCountUnused
-            ? sprintf($this->lB('vendor.DeleteUnused'), $iCountUnused).'<br><br>'
+            ? $oRenderer->renderMessagebox(sprintf($this->lB('vendor.DeleteUnused'), $iCountUnused), 'warning').'<br><br>'
             : ''
     )
     . $this->_getSimpleHtmlTable($aTable, true)

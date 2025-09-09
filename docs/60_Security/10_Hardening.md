@@ -23,19 +23,3 @@ In the named directories below exist .htaccess files for apache httpd already ex
      Require all denied
    </Location>
 ```
-
-### Basic authentication on backend
-
-In the backend you can setup exactly one backend user.
-
-If you want to give more than 1 user access to the backend then you can restrict the access to the backend with basic authentication. Then you can setup users in htauth users in files or database backends.
-
-**IMPORTANT**: restrict the access to the location */backend/index.php* - a single file only.
-
-```txt
-   <Location "/backend/index.php">
-     Require valid-user
-     AuthType Basic
-     ...
-   </Location>
-```

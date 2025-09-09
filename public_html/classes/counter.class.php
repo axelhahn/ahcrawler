@@ -74,12 +74,13 @@ class counter extends crawler_base
     // private functions
     // ----------------------------------------------------------------------
 
-    protected function _setDbIfNeeded(){
-        if(!isset($this->oDB)){
+    protected function _setDbIfNeeded(): void
+    {
+        if (!isset($this->oDB)) {
             // echo "ERROS: no database object set - use method setSiteId() first." . __LINE__ . "<br>";
             $this->setSiteId($this->_iWebId);
         }
-        if(!isset($this->oDB)){
+        if (!isset($this->oDB)) {
             die("ERROR: No database object was set ... and counters class was unable to init it. Use method setSiteId() first.");
         }
     }
@@ -180,7 +181,7 @@ class counter extends crawler_base
      * Cleanup older counter values of the current web
      * @return boolean
      */
-    public function cleanup()
+    public function cleanup(): bool
     {
         $sDeleteBefore = date("Y-m-d", date("U") - $this->_iKeepDays * 24 * 60 * 60);
         $aResult = $this->oDB->delete(
@@ -269,7 +270,7 @@ class counter extends crawler_base
         $this->_setDbIfNeeded();
         $aReturn = $this->oDB->select(
             $this->_db_table,
-            [ "[>]$this->_db_reltable" => ['counterid' => 'id']],
+            ["[>]$this->_db_reltable" => ['counterid' => 'id']],
             [
                 // $this->_db_table.'.siteid',
                 // $this->_db_table.'.counterid',

@@ -32,6 +32,7 @@ require_once 'httpheader.class.php';
  * 2024-09-03  v0.167  php8 only; add typed variables; use short array syntax
  * 2024-10-02  v0.170  Fixes for installer
  * 2024-09-03  v0.171  Hide SKIP messages during crawling
+ * 2025-04-08  v0.178  Do not allow disabling "home"
  * */
 class crawler_base
 {
@@ -42,13 +43,14 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.178',
-        'date' => '2025-01-22',
+        'version' => '0.179',
+        'date' => '2025-09-09',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
         'urlDocs' => 'https://www.axel-hahn.de/docs/ahcrawler/',
         'urlSource' => 'https://github.com/axelhahn/ahcrawler',
+        'urlChangelog' => 'https://www.axel-hahn.de/docs/ahcrawler/Changelog/Last_changes.html',
         'requirements' => [
             'phpversion' => '8.0',
             'phpextensions' => ['curl', 'PDO', 'xml', 'zip']
@@ -1585,6 +1587,9 @@ class crawler_base
             }
         }
 
+        // hardcoded override: page "home" is always active
+        $this->aOptions['menu']['home'] = true;
+
         /*
         echo '<pre>aDefaultOptions = '. htmlentities(print_r($this->aDefaultOptions, 1)).'</pre><hr>';
         echo '<pre>aOptions = '. htmlentities(print_r($this->aOptions, 1)).'</pre>';
@@ -1701,7 +1706,7 @@ class crawler_base
      * get an id of the cache module
      * @return string
      */
-    public function getCacheModule()
+    public function getCacheModule(): string
     {
         return "pages-siteid-$this->iSiteId";
     }
@@ -1962,7 +1967,7 @@ class crawler_base
      * @param string  $sMessage  string to show
      * @return bool
      */
-    public function clicolor(string $sColor)
+    public function clicolor(string $sColor): bool
     {
         $this->cliprint($sColor, '', '');
         return true;
@@ -1977,7 +1982,7 @@ class crawler_base
      * @param string  $sNextColor  color key after printing message; default is 'cli'
      * @return bool
      */
-    public function cliprint(string $sColor, string $sMessage = '', string $sNextColor = 'cli')
+    public function cliprint(string $sColor, string $sMessage = '', string $sNextColor = 'cli'): bool
     {
         static $oCli;
         if (php_sapi_name() !== "cli" && php_sapi_name() !== "cgi-fcgi") {

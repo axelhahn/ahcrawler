@@ -1,3 +1,4 @@
+public_html/config/acl.php
 public_html/config/crawler.config.json.bak
 public_html/config/crawler.config.json
 public_html/data/*.txt

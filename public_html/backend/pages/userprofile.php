@@ -2,46 +2,113 @@
 /**
  * page userprofile
  */
-// otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example
 
-/*
+$oRenderer = new ressourcesrenderer($this->_sTab);
+$sReturn = '';
 
-  MODES:
-  (1) no User is authenticated --> abort with message
-  (2) user has no TOTP --> offer "add totp"
-  (3) totp exists: show details and offer delete
+$sGroupTable = '';
 
-*/
+$sGlobal = '';
 
+$sGroups = '';
+foreach ($this->acl->getGroups() as $sGroup) {
+    $sGroups .= '<li>'. $sGroup . '</li>';
+}
 
-$sInstance='ahCrawler%20'.$_SERVER['SERVER_NAME'];
-$sUser=isset($aOptions['options']['auth']['user']) ? $aOptions['options']['auth']['user'] : '[nouser]';
-$sSecret="GASWY3DPEHPK3PXP";
-$sIssuer="Axel%20Hahn";
+if(!$this->acl->hasConfig()){
+    $sGroups .= $oRenderer->renderMessagebox($this->lB('userprofile.noacl'), 'ok');
+}
 
-$sTotpUrl="otpauth://totp/$sInstance:$sUser?secret=$sSecret=&issuer=$sIssuer";
+$sGroups = $sGroups ? 
+    "<h3>" . $this->_getIcon('usergroup').$this->lB("userprofile.groups") . "</h3>
+        <ul>$sGroups</ul>" 
+    : '';
 
+// --- global permissions
 
-$sReturn = '
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-
-Instance: '.$sInstance.'<br>
-user: '.$sUser.'<br>
-<br>
-url: '.$sTotpUrl.'<br>
-<br>
+$aGlobalPerms = $this->acl->getMyGlobalPermissions();
+// echo '<pre>'.print_r($aGlobalPerms, 1).'</pre>';
 
 
-<div id="qrcode"></div>
+if (count($aGlobalPerms)) {
+    foreach ($this->acl->getPermNames() as $sPerm){
+    // foreach ($aGlobalPerms as $sPerm => $bActive) {
+        $sGlobal .= $aGlobalPerms[$sPerm]??false
+            ? "<button class=\"pure-button button-success\">X</button> <strong>$sPerm</strong> "
+            : "<button class=\"pure-button\">-</button> $sPerm "
+        ;
+    }
+    $sGlobal = "<h3>" . $this->lB("userprofile.globalperms") . "</h3>
+        ".$this->lB("userprofile.globalperms-hint")."<br>
+        <br>
+        $sGlobal
+        ";
 
-<script>
-window.addEventListener("load", () => {
-  // var url="otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example";
-  var url="'.$sTotpUrl.'";
-  var qrc = new QRCode(document.getElementById("qrcode"), url);
-});
-</script>
-';
+}
+
+// --- app specific permissions
+
+$aPerms = ["admin", "manager", "viewer"];
+$sTHead = '<tr><th>Name</th>';
+foreach ($aPerms as $sPerm) {
+    $sTHead .= '<th>' . $sPerm . '</th>';
+}
+$sTHead .= '</tr>';
+
+foreach($this->_getProfiles() as $iGroupId => $sApp){
+    $aAppPerms=$this->acl->listUsers($iGroupId);
+    foreach($aAppPerms as $sUser => $aRoles){
+        if($this->_getUser()==$sUser){
+          $sGroupTable.='<tr><td><strong>'.$this->_getIcon('project') . $sApp.'<strong></td>';
+          foreach($aPerms as $sPerm){
+              $sGroupTable.='<td>'.($aRoles[$sPerm]??'' ? '<span class="pure-button button-success"> X </span>' : '-').'</td>';
+          }
+          $sGroupTable.='</tr>';
+        }
+    }
+  }
+
+$sGroupTable = $sGroupTable
+    ? '<h3>' . $this->_getIcon('project') . $this->lB("userprofile.webperms") . '</h3>
+        <table class="pure-table pure-table-horizontal datatable dataTable no-footer">
+        <thead>' . $sTHead . '</thead>
+        <tbody>' . $sGroupTable . '
+        </tbody>
+        </table>'
+    : ''
+;
+
+// --- output
+
+$sReturn .= $this->_getButton([
+    'href' => 'javascript:history.back();',
+    // 'class' => 'button-secondary',
+    'popup' => false,
+    'label' => 'button.back'
+    ])
+    . '<h3>' . $this->_getIcon('userprofile') . $this->_getUser() . '</h3>'
+    . $sGroups
+    . $sGlobal
+    . $sGroupTable
+    . '<br><br>'
+;
+
+$sReturn .= '<br>'
+    . $this->_getButton([
+        'href' => 'javascript:history.back();',
+        // 'class' => 'button-secondary',
+        'popup' => false,
+        'label' => 'button.back'
+        ])
+        . ($this->_getUser() !== 'nobody'
+        ? ' '.$this->_getButton([
+            'href' => './?page=logoff',
+            'class' => 'button-error',
+            'label' => 'button.logoff',
+            'popup' => false
+        ])
+        : ''
+    )
+        ;
 
 return $sReturn;

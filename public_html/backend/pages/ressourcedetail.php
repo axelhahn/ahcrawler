@@ -2,6 +2,10 @@
 /**
  * page resource detail
  */
+if (!$this->_requiresPermission("viewer", $this->_sTab)){
+    return include __DIR__ . '/error403.php';
+}
+
 $sReturn='';
 $iRessourceId = (int)$this->_getRequestParam('id');
 

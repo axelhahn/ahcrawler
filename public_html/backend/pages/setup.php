@@ -2,6 +2,11 @@
 /**
  * SETTINGS
  */
+
+if (!$this->_requiresPermission("globaladmin")){
+    return include __DIR__ . '/error403.php';
+}
+
 $oRenderer=new ressourcesrenderer($this->_sTab);
 
 
@@ -374,10 +379,7 @@ $sSubmit=(isset($aOptionDefaults['options']['searchindex'])
     : $oRenderer->oHtml->getTag('button', ['label'=>$this->_getIcon('button.create') . $this->lB('button.create'), 'class'=>'pure-button button-success'])
 );
 
-$sReturn.=(!isset($_SERVER['HTTPS'])
-            ? $oRenderer->renderMessagebox($this->lB('setup.error-no-ssl'), 'warning')
-            : ''
-        ).'
+$sReturn.='
         <form class="pure-form pure-form-aligned" method="POST" action="?'.$_SERVER['QUERY_STRING'].'">
             '
             . $oRenderer->oHtml->getTag('input', [

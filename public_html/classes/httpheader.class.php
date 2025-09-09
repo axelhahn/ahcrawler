@@ -422,12 +422,13 @@ class httpheader
      * @param string $sVersion  optional: version number; default: take version from current http header
      * @return string
      */
-    public function getHttpVersionStatus(string $sVersion = '')
+    public function getHttpVersionStatus(string $sVersion = ''): string
     {
         if (!$sVersion) {
             $sVersion = $this->getHttpVersion();
         }
-        return $sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning');
+        // return $sVersion >= '2' ? 'ok' : ($sVersion < '1.1' ? 'error' : 'warning');
+        return $sVersion >= '2' ? 'ok' : 'error';
     }
 
     /**

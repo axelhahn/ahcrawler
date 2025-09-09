@@ -1,0 +1,26 @@
+{
+    "title": "ahcache",
+    "author": "Axel Hahn",
+    "tagline": "File based cache for all serializable types: values, strings, arrays, objects",
+    "ignore": {
+        "files": ["30_PHP-client/Plugins/Checks/_skeleton.md"],
+        "folders": ["99_Not_Ready"]
+    },
+    "html": {
+        "auto_toc": true,
+        "auto_landing": false,
+        "date_modified": false,
+        "jump_buttons": true,
+        "edit_on_github_": "axelhahn/ahcache/tree/master/docs",
+        "edit_on_": {
+            "name": "Gitlab",
+            "basepath": "https://git-repo.iml.unibe.ch/iml-open-source/__PROJECT__/tree/master/docs"
+        },
+        "links": {
+            "Git Repo": "https://github.com/axelhahn/ahcache",
+            "Axels Docs": "https://www.axel-hahn.de/docs/"
+        },
+        "theme": "daux-blue",
+        "search": true
+    }
+}

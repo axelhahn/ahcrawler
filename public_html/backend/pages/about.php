@@ -19,21 +19,6 @@ require_once __DIR__ . '/../../vendor/ahwebinstall/ahwi-installer.class.php';
 
 $sReturn = '';
 
-$aIcons=[
-    'testing'=>'fa-solid fa-stethoscope',
-    'translation'=>'fa-solid fa-flag',
-];
-
-/*
-// see view-source:https://allcontributors.org/docs/en/emoji-key
-$aIcons=[
-    'testing'=>'⚠️',
-    'translation'=>'🌍',
-];
- * 
- */
-
-
 $sPeople='';
 
 $oRenderer=new ressourcesrenderer((int)$this->_sTab);
@@ -90,7 +75,7 @@ if (isset($this->aAbout['thanks'])){
     foreach ($this->aAbout['thanks'] as $sSection=>$aPeople ){
         if(count($aPeople)){
             $sPeople.='<h4>'
-                    .(isset($aIcons[$sSection]) ? '<i class="'.$aIcons[$sSection].'"></i> ': '')
+                    .'<i class="'.$this->_aIcons['res'][$sSection].'"></i> '
                     // .(isset($aIcons[$sSection]) ? $aIcons[$sSection].' ' : '')
                     .$this->lB('about.contributors.section-'.$sSection)
                     .'</h4>'
@@ -130,11 +115,21 @@ $sReturn.=''
         // update info
         . '<p>' . $this->lB('about.info') . '</p>'
         . $this->_getLinkAsBox([
+                'url'=>$this->aAbout['urlChangelog'],
+                'hint'=>"",
+                'icon'=>$this->_aIcons['res']['docs'],
+                'title'=>$this->lB('about.url.changelog'),
+                'text'=>$this->aAbout['urlDocs'],
+                'target'=>'_blank',
+            ])
+
+        . $this->_getLinkAsBox([
                 'url'=>$this->aAbout['urlDocs'],
                 'hint'=>$this->aAbout['urlDocs'],
                 'icon'=>$this->_aIcons['res']['docs'],
                 'title'=>$this->lB('about.url.docs'),
                 'text'=>$this->aAbout['urlDocs'],
+                'target'=>'_blank',
             ])
         /*
         . $this->_getLinkAsBox([
@@ -151,6 +146,7 @@ $sReturn.=''
                 'icon'=>$this->_aIcons['res']['source'],
                 'title'=>$this->lB('about.url.source'),
                 'text'=>$this->aAbout['urlSource'],
+                'target'=>'_blank',
             ])
         .'<div style="clear: both"></div>'
         /*
@@ -174,11 +170,15 @@ $sReturn.=''
                 [
                     [$this->lB('about.thanks.chartjs'),     '<a target="_blank" href="https://www.chartjs.org/">https://www.chartjs.org/</a>'],
                     [$this->lB('about.thanks.datatables'),  '<a target="_blank" href="https://datatables.net/">https://datatables.net/</a>'],
+                    /* 
                     [$this->lB('about.thanks.fontawesome'), '<a target="_blank" href="https://fontawesome.com/">https://fontawesome.com/</a>'],
+                    */
                     [$this->lB('about.thanks.jquery'),      '<a target="_blank" href="https://jquery.com/">https://jquery.com/</a>'],
+                    // [$this->lB('about.thanks.lineawesome'), '<a target="_blank" href="https://icons8.com/line-awesome">https://icons8.com/line-awesome</a>'],
                     [$this->lB('about.thanks.medoo'),       '<a target="_blank" href="https://medoo.in/">https://medoo.in/</a>'],
                     [$this->lB('about.thanks.rollingcurl'), '<a target="_blank" href="https://github.com/chuyskywalker/rolling-curl">https://github.com/chuyskywalker/rolling-curl</a>'],
                     [$this->lB('about.thanks.select2'),     '<a target="_blank" href="https://select2.org/">https://select2.org/</a>'],
+                    [$this->lB('about.thanks.tablericons'), '<a target="_blank" href="https://tabler.io/icons">https://tabler.io/icons</a>'],
                     [$this->lB('about.thanks.pure'),        '<a target="_blank" href="https://purecss.io/">https://purecss.io/</a>'],
                 ]
         )

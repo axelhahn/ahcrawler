@@ -47,6 +47,7 @@ The tool is designed to run on a local machine, a vm or your own server. All dat
 * Other features
   * built in web updater
   * multi language support
+  * acl: user based permissions per project
 
 **Public tools**
 

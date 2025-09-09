@@ -105,7 +105,7 @@ class htmlelements
      * @param boolean  $bCloseTag     optional: set false if tag has no closing tag (= ending with "/>")
      * @return string
      */
-    public function getTag($sTag, $aAttributes, $bCloseTag = true)
+    public function getTag($sTag, $aAttributes, $bCloseTag = true): string
     {
         $sTpl = $bCloseTag ? "<$sTag%s>%s</$sTag>" : "<$sTag %s/>%s";
         $this->_setAttributes($aAttributes);
@@ -131,7 +131,7 @@ class htmlelements
         return $sIconclass
             ? "<i class=\"$sIconclass\"></i> "
             : ''
-            ;
+        ;
     }
 
 
@@ -150,7 +150,8 @@ class htmlelements
      * @param array $aAttributes  attributes of the option tag
      * @return string
      */
-    public function getFormOption($aAttributes){
+    public function getFormOption($aAttributes): string
+    {
         $sTpl = '<option %s>%s</option>';
         $this->_setAttributes($aAttributes);
         return sprintf($sTpl, $this->_addAttributes(), $this->_sLabel);
@@ -163,18 +164,19 @@ class htmlelements
      * @param array $aOptions     array for all option fields
      * @return string
      */
-    public function getFormSelect($aAttributes, $aOptions=array()){
+    public function getFormSelect($aAttributes, $aOptions = array()): string
+    {
         // $sTpl = '<select %s>%s</select>';
 
-        if(!count($aOptions)){
-            return false;
+        if (!count($aOptions)) {
+            return '';
         }
-        $sOptions='';
-        foreach($aOptions as $aOptionAttributes){
+        $sOptions = '';
+        foreach ($aOptions as $aOptionAttributes) {
             // $sOptions.=$this->getFormOption($aOptionAttributes);
-            $sOptions.=$this->getTag('option', $aOptionAttributes);
+            $sOptions .= $this->getTag('option', $aOptionAttributes);
         }
-        $aAttributes['label']=$sOptions;
+        $aAttributes['label'] = $sOptions;
         return $this->getTag('select', $aAttributes);
 
     }

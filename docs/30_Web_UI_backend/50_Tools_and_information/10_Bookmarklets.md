@@ -1,4 +1,4 @@
-## page: Bookmarklets
+## Page: Bookmarklets
 
 Here are little helpers for the bookmark toolbar.
 Drag and drop each button into the bookmarks toolbar to add the bookmarklet.

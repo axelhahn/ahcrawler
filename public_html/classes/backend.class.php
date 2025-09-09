@@ -1,5 +1,6 @@
 <?php
 
+require_once 'adminacl.class.php';
 require_once 'analyzer.html.class.php';
 require_once 'crawler-base.class.php';
 require_once 'crawler.class.php';
@@ -10,7 +11,7 @@ require_once 'search.class.php';
 require_once 'sslinfo.class.php';
 require_once 'status.class.php';
 
-require_once __DIR__ . '/../vendor/ahcache/cache.class.php';
+require_once __DIR__ . '/../vendor/ahcache/src/cache.class.php';
 require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
 
 /**
@@ -42,7 +43,7 @@ require_once __DIR__ . '/../vendor/ahwebinstall/ahwi-updatecheck.class.php';
 class backend extends crawler_base
 {
 
-    protected string $_sBaseHelpUrl='https://www.axel-hahn.de/docs/ahcrawler/Web_UI_backend/';
+    protected string $_sBaseHelpUrl = 'https://www.axel-hahn.de/docs/ahcrawler/Web_UI_backend/';
 
     /**
      * Array of menu items
@@ -51,41 +52,42 @@ class backend extends crawler_base
     private array $_aMenu = [
         'home' => [
             'children' => [
-                'searchindexstatus' => ['needs' => ['pages']],
-                'searchindextester' => ['needs' => ['pages']],
-                'searches' => ['needs' => ['searches']],
-                'crawlerlog' => [],
-                'profiles' => [],
+                'searchindexstatus' => ['needs' => ['pages'], 'permission' => 'viewer'],
+                'searchindextester' => ['needs' => ['pages'], 'permission' => 'viewer'],
+                'searches' => ['needs' => ['searches'], 'permission' => 'viewer'],
+                'crawlerlog' => ['permission' => 'viewer'],
+                'profiles' => ['permission' => 'admin'],
             ],
         ],
         // 'search'=>[],
         'analysis' => [
             'children' => [
-                'sslcheck' => ['needs' => ['starturl']],
-                'httpheaderchecks' => ['needs' => ['pages']],
-                'cookies' => [],
-                'htmlchecks' => ['needs' => ['pages']],
-                'linkchecker' => ['needs' => ['ressources']],
-                'ressources' => ['needs' => ['ressources']],
-                'checkurl' => ['needs' => ['ressources']],
-                'ressourcedetail' => ['needs' => ['ressources']],
-                'counters' => ['needs' => ['pages']],
+                'sslcheck' => ['needs' => ['starturl'], 'permission' => 'viewer'],
+                'httpheaderchecks' => ['needs' => ['pages'], 'permission' => 'viewer'],
+                'cookies' => ['permission' => 'viewer'],
+                'htmlchecks' => ['needs' => ['pages'], 'permission' => 'viewer'],
+                'linkchecker' => ['needs' => ['ressources'], 'permission' => 'viewer'],
+                'ressources' => ['needs' => ['ressources'], 'permission' => 'viewer'],
+                'checkurl' => ['needs' => ['ressources'], 'permission' => 'viewer'],
+                'ressourcedetail' => ['needs' => ['ressources'], 'permission' => 'viewer'],
+                'counters' => ['needs' => ['pages'], 'permission' => 'viewer'],
             ],
         ],
         'tools' => [
             'children' => [
                 'bookmarklet' => [],
                 'httpstatuscode' => [],
-                'langedit' => [],
+                'langedit' => ['permission' => 'globaladmin'],
                 // 'showicons'=>[], // coming soon
-                'update' => [],
+                'update' => ['permission' => 'globaladmin'],
             ],
         ],
         'settings' => [
             'children' => [
-                'setup' => [],
-                // 'userprofile'=>[], // coming soon
-                'vendor' => [],
+                'userprofile' => [],
+                'userroles' => [],
+                'setup' => ['permission' => 'globaladmin'],
+                'vendor' => ['permission' => 'globaladmin'],
             ],
         ],
         'about' => [],
@@ -133,8 +135,13 @@ class backend extends crawler_base
      * The values are font-awesome class values for icons
      * @var array
      */
-    private array $_aIcons = [
+    private array $_aIcons = [];
+    /*
+        see icons_lineawesome.php
+
+        
         'menu' => [
+            '1111' => 'fa-solid fa-user-lock',
             'login' => 'fa-solid fa-user-lock',
             'home' => 'fa-solid fa-home',
             'settings' => 'fa-solid fa-cogs',
@@ -165,6 +172,7 @@ class backend extends crawler_base
             'counters' => 'fa-solid fa-chart-simple',
             'about' => 'fa-solid fa-info-circle',
             'update' => 'fa-solid fa-cloud-download-alt',
+            'useradmin' => 'fa-solid fa-user',
             'userprofile' => 'fa-solid fa-user',
             'project' => 'fa-solid fa-book',
 
@@ -218,31 +226,6 @@ class backend extends crawler_base
 
         ],
         'res' => [
-            /*
-            
-            // ressourcetype
-            'audio'=>'fa-regular fa-file-sound',
-            'css'=>'fa-regular fa-eyedropper',
-            'image'=>'fa-regular fa-file-image',
-            'link'=>'fa-solid fa-link',
-            'page'=>'fa-regular fa-sticky-note',
-            // 'redirect'=>'fa fa-mail-forward',
-            'redirect'=>'fa-solid fa-angle-double-right',
-            'script'=>'fa-regular fa-file-code',
-            
-            // type
-            'internal'=>'fa-solid fa-thumb-tack',
-            'external'=>'fa-solid fa-globe-americas',
-            
-            // content_type/ MIME
-            
-            // http_code
-            'http-code-0'=>'fa-solid fa-spinner',
-            'http-code-2xx'=>'fa-solid fa-check',
-            'http-code-3xx'=>'fa-solid fa-angle-double-right',
-            'http-code-4xx'=>'fa-regular fa-bolt',
-            'http-code-5xx'=>'fa-solid fa-spinner',
-             */
 
             'filter' => 'fa-solid fa-filter',
 
@@ -284,10 +267,12 @@ class backend extends crawler_base
             'button.view' => 'fa-regular fa-eye',
         ],
     ];
+    */
+
     private array $_aHelpPages = [
-        
+
         'about' => 'About/index.html',
-        'analysis' => '',
+        'analysis' => 'Analysis/index.html',
         'bookmarklet' => 'Tools_and_information/Bookmarklets.html',
         'checkurl' => 'Analysis/Search_url.html',
         'cookies' => 'Analysis/Cookies.html',
@@ -312,13 +297,14 @@ class backend extends crawler_base
         'searches' => 'Start/Search_terms.html',
         'searchindexstatus' => 'Start/Search_index.html',
         'searchindextester' => 'Start/Search_test.html',
-        'settings' => '',
+        'settings' => 'Settings/index.html',
         'setup' => 'Settings/Setup.html',
+        'userroles' => 'Settings/User_roles.html',
+        'userprofile' => 'Settings/My_profile.html',
         'showicons' => '',
         'sslcheck' => 'Analysis/SSL_check.html',
-        'tools' => '',
+        'tools' => 'Tools_and_information/index.html',
         'update' => 'Tools_and_information/Update.html',
-        'userprofile' => '',
         'vendor' => 'Settings/Vendor_libs.html',
     ];
 
@@ -333,6 +319,8 @@ class backend extends crawler_base
      * @var ahwiupdatecheck
      */
     public ahwiupdatecheck $oUpdate;
+
+    public adminacl $acl;
 
     // ----------------------------------------------------------------------
     /**
@@ -352,15 +340,17 @@ class backend extends crawler_base
             if (!isset($_SESSION)) {
                 session_name('ahcrawler');
                 session_start();
-                session_write_close();
             }
+            $this->acl = new adminacl();
+            session_write_close();
+
         }
 
         // for settings: create a default array with all available menu items
         foreach ($this->_aMenuPublic as $sKey => $aItem) {
             $this->aDefaultOptions['menu-public'][$sKey] = false;
         }
-
+        
         if ($bIsPublic) {
             $this->setSiteId(false);
             $this->aOptions['menu'] = $this->aOptions['menu-public'];
@@ -395,6 +385,12 @@ class backend extends crawler_base
             ]);
             // echo "getUpdateInfos : </pre>" . print_r($this->oUpdate->getUpdateInfos(), 1).'</pre>';
         }
+
+        // print_r($this->aOptions); 
+        // override fotawsome icons
+        // $this->_aIcons = include 'icons_fontawesome.php';
+        $this->_aIcons = include 'icons_tabler.php';
+        // $this->_aIcons = include 'icons_lineawesome.php';
 
         $this->getPage();
         $this->logAdd(__METHOD__ . ' getPage was finished');
@@ -456,35 +452,38 @@ class backend extends crawler_base
             return true;
         }
         $aOptions = $this->_loadConfigfile();
-        if (
-            !isset($aOptions['options']['auth']['user']) || $this->_getUser()
-        ) {
-            return true;
+
+        // handle POST request from login page
+        if ( $_POST['AUTH_USER']??false  && $_POST['AUTH_PW']??false) {
+            if(
+                $aOptions['options']['auth']['user'] == $_POST['AUTH_USER']
+                && password_verify($_POST['AUTH_PW'], $aOptions['options']['auth']['password'])
+            )
+            {
+                $this->_setUser($_POST['AUTH_USER']);
+                header('Location: ?' . $_SERVER['QUERY_STRING']);
+                return true;
+            } else {
+                return false;
+            }
         }
-        if (
-            array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] && password_verify($_POST['AUTH_PW'], $aOptions['options']['auth']['password'])
-        ) {
-            $this->_setUser($_POST['AUTH_USER']);
-            return true;
+                
+
+        // if there is no acl config
+        if(!$this->acl->hasConfig()) 
+        {
+            if (!isset($aOptions['options']['auth']['user']))
+            {
+                // no user in config + no acl --> superuser access without login
+                return true;
+            } else {
+                // get current logged in user
+                return !!$this->_getUser();
+            }
         }
 
-        if (
-            array_key_exists('AUTH_USER', $_POST) && array_key_exists('AUTH_PW', $_POST) && $aOptions['options']['auth']['user'] == $_POST['AUTH_USER'] && $aOptions['options']['auth']['password'] == md5($_POST['AUTH_PW'])
-        ) {
-            die('SORRY, the password handler function was exchanged by a stronger variant.<br>'
-                . '<br>'
-                . 'In config/crawler.config.json ...<br>'
-                . '<br>'
-                . 'remove the entry options -> auth -> user.<br>'
-                . 'Then reload and go to the settings to set the user and password again.<br>'
-                . '<br>'
-                . 'OR<br>'
-                . '<br>'
-                . 'Get a new password hash on commandline by<br>'
-                . '<code> php -r "echo password_hash(\'mypassword\', PASSWORD_DEFAULT);"</code><br>'
-                . 'and enter the output into options -> auth -> password');
-        }
-        return false;
+        return !!$this->acl->getUser();
+
     }
 
     /**
@@ -493,7 +492,40 @@ class backend extends crawler_base
      */
     private function _getUser(): string
     {
-        return $_SESSION['AUTH_USER'] ?? '';
+        if(!$this->acl->hasConfig()){
+            return $_SESSION['AUTH_USER'] ?? '';
+        }
+        return $this->acl->getUser()?? $_SESSION['AUTH_USER'];
+    }
+
+    /**
+     * Check permission for a given name
+     * 
+     * @param string $sPermission  permission to check: one of globaladmin|appadmin|manager|viewer
+     * @return bool
+     */
+    protected function _requiresPermission(string $sPermission, string $sApp = ''): bool
+    {
+        $bOK = false;
+        $this->acl->setApp($sApp);
+        switch ($sPermission) {
+            case 'globaladmin':
+                $bOK = $this->acl->isGlobalAdmin();
+                break;
+            case 'admin':
+                $bOK = $this->acl->isAppAdmin();
+                break;
+            case 'manager':
+                $bOK = $this->acl->canEdit();
+                break;
+            case 'viewer':
+                $bOK = $this->acl->canView();
+                break;
+            default:
+                throw new Exception('Unknown permission: ' . $sPermission);
+                break;
+        }
+        return $bOK;
     }
 
     /**
@@ -507,7 +539,7 @@ class backend extends crawler_base
         session_start();
         if (!$sNewUser) {
             // ... means: logoff
-            // unset($_SESSION['AUTH_USER']);
+            unset($_SESSION['AUTH_USER']);
             session_destroy();
             return false;
         }
@@ -619,15 +651,27 @@ class backend extends crawler_base
         $sAdd = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/add/') : '';
         $sAll = $bAllowSpecialSiteids ? $this->_getRequestParam('siteid', '/all/') : '';
         $this->_sTab = $sAdd . $sAll ? $sAdd . $sAll : $this->_getRequestParam('siteid', false, 'int');
-        if ($this->_sTab && $this->_sTab !== 'add' && isset($_SESSION['siteid']) && $_SESSION['siteid'] !== $this->_sTab) {
+        if (
+            $this->_sTab && $this->_sTab !== 'add' 
+            && isset($_SESSION['siteid']) 
+            && $_SESSION['siteid'] !== $this->_sTab
+            && $this->_requiresPermission('viewer', $this->_sTab)
+        ) {
             session_start();
             $_SESSION['siteid'] = $this->_sTab;
             session_write_close();
         }
 
         if (!$this->_sTab) {
-            $aTmp = array_keys($this->_getProfiles());
-            $this->_sTab = count($aTmp) ? $aTmp[0] : false;
+            foreach(array_keys($this->_getProfiles()) as $sId){
+                if($this->_requiresPermission('viewer', $sId)){
+                    $this->_sTab = $sId;
+                    break;
+                }
+            }
+
+            // $aTmp = array_keys($this->_getProfiles());
+            // $this->_sTab = count($aTmp) ? $aTmp[0] : false;
         }
 
         return $this->_sTab;
@@ -650,15 +694,22 @@ class backend extends crawler_base
     }
 
     /**
-     * Detect if a navigation item is enabled by "needa" value that stands
-     * for the availability of a db table
+     * Detect if a navigation item is enabled by 
+     * - "needs" value that stands for the availability of a db table
+     * - "permission" value for user permission
      *
      * @param array $aItem
      * @return bool
      */
     protected function _getNavAttrIsEnabled(array $aItem): bool
     {
-        if (!isset($aItem['needs']) || !is_array($aItem['needs']) || !count($aItem['needs'])) {
+
+        if ($aItem['permission'] ?? false) {
+            return $this->_requiresPermission($aItem['permission'], $this->_sTab);
+        }
+
+        // if (!isset($aItem['needs']) || !is_array($aItem['needs']) || !count($aItem['needs'])) {
+        if (!count($aItem['needs'] ?? [])) {
             return true;
         }
         foreach ($aItem['needs'] as $sTable) {
@@ -720,7 +771,7 @@ class backend extends crawler_base
                 $sNavi .= '<li class="pure-menu-item">'
                     . '<a href="' . $sUrl . '" class="pure-menu-link' . $sClass . '"'
                     . ' title="' . $this->lB('nav.' . $sItem . '.hint') . '"'
-                    . '><i class="' . $this->_aIcons['menu'][$sItem] . '"></i>'
+                    . '><i class="' . ($this->_aIcons['menu'][$sItem] ?? $sItem) . '"></i>'
                     . '<span> ' . $this->lB('nav.' . $sItem . '.label') . '</span>'
                     . '</a>'
                     . ($bIsActive ? $sNaviNextLevel : '')
@@ -729,8 +780,8 @@ class backend extends crawler_base
                 $sNavi .= '</li>';
             }
         }
-        if ($sNavi || true) {
-            $sNavi = '<ul class="pure-menu-list">' . $sNavi . '</ul>';
+        if ($sNavi) {
+            $sNavi = "<ul class=\"pure-menu-list\">$sNavi</ul>";
         }
 
         return $sNavi;
@@ -787,6 +838,31 @@ class backend extends crawler_base
     }
 
     /**
+     * Get array of active navigation levels
+     * @param array $aNav  array with navigation items; default is $this->_aMenu
+     * @return array
+     */
+    public function getActiveNavLevels($aNav = null): array
+    {
+        $aReturn = [];
+        if (!isset($aNav)) {
+            $aNav = $this->_aMenu;
+        }
+        foreach ($aNav as $sItem => $aSubItems) {
+            if (!$this->isNavitemHidden($sItem)) {
+
+                $bHasActiveSubitem = strpos($this->_getBreadcrumbitems($aSubItems['children'] ?? [], '/'), 'pure-button');
+                $bIsActive = $this->_sPage == $sItem || $bHasActiveSubitem;
+                if ($bIsActive) {
+                    $aReturn[] = $sItem;
+                    $aReturn = array_merge($aReturn, $this->getActiveNavLevels($aSubItems['children'] ?? []));
+                }
+            }
+        }
+        return $aReturn;
+    }
+
+    /**
      * get html code for a breadcrumb navigation
      * @return string
      */
@@ -798,7 +874,7 @@ class backend extends crawler_base
         // add HOME on non-home-level
         $sHomeLink = $this->_getLink2Navitem(array_key_first($this->_aMenu));
         if (!strstr($sNavi, $sHomeLink)) {
-            $sNavi = $sMyDelim . $sHomeLink . $sNavi;
+            $sNavi = "$sMyDelim$sHomeLink$sNavi";
         }
         return "<div class=\"breadcrumb\">$sNavi</div>";
     }
@@ -885,7 +961,7 @@ class backend extends crawler_base
      * 
      * @return string
      */
-    private function _getNavi2(array $aTabs = [], bool $bAddButton = false, string $sUpUrl = '')
+    private function _getNavi2(array $aTabs = [], bool $bAddButton = false, string $sUpUrl = ''): string
     {
         $sReturn = '';
         $sMore = '';
@@ -910,12 +986,15 @@ class backend extends crawler_base
         $sOptions = '';
         if (count($aTabs)) {
             foreach ($aTabs as $sId => $sLabel) {
-                $sUrl = '?page=' . $this->_sPage . '&amp;siteid=' . $sId;
-                $sOptions .= '<option'
-                    . ' value="' . $sUrl . '"'
-                    . (($this->_sTab == $sId) ? ' selected="selected"' : '')
-                    . '>'
-                    . $this->_getIcon('project') . $sLabel . '</option>';
+                if ($this->_requiresPermission('viewer', $sId)) {
+
+                    $sUrl = '?page=' . $this->_sPage . '&amp;siteid=' . $sId;
+                    $sOptions .= '<option'
+                        . ' value="' . $sUrl . '"'
+                        . (($this->_sTab == $sId) ? ' selected="selected"' : '')
+                        . '>'
+                        . $this->_getIcon('project') . $sLabel . '</option>';
+                }
             }
             if ($sOptions) {
                 $sOptions = ''
@@ -929,6 +1008,7 @@ class backend extends crawler_base
                 ;
             }
         }
+        $this->acl->setApp($this->_sTab);
         $sReturn .= ''
             // . '<div class="pure-menu pure-menu-horizontal">'
             . '<form class="pure-form pure-form-aligned">'
@@ -949,6 +1029,7 @@ class backend extends crawler_base
      *                       class  optional css class - "pure-menu-disabled"
      *                       hint
      *                       icon
+     *                       target
      *                       title
      *                       text
      * @return string
@@ -962,6 +1043,7 @@ class backend extends crawler_base
             . (isset($aLink['class']) ? ' ' . $aLink['class'] : '')
             . '"'
             . (isset($aLink['hint']) ? ' title="' . $aLink['hint'] . '"' : '')
+            . (isset($aLink['target']) ? ' target="' . $aLink['target'] . '"' : '')
             . '>'
             . (isset($aLink['icon']) ? '<i class="' . $aLink['icon'] . '"></i> ' : '')
             . (isset($aLink['title']) ? '<strong>' . $aLink['title'] . '</strong>' : '')
@@ -988,13 +1070,13 @@ class backend extends crawler_base
         return $oRenderer->renderLink2Page($sNavid, $this->_getIcon($sNavid), $this->_sTab);
     }
 
-     /**
+    /**
      * Get html code to render child items of the current page
      * 
      * @param array  $aNav  array with nav items
      * @return string The HTML code
      */
-    private function _renderChildItems($aNav)
+    private function _renderChildItems($aNav): string
     {
         $sReturn = '';
         if (!isset($aNav['children']) || !is_array($aNav['children']) || !count($aNav['children'])) {
@@ -1050,27 +1132,43 @@ class backend extends crawler_base
         $sH2 = $this->lB('nav.' . $this->_sPage . '.label');
         $sHint = $this->lB('nav.' . $this->_sPage . '.hint');
 
-        $sRight='';
-        if(BACKEND && ($this->_aHelpPages[$this->_sPage] ?? false)) {
-            $sRight.=$this->_getButton([
-                'href' => $this->_sBaseHelpUrl. $this->_aHelpPages[$this->_sPage],
+        $sRight = '';
+        if (BACKEND && ($this->_aHelpPages[$this->_sPage] ?? false)) {
+            $sRight .= $this->_getButton([
+                'href' => $this->_sBaseHelpUrl . $this->_aHelpPages[$this->_sPage],
                 'label' => 'button.help',
                 'class' => 'button',
                 'target' => 'help'
-            ]).' ';
+            ]) . ' ';
         }
 
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
-            $sRight.=$this->_getButton([
-                'href' => './?page=logoff',
-                'class' => 'button-secondary',
-                'label' => 'button.logoff',
-                'popup' => false
-            ]).' ';
-        }
-        
 
-        $sRight=$sRight ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">'.$sRight.'</span>' : '';
+            $sRight .=
+                $this->_sPage == 'userprofile'
+                ? 
+                    $this->_getButton([
+                        'href' => 'javascript:history.back();',
+                        'class' => 'button button-secondary',
+                        'title' => $this->lB('button.userprofile'),
+                        'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
+                    ]) 
+                : 
+                    $this->_getButton([
+                        'href' => './?page=userprofile',
+                        'class' => 'button',
+                        'title' => $this->lB('button.userprofile'),
+                        'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
+                    ]) 
+                    
+                . ' '
+
+            ;
+
+        }
+
+
+        $sRight = $sRight ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">' . $sRight . '</span>' : '';
 
 
         $this->logAdd(__METHOD__ . ' H2 = "' . $sH2 . '"');
@@ -1224,12 +1322,12 @@ class backend extends crawler_base
      */
     protected function _getPercent(float $floatValue): string
     {
-        return $floatValue 
+        return $floatValue
             ? (
                 $floatValue == 1 ? '100' : sprintf("%01.2f", 100 * $floatValue)
-            ) . '%' 
+            ) . '%'
             : ''
-            ;
+        ;
     }
 
     /**
@@ -1247,7 +1345,7 @@ class backend extends crawler_base
      * @param string $sMethod
      * @return string
      */
-    protected function _getCacheId($sMethod)
+    protected function _getCacheId($sMethod): string
     {
         return $sMethod;
     }
@@ -1537,7 +1635,7 @@ class backend extends crawler_base
                                 'thead' => $this->lB('httpheader.header.experimental'),
                                 'tfoot' => $iTotalHeaders ? $this->_getPercent($iExperimental / $iTotalHeaders) : '',
                                 'thash' => ($iExperimental ? '#warnexperimental' : ''),
-                            ];                            
+                            ];
                             $aMsg['httpversion'] = [
                                 'counter' => $iCounter++,
                                 'status' => $aMyCounters['responseheaderVersionStatus'],
@@ -1840,17 +1938,19 @@ class backend extends crawler_base
     }
 
     /**
-     * Get HTML code for a button
+     * Get HTML code for a button like link
      * 
      * @param array $aOptions  Options for the button; known subkeys are
-     *                         - href     {string}  target url
-     *                         - class    {string}  css class
-     *                         - target   {string}  target window
-     *                         - label    {string}  text of the button
-     *                         - onclick  {string}  onclick value
+     *                         - href        {string}  target url
+     *                         - class       {string}  css class
+     *                         - onclick     {string}  onclick value
+     *                         - target      {string}  target window
+     *                         - title       {string}  text in title attribue; default: lang specific text from 'label'
+     *                         - label       {string}  language key for the button tor ender icon + text
+     *                         - customlabel {string}  custom label
      * @return string
      */
-    private function _getButton(array $aOptions = []): string   
+    private function _getButton(array $aOptions = []): string
     {
         $sReturn = '';
         if (!array_key_exists('href', $aOptions)) {
@@ -1874,13 +1974,24 @@ class backend extends crawler_base
             . 'class="pure-button ' . $aOptions['class'] . '" '
             . 'href="' . $aOptions['href'] . '" '
             . 'target="' . $aOptions['target'] . '" '
-            . 'title="' . $this->lB($aOptions['label'] . '.hint') . '" '
+            . 'title="' . ($aOptions['title']??false
+                ? $aOptions['title'] 
+                : $this->lB($aOptions['label'] . '.hint') 
+            )
+            . '" '
+
             . (isset($aOptions['onclick'])
                 ? 'onclick="' . $aOptions['onclick'] . '" '
                 : ''
             )
             // . ($aOptions['popup'] ? 'onclick="showModal(this.href); return false;"' : '')
-            . '>' . $this->_getIcon($aOptions['label']) . $this->lB($aOptions['label']) . '</a>';
+            . '>' 
+                . ($aOptions['customlabel']??false
+                    ? $aOptions['customlabel']
+                    : $this->_getIcon($aOptions['label']) . $this->lB($aOptions['label']) 
+                )
+            
+            . '</a>';
         return $sReturn;
     }
 
@@ -1894,7 +2005,7 @@ class backend extends crawler_base
     private function _getIcon(string $sKey, bool $bEmptyIfMissing = false): string
     {
         foreach (array_keys($this->_aIcons) as $sIconsection) {
-            if (array_key_exists($sKey, $this->_aIcons[$sIconsection])) {
+            if (isset($this->_aIcons[$sIconsection][$sKey])) {
                 return '<i class="' . $this->_aIcons[$sIconsection][$sKey] . '"></i> ';
             }
         }
@@ -1914,10 +2025,10 @@ class backend extends crawler_base
         if ($sVal) {
             $sVal = str_replace(',', ', ', $sVal);
             $sVal = str_replace(',  ', ', ', $sVal);
-            return (strlen($sVal) > $iMax) 
-                ? '<textarea class="pure-input" cols="100" rows="10">' . $sVal . '</textarea><br>' 
+            return (strlen($sVal) > $iMax)
+                ? '<textarea class="pure-input" cols="100" rows="10">' . $sVal . '</textarea><br>'
                 : htmlentities($sVal)
-                ;
+            ;
         }
         return '';
         // $sVal = htmlentities($sVal);
@@ -2139,7 +2250,7 @@ class backend extends crawler_base
                         datasets: [
                             ' . $sDatasets . '
                             ' . ($sLimit
-            ? ', {
+                ? ', {
                                     type: \'line\',
                                     data: JSON.parse(\'[' . $sLimit . ']\'),
                                     backgroundColor: \'#c00\',
@@ -2148,10 +2259,10 @@ class backend extends crawler_base
                                     fill: false,
                                     radius: 0
                                 }'
-            : ''
-        ) . '
+                : ''
+            ) . '
                             ' . ($sAvg
-            ? ', {
+                ? ', {
                                     type: \'line\',
                                     data: JSON.parse(\'[' . $sAvg . ']\'),
                                     backgroundColor: \'#56a\',
@@ -2161,8 +2272,8 @@ class backend extends crawler_base
                                     fill: false,
                                     radius: 0
                                 }'
-            : ''
-        ) . '
+                : ''
+            ) . '
                         ],
                         labels: ' . json_encode($dsLabels) . '
                     },
@@ -2313,7 +2424,7 @@ class backend extends crawler_base
      * @param int     $iLimit   max value for OK; if higher then bars will be in warning color
      * @return string The HTML code
      */
-    private function _getChartOfRange(string $sQuery,string  $sColumn, int $iLimit): string
+    private function _getChartOfRange(string $sQuery, string $sColumn, int $iLimit): string
     {
         $aTable = [];
         $aData = [];
@@ -2405,7 +2516,7 @@ class backend extends crawler_base
      */
     private function _getHtmlchecksTable(string $sQuery, string $sTableId = ''): string
     {
-        $oRenderer=new ressourcesrenderer($this->_sTab);
+        $oRenderer = new ressourcesrenderer($this->_sTab);
         $aTmp = $this->oDB->query($sQuery)->fetchAll(PDO::FETCH_ASSOC);
         $aTable = [];
         foreach ($aTmp as $aRow) {

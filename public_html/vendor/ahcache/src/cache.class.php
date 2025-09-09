@@ -24,46 +24,47 @@
  * --------------------------------------------------------------------------------<br>
  * <br>
  * --- HISTORY:<br>
- * 2009-07-20  1.0  cache class on www.axel-hahn.de<br>
- * 2011-08-27  1.1  comments added; sCacheFile is private<br>
- * 2012-02-04  2.0  cache serialzable types; more methods, i.e.:<br>
- *                   - comparison of timestimp with a sourcefile<br>
- *                   - cleanup unused cachefiles<br>
- * 2012-05-15  2.1  isExpired() returns as bool; new method iExpired() to get <br>
- *                  expiration in sec<br>
- * 2014-02-27  2.2  - rename to AhCache<br>
- *                  - _cleanup checks with file_exists<br>
- * 2014-03-31  2.3  - added _setup() that to includes custom settings<br>
- *                  - limit number of files in cache directory<br>
- * 2019-11-24  2.4  - added getCachedItems() to get a filtered list of cache files<br>
- *                  - added remove file to make complete cache of a module invalid<br>
- *                  - rename var in cache.class_config.php to "$this->_sCacheDirDivider"<br>
- * 2019-11-26  2.5  - added getModules() to get a list of existing modules that stored<br>
- *                    a cached item<br>
- * 2021-09-28  2.6  added a simple admin UI; the cache class got a few new methods
- *                  - update: cleanup() now always deletes expired items
- *                  - update: dump() styles output as table
- *                  - added: getCurrentModule 
- *                  - added: deleteModule 
- *                  - added: loadCachefile
- *                  - added: removefileDelete
- *                  - added: setCacheId
- *                  - added: setModule
- * 2021-09-30  2.7  FIX: remove chdir() in _readCacheItem()
- * 2021-10-07  2.8  FIX: remove chdir() in _readCacheItem()
- *                  ADD reference file to expire a cache item
- *                  - added: getRefFile
- *                  - added: setRefFile
- *                  - update: dump, isExpired, isNewerThanFile, write
- *                  - update cache admin
- * 2023-03-17  2.9  FIX: harden _getAllCacheData to prevent PHP warnings
- * 2023-06-02  2.10 shorten code: defaults using ??; short array syntax
- * 2023-11-20  2.11 check data subkey before writing
- * 2024-06-25  2.12 WIP: add type declarations for PHP 8
+ * 2009-07-20  1.0   cache class on www.axel-hahn.de<br>
+ * 2011-08-27  1.1   comments added; sCacheFile is private<br>
+ * 2012-02-04  2.0   cache serialzable types; more methods, i.e.:<br>
+ *                    - comparison of timestimp with a sourcefile<br>
+ *                    - cleanup unused cachefiles<br>
+ * 2012-05-15  2.1   isExpired() returns as bool; new method iExpired() to get <br>
+ *                   expiration in sec<br>
+ * 2014-02-27  2.2   - rename to AhCache<br>
+ *                   - _cleanup checks with file_exists<br>
+ * 2014-03-31  2.3   - added _setup() that to includes custom settings<br>
+ *                   - limit number of files in cache directory<br>
+ * 2019-11-24  2.4   - added getCachedItems() to get a filtered list of cache files<br>
+ *                   - added remove file to make complete cache of a module invalid<br>
+ *                   - rename var in cache.class_config.php to "$this->_sCacheDirDivider"<br>
+ * 2019-11-26  2.5   - added getModules() to get a list of existing modules that stored<br>
+ *                     a cached item<br>
+ * 2021-09-28  2.6   added a simple admin UI; the cache class got a few new methods
+ *                   - update: cleanup() now always deletes expired items
+ *                   - update: dump() styles output as table
+ *                   - added: getCurrentModule 
+ *                   - added: deleteModule 
+ *                   - added: loadCachefile
+ *                   - added: removefileDelete
+ *                   - added: setCacheId
+ *                   - added: setModule
+ * 2021-09-30  2.7   FIX: remove chdir() in _readCacheItem()
+ * 2021-10-07  2.8   FIX: remove chdir() in _readCacheItem()
+ *                   ADD reference file to expire a cache item
+ *                   - added: getRefFile
+ *                   - added: setRefFile
+ *                   - update: dump, isExpired, isNewerThanFile, write
+ *                   - update cache admin
+ * 2023-03-17  2.9   FIX: harden _getAllCacheData to prevent PHP warnings
+ * 2023-06-02  2.10  shorten code: defaults using ??; short array syntax
+ * 2023-11-20  2.11  check data subkey before writing
+ * 2024-07-22  2.12  WIP: add type declarations for PHP 8
+ * 2024-12-15  2.13  compatible to PHP 8.4
  * --------------------------------------------------------------------------------<br>
- * compatible to PHP 8 ... 8.3<br>
+ * compatible to PHP 8 ... 8.4<br>
  * --------------------------------------------------------------------------------<br>
- * @version 2.12
+ * @version 2.15
  * @author Axel Hahn
  * @link https://www.axel-hahn.de/docs/ahcache/index.htm
  * @license GPL
@@ -149,12 +150,12 @@ class AhCache
      */
     private string $_sRefFile = '';
 
-    /* ----------------------------------------------------------------------
-    constructor
-    ---------------------------------------------------------------------- */
+    // ----------------------------------------------------------------------
+    // constructor
+    // ----------------------------------------------------------------------
 
     /**
-     * constructor
+     * Constructor
      * @param  string  $sModule   name of module or app that uses the cache
      * @param  string  $sCacheID  cache-id (must be uniq within a module; used to generate filename of cachefile)
      */
@@ -163,9 +164,9 @@ class AhCache
         $this->setModule($sModule, $sCacheID);
     }
 
-    /* ----------------------------------------------------------------------
-    private funtions
-    ---------------------------------------------------------------------- */
+    // ----------------------------------------------------------------------
+    // private funtions
+    // ----------------------------------------------------------------------
 
     // ----------------------------------------------------------------------
     /**
@@ -173,7 +174,7 @@ class AhCache
      * - load custom config from cache.class_config.php 
      * - set a cache
      * - set remove file (if does not exist)
-     * directory
+     *
      * @return bool
      */
     private function _setup(): bool
@@ -270,9 +271,9 @@ class AhCache
         return $this->_sCacheFile;
     }
 
-    /* ----------------------------------------------------------------------
-    public funtions
-    ---------------------------------------------------------------------- */
+    // ----------------------------------------------------------------------
+    // public funtions
+    // ----------------------------------------------------------------------
 
     /**
      * helper function - remove empty cache directories up to module cache dir
@@ -304,9 +305,9 @@ class AhCache
         return false;
     }
 
-    /* ----------------------------------------------------------------------
-    public funtions
-    ---------------------------------------------------------------------- */
+    // ----------------------------------------------------------------------
+    // public funtions
+    // ----------------------------------------------------------------------
 
     // ----------------------------------------------------------------------
     /**
@@ -581,9 +582,9 @@ class AhCache
      * public function getRefFile() - get reference file that invalidates the
      * cache item
      * @since 2.8
-     * @return     int  get ttl of cache
+     * @return  string  filename of reference file
      */
-    public function getRefFile(): int
+    public function getRefFile(): string
     {
         return $this->_sRefFile;
     }
@@ -844,12 +845,13 @@ class AhCache
      * Write data into a cache. 
      * - data can be any serializable type, like string, array or object
      * - set ttl in s (from now); optional parameter
-     * @param      mixed  $data      data to store in cache
-     * @param      int      $iTtl      optional: time in s if content cache expires (min. 0)
-     * @param      string   $sRefFile  optional: set a reference file that invalidates the cache if it is newer
-     * @return     bool     success of write action
+     * 
+     * @param      mixed     $data      data to store in cache
+     * @param      null|int  $iTtl      optional: time in s when content cache expires; default: null
+     * @param      string    $sRefFile  optional: set a reference file that invalidates the cache if it is newer
+     * @return     bool      success of write action
      */
-    public function write(mixed $data = false, int $iTtl = null, string|null $sRefFile = null): bool
+    public function write(mixed $data = false, null|int $iTtl = null, string $sRefFile = ''): bool
     {
         if (!$this->_sCacheFile) {
             return false;
@@ -868,7 +870,7 @@ class AhCache
         if (!is_null($iTtl)) {
             $this->setTtl($iTtl);
         }
-        if (!is_null($sRefFile)) {
+        if ($sRefFile) {
             $this->setRefFile($sRefFile);
         }
 

@@ -1,4 +1,4 @@
-## page: Http status codes
+## Page: Http status codes
 
 On a page you get a collection of Http status codes and their description (that are shown on http codes as title).
 

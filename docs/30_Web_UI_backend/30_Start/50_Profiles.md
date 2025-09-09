@@ -1,4 +1,4 @@
-##  Page: Profile
+## Page: Profile
 
 You can switch between an extended and a simple view. The simple view hides the advanced settings.
 

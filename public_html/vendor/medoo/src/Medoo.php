@@ -6,10 +6,10 @@ declare(strict_types=1);
  *
  * The Lightweight PHP Database Framework to Accelerate Development.
  *
- * @version 2.1.12
- * @author Angel Lai
+ * @version 2.2.0
  * @package Medoo
- * @copyright Copyright 2024 Medoo Project, Angel Lai.
+ * @author Angel Lai
+ * @copyright Angel Lai
  * @license https://opensource.org/licenses/MIT
  * @link https://medoo.in
  */
@@ -43,10 +43,18 @@ class Raw
 }
 
 /**
+ * @method array select(string $table, array $columns)
+ * @method mixed select(string $table, string $column)
  * @method array select(string $table, array $columns, array $where)
+ * @method mixed select(string $table, string $column, array $where)
+ * @method array select(string $table, array $join, array $columns)
+ * @method mixed select(string $table, array $join, string $column)
  * @method null select(string $table, array $columns, callable $callback)
+ * @method null select(string $table, string $column, callable $callback)
  * @method null select(string $table, array $columns, array $where, callable $callback)
+ * @method null select(string $table, string $column, array $where, callable $callback)
  * @method null select(string $table, array $join, array $columns, array $where, callable $callback)
+ * @method null select(string $table, array $join, string $column, array $where, callable $callback)
  * @method mixed get(string $table, array|string $columns, array $where)
  * @method bool has(string $table, array $where)
  * @method mixed rand(string $table, array|string $column, array $where)
@@ -63,28 +71,28 @@ class Raw
 class Medoo
 {
     /**
-     * The PDO object.
+     * The PDO database connection instance.
      *
      * @var \PDO
      */
     public $pdo;
 
     /**
-     * The type of database.
+     * The database type.
      *
      * @var string
      */
     public $type;
 
     /**
-     * Table prefix.
+     * The table prefix.
      *
      * @var string
      */
     protected $prefix;
 
     /**
-     * The PDO statement object.
+     * Current PDO statement instance.
      *
      * @var \PDOStatement
      */
@@ -98,88 +106,125 @@ class Medoo
     protected $dsn;
 
     /**
-     * The array of logs.
+     * Logged queries.
      *
      * @var array
      */
     protected $logs = [];
 
     /**
-     * Determine should log the query or not.
+     * Whether query logging is enabled.
      *
      * @var bool
      */
     protected $logging = false;
 
     /**
-     * Determine is in test mode.
+     * Whether the database is in test mode.
      *
      * @var bool
      */
     protected $testMode = false;
 
     /**
-     * The last query string was generated in test mode.
+     * The last generated query string in test mode.
      *
      * @var string
      */
     public $queryString;
 
     /**
-     * Determine is in debug mode.
+     * Whether debug mode is enabled.
      *
      * @var bool
      */
     protected $debugMode = false;
 
     /**
-     * Determine should save debug logging.
+     * Whether debug logging is enabled.
      *
      * @var bool
      */
     protected $debugLogging = false;
 
     /**
-     * The array of logs for debugging.
+     * Logged debug queries.
      *
      * @var array
      */
     protected $debugLogs = [];
 
     /**
-     * The unique global id.
+     * The unique global identifier.
      *
-     * @var integer
+     * @var int
      */
     protected $guid = 0;
 
     /**
-     * The returned id for the insert.
+     * The last inserted record ID.
      *
      * @var string
      */
     public $returnId = '';
 
     /**
-     * Error Message.
+     * The last error message.
      *
      * @var string|null
      */
     public $error = null;
 
     /**
-     * The array of error information.
+     * The last error details.
      *
      * @var array|null
      */
     public $errorInfo = null;
 
     /**
-     * Connect the database.
+     * The connector used for table aliases.
      *
+     * @var string
+     */
+    protected $tableAliasConnector = ' AS ';
+
+    /**
+     * The pattern used for quoting identifiers.
+     *
+     * @var string
+     */
+    protected $quotePattern = '"$1"';
+
+    /**
+     * Regular expression pattern for valid table names.
+     *
+     * @var string
+     */
+    protected const TABLE_PATTERN = "[\p{L}_][\p{L}\p{N}@$#\-_]*";
+
+    /**
+     * Regular expression pattern for valid column names.
+     *
+     * @var string
+     */
+    protected const COLUMN_PATTERN = "[\p{L}_][\p{L}\p{N}@$#\-_\.]*";
+
+    /**
+     * Regular expression pattern for valid alias names.
+     *
+     * @var string
+     */
+    protected const ALIAS_PATTERN = "[\p{L}_][\p{L}\p{N}@$#\-_]*";
+
+    /**
+     * Establish a database connection.
+     *
+     * Example usage:
+     * 
      * ```
      * $database = new Medoo([
-     *      // required
+     *      // Required
      *      'type' => 'mysql',
      *      'database' => 'name',
      *      'host' => 'localhost',
@@ -195,7 +240,7 @@ class Medoo
      *
      * @param array $options Connection options
      * @return Medoo
-     * @throws PDOException
+     * @throws PDOException If the connection fails
      * @link https://medoo.in/api/new
      * @codeCoverageIgnore
      */
@@ -211,7 +256,11 @@ class Medoo
             return;
         }
 
-        $options['type'] = $options['type'] ?? $options['database_type'];
+        $options['type'] = $options['type'] ?? $options['database_type'] ?? null;
+
+        if (!$options['type']) {
+            throw new InvalidArgumentException('Database type is required.');
+        }
 
         if (!isset($options['pdo'])) {
             $options['database'] = $options['database'] ?? $options['database_name'];
@@ -221,19 +270,12 @@ class Medoo
             }
         }
 
-        if (isset($options['type'])) {
-            $this->type = strtolower($options['type']);
-
-            if ($this->type === 'mariadb') {
-                $this->type = 'mysql';
-            }
-        }
+        $this->setupType($options['type']);
 
         if (isset($options['logging']) && is_bool($options['logging'])) {
             $this->logging = $options['logging'];
         }
 
-        $option = $options['option'] ?? [];
         $commands = [];
 
         switch ($this->type) {
@@ -275,10 +317,7 @@ class Medoo
                 throw new InvalidArgumentException('Invalid DSN option supplied.');
             }
         } else {
-            if (
-                isset($options['port']) &&
-                is_int($options['port'] * 1)
-            ) {
+            if (isset($options['port']) && is_numeric($options['port'])) {
                 $port = $options['port'];
             }
 
@@ -451,7 +490,7 @@ class Medoo
                 $dsn,
                 $options['username'] ?? null,
                 $options['password'] ?? null,
-                $option
+                $options['option'] ?? []
             );
 
             if (isset($options['error'])) {
@@ -477,6 +516,31 @@ class Medoo
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage());
         }
+    }
+
+    /**
+     * Setup the database type.
+     *
+     * @param string The database type string.
+     * @return void
+     */
+    public function setupType(string $type)
+    {
+        $databaseType = strtolower($type);
+
+        if ($databaseType === 'mariadb') {
+            $databaseType = 'mysql';
+        }
+
+        if ($databaseType === 'oracle') {
+            $this->tableAliasConnector = ' ';
+        } elseif ($databaseType === 'mysql') {
+            $this->quotePattern = '`$1`';
+        } elseif ($databaseType === 'mssql') {
+            $this->quotePattern = '[$1]';
+        }
+
+        $this->type = $databaseType;
     }
 
     /**
@@ -512,7 +576,7 @@ class Medoo
      * @codeCoverageIgnore
      * @return \PDOStatement|null
      */
-    public function exec(string $statement, array $map = [], callable $callback = null): ?PDOStatement
+    public function exec(string $statement, array $map = [], ?callable $callback = null): ?PDOStatement
     {
         $this->statement = null;
         $this->errorInfo = null;
@@ -591,14 +655,9 @@ class Medoo
      */
     protected function generate(string $statement, array $map): string
     {
-        $identifier = [
-            'mysql' => '`$1`',
-            'mssql' => '[$1]'
-        ];
-
         $statement = preg_replace(
-            '/(?!\'[^\s]+\s?)"([\p{L}_][\p{L}\p{N}@$#\-_]*)"(?!\s?[^\s]+\')/u',
-            $identifier[$this->type] ?? '"$1"',
+            '/(?!\'[^\s]+\s?)"(' . $this::COLUMN_PATTERN . ')"(?!\s?[^\s]+\')/u',
+            $this->quotePattern,
             $statement
         );
 
@@ -661,7 +720,7 @@ class Medoo
         }
 
         $query = preg_replace_callback(
-            '/(([`\'])[\<]*?)?((FROM|TABLE|INTO|UPDATE|JOIN|TABLE IF EXISTS)\s*)?\<(([\p{L}_][\p{L}\p{N}@$#\-_]*)(\.[\p{L}_][\p{L}\p{N}@$#\-_]*)?)\>([^,]*?\2)?/',
+            '/(([`\'])[\<]*?)?((FROM|TABLE|TABLES LIKE|INTO|UPDATE|JOIN|TABLE IF EXISTS)\s*)?\<((' . $this::TABLE_PATTERN . ')(\.' . $this::COLUMN_PATTERN . ')?)\>([^,]*?\2)?/',
             function ($matches) {
                 if (!empty($matches[2]) && isset($matches[8])) {
                     return $matches[0];
@@ -688,9 +747,9 @@ class Medoo
     }
 
     /**
-     * Quote a string for use in a query.
+     * Escape and quote a string for use in an SQL query.
      *
-     * @param string $string
+     * @param string $string The string to be quoted.
      * @return string
      */
     public function quote(string $string): string
@@ -703,14 +762,15 @@ class Medoo
     }
 
     /**
-     * Quote table name for use in a query.
+     * Quote a table name for use in an SQL query.
      *
-     * @param string $table
+     * @param string $table The table name to be quoted.
      * @return string
+     * @throws InvalidArgumentException If the table name is invalid.
      */
     public function tableQuote(string $table): string
     {
-        if (preg_match('/^[\p{L}_][\p{L}\p{N}@$#\-_]*$/u', $table)) {
+        if (preg_match("/^" . $this::TABLE_PATTERN . "$/u", $table)) {
             return '"' . $this->prefix . $table . '"';
         }
 
@@ -718,14 +778,15 @@ class Medoo
     }
 
     /**
-     * Quote column name for use in a query.
+     * Quote a column name for use in an SQL query.
      *
-     * @param string $column
+     * @param string $column The column name to be quoted.
      * @return string
+     * @throws InvalidArgumentException If the column name is invalid.
      */
     public function columnQuote(string $column): string
     {
-        if (preg_match('/^[\p{L}_][\p{L}\p{N}@$#\-_]*(\.?[\p{L}_][\p{L}\p{N}@$#\-_]*)?$/u', $column)) {
+        if (preg_match("/^" . $this::TABLE_PATTERN . "(\.?" . $this::ALIAS_PATTERN . ")?$/u", $column)) {
             return strpos($column, '.') !== false ?
                 '"' . $this->prefix . str_replace('.', '"."', $column) . '"' :
                 '"' . $column . '"';
@@ -794,14 +855,14 @@ class Medoo
             } elseif ($isArrayValue) {
                 $stack[] = $this->columnPush($value, $map, false, $isJoin);
             } elseif (!$isIntKey && $raw = $this->buildRaw($value, $map)) {
-                preg_match('/(?<column>[\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\s*\[(?<type>(String|Bool|Int|Number))\])?/u', $key, $match);
+                preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $match);
                 $stack[] = "{$raw} AS {$this->columnQuote($match['column'])}";
             } elseif ($isIntKey && is_string($value)) {
                 if ($isJoin && strpos($value, '*') !== false) {
                     throw new InvalidArgumentException('Cannot use table.* to select all columns while joining table.');
                 }
 
-                preg_match('/(?<column>[\p{L}_][\p{L}\p{N}@$#\-_\.]*)(?:\s*\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u', $value, $match);
+                preg_match("/(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $match);
 
                 $columnString = '';
 
@@ -858,20 +919,20 @@ class Medoo
             $isIndex = is_int($key);
 
             preg_match(
-                '/([\p{L}_][\p{L}\p{N}@$#\-_\.]*)(\[(?<operator>.*)\])?([\p{L}_][\p{L}\p{N}@$#\-_\.]*)?/u',
+                "/(?<column>" . $this::COLUMN_PATTERN . ")(\[(?<operator>.*)\])?(?<comparison>" . $this::COLUMN_PATTERN . ")?/u",
                 $isIndex ? $value : $key,
                 $match
             );
 
-            $column = $this->columnQuote($match[1]);
+            $column = $this->columnQuote($match['column']);
             $operator = $match['operator'] ?? null;
 
-            if ($isIndex && isset($match[4]) && in_array($operator, ['>', '>=', '<', '<=', '=', '!='])) {
-                $stack[] = "{$column} {$operator} " . $this->columnQuote($match[4]);
+            if ($isIndex && isset($match['comparison']) && in_array($operator, ['>', '>=', '<', '<=', '=', '!='])) {
+                $stack[] = "{$column} {$operator} " . $this->columnQuote($match['comparison']);
                 continue;
             }
 
-            if ($operator && $operator != '=') {
+            if ($operator && $operator !== '=') {
                 if (in_array($operator, ['>', '>=', '<', '<='])) {
                     $condition = "{$column} {$operator} ";
 
@@ -1182,12 +1243,12 @@ class Medoo
         $where = null,
         $columnFn = null
     ): string {
-        preg_match('/(?<table>[\p{L}_][\p{L}\p{N}@$#\-_]*)\s*\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\)/u', $table, $tableMatch);
+        preg_match("/(?<table>" . $this::TABLE_PATTERN . ")\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\)/u", $table, $tableMatch);
 
         if (isset($tableMatch['table'], $tableMatch['alias'])) {
             $table = $this->tableQuote($tableMatch['table']);
             $tableAlias = $this->tableQuote($tableMatch['alias']);
-            $tableQuery = "{$table} AS {$tableAlias}";
+            $tableQuery = "{$table}{$this->tableAliasConnector}{$tableAlias}";
         } else {
             $table = $this->tableQuote($table);
             $tableQuery = $table;
@@ -1283,7 +1344,7 @@ class Medoo
         ];
 
         foreach ($join as $subtable => $relation) {
-            preg_match('/(\[(?<join>\<\>?|\>\<?)\])?(?<table>[\p{L}_][\p{L}\p{N}@$#\-_]*)\s?(\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\))?/u', $subtable, $match);
+            preg_match("/(\[(?<join>\<\>?|\>\<?)\])?(?<table>" . $this::TABLE_PATTERN . ")\s?(\((?<alias>" . $this::ALIAS_PATTERN . ")\))?/u", $subtable, $match);
 
             if ($match['join'] === '' || $match['table'] === '') {
                 continue;
@@ -1325,7 +1386,7 @@ class Medoo
             $tableName = $this->tableQuote($match['table']);
 
             if (isset($match['alias'])) {
-                $tableName .= ' AS ' . $this->tableQuote($match['alias']);
+                $tableName .= $this->tableAliasConnector . $this->tableQuote($match['alias']);
             }
 
             $tableJoin[] = $type[$match['join']] . " JOIN {$tableName} {$relation}";
@@ -1350,7 +1411,7 @@ class Medoo
 
         foreach ($columns as $key => $value) {
             if (is_int($key)) {
-                preg_match('/([\p{L}_][\p{L}\p{N}@$#\-_]*\.)?(?<column>[\p{L}_][\p{L}\p{N}@$#\-_]*)(?:\s*\((?<alias>[\p{L}_][\p{L}\p{N}@$#\-_]*)\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u', $value, $keyMatch);
+                preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(?:\s*\((?<alias>" . $this::ALIAS_PATTERN . ")\))?(?:\s*\[(?<type>(?:String|Bool|Int|Number|Object|JSON))\])?/u", $value, $keyMatch);
 
                 $columnKey = !empty($keyMatch['alias']) ?
                     $keyMatch['alias'] :
@@ -1360,7 +1421,7 @@ class Medoo
                     [$columnKey, $keyMatch['type']] :
                     [$columnKey];
             } elseif ($this->isRaw($value)) {
-                preg_match('/([\p{L}_][\p{L}\p{N}@$#\-_]*\.)?(?<column>[\p{L}_][\p{L}\p{N}@$#\-_]*)(\s*\[(?<type>(String|Bool|Int|Number))\])?/u', $key, $keyMatch);
+                preg_match("/(" . $this::TABLE_PATTERN . "\.)?(?<column>" . $this::COLUMN_PATTERN . ")(\s*\[(?<type>(String|Bool|Int|Number))\])?/u", $key, $keyMatch);
                 $columnKey = $keyMatch['column'];
 
                 $stack[$key] = isset($keyMatch['type']) ?
@@ -1396,14 +1457,14 @@ class Medoo
         array $columnMap,
         array &$stack,
         bool $root,
-        array &$result = null
+        ?array &$result = null
     ): void {
         if ($root) {
             $columnsKey = array_keys($columns);
 
             if (count($columnsKey) === 1 && is_array($columns[$columnsKey[0]])) {
                 $indexKey = array_keys($columns)[0];
-                $dataKey = preg_replace("/^[\p{L}_][\p{L}\p{N}@$#\-_]*\./u", '', $indexKey);
+                $dataKey = preg_replace("/^" . $this::COLUMN_PATTERN . "\./u", '', $indexKey);
                 $currentStack = [];
 
                 foreach ($data as $item) {
@@ -1537,7 +1598,7 @@ class Medoo
 
         foreach ($columns as $name => $definition) {
             if (is_int($name)) {
-                $stack[] = preg_replace('/\<([\p{L}_][\p{L}\p{N}@$#\-_]*)\>/u', '"$1"', $definition);
+                $stack[] = preg_replace("/\<(" . $this::COLUMN_PATTERN . ")\>/u", '"$1"', $definition);
             } elseif (is_array($definition)) {
                 $stack[] = $this->columnQuote($name) . ' ' . implode(' ', $definition);
             } elseif (is_string($definition)) {
@@ -1668,7 +1729,7 @@ class Medoo
      * @param string $primaryKey
      * @return \PDOStatement|null
      */
-    public function insert(string $table, array $values, string $primaryKey = null): ?PDOStatement
+    public function insert(string $table, array $values, ?string $primaryKey = null): ?PDOStatement
     {
         $stack = [];
         $columns = [];
@@ -1792,7 +1853,7 @@ class Medoo
                 continue;
             }
 
-            preg_match('/(?<column>[\p{L}_][\p{L}\p{N}@$#\-_]*)(\[(?<operator>\+|\-|\*|\/)\])?/u', $key, $match);
+            preg_match("/" . $this::COLUMN_PATTERN . "(\[(?<operator>\+|\-|\*|\/)\])?/u", $key, $match);
 
             if (isset($match['operator'])) {
                 if (is_numeric($value)) {
@@ -2131,7 +2192,7 @@ class Medoo
      * @codeCoverageIgnore
      * @return string|null
      */
-    public function id(string $name = null): ?string
+    public function id(?string $name = null): ?string
     {
         $type = $this->type;
 

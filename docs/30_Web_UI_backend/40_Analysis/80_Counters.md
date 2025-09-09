@@ -1,4 +1,4 @@
-## page: Counters
+## Page: Counters
 
 Each crawler run for a project saves a set of counter variables. 
 

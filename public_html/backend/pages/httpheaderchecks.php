@@ -78,7 +78,10 @@ if ($this->_bIsPublic || isset($_GET['url'])) {
     // ----------------------------------------------------------------------
     // backend: show header of starting page or by given id
     // ----------------------------------------------------------------------
-
+    if (!$this->_requiresPermission("viewer", $this->_sTab)){
+        return include __DIR__ . '/error403.php';
+    }
+    
     // add profiles navigation
     $sReturn.=$this->_getNavi2($this->_getProfiles(), false, '');
 
@@ -199,7 +202,7 @@ if ($sHttpVer < '2') {
     $iWarnings += 1;
     $sWarnings .= ''
         . '<h4 id="warnhttpver">' . str_replace('<br>', ' ', $this->lB('httpheader.header.httpversion')) . '</h4>'
-        . $oRenderer->renderMessagebox($this->lB('httpheader.header.httpversion.hint'), 'warning')
+        . $oRenderer->renderMessagebox($this->lB('httpheader.header.httpversion.hint'), 'error')
         . ($bShowTiles
             ? $oRenderer->renderTileBar($oRenderer->renderTile($oHttpheader->getHttpVersionStatus($sHttpVer), $this->lB('httpheader.header.httpversion'), $sHttpVer, ''))
             : ''

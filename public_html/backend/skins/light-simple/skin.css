@@ -1,0 +1,58 @@
+/**
+
+    SKIN CSS FOR THEME DEFAULT
+
+**/
+
+/*
+    Overrides of defined colors
+*/
+:root{
+
+    --color-bg-boxes:#f2f4f4;
+    --color-childitem-i: #568;
+    --color-childitem-title: #589;
+
+    --color-h1:#346;
+    --color-h2:#457;
+    --color-h3:#589;
+    --color-h3-border-top:#ccc;
+    --color-h4:#8ab;
+    --color-h4-border-bottom:#eee;
+
+    --color-pacman: #69a;
+    --color-currentproject: #79a;
+    --color-shadow-default:#cde;
+
+    --context-head-bg:#8ab;
+
+    --navi-bg-l1-active:#568;
+    --navi-bg-l2-active:#78a;
+    --navi-bg-l3-active:#567;
+    --navi-bg-on-hover:rgba(160,170,190,0.25);
+
+    --navi-icon-color: #568;
+
+    --pagehint-bg:#d8e8e6;
+
+    --statusbar-bg: #cde;
+
+    --table-head-bg: #8ab;
+    --table-head-color: #eff;
+    --table-head-hover-bg: #9bc;
+    --table-head-hover-color: #f8f8f8;
+    --table-head-select-bg: #568;
+    --table-head-select-color: #cde;
+
+    --tile-bg:radial-gradient(#f0f8ff,#d0d8e4);
+    --tile-color:#78a;
+
+}
+
+body, .contextbox, .piechart, h2{
+    background-image: url('bg_main.png');
+}
+h2{
+    box-shadow: 0 0.7em 1em #fff; 
+    border-bottom: 2px dotted;
+}

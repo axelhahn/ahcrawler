@@ -1,4 +1,4 @@
-## page: Analysis
+## Page: Analysis
 
 This is an overview page with its child items.
 

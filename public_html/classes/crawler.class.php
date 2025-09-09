@@ -273,7 +273,7 @@ class crawler extends crawler_base
      * @param boolean  $bDefault    default return value; true|false
      * @return boolean
      */
-    private function _checkRegexArray(string $sOptionKey, string $sString, $bDefault = true)
+    private function _checkRegexArray(string $sOptionKey, string $sString, $bDefault = true): bool
     {
         $bFound = $bDefault;
         if (array_key_exists($sOptionKey, $this->aProfileEffective['searchindex']) && count($this->aProfileEffective['searchindex'][$sOptionKey])) {
@@ -1053,7 +1053,7 @@ class crawler extends crawler_base
      * @param mixed $s
      * @return int
      */
-    protected function _getWordCount($s)
+    protected function _getWordCount($s): int
     {
         $characterMap = 'À..ÿ'; // chars #192 .. #255
         return count(str_word_count(

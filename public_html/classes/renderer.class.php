@@ -179,6 +179,11 @@ class ressourcesrenderer extends crawler_base
     {
         $this->oHtml = new htmlelements();
         $this->setLangBackend();
+
+        // override fotawsome icons
+        // $this->_aIcons = include 'icons_lineawesome.php';
+        $this->_aIcons = include 'icons_tabler.php';
+
         if ($iSiteId) {
             $this->_initRessource($iSiteId);
         }
@@ -248,7 +253,7 @@ class ressourcesrenderer extends crawler_base
      * @param array   $aArray  array
      * @return string
      */
-    public function renderArrayValue($sKey, $aArray)
+    public function renderArrayValue(string $sKey, array $aArray): bool|string
     {
         if (array_key_exists($sKey, $aArray)) {
             return $this->renderValue($sKey, $aArray[$sKey]);
@@ -715,7 +720,7 @@ class ressourcesrenderer extends crawler_base
      * @param string  $sSiteId  site id
      * @return string
      */
-    public function renderIndexButton($sAction, $sWhat, $sSiteId): string
+    public function renderIndexButton(string $sAction, string $sWhat, string $sSiteId): string
     {
         return $this->oHtml->getTag(
             'a',
@@ -737,7 +742,7 @@ class ressourcesrenderer extends crawler_base
      * @param integer $sSiteId  Site id of the web
      * @return string
      */
-    public function renderIndexActions($sAction, $sWhat, $sSiteId): string
+    public function renderIndexActions(string $sAction, string $sWhat, string $sSiteId): string
     {
         return '<div class="actions-crawler">'
             . '<div class="running">'
@@ -1087,7 +1092,7 @@ class ressourcesrenderer extends crawler_base
      * @param string $sNodeId  optional id for the node (default is id in ressource item)
      * @return array
      */
-    private function _getVisNode(array $aItem, string $sNodeId = '')
+    private function _getVisNode(array $aItem, string $sNodeId = ''): array
     {
         $sNodeLabel = $aItem['url'] . "\n(" . $aItem['type'] . ' ' . $aItem['ressourcetype'] . '; ' . $aItem['http_code'] . ')';
         $sNodeId = $sNodeId ? $sNodeId : $aItem['id'];
@@ -1113,7 +1118,7 @@ class ressourcesrenderer extends crawler_base
      * @param string $sNodeId  optional id for the node (default is id in ressource item)
      * @return array
      */
-    private function _getVisEdge($aOptions)
+    private function _getVisEdge(array $aOptions): array
     {
         $aColors = [
             'in' => '#99bb99',
@@ -1369,10 +1374,10 @@ class ressourcesrenderer extends crawler_base
      * @param array $aItem  ressource item
      * @return string
      */
-    public function renderRessourceItemFull($aItem): string
+    public function renderRessourceItemFull(array $aItem): string
     {
         $sReturn = '';
-        $iId = $aItem['id'];
+        $iId = $aItem['id']??0;
         $aIn = $this->oRes->getRessourceDetailsIncoming($iId);
         $aOut = $this->oRes->getRessourceDetailsOutgoing($iId);
 
@@ -1441,28 +1446,33 @@ class ressourcesrenderer extends crawler_base
         // --------------------------------------------------
         $sHeader = $aItem['header'] ?: $aItem['lasterror'];
         $aHeaderJson = json_decode($sHeader, 1);
-        // $sReturn.='<pre>'.print_r($aHeaderJson,1).'</pre>';
-        if (isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']) {
-            $sReturn .= $this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error') . '<br>';
-        } else {
-            $sReposneHeaderAsString = strlen($aHeaderJson['_responseheader'][0]) != 1 ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader'];
+        if(is_array($aHeaderJson)){
+            // $sReturn.='<pre>'.print_r($aHeaderJson,1).'</pre>';
+            if (isset($aHeaderJson['_curlerror']) && $aHeaderJson['_curlerror']) {
+                $sReturn .= $this->renderMessagebox(sprintf($this->lB("ressources.no-response"), $aHeaderJson['_curlerror'], $aHeaderJson['_curlerrorcode']), 'error') . '<br>';
+            } else {
+                $sReposneHeaderAsString = strlen($aHeaderJson['_responseheader'][0]??'') != 1 
+                    ? $aHeaderJson['_responseheader'][0] 
+                    : $aHeaderJson['_responseheader']
+                    ;
 
-            $oHttpheader = new httpheader();
-            $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
-            // $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
-            // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
+                $oHttpheader = new httpheader();
+                $oHttpheader->setHeaderAsString($sReposneHeaderAsString);
+                // $aHeader=$oHttpheader->setHeaderAsString(is_array($aHeaderJson['_responseheader']) ? $aHeaderJson['_responseheader'][0] : $aHeaderJson['_responseheader']);
+                // . $oRenderer->renderHttpheaderAsTable($oHttpheader->checkHeaders());
 
-            $sReturn .= ''
-                . $this->renderToggledContent(
-                    $this->lB('httpheader.data'),
-                    $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
-                    . (isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
-                        ? '<br><a href="../?page=httpheaderchecks&urlbase64=' . base64_encode($aItem['url']) . '" class="pure-button" target="_blank">' . $this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live') . '</a>'
-                        : ''
-                    )
-                    ,
-                    false
-                );
+                $sReturn .= ''
+                    . $this->renderToggledContent(
+                        $this->lB('httpheader.data'),
+                        $this->renderHttpheaderAsTable($oHttpheader->parseHeaders())
+                        . (isset($this->aOptions['menu-public']['httpheaderchecks']) && $this->aOptions['menu-public']['httpheaderchecks']
+                            ? '<br><a href="../?page=httpheaderchecks&urlbase64=' . base64_encode($aItem['url']) . '" class="pure-button" target="_blank">' . $this->_getIcon('link-to-url') . $this->lB('ressources.httpheader-live') . '</a>'
+                            : ''
+                        )
+                        ,
+                        false
+                    );
+            }
         }
 
         // --------------------------------------------------
@@ -1515,7 +1525,7 @@ class ressourcesrenderer extends crawler_base
      * 
      * @return string
      */
-    public function renderRessourceStatus()
+    public function renderRessourceStatus(): string
     {
         // $iRessourcesCount=$this->oDB->count('ressources',['siteid'=>$this->iSiteId]);
         $this->_initRessource();
