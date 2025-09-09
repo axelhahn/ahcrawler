@@ -2,9 +2,9 @@
 
 ### 2025
 
-#### 2025-07-NN: v0.179
+#### 2025-09-09: v0.179
 
-* 🟢 ADDED: user based access to projects with given role on installations with multi user access. This is a huge change! You can limit user access to projects and functionality. Please read the docs how to configure it. 👉 See [Security User restrictions](../60_Security/30_User_restriction.md)
+* 🟢 ADDED: multi user access to projects with given role. This is a huge change you can enable now! Please read the docs how to configure it. 👉 See [Security User restrictions](../60_Security/30_User_restriction.md)
 * ↗️ UPDATE: ahCrawler is PHP 8.4 ready
 * ↗️ UPDATE: PHP versions below v2 are marked as error because http 1 .1 has security issues
 * ↗️ UPDATE: replace fontawesome with tabler icons
