@@ -8,17 +8,17 @@
 :root {
 
     /** --- new colors for each menu section - START--- **/
-    --page-home-navcolor:#abd;
-    --page-analysis-navcolor:#fa8;
-    --page-tools-navcolor:#cad;
-    --page-settings-navcolor:#d88;
-    --page-about-navcolor:#9b7;
+    --page-home-navcolor:#678;
+    --page-analysis-navcolor:#965;
+    --page-tools-navcolor:#768;
+    --page-settings-navcolor:#866;
+    --page-about-navcolor:#697;
 
     --page-home-navbg:#202830;
-    --page-analysis-navbg: #301a10;
-    --page-tools-navbg: #301030;
-    --page-settings-navbg:#301818;
-    --page-about-navbg:#203010;
+    --page-analysis-navbg: #24140c;
+    --page-tools-navbg: #220b22;
+    --page-settings-navbg:#271414;
+    --page-about-navbg:#122004;
     /** --- new colors for each menu section - END --- **/
 
 }
