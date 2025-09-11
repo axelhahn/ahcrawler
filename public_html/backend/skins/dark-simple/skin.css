@@ -194,6 +194,7 @@ a.childitem:hover{
 
 
 /* ----- override pure elements ----- */
+.header .pure-menu-list .pure-menu-link:focus{background: var(--navi-bg-l1-active);}
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active{color:var(--color-default);}
 .header .pure-menu-link-active, .header .pure-menu-link-active:hover{color:var(--color-default);}
 .header .pure-menu-list .pure-menu-list .pure-menu-link-active,
