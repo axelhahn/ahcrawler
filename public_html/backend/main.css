@@ -327,7 +327,7 @@ body, .contextbox, .piechart{
     padding: 0.2em;
 }
 .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {background: var(--navi-bg-on-hover); border-color: var(--color-default); }
-.header .pure-menu-list .pure-menu-list .pure-menu-link-active, .header .pure-menu-list .pure-menu-list .pure-menu-link:hover {
+.header .pure-menu-list .pure-menu-list .pure-menu-link-active, .header .pure-menu-list .pure-menu-list .pure-menu-link-active:hover {
     background: var(--navi-bg-l2-active);
     border-color: var(--color-default);
     color:#fff;
@@ -360,7 +360,7 @@ body, .contextbox, .piechart{
 #nav2 .pure-menu-link{border-radius: 0.3em 0.3em 0 0; color:var(--color-default); border-top: 3px solid #fff; padding: 0.75em;}
 #nav2 .pure-menu-link:hover{background: var(--navi-bg-on-hover); border-color: var(--color-default); }
 #nav2 .pure-menu-link:focus{border-color:var(--color-border-click);}
-#nav2 .pure-menu-link-active, #nav2 .pure-menu-link-active:hover{background:#f8f8f8; background: #cde; background: var(--color-default); color:#fff; border-color:var(--color-border-active); }
+#nav2 .pure-menu-link-active, #nav2 .pure-menu-link-active:hover{background: var(--color-default); color:#fff; border-color:var(--color-border-active); }
 
 .breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5); margin-top: -1em;;}
 .breadcrumb a{background: none;}
