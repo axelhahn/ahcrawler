@@ -453,6 +453,9 @@ class backend extends crawler_base
         }
         $aOptions = $this->_loadConfigfile();
 
+        if(!($aOptions['options']['auth']['user']??false)){
+            return true;
+        }
         // handle POST request from login page
         if ( $_POST['AUTH_USER']??false  && $_POST['AUTH_PW']??false) {
             if(
