@@ -427,7 +427,7 @@ a.hoverinfos:hover span{display: block;}
 h1{ background:#cde; color:var(--color-h1); margin:0 0 1em; border-top-left-radius: 0.5em;}
 
 h2{
-    font-size: 3em; 
+    font-size: 2.5em; 
     padding: 0.2em 0em 0.2em 0.5em; 
     margin: 0 0 0 -0.3em; 
     color:var(--color-h2);
@@ -441,9 +441,9 @@ p.pageHint{
     background:var(--pagehint-bg);
     font-size: 110%; 
     border-bottom-left-radius: 0.5em;
-    padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 6em; 
+    padding: 0.5em; margin-top: 0; margin-bottom: 7em; position: relative; top: 5em; 
 }
-p.pageHint:before{content: ':: ';}
+p.pageHint:before{content: ' :: ';}
 h3{ color:var(--color-h3); font-size: 170%; border-top: 2px dotted var(--color-h3-border-top); padding-top: 1em; margin: 2em 0 1.5em; font-weight: normal; }
 h3:first-of-type{ border-top: none; margin: 0 0 1.5em;}
 h4{ color: var(--color-h4); font-size: 150%; border-bottom: 1px dashed var(--color-h4-border-bottom); margin: 2.5em 0 0.5em; font-weight: normal;}
@@ -464,7 +464,6 @@ code{background: #e0e4ea; padding: 0.2em;}
 
 /* --- context box --- */
 div.contextbox{
-    position: absolute;
     right: 0;
     float: right;
     margin: 0 0 2em 2em;

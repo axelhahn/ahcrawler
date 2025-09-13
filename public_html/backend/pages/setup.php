@@ -236,7 +236,7 @@ if(isset($_POST['action'])){
            
             // $sReturn.='<pre>new options: '. htmlentities(print_r($aOptions['options'], 1)).'</pre>'; die($sReturn);
             if ($this->_saveConfig($aOptions)){
-                $sReturn.=$oRenderer->renderMessagebox($this->lB('setup.program.save.ok'), 'ok')
+                $sReturn.='<br>'.$oRenderer->renderMessagebox($this->lB('setup.program.save.ok'), 'ok')
                     .'<script>
                         window.setTimeout("window.location.href = \''.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'\'", 3000);
                     </script>'
