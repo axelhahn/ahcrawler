@@ -2,6 +2,11 @@
 
 ### 2025
 
+#### 2025-09-14: v0.180
+
+* ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
+* 💣 FIX: php warning ini user detection
+
 #### 2025-09-09: v0.179
 
 * 🟢 ADDED: multi user access to projects with given role. This is a huge change you can enable now! Please read the docs how to configure it. 👉 See [Security User restrictions](../60_Security/30_User_restriction.md)
@@ -41,9 +46,3 @@
 * 💣 FIX: filter buttons of http header in resource detail page
 * 💣 FIX: Remove project list from public ssl check page
 
-#### 2025-01-16: v0.175
-
-* 🟢 ADDED: http headeranalysis got a filter bar
-* ↗️ UPDATE: http header meta data
-* ↗️ UPDATE: analyzerHtml class - fix type in getHttpResponseHeader()
-* ↗️ UPDATE: http headers - remove double tag values
