@@ -33,7 +33,7 @@
 
     --navi-icon-color: #568;
 
-    --pagehint-bg:#d8e8e6;
+    --pagehint-bg:#e8f0f0;
 
     --statusbar-bg: #cde;
 
@@ -53,6 +53,6 @@ body, .contextbox, .piechart, h2{
     background-image: url('bg_main.png');
 }
 h2{
-    box-shadow: 0 0.7em 1em #fff; 
+    box-shadow: 0 0.5em 1em #fff; 
     border-bottom: 2px dotted;
 }

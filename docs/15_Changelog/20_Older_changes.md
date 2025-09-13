@@ -1,5 +1,14 @@
 ## Changelog archive
 
+### 2025
+
+#### 2025-01-16: v0.175
+
+* 🟢 ADDED: http headeranalysis got a filter bar
+* ↗️ UPDATE: http header meta data
+* ↗️ UPDATE: analyzerHtml class - fix type in getHttpResponseHeader()
+* ↗️ UPDATE: http headers - remove double tag values
+
 ### 2024
 
 #### 2025-01-11: v0.174
