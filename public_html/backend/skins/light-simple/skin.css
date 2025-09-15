@@ -49,10 +49,15 @@
 
 }
 
-body, .contextbox, .piechart, h2{
+body, .contextbox, .piechart{
     background-image: url('bg_main.png');
 }
 h2{
+    background: var(--sidebar-bg);
     box-shadow: 0 0.5em 1em #fff; 
-    border-bottom: 2px dotted;
+    border-bottom: 0px dotted;
+    background: #fff;
+    margin-left: -2em;
+    padding-left: 2em;
+    z-index: 10000;
 }

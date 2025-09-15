@@ -119,6 +119,7 @@ return [
 
         'filter' => 'ti ti-filterfilled',
 
+        'changelog' => 'ti ti-bell-star',
         'url' => 'ti ti-link',
         'docs' => 'ti ti-book',
         'source' => 'ti ti-code',
