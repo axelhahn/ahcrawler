@@ -9,9 +9,10 @@
 */
 :root{
 
-    --color-bg-boxes:#f2f4f4;
+    --color-bg-boxes:#fff;
     --color-childitem-i: #568;
     --color-childitem-title: #589;
+    --color-childitem-border:#e0e8f0;
 
     --color-h1:#346;
     --color-h2:#457;
