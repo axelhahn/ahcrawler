@@ -321,7 +321,7 @@ body, .contextbox, .piechart{
 
 
 /* level 1 */
-.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 1px dotted var(--color-default); border-left: 1px dotted var(--color-default); border-bottom-left-radius: 0.5em; margin-left: 0.7em; margin-bottom: 0.3em; margin-top: 0.0em; }
+.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 0px dotted var(--color-default); border-left: 1px dotted var(--color-default); border-bottom-left-radius: 0.5em; margin-left: 0.7em; margin-bottom: 0.3em; margin-top: 0.0em; }
 .header .pure-menu-list .pure-menu-list .pure-menu-link {
     border-color: var(--color-default);
     padding: 0.2em;
