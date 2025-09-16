@@ -9,9 +9,10 @@
 */
 :root{
 
-    --color-bg-boxes:#f2f4f4;
+    --color-bg-boxes:#fff;
     --color-childitem-i: #568;
     --color-childitem-title: #589;
+    --color-childitem-border:#e0e8f0;
 
     --color-h1:#346;
     --color-h2:#457;
@@ -25,6 +26,8 @@
     --color-shadow-default:#cde;
 
     --context-head-bg:#8ab;
+
+    --footer-bg: #fff;
 
     --navi-bg-l1-active:#568;
     --navi-bg-l2-active:#78a;
@@ -49,10 +52,21 @@
 
 }
 
-body, .contextbox, .piechart, h2{
+body, .contextbox, .piechart{
     background-image: url('bg_main.png');
 }
 h2{
+    background: var(--sidebar-bg);
     box-shadow: 0 0.5em 1em #fff; 
-    border-bottom: 2px dotted;
+    border-bottom: 0px dotted;
+    background: #fff;
+    margin-left: -1em;
+    padding-left: 1em;
+    z-index: 100;
+}
+@media only screen and (max-width: 1200px) {
+h2{
+    margin-left: 0em;
+    padding-left: 0em;
+    }
 }

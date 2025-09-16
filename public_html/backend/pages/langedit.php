@@ -167,14 +167,14 @@ $sObjNavi.='<div class="pure-control-group">'
         'name'=>'object',
         'onchange'=>'submit()',
         ], $aObjOptions)
-
+    .'<br><br>'
     . $oRenderer->oHtml->getTag('label', ['for'=>'sellang1', 'label'=>$this->lB('langedit.lang1')])
     . $oRenderer->oHtml->getFormSelect([
         'id'=>'sellang1', 
         'name'=>'lang1',
         'onchange'=>'submit()',
         ], $aLangOptions1)
-
+    
     . $oRenderer->oHtml->getTag('label', ['for'=>'sellang2', 'label'=>$this->lB('langedit.lang2')])
     . $oRenderer->oHtml->getFormSelect([
         'id'=>'sellang2', 

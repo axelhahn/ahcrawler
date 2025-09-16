@@ -117,7 +117,7 @@ $sReturn.=''
         . $this->_getLinkAsBox([
                 'url'=>$this->aAbout['urlChangelog'],
                 'hint'=>"",
-                'icon'=>$this->_aIcons['res']['docs'],
+                'icon'=>$this->_aIcons['res']['changelog'],
                 'title'=>$this->lB('about.url.changelog'),
                 'text'=>$this->aAbout['urlDocs'],
                 'target'=>'_blank',

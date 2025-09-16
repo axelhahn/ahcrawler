@@ -304,7 +304,7 @@ body, .contextbox, .piechart{
     .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */
-.header .langnav{position: fixed; top: 1em; right: 2em;}
+.header .langnav{position: fixed; top: 1em; right: 2em; z-index: 1000;}
 .pure-menu{margin-left: 0.5em; width: 95%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{}
@@ -321,7 +321,7 @@ body, .contextbox, .piechart{
 
 
 /* level 1 */
-.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 0px dotted var(--color-default); border-left: 0px solid var(--color-default); margin-left: 1em; margin-bottom: 0.3em; margin-top: 0.0em; }
+.header .pure-menu-list .pure-menu-list {background: var(--navi-bg-l1); border-bottom: 0px dotted var(--color-default); border-left: 1px dotted var(--color-default); border-bottom-left-radius: 0.5em; margin-left: 0.7em; margin-bottom: 0.3em; margin-top: 0.0em; }
 .header .pure-menu-list .pure-menu-list .pure-menu-link {
     border-color: var(--color-default);
     padding: 0.2em;
@@ -363,7 +363,7 @@ body, .contextbox, .piechart{
 #nav2 .pure-menu-link-active, #nav2 .pure-menu-link-active:hover{background: var(--color-default); color:#fff; border-color:var(--color-border-active); }
 
 .breadcrumb{float: right; border-bottom: 1px solid var(--DEFAULT-darken-5); margin-top: -1em;;}
-.breadcrumb a{background: none;}
+.breadcrumb a{background: none; border-top: 2px solid #fff1;}
 
 /** --- apply colors for each menu section - START --- **/
 a[href*="page=home"]      i, .page-home     h2 i ,.page-home     .pure-menu-list .pure-menu-list i, .page-home     a.childitem i{ color: var(--page-home-navcolor);}
@@ -372,17 +372,23 @@ a[href*="page=tools"]     i, .page-tools    h2 i ,.page-tools    .pure-menu-list
 a[href*="page=settings"]  i, .page-settings h2 i ,.page-settings .pure-menu-list .pure-menu-list i, .page-settings a.childitem i{ color: var(--page-settings-navcolor);}
 a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list .pure-menu-list i, .page-about    a.childitem i{ color: var(--page-about-navcolor);}
 
-.page-home     .header .pure-menu-list .pure-menu-list {background: var(--page-home-navbg)}
-.page-analysis .header .pure-menu-list .pure-menu-list {background: var(--page-analysis-navbg)}
-.page-tools    .header .pure-menu-list .pure-menu-list {background: var(--page-tools-navbg)}
-.page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg)}
-.page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)}
+.page-home     .header .pure-menu-list .pure-menu-list {background: var(--page-home-navbg)    ; border-color: var(--page-home-navcolor);}
+.page-analysis .header .pure-menu-list .pure-menu-list {background: var(--page-analysis-navbg); border-color: var(--page-analysis-navcolor);}
+.page-tools    .header .pure-menu-list .pure-menu-list {background: var(--page-tools-navbg)   ; border-color: var(--page-tools-navcolor);}
+.page-settings .header .pure-menu-list .pure-menu-list {background: var(--page-settings-navbg); border-color: var(--page-settings-navcolor);}
+.page-about    .header .pure-menu-list .pure-menu-list {background: var(--page-about-navbg)   ; border-color: var(--page-about-navcolor);}
 
 .page-home     h2{border-color: var(--page-home-navcolor)}
 .page-analysis h2{border-color: var(--page-analysis-navcolor)}
 .page-tools    h2{border-color: var(--page-tools-navcolor)}
 .page-settings h2{border-color: var(--page-settings-navcolor)}
 .page-about    h2{border-color: var(--page-about-navcolor)}
+
+.breadcrumb a[href*="page=home"]:hover {border-color: var(--page-home-navcolor);}
+.breadcrumb a[href*="page=analysis"]:hover {border-color: var(--page-analysis-navcolor);}
+.breadcrumb a[href*="page=tools"]:hover {border-color: var(--page-tools-navcolor);}
+.breadcrumb a[href*="page=settings"]:hover {border-color: var(--page-settings-navcolor);}
+.breadcrumb a[href*="page=about"]:hover {border-color: var(--page-about-navcolor);}
 /** --- apply colors for each menu section - END --- **/
 
 .pure-button {
@@ -417,6 +423,8 @@ a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list
 
 .button-small {font-size: 100%; padding: 0.1em;}
 
+.topright{z-index: 1000; position: fixed; right: 1em; top: 1em;}
+
 a{color:var(--color-a);}
 a:hover{}
 
@@ -435,7 +443,6 @@ h2{
     position: fixed; 
     display: block; 
     width: 100%;
-    z-index:100;    
 }
 p.pageHint{
     background:var(--pagehint-bg);
@@ -933,4 +940,6 @@ div.person .name{font-weight: bold;}
       .pure-menu{margin-left: 0;}
       .header .pure-menu-list .pure-menu-list .pure-menu-list{display: none !important;}
       a.pure-menu-link span{display: none;}
+      a.pure-menu-link:hover span{display: default;}
+
 }

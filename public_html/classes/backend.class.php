@@ -1169,9 +1169,12 @@ class backend extends crawler_base
             ;
 
         }
+        if ($this->_bIsPublic) {
+            $sRight.=$this->getLangNavi();
+        }
 
 
-        $sRight = $sRight ? '<span style="z-index: 100000; position: fixed; right: 1em; top: 1em;">' . $sRight . '</span>' : '';
+        $sRight = $sRight ? '<span class="topright">' . $sRight . '</span>' : '';
 
 
         $this->logAdd(__METHOD__ . ' H2 = "' . $sH2 . '"');

@@ -2,6 +2,15 @@
 
 ### 2025
 
+#### 2025-09-16: v0.181
+
+* ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
+* ↗️ UPDATE: Beautify page layout of default skin
+* ↗️ UPDATE: changelog icon in about page
+* ↗️ UPDATE: Render left navigation before content
+* ↗️ UPDATE: Shorter waiting time after saving settings
+* 💣 FIX: detect user from Basic auth without acl confg
+
 #### 2025-09-14: v0.180
 
 * ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
@@ -33,16 +42,3 @@
 * 🟢 ADDED: link to online help in backend pages
 * ↗️ UPDATE: http response header metadata
 * ↗️ UPDATE: web ui - replace "X-Frame-Options: SAMEORIGIN" with "Content-Security-Policy: frame-ancestors deny"
-
-#### 2025-01-19: v0.176
-
-* 🟢 ADDED: more colors for http header types and icons
-* 🟢 ADDED: show count of found experimental http reponse headers on start page
-* 🟢 ADDED: counter for experimantal http response headers
-* ↗️ UPDATE: (doubled) http response header was removed in curl meta infos
-* ↗️ UPDATE: remove a column in http response header table
-* ↗️ UPDATE: css for dark mode
-* 💣 FIX: typos in http header metadata
-* 💣 FIX: filter buttons of http header in resource detail page
-* 💣 FIX: Remove project list from public ssl check page
-

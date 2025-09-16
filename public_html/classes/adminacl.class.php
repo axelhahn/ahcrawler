@@ -90,12 +90,20 @@ class adminacl
         $this->_sUserDisplayname = '';
 
         $sSessionField=$this->_aConfig['session_user']??'AUTH_USER';
-        $sUserField=$this->_aConfig['userfield']??'REMOTE_USER';
+
+        // if no acl config is available then try to detect a user
+        if(!($this->_aConfig['userfield']??false)){
+            foreach(['REMOTE_USER', 'PHP_AUTH_USER', 'AUTH_USER', 'USER'] as $sUserField){
+                if(isset($_SERVER[$sUserField])){
+                    break;
+                }
+            }
+        } else {
+            $sUserField=$this->_aConfig['userfield']??'REMOTE_USER';
+        }
 
         // a detected user in $_SERVER scope will overwrite a user in $_SESSION
-        if(isset($_SERVER[$sUserField])){
-            $_SESSION[$sSessionField] = $_SERVER[$sUserField];
-        }
+        $_SESSION[$sSessionField] = $_SERVER[$sUserField]??false;
         
         if (
             ($_SERVER[$sUserField]??false)
