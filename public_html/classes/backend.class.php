@@ -496,7 +496,7 @@ class backend extends crawler_base
     private function _getUser(): string
     {
         if(!$this->acl->hasConfig()){
-            return $_SESSION['AUTH_USER'] ?? '';
+            if($_SESSION['AUTH_USER']??false) return $_SESSION['AUTH_USER'];
         }
         return $this->acl->getUser()?? $_SESSION['AUTH_USER'];
     }
