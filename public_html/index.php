@@ -196,7 +196,7 @@ if ($oBackend->isNavitemHidden()) {
 // GET LEFT NAVIGATION
 // ----------------------------------------------------------------------
 $sHtmlNaviLeft = $oBackend->installationWasDone()
-    ? $oBackend->getNavi() . ($bIsBackend ? '' : $oBackend->getLangNavi())
+    ? $oBackend->getNavi()
     : ''
 ;
 
@@ -242,14 +242,6 @@ $sBodyClasses .= $aNavPages[0] ?? false ? "page-$aNavPages[0]" : "";
         </div>
     </div>
 
-    <div id="content">
-        <div class="maincontent">
-            <?php
-            echo $sHtmlContent;
-            ?>
-        </div>
-    </div>
-
     <div id="navmain" class="sidebar pure-u-1 ">
         <div class="header">
             <h1 class="brand-title"><a href="?">
@@ -275,6 +267,14 @@ $sBodyClasses .= $aNavPages[0] ?? false ? "page-$aNavPages[0]" : "";
 
         </div>
     </div>
+    <div id="content">
+        <div class="maincontent">
+            <?php
+            echo $sHtmlContent;
+            ?>
+        </div>
+    </div>
+
     <div id="divStatus"></div>
 
     <iframe name="selfiframe"></iframe>

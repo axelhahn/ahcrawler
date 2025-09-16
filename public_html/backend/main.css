@@ -304,7 +304,7 @@ body, .contextbox, .piechart{
     .brand-title a{margin-left: 0.4em;}
 
 /* --- menu left --- */
-.header .langnav{position: fixed; top: 1em; right: 2em;}
+.header .langnav{position: fixed; top: 1em; right: 2em; z-index: 1000;}
 .pure-menu{margin-left: 0.5em; width: 95%;}
 .pure-menu-heading{font-weight: bold;}
 .header .pure-menu{}
@@ -423,6 +423,8 @@ a[href*="page=about"]     i, .page-about    h2 i ,.page-about    .pure-menu-list
 
 .button-small {font-size: 100%; padding: 0.1em;}
 
+.topright{z-index: 1000; position: fixed; right: 1em; top: 1em;}
+
 a{color:var(--color-a);}
 a:hover{}
 
@@ -441,7 +443,6 @@ h2{
     position: fixed; 
     display: block; 
     width: 100%;
-    z-index:100;    
 }
 p.pageHint{
     background:var(--pagehint-bg);
@@ -939,4 +940,6 @@ div.person .name{font-weight: bold;}
       .pure-menu{margin-left: 0;}
       .header .pure-menu-list .pure-menu-list .pure-menu-list{display: none !important;}
       a.pure-menu-link span{display: none;}
+      a.pure-menu-link:hover span{display: default;}
+
 }

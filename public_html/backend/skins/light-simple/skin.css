@@ -27,6 +27,8 @@
 
     --context-head-bg:#8ab;
 
+    --footer-bg: #fff;
+
     --navi-bg-l1-active:#568;
     --navi-bg-l2-active:#78a;
     --navi-bg-l3-active:#567;
@@ -58,7 +60,13 @@ h2{
     box-shadow: 0 0.5em 1em #fff; 
     border-bottom: 0px dotted;
     background: #fff;
-    margin-left: -2em;
-    padding-left: 2em;
-    z-index: 10000;
+    margin-left: -1em;
+    padding-left: 1em;
+    z-index: 100;
+}
+@media only screen and (max-width: 1200px) {
+h2{
+    margin-left: 0em;
+    padding-left: 0em;
+    }
 }

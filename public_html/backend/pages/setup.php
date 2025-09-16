@@ -238,7 +238,7 @@ if(isset($_POST['action'])){
             if ($this->_saveConfig($aOptions)){
                 $sReturn.='<br>'.$oRenderer->renderMessagebox($this->lB('setup.program.save.ok'), 'ok')
                     .'<script>
-                        window.setTimeout("window.location.href = \''.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'\'", 3000);
+                        window.setTimeout("window.location.href = \''.$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'].'\'", 1000);
                     </script>'
                 ;
             } else {
