@@ -2,6 +2,12 @@
 
 ### 2025
 
+#### 2025-01-21: v0.177
+
+* 🟢 ADDED: link to online help in backend pages
+* ↗️ UPDATE: http response header metadata
+* ↗️ UPDATE: web ui - replace "X-Frame-Options: SAMEORIGIN" with "Content-Security-Policy: frame-ancestors deny"
+
 #### 2025-01-19: v0.176
 
 * 🟢 ADDED: more colors for http header types and icons
