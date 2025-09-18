@@ -93,7 +93,7 @@ class adminacl
 
         // if no acl config is available then try to detect a user
         if(!($this->_aConfig['userfield']??false)){
-            foreach(['REMOTE_USER', 'PHP_AUTH_USER', 'AUTH_USER', 'USER'] as $sUserField){
+            foreach(['REMOTE_USER', 'PHP_AUTH_USER', 'AUTH_USER'] as $sUserField){
                 if(isset($_SERVER[$sUserField])){
                     break;
                 }
@@ -102,8 +102,17 @@ class adminacl
             $sUserField=$this->_aConfig['userfield']??'REMOTE_USER';
         }
 
+        if($_SERVER[$sUserField]??false){
+            $_SESSION[$sSessionField] = $_SERVER[$sUserField]??false;
+        }
+
+        // if(!($_SESSION??false)){
+        //     session_start();
+        // }
         // a detected user in $_SERVER scope will overwrite a user in $_SESSION
-        $_SESSION[$sSessionField] = $_SERVER[$sUserField]??false;
+        // return true;
+        // $_SESSION[$sSessionField] = $_SERVER[$sUserField]??false;
+
         
         if (
             ($_SERVER[$sUserField]??false)
@@ -240,6 +249,9 @@ class adminacl
      */
     public function getUser(): string
     {
+        if(!$this->_sUser){
+            $this->_detectUser();
+        }
         return $this->_sUser;
     }
 
