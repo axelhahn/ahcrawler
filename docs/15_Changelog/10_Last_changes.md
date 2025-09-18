@@ -2,6 +2,10 @@
 
 ### 2025
 
+#### 2025-09-18: v0.182
+
+* 💣 FIX: Damn, the login mix of login form and $_SERVER was trickier than I tought.
+
 #### 2025-09-16: v0.181
 
 * ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
@@ -36,9 +40,3 @@
 
 * ↗️ UPDATE: fix position of context box
 * ↗️ UPDATE: profiles page has most relevant settings on top now
-
-#### 2025-01-21: v0.177
-
-* 🟢 ADDED: link to online help in backend pages
-* ↗️ UPDATE: http response header metadata
-* ↗️ UPDATE: web ui - replace "X-Frame-Options: SAMEORIGIN" with "Content-Security-Policy: frame-ancestors deny"

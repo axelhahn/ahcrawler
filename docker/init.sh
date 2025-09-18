@@ -34,11 +34,14 @@
 # 2025-05-13  v1.27 <axel.hahn@unibe.ch>      handle addition variables config file for non sharable values 
 # 2025-06-30  v1.28 <axel.hahn@unibe.ch>      supress grep errors on missing init.sh_not_shared.cfg; support mariadb tools
 # 2025-06-30  v1.29 <axel.hahn@unibe.ch>      short docker ps output for all containers; small fixes
+# 2025-07-25  v1.30 <axel.hahn@unibe.ch>      Hide DB info block if no database is configured
+# 2025-09-16  v1.31 <axel.hahn@unibe.ch>      adpations for new docker dev setup
+# 2025-09-18  v1.32 <axel.hahn@unibe.ch>      add select menu
 # ======================================================================
 
 cd "$( dirname "$0" )" || exit 1
 
-_version="1.29"
+_version="1.32"
 
 # init used vars
 gittarget=
@@ -142,8 +145,8 @@ function _getStatus_docker(){
         DC_PS=$( docker-compose -p "$APP_NAME" ps | grep "$APP_NAME")
     fi
 
-    grep -q "${APP_NAME}-web" <<< "$DC_PS" && DC_WEB_UP=1
-    grep -q "${APP_NAME}-db"  <<< "$DC_PS" && DC_DB_UP=1
+    grep -q ":${APP_PORT}->" <<< "$DC_PS" && DC_WEB_UP=1
+    grep -q ":${DB_PORT}->"  <<< "$DC_PS" && DC_DB_UP=1
 
     if [ "$DB_ADD" != "false" ] && [ ! -d "${DC_DUMP_DIR}" ]; then
         echo "INFO: creating subdir ${DC_DUMP_DIR} to import/ export databases ..."
@@ -164,18 +167,131 @@ function _getStatus_docker(){
 # Get web url of the application
 # It is for support of Nginx Docker Proxy
 # https://github.com/axelhahn/nginx-docker-proxy
-# It returns http://localhost:<port> or a https://<appname> plus $WEBURL
+# It puts http://localhost:<port> or a https://<appname> plus $WEBURL
+# into global var DC_WEB_URL
 function _getWebUrl(){
-    if grep -q "^[0-9\.]* ${APP_NAME}-web" /etc/hosts; then
-        DC_WEB_URL="https://${APP_NAME}-web$WEBURL"
-    else
-        DC_WEB_URL=http://localhost:${APP_PORT}$WEBURL
+    local protocol=http
+    local hosts_line="127.0.0.1  ${APP_NAME} # ADDED BY DOCKER INIT"
+    
+    grep -q "ssl" <<< "$APP_APACHE_MODULES" && protocol=https
+    DC_WEB_URL="${protocol}://${APP_NAME}:${APP_PORT}$WEBURL"
+
+    if ! grep -q "$hosts_line" /etc/hosts; then
+        echo "INFO: need to add /etc/hosts: $hosts_line"
+        if ! echo "$hosts_line - created at $(date)" | sudo tee -a /etc/hosts ; then
+            echo "ERROR: Failed. Using fallback to localhost"
+            DC_WEB_URL="${protocol}://localhost:${APP_PORT}$WEBURL"
+        fi
     fi
-    set +vx
 }
 
 # ----------------------------------------------------------------------
 # OUTPUT
+
+# select menu
+# taken from https://github.com/axelhahn/bash-input-tab-completion/tree/main
+function input.select {
+    local options=("$@")
+    local itemsPre="   "
+
+    # helpers for terminal print control and key input
+    ESC=$(printf "\033")
+
+    cursor_blink_on()       { printf "$ESC[?25h"; }
+    cursor_blink_off()      { printf "$ESC[?25l"; }
+    cursor_to()                     { printf "$ESC[$1;${2:-1}H"; }
+    print_option()          { printf "${itemsPre} $1 "; }
+    print_selected()        { printf "${itemsPre}${COLOR_GREEN}$ESC[7m $1 $ESC[27m${NC}"; }
+    get_cursor_row()        { IFS=';' read -sdR -p $'\E[6n' ROW COL; echo ${ROW#*[}; }
+
+    key_input() {
+        local key
+        # read 3 chars, 1 at a time
+        for ((i=0; i < 3; ++i)); do
+            read -s -n1 input 2>/dev/null >&2
+            # concatenate chars together
+            key+="$input"
+            # if a number is encountered, echo it back
+            if [[ $input =~ ^[1-9]$ ]]; then
+                echo $input; return;
+            # if enter, early return
+            elif [[ $input = "" ]]; then
+                echo enter; return;
+            # if we encounter something other than [1-9] or "" or the escape sequence
+            # then consider it an invalid input and exit without echoing back
+            elif [[ ! $input = $ESC && i -eq 0 ]]; then
+                return
+            fi
+        done
+
+        if [[ $key = $ESC[A ]]; then echo up; fi;
+        if [[ $key = $ESC[B ]]; then echo down; fi;
+    }
+
+    function cursorUp() { printf "$ESC[A"; }
+    function clearRow() { printf "$ESC[2K\r"; }
+    function eraseMenu() {
+        cursor_to $lastrow
+        clearRow
+        numHeaderRows=$(printf "$header" | wc -l)
+        numOptions=${#options[@]}
+        numRows=$(($numHeaderRows + $numOptions))
+        for ((i=0; i<$numRows; ++i)); do
+        cursorUp; clearRow;
+        done
+    }
+
+    # initially print empty new lines (scroll down if at bottom of screen)
+    for opt in "${options[@]}"; do printf "\n"; done
+
+    # determine current screen position for overwriting the options
+    local lastrow=`get_cursor_row`
+    local startrow=$(($lastrow - $#))
+    local selected=0
+
+    # ensure cursor and input echoing back on upon a ctrl+c during read -s
+    trap "cursor_blink_on; stty echo; printf '\n'; exit" 2
+    cursor_blink_off
+
+    while true; do
+        # print options by overwriting the last lines
+        local idx=0
+        for opt in "${options[@]}"; do
+            cursor_to $(($startrow + $idx))
+            # add an index to the option
+            local label="$(($idx + 1)). $opt"
+            if [ $idx -eq $selected ]; then
+                print_selected "$label"
+            else
+                print_option "$label"
+            fi
+            ((idx++))
+        done
+
+        # user key control
+        input=$(key_input)
+
+        case $input in
+            enter) break;;
+            [1-9])
+                # If a digit is encountered, consider it a selection (if within range)
+                if [ $input -lt $(($# + 1)) ]; then
+                selected=$(($input - 1))
+                break
+                fi
+                ;;
+            up)     ((selected--));
+                if [ $selected -lt 0 ]; then selected=$(($# - 1)); fi;;
+            down)  ((selected++));
+                if [ $selected -ge $# ]; then selected=0; fi;;
+        esac
+    done
+
+    eraseMenu
+    cursor_blink_on
+
+    return $selected
+}
 
 # draw a headline 2
 function h2(){
@@ -546,7 +662,6 @@ function _showContainers(){
     local sUp=".. UP"
     local sDown=".. down"
 
-    local Status=
     local StatusWeb="$sDown"
     local StatusDb="$sDown"
     local colWeb=
@@ -567,8 +682,7 @@ function _showContainers(){
 
     if [ "$DB_ADD" = "false" ]; then
         colDb="$fgGray"
-        local StatusDb=".. N/A"
-        Status="This app has no database container."
+        StatusDb=""
     fi
 
     h2 CONTAINERS
@@ -577,16 +691,11 @@ function _showContainers(){
     echo "$DC_PS" | sed 's#^#  #g'
 
     echo
-    printf "  $colWeb$fgInvert  %-32s  $fgReset   $colDb$fgInvert  %-32s  $fgReset\n"     "WEB ${StatusWeb}"  "DB ${StatusDb}"
-    printf "    %-32s  $fgReset     %-32s  $fgReset\n"      "PHP ${APP_PHP_VERSION}"      "${MYSQL_IMAGE}"
-    printf "    %-32s  $fgReset     %-32s  $fgReset\n"      ":${APP_PORT}"                ":${DB_PORT}"
+    printf "  $colWeb$fgInvert  %-32s  $fgReset   $colDb$fgInvert  %-32s  $fgReset\n"     "WEB ${StatusWeb}"  "$( test -n "$StatusDb" && echo DB ${StatusDb} )"
+    printf "    %-32s  $fgReset     %-32s  $fgReset\n"      "PHP ${APP_PHP_VERSION}"      "$( test -n "$StatusDb" && echo ${MYSQL_IMAGE} || echo "(no database)" )"
+    printf "    %-32s  $fgReset     %-32s  $fgReset\n"      ":${APP_PORT}"                "$( test -n "$StatusDb" && echo :${DB_PORT} )"
 
     echo
-
-    if [ -n "$Status" ]; then
-        echo "  $Status"
-        echo
-    fi
 
     if [ -n "$bLong" ]; then
         echo "$_out"
@@ -616,9 +725,13 @@ function _dbDump(){
         echo "Database container is not running. Aborting."
         return
     fi
+
+    dockerid="${APP_NAME}-db"
+    grep -q "$dockerid" <<< "$DC_PS" || dockerid="db"
+    
     outfile=${DC_DUMP_DIR}/${MYSQL_DB}_$( date +%Y%m%d_%H%M%S ).sql
     echo -n "dumping ${MYSQL_DB} ... "
-    if docker exec -i "${APP_NAME}-db" ${DBDUMP} -uroot -p${MYSQL_ROOT_PASS} ${MYSQL_DB} > "$outfile"; then
+    if docker exec -i "$dockerid" ${DBDUMP} -uroot -p${MYSQL_ROOT_PASS} ${MYSQL_DB} > "$outfile"; then
         echo -n "OK ... Gzip ... "
         if gzip "${outfile}"; then
             echo "OK"
@@ -641,7 +754,7 @@ function _dbDump(){
             rm -f "$outfile"
         fi
     else
-        echo "ERROR: docker exec -i "${APP_NAME}-db" ${DBDUMP} failed."
+        echo "ERROR: docker exec -i "$dockerid" ${DBDUMP} failed."
         rm -f "$outfile"
     fi
 }
@@ -665,11 +778,14 @@ function _dbImport(){
         return
     fi
 
-    echo -n "Importing $dumpfile ... "
+    dockerid="${APP_NAME}-db"
+    grep -q "$dockerid" <<< "$DC_PS" || dockerid="db"
+    
+    echo -n "Importing $dumpfile to $dockerid ... "
 
     # Mac OS compatibility
     # if zcat "$dumpfile" | docker exec -i "${APP_NAME}-db" mysql -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
-    if cat "$dumpfile" | zcat | docker exec -i "${APP_NAME}-db" ${DBTOOL} -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
+    if cat "$dumpfile" | zcat | docker exec -i "$dockerid" ${DBTOOL} -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
     then
         echo "OK"
     else
@@ -769,16 +885,18 @@ while true; do
             ;;
         c)
             h2 "Console"
-            _containers=$( docker-compose -p "$APP_NAME" ps | sed -n "2,\$p" | awk '{ print $1}' )
-            if [ "$DB_ADD" = "false" ]; then
-                dockerid=$_containers
-            else
-                echo "Select a container:"
-                sed "s#^#    #g" <<< "$_containers"
-                echo -n "id or name >"
-                read -r dockerid
-            fi
-            test -z "$dockerid" || (
+            echo "Select a container:"
+            lines=()
+            lines+=( $( echo "$DC_PS" | awk '{ print $1 }' | sed "s#^#    #g" ) )
+            lines+=( "<< back" )
+
+            input.select "${lines[@]}"
+            dockerid="${lines[$?]}"
+
+            # echo "$DC_PS" | awk '{ print $1 }' | sed "s#^#    #g"
+            # echo -n "id or name >"
+            # read -r dockerid            
+            test -n "$dockerid" && test "$dockerid" != "<< back" && (
                 echo
                 echo "> docker exec -it $dockerid /bin/bash     (type 'exit' + Return when finished)"
                 docker exec -it "$dockerid" /bin/bash
@@ -788,7 +906,8 @@ while true; do
             h2 "PHP $APP_PHP_VERSION linter"
 
             dockerid="${APP_NAME}-web"
-            echo -n "Scanning ... "
+            grep -q "$dockerid" <<< "$DC_PS" || dockerid="php-fpm"
+            echo -n "Scanning php files in '$dockerid' ... "
             typeset -i _iFiles
             _iFiles=$( docker exec -it "$dockerid" /bin/bash -c "find . -name '*.php' " | wc -l )
 

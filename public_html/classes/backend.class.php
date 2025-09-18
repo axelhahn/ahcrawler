@@ -338,7 +338,7 @@ class backend extends crawler_base
             $this->_aMenu = $this->_aMenuPublic;
         } else {
             if (!isset($_SESSION)) {
-                session_name('ahcrawler');
+                // session_name('ahcrawler');
                 session_start();
             }
             $this->acl = new adminacl();
@@ -465,12 +465,13 @@ class backend extends crawler_base
             {
                 $this->_setUser($_POST['AUTH_USER']);
                 header('Location: ?' . $_SERVER['QUERY_STRING']);
+                // print_r($_SESSION); echo " ... in _setUser()<br>";
+                exit(0);
                 return true;
             } else {
                 return false;
             }
         }
-                
 
         // if there is no acl config
         if(!$this->acl->hasConfig()) 
@@ -495,10 +496,28 @@ class backend extends crawler_base
      */
     private function _getUser(): string
     {
+
+        // if ($this->acl->getUser() == "superuser") {
+        //     return $_SESSION['AUTH_USER'] ?? '';
+        // }
+        // return $this->acl->getUser();
+
+        // echo "
+        
+        // <h1>_getUser</h1>
+        // <pre>" . print_r($_SESSION, 1) . "</pre>
+        // acl->getUser = ".$this->acl->getUser()."<br>
+
+        // "; die();
+
+        // print_r($_SESSION); die();
         if(!$this->acl->hasConfig()){
             if($_SESSION['AUTH_USER']??false) return $_SESSION['AUTH_USER'];
         }
-        return $this->acl->getUser()?? $_SESSION['AUTH_USER'];
+        if ($this->acl->getUser() == "superuser") {
+            return $_SESSION['AUTH_USER'] ?? '';
+        }
+        return $this->acl->getUser();
     }
 
     /**
