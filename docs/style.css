@@ -1,7 +1,7 @@
 /*
 
     patch css elements of daux.io blue theme
-    version 2025-01-21
+    version 2025-08-18
 
 */
 
@@ -22,10 +22,10 @@
 
     --sidebar-background:var(--body-background);
     --sidebar-border-color: none;
-    --sidebar-link-active-background: #f4f8f8;
+    --sidebar-link-active-background: #e8f0f2;
     
     --table-border: #eee;
-    --table-header-background: #d8e8e8;
+    --table-header-background: #e4f0f0;
     --table-background-odd: #f8f7f5;
     --toc--inner-border-color: none;
     --code-tag-background-color: #f0f4f8;
@@ -41,7 +41,8 @@
     --axel_brand-background: none;
     --axel_brand-pre-background: #8ce;
     --axel_brand-pre-background-hover: #adf;
-    --axel_sidebar-link-active-background: linear-gradient(20deg,#fdf4e8, #f8ecf4,#f0f4ff);
+    --axel_sidebar-link-active-background: linear-gradient(20deg,#ebdece, #f8ecf4,#e3e9f7);
+    --axel_sidebar-link-active-color: #404;
 
     --axel_h1_header: none;
 
@@ -57,9 +58,13 @@
     --axel_h4: #8ac;
     --axel_h4-bg: none;
     --axel_h4-bottom: 1px dashed #ddd;
+    --axel_h5: #99a;
+    --axel_h5-bg: none;
+    --axel_h5-bottom: 1px dashed #ddd;
+
 
     --axel_hero_bg: #f8f8f8;
-    --axel_hero_bg: linear-gradient(20deg, #f8ecf4, #f0faf8,#f0f4ff,#fdf4e8);
+    --axel_hero_bg: linear-gradient(20deg, #f8e5f2, #f0faf8,#eaf0ff,#fdf4e8);
     --axel_hero_shadow: 0.2em 0.2em 2em #cef;
     --axel_img-border: 2px dashed #cbc;
 
@@ -80,7 +85,7 @@
     --brand-color: #c92;
     --brand-background: var(--body-background);
     --hr-color: none;
-    --code-tag-background-color_: #bcc;
+    --code-tag-background-color_: rgb(50, 66, 66);
 
     --pager-background-color: #123;
     --pager-hover-background-color: #111;
@@ -96,13 +101,14 @@
 
     /* Axels custom values */
     --axel_bg-toc: var(--body-background);
-    --axel_bg-toc-head: #333;
+    --axel_bg-toc-head: #223;
     --axel_bg-toc-border: #256;
     
     --axel_brand-background: none;
     --axel_brand-pre-background: #69a;
     --axel_brand-pre-background-hover: #6ab;
     --axel_sidebar-link-active-background: #424;
+    --axel_sidebar-link-active-color: #a7a;
 
     --axel_h1_header: none;
 
@@ -115,11 +121,14 @@
     --axel_h3: #838;
     --axel_h3: #476;
     --axel_h3-bg: none;
-    --axel_h3-bottom: 1px solid #333;
+    --axel_h3-bottom: 1px solid #476;
     --axel_h4: #c74;
     --axel_h4: #689;
     --axel_h4-bg: none;
-    --axel_h4-bottom: 1px dashed #333;
+    --axel_h4-bottom: 1px dashed #467;
+    --axel_h5: #667;
+    --axel_h5-bg: none;
+    --axel_h5-bottom: 1px dashed #333;
 
     --axel_hero_bg: none;
     --axel_hero_shadow: 0.2em 0.2em 2em #245;
@@ -158,6 +167,7 @@ a.Brand {
 
 .Nav__item--open > a, .Nav__item--active > a {
 	background: var(--axel_sidebar-link-active-background);
+    color: var(--axel_sidebar-link-active-color)
 }
 
 /* ---------- page header: breadcrumb ---------- */
@@ -165,7 +175,16 @@ a.Brand {
 .Page__header{border: none;}
 .Page__header a{color: var(--axel_h1_header);}
 .Page__header h1{font-size: 1.3em;}
+.Page__header > h1:first-of-type {
+    margin-top: 0em;
+    margin-left: -1em;
+    padding-left: 1em;
+    min-width: 100%;
+    background: var(--body-background);
 
+    position: fixed;
+    box-shadow: 0 0.5em 1em var(--body-background);
+}
 /* ---------- page content ---------- */
 
 h2::before{ content: ': : '; opacity: 0.5;}
@@ -173,12 +192,13 @@ h3::before{ content: '> '; opacity: 0.4;}
 h4::before{ content: '_ '; opacity: 0.3;}
 h5::before{ content: '. '; opacity: 0.2;}
 
-.s-content{padding-top: 1em;}
+.s-content{padding-top: 4em;}
 .s-content h1{background: var(--axel_h1-bg); color: var(--axel_h1); font-size: 200%; font-weight:bold; margin-bottom: 2em; margin-top: 0em; border-bottom: var(--axel_h1-bottom);}
 .s-content h2{background: var(--axel_h2-bg); color: var(--axel_h2); font-size: 180%; font-weight:bold; margin-top: 4em; border-bottom: var(--axel_h2-bottom); padding: 0.2em}
 h2:first-of-type {margin-top: 0em;}
 .s-content>h3{background: var(--axel_h3-bg); color: var(--axel_h3); font-size: 150%; font-weight:bold; margin-top: 5em; border-bottom: var(--axel_h3-bottom);}
 .s-content>h4{background: var(--axel_h4-bg); color: var(--axel_h4); font-size: 130%; font-weight:bold; margin-top: 5em; border-bottom: var(--axel_h4-bottom);}
+.s-content>h5{background: var(--axel_h5-bg); color: var(--axel_h5); font-size: 126%; font-weight:bold; margin-top: 5em; border-bottom: var(--axel_h5-bottom);}
 
 .s-content img{border: var(--axel_img-border); border-radius: 1.5em; padding: 1em; margin: 1em 0;}
 .s-content pre{
