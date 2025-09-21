@@ -43,11 +43,12 @@ You can setup users in htauth users in files or database backends (like Mysql or
     Restrict the access to the location */backend/index.php* - a single file only.
 
 ```txt
-   <Location "/backend/index.php">
-     Require valid-user
-     AuthType Basic
-     ...
-   </Location>
+    <Location "/backend/index.php">
+        AuthName "AhCrawler Backend"
+        AuthType Basic
+        Require valid-user
+        ...
+    </Location>
 ```
 
 ### ACL
@@ -68,10 +69,71 @@ Additionally you can define a list of users with global access to all projects.
 (1) **Protect the backend**
 
 ```txt
-   <Location "/backend/index.php">
-    # your authentication type/ SSO specific
-    # protection code
-   </Location>
+    <Location "/backend/index.php">
+        # your authentication type/ SSO specific
+        # protection code
+    </Location>
+```
+
+##### Basic auth - file based
+
+With htpasswd (or openssl or other tools) you can create a file with users and passwords.
+The generated file must be readable by the webserver user (eg www-data). Reference its file location with "AuthUserFile".
+
+This is a basic example:
+
+```txt
+
+    # when using php-fpm don't forget this line:
+
+    SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+    # protection of backend
+
+    <Location "/backend/index.php">
+        AuthName "AhCrawler Backend"
+        AuthType Basic
+        AuthUserFile "/var/www/ahcrawler/users/.htpasswd"
+        Require valid-user
+    </Location>
+```
+
+##### Openidc
+
+You can use an oidc provider to fetch users eg Keycloak.
+You need to enable the module "auth_openidc".
+
+This is a basic example for the vhost configuration with placeholders. For its values contact your oidc provider.
+
+```txt
+
+    # set vars in your vhost:
+
+    OIDCCryptoPassphrase <OIDCCryptoPassphrase>
+    OIDCClientID <KEYCLOAK_CLIENT>
+    OIDCClientSecret <KEYCLOAK_CLIENT_SECRET>
+    OIDCProviderMetadataURL https://keycloak.example.com/realms/<KEYCLOAK_REALM>/.well-known/openid-configuration
+    OIDCRedirectURI ...
+    OIDCPassClaimsAs ...
+    OIDCRemoteUserClaim ...
+    OIDCScope ...
+
+    # protection of backend
+
+    <Location "/backend/index.php">
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+```
+
+##### Shibboleth
+
+```txt
+    <Location "/backend/index.php">
+        AuthType shibboleth
+        ShibRequestSetting requireSession 1
+        ShibUseEnvironment On
+    </Location>
 ```
 
 (2) **Create Configuration file**
@@ -99,9 +161,9 @@ return [
 
 name         | type   | description
 ---          | ---    | ---
-session_user | string | name of the session variable that will hold the detected user id
-userfield    | string | name of the field in $_SERVER that holds the user id. REMOTE_USER is a good choice. Other methods maybe use other fields - then you need to customize it.
-displayname  | string | name of the field that holds the display name. Use this if your login system offers a user and a clear display name. When setting it to false then the userfield will be used.
+session_user | string | Name of the session variable that will hold the detected user id. It must be 'AUTH_USER' for ahCrawler.
+userfield    | string | Name of the field in $_SERVER that holds the user id. It depends on the authentication method and environment. <ul><li>Basic auth: try these<ul><li>REMOTE_USER</li><li>AUTHENTICATE_UID</li><li>PHP_AUTH_USER</li></ul></li><li>Oidc</li><ul><li>REMOTE_USER</li></ul><li>Shibboleth<ul><li>REMOTE_USER (it contains the user id that can be a bit cryptical)</li><li>mail (it can be an alternative to configure just a few users)</li></ul></li></ul>
+displayname  | bool|array | name of the fields that holds the display name. Use this if your login system offers a user and a clear display name for a user. When setting it to false then the userfield will be used.
 groups       | array  | group based acl rules. See below.
 
 Let's have a look at the Section "groups":
@@ -122,7 +184,9 @@ return [
                     'peter',
                 ],
                 'manager'=>[],
-                'viewer'=>[],
+                'viewer'=>[
+                    '@authenticated'
+                ],
             ],
 
             // project id 1
@@ -139,7 +203,16 @@ return [
         }
 ];
 ```
-        
+
+Subkeys are the names of the groups. "global" is a special key for global permissions that will be applied to all projects.
+
+The subkey inside a group is the name of the permission.
+
+name         | type   | description
+---          | ---    | ---
+admin        | array  | users with admin permissions
+manager      | array  | users with manager permissions
+viewer       | array  | users with viewer permissions
 
 Global groups and project based groups can have the names (starting with the lowest permissions)
 
@@ -149,18 +222,26 @@ Global groups and project based groups can have the names (starting with the low
   * see the log
   * see search terms of searches on the frontend (if available)
   * see all analyzer functions for ssl, http header, cookies, html checks, link checker, counters
+  * see users with access to his projects
 * **manager** - has viewer permissions PLUS
-    * can edit the project profile
-* **admin**
-  * a **project admin** can edit everything related to a project:
     * can trigger reindexing of the project
+* **admin** has manager permissions PLUS
+  * a **project admin** can edit everything related to a project:
+    * can edit the project profile
   * a **global admin** ... 
     * has admin permissions to all projects
     * can edit language texts
+    * can see all users of all projects
+    * can see user permissions of a selected user
     * can edit global settings
     * can download libs
     * can apply updates
 
+In each permission there can be a list of users. As user you need to enter ...
+
+* the user id of the user that you get back by the configured "userfield" value in $_SERVER scope.
+* a generic group is '@authenticated'. Each user that is logged in has this group. 
+
 With activated acl configuration a not configured user has no access anymore.
 
-Edit (or deploy) `public_html/config/acl.php` with set global and app specific permissions. As **global admin** you can verify the applied changes visually in the page Settings -> User roles.
+As **global admin** you can verify the applied changes visually in the page Settings -> User roles.

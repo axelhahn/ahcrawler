@@ -1,0 +1,21 @@
+# TARGET: docker/containers/php-fpm/Dockerfile
+#
+# {{generator}}
+#
+FROM php:{{APP_PHP_VERSION}}-fpm
+
+# install packages
+RUN rm -rf /var/lib/apt/lists/* 
+RUN mkdir -p /var/cache/apt/archives/partial
+RUN apt-get update
+RUN apt-get install -y {{APP_APT_PACKAGES}}
+
+# install php packages
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions {{APP_PHP_MODULES}}
+
+COPY containers/php-fpm/dockerfile-entrypoint.sh /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/dockerfile-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/dockerfile-entrypoint.sh"]
+
+CMD php-fpm

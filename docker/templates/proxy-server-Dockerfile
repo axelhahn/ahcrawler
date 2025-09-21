@@ -1,0 +1,28 @@
+# TARGET: docker/containers/proxy-server/Dockerfile
+#
+# {{generator}}
+#
+
+FROM debian:latest
+
+# install packages old
+RUN apt-get update && apt-get install -y {{APP_APT_PACKAGES}}
+
+# install packages
+RUN rm -rf /var/lib/apt/lists/* 
+RUN mkdir -p /var/cache/apt/archives/partial
+RUN apt-get update
+RUN apt-get install -y apache2
+
+# enable mpm event
+# RUN a2dismod mpm_prefork && a2enmod mpm_event
+
+# enable apache modules
+RUN a2enmod {{APP_APACHE_MODULES}}
+
+# Add entrypoint script and set permissions
+COPY containers/proxy-server/dockerfile-entrypoint.sh /usr/local/bin/ 
+RUN chmod +x /usr/local/bin/dockerfile-entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/dockerfile-entrypoint.sh"]
+
+CMD /usr/sbin/apachectl -X

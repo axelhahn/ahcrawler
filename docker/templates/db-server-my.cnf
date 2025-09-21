@@ -1,0 +1,4 @@
+# TARGET: docker/containers/db-server/mariadb/my.cnf
+[mysqld]
+; collation-server = utf8mb4_unicode_ci
+; character-set-server = utf8mb4
