@@ -563,7 +563,7 @@
     "ressources.filter-httpgroups": "Es wurden Links mit nachfolgendem Status gefunden. Mit Klick auf eine Gruppe kannst du alle entsprechenden Links aus- und wieder einblenden.",
     "ressources.link-is-external-redirect": "Redirect",
     "ressources.link-to-details": "Details zu dieser Ressource",
-    "ressources.link-to-url": "Direktlink",
+    "ressources.link-to-url": "URL &ouml;ffnen",
     "ressources.link-to-searchindex": "Umschalten zur Detailseite des Suchindex",
     "ressources.list": "Liste der Ressourcen",
     "ressources.list.intro": "Mit Klick auf die URL werden Details zu ein- und ausgehenden Verkn&uuml;pfungen angezeigt.",

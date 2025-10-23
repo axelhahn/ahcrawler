@@ -2,6 +2,14 @@
 
 ### 2025
 
+#### 2025-10-xx: v0.183
+
+* ↗️ UPDATE: home - add button to update pages
+* ↗️ UPDATE: context bar with multiple boxes
+* ↗️ UPDATE: switch between search index and resource detail page
+* ↗️ UPDATE: user profile: move logoff button
+* 💣 FIX: public http header page lost url to scan
+
 #### 2025-09-18: v0.182
 
 * 💣 FIX: Damn, the login mix of login form and $_SERVER was trickier than I tought.
@@ -35,8 +43,3 @@
 * ↗️ UPDATE: Docker dev environment
 * 💣 FIX: navigation - active menu item doesn't lose color on hover anymore
 * 💣 FIX: logoff - don't show navigation after logging off
-
-#### 2025-01-22: v0.178
-
-* ↗️ UPDATE: fix position of context box
-* ↗️ UPDATE: profiles page has most relevant settings on top now

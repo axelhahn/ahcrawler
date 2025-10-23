@@ -16,6 +16,7 @@ switch($sAction){
         return true;
         break;
     case 'reindex-searchindex':
+    case 'update-searchindex':
         ignore_user_abort(true);
         set_time_limit(0);
         
@@ -26,8 +27,11 @@ switch($sAction){
             $oBackend = new backend($sSiteid);
             $oBackend->logfileAppend('error','PHP interpreter was not found. It is needed on console as cli program. Cannot start crawler :-/');
             return false;
-        } 
-        exec('php '.dirname(__DIR__).'/cronscripts/reindex_all_profiles.php -p '.$sSiteid.' & ');
+        }
+        $sParams=($sAction=='update-searchindex' ? ' --update' : '')
+            . ' --profile '.$sSiteid
+            ;
+        exec('php '.dirname(__DIR__).'/cronscripts/reindex_all_profiles.php '.$sParams.' & ');
         
         return true;
 

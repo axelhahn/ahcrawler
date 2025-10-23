@@ -678,15 +678,20 @@ class ressourcesrenderer extends crawler_base
      * or without.
      * 
      * @param string  $sContent  content of the box
-     * @param string  $sTitle    optional title
+     * @param string  $sTitle    optional title; default: '' (=no titlebar)
+     * @param bool    $bWithBar  optional flag: write context bar; set to false for multiple boxes; default: true
      * @return string
      */
-    public function renderContextbox(string $sContent, string $sTitle = ''): string
+    public function renderContextbox(string $sContent, string $sTitle = '', $bWithBar=true): string
     {
-        return '<div class="contextbox">'
+        return ''
+            .($bWithBar ? '<div class="contextbar">' : '')
+            .'<div class="contextbox">'
             . ($sTitle ? "<div class=\"head\">$sTitle</div>" : '')
             . "<div class=\"content\">$sContent</div>"
-            . '</div>';
+            . '</div>'
+            .($bWithBar ? '</div>' : '')
+            ;
     }
 
     /**
@@ -726,7 +731,7 @@ class ressourcesrenderer extends crawler_base
             'a',
             [
                 'href' => "./get.php?action=$sAction-$sWhat&siteid=$sSiteId",
-                'class' => 'pure-button button-secondary trigger_action_reindex',
+                'class' => 'pure-button trigger_action_reindex',
                 'target' => 'selfiframe',
                 'label' => $this->_getIcon('ico.reindex') . $this->lB('button.' . $sAction),
             ]
@@ -737,20 +742,25 @@ class ressourcesrenderer extends crawler_base
      * Get html code for a box showing the status of the search index
      * It writes divs for each status that will be shown by css
      * 
-     * @param string  $sAction  Name of the action; one of 'reindex'
+     * @param array   $aActions List of actions; it can contain 'reindex', 'update'
      * @param string  $sWhat    What to index
      * @param integer $sSiteId  Site id of the web
      * @return string
      */
-    public function renderIndexActions(string $sAction, string $sWhat, string $sSiteId): string
+    public function renderIndexActions(array $aActions, string $sWhat, string $sSiteId): string
     {
+        $sButtons='';
+        foreach($aActions as $sAction){
+            $sButtons.=$this->renderIndexButton($sAction, $sWhat, $sSiteId).' ';
+        }
         return '<div class="actions-crawler">'
             . '<div class="running">'
             . $this->renderMessagebox($this->lB('status.indexer_is_running'), 'warning')
             . '</div>'
-            . '<div class="stopped">'
-            . $this->renderIndexButton($sAction, $sWhat, $sSiteId)
-            . '</div>'
+            . ($sButtons
+                ? '<div class="stopped">'.$sButtons.'</div>'
+                : ''
+            )
             . '</div>';
     }
 
@@ -954,7 +964,8 @@ class ressourcesrenderer extends crawler_base
 
         $sLink2Searchindex = $aRessourceItem['isSource'] ? '?page=searchindexstatus&id=' . $iPageId . '&siteid=' . $aRessourceItem['siteid'] : false;
 
-        $sReturn .= '<div class="divRessource">'
+        $sReturn .= ''
+            .'<div class="divRessource">'
             . '<div class="divRessourceHead">'
             /*
             . '<span style="float: right;">'
@@ -967,7 +978,7 @@ class ressourcesrenderer extends crawler_base
             . $this->_renderArrayValue('ressourcetype', $aRessourceItem)
             . '<br>'
             */
-            . '<br><strong>' . str_replace('&', '&shy;&', htmlentities($this->_renderArrayValue('url', $aRessourceItem))) . '</strong>'
+            . '<strong>' . str_replace('&', '&shy;&', htmlentities($this->_renderArrayValue('url', $aRessourceItem))) . '</strong>'
             . ' '
             . ($sLink2Searchindex
                 ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
@@ -1352,8 +1363,8 @@ class ressourcesrenderer extends crawler_base
      */
     public function renderCurlMetadata(array $aItem=[]): string
     {
-        if(!isset($aItem['header'])){
-            return '-';
+        if(!isset($aItem['header']) || $aItem['header']==0){
+            return '';
         }
         $aHeader=json_decode($aItem['header'], 1);
         $sRemoveKey='_responseheader';
@@ -1484,11 +1495,14 @@ class ressourcesrenderer extends crawler_base
         ;
         $sCurl = $this->renderCurlMetadata($aItem);
 
-        $sReturn .= $this->renderToggledContent(
-            $this->lB('ressources.curl-metadata-h3'),
-            $sCurl,
-            false
-        );
+        $sReturn .= $sCurl
+            ? $this->renderToggledContent(
+                $this->lB('ressources.curl-metadata-h3'),
+                $sCurl,
+                false
+            )
+            : ''
+            ;
 
         // --------------------------------------------------
         // where it is linked
