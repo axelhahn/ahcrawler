@@ -34,6 +34,7 @@ return [
         # 'showicons' => 'fa-solid fa-icons',
         'langedit' => 'ti ti-message-language',
         'counters' => 'ti ti-chart-bar',
+        'viewurls' => 'ti ti-file-code',
         'about' => 'ti ti-info-hexagon-filled',
         'usergroup' => 'ti ti-users-group',
         'userprofile' => 'ti ti-user',
