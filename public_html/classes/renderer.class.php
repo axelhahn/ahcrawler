@@ -725,12 +725,12 @@ class ressourcesrenderer extends crawler_base
      * @param string  $sSiteId  site id
      * @return string
      */
-    public function renderIndexButton(string $sAction, string $sWhat, string $sSiteId): string
+    public function renderIndexButton(string $sAction, string $sWhat, string $sSiteId, string $sUrl=''): string
     {
         return $this->oHtml->getTag(
             'a',
             [
-                'href' => "./get.php?action=$sAction-$sWhat&siteid=$sSiteId",
+                'href' => "./get.php?action=$sAction-$sWhat&siteid=$sSiteId".($sUrl ? "&url=$sUrl" : ""),
                 'class' => 'pure-button trigger_action_reindex',
                 'target' => 'selfiframe',
                 'label' => $this->_getIcon('ico.reindex') . $this->lB('button.' . $sAction),
@@ -747,11 +747,11 @@ class ressourcesrenderer extends crawler_base
      * @param integer $sSiteId  Site id of the web
      * @return string
      */
-    public function renderIndexActions(array $aActions, string $sWhat, string $sSiteId): string
+    public function renderIndexActions(array $aActions, string $sWhat, string $sSiteId, string $sUrl=''): string
     {
         $sButtons='';
         foreach($aActions as $sAction){
-            $sButtons.=$this->renderIndexButton($sAction, $sWhat, $sSiteId).' ';
+            $sButtons.=$this->renderIndexButton($sAction, $sWhat, $sSiteId, $sUrl).' ';
         }
         return '<div class="actions-crawler">'
             . '<div class="running">'
