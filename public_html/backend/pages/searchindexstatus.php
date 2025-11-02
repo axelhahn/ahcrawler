@@ -157,6 +157,13 @@ if ($iPageId) {
                         : ''
                     )
                     . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').$this->lB('ressources.link-to-url').'</a><br><br>'
+                    . ($this->_requiresPermission("manager", $this->_sTab) 
+                            ? '<br><hr>'
+                                . $this->lB('status.reindex-url').'<br><br>'
+                                . $oRenderer->renderIndexActions(['reindex'], 'singlepage', $this->_sTab, $aItem[0]['url'])
+                            : ''
+                        )
+
                     , $this->lB('context.links')
                 )
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
