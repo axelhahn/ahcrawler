@@ -307,6 +307,7 @@ class backend extends crawler_base
         'tools' => 'Tools_and_information/index.html',
         'update' => 'Tools_and_information/Update.html',
         'vendor' => 'Settings/Vendor_libs.html',
+        'viewurls' => 'Analysis/Domain_files.html',
     ];
 
     /**
