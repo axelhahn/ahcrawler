@@ -71,6 +71,7 @@ class backend extends crawler_base
                 'checkurl' => ['needs' => ['ressources'], 'permission' => 'viewer'],
                 'ressourcedetail' => ['needs' => ['ressources'], 'permission' => 'viewer'],
                 'counters' => ['needs' => ['pages'], 'permission' => 'viewer'],
+                "viewurls" => ['permission' => 'viewer'],
             ],
         ],
         'tools' => [
@@ -578,7 +579,7 @@ class backend extends crawler_base
     {
         $sReturn = '';
 
-        header('HTTP/1.0 401 Unauthorized');
+        http_response_code(401);
         $sHref = '?' . str_replace('page=logoff', '', $_SERVER['QUERY_STRING']);
 
         $sReturn = ''
@@ -652,7 +653,7 @@ class backend extends crawler_base
         if (!file_exists($sFilename)) {
             $sPage = 'error404';
             $sFilename = dirname(__DIR__) . '/backend/pages/' . $sPage . '.php';
-            header("HTTP/1.0 404 Not Found");
+            http_response_code(404);
         }
         $this->_sPage = $sPage;
         $this->_sPageFile = $sFilename;

@@ -66,6 +66,8 @@
     "nav.userprofile.hint": "Show my user profile",
     "nav.logoff.label": "Logoff",
     "nav.logoff.hint": "You were logged off.",
+    "nav.viewurls.label": "Domain files",
+    "nav.viewurls.hint": "Viewer for some standard urls of a domain",
     "var.int": "Integer",
     "var.string": "String",
     "var.array": "Array",
@@ -225,6 +227,10 @@
     "counter.statusWarning[].label" :"Http warnings %s",
     "counter.statusWarning[].description" :"Http warnings with code %s during link check; %s",
     
+    "viewurls.head.select": "Select a file...",
+    "viewurls.head.show": "Show content of an url",
+    "viewurls.head.hint": "Click to a file to show",
+
     "curl.timer.lookup": "DNS lookup",
     "curl.timer.connect": "Connect",
     "curl.timer.handshake": "Handshake",
@@ -1088,6 +1094,7 @@
     "ressources.only-one": "There is a single ressource only. Just guessing: only the starting page was indexed and the content-encoding is not supported by the curl version on the server.",
     "ressources.no-response": "No response from given url. Maybe the url is wrong or is not reachable at the moment.<br>Curl error: %s (code %s)",
     "status.indexer_is_running": "Please wait... the crawler is running...",
+    "status.reindex-url": "Rescan this url and update search index",
     "setup.section.backend.customfooter": "Custom html code at the body end (i.e. for user statistics)",
     "profile.ignoreNoindex": "Noindex",
     "profile.ignoreNoindex.description": "Index contents marked with NoIndex anyway (default value: OFF)",

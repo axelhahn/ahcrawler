@@ -59,6 +59,8 @@
     "nav.userroles.hint": "Projekte und Zugriffsberechtigungen",
     "nav.userprofile.label": "Mein Profil",
     "nav.userprofile.hint": "Mein Benutzerprofil",
+    "nav.viewurls.label": "Domain files",
+    "nav.viewurls.hint": "Betrachter f&uuml;r einige Standard-Urls einer Domain",
     "langedit.save.create": "Erstelle Schl&uuml;ssel [%s] in der Sprache [%s].",
     "langedit.save.skip": "SKIP: Schl&uuml;ssel [%s] in der Sprache [%s] ist unver&auml;ndert.",
     "langedit.save.update": "UPDATE: Schl&uuml;ssel [%s] in der Sprache [%s].",
@@ -232,6 +234,10 @@
     "counter.statusWarning.description" :"Anzahl Http Warnungen beim Linkcheck",
     "counter.statusWarning[].label" :"Warnungen mit Http-Code %s",
     "counter.statusWarning[].description" :"Warnungen mit Http-Code %s beim Linkcheck; %s",
+
+    "viewurls.head.select": "W&auml;hle eine Datei ...",
+    "viewurls.head.show": "Anzeige des Inhalts einer Datei",
+    "viewurls.head.hint": "Klicke die anzuzeigende Datei an",
 
     "curl.timer.lookup": "DNS Lookup",
     "curl.timer.connect": "Aufbau der Verbindung",
@@ -500,6 +506,7 @@
     "status.noresult": "Tut mir leid, kein Treffer.",
     "status.error_urls": "fehlerhaft markierte URLs im Index",
     "status.all_data": "URLs im Suchindex",
+    "status.reindex-url": "Diese Url neu scannen und im Suchindex aktualisieren",
     "search.#": "Nr.",
     "search.summary": "Zusammenfassung",
     "search.ranking": "Ranking",
