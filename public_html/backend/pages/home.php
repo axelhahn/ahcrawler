@@ -140,7 +140,7 @@ if(!$this->_configExists() ){
                         )
                         . ($this->_requiresPermission("manager", $this->_sTab) 
                             ? '<hr>'
-                                . $oRenderer->renderIndexActions('reindex', 'searchindex', $this->_sTab)
+                                . $oRenderer->renderIndexActions(['reindex', 'update'], 'searchindex', $this->_sTab)
                             : ''
                         )
                         ,

@@ -21,12 +21,51 @@ $aData=$oRessources->getRessourceDetails($iRessourceId);
 // echo '<pre>'.print_r($aData, 1).'</pre>' . count($aData);
 if (count($aData)){
     foreach($aData as $aItem){
+/*
+        $iPageId = $this->getIdByUrl($aRessourceItem['url'], 'pages');
+
+        $sLink2Searchindex = $aRessourceItem['isSource'] ? '?page=searchindexstatus&id=' . $iPageId . '&siteid=' . $aRessourceItem['siteid'] : false;
+
+        $sReturn .= ''
+            .'<div class="divRessource">'
+            . '<div class="divRessourceHead">'
+            
+            . '<strong>' . str_replace('&', '&shy;&', htmlentities($this->_renderArrayValue('url', $aRessourceItem))) . '</strong>'
+            . ' '
+            . ($sLink2Searchindex
+                ? '&nbsp; <a href="' . $sLink2Searchindex . '" class="pure-button"'
+                . ' title="' . $this->lB('ressources.link-to-searchindex') . '"'
+                . '>'
+                . $this->_getIcon('switch-search-res')
+                . '</a>'
+                : ''
+            )
+*/
+        $iPageId = $oRenderer->getIdByUrl($aItem['url'], 'pages');
+        $sLink2Searchindex = '?page=searchindexstatus&id=' . $iPageId . '&siteid=' . $aItem['siteid'];
+
         $sReturn.=''
-            . $oRenderer->renderContextbox(
-                    $oRenderer->renderBookmarklet('details')
-                    , $this->lB('bookmarklet.details.head')
+            .'<div class="contextbar">'
+                . $oRenderer->renderContextbox(
+                    ''
+                    .($iPageId>0
+                        ? ''
+                            .'<a href="?page=searchindexstatus&id=' . $iPageId . '&siteid='.$this->iSiteId.'" class="pure-button"'
+                            . ' title="'.$this->lB('ressources.link-to-searchindex').'"'
+                            . '>'.$oRenderer->_getIcon('switch-search-res').$this->lB('ressources.link-to-searchindex').'</a><br><br>' 
+                        : ''
+                    )
+                    . '<a href="' . $aItem['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').$this->lB('ressources.link-to-url').'</a><br><br>'
+                    , $this->lB('context.links')
+                    , false
                 )
-                . '<h3>'.$this->lB('ressources.ressourceitemfull').'</h3>'
+                . $oRenderer->renderContextbox(
+                        $oRenderer->renderBookmarklet('details')
+                        , $this->lB('bookmarklet.details.head')
+                        , false
+                    )
+            .'</div>'
+            . '<h3>'.$this->lB('ressources.ressourceitemfull').'</h3>'
             .$oRenderer->renderRessourceItemFull($aItem);
         /*
         if ((int)$aItem['http_code']===200 && strpos($aItem['content_type'], 'html')>0){

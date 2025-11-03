@@ -1,6 +1,6 @@
 <?php
 
-header('HTTP/1.1 403 Forbidden');
+http_response_code(403);
 
 return '<h3>' . $this->lB('error.403') . '</h3>'
         . '<p>' . $this->lB('error.403.description') . '</p>'

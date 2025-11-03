@@ -401,6 +401,33 @@ class httpheader
     }
 
     /**
+     * Get contentent type (MIME type) of the response
+     * @return string
+     */
+    public function getContentType(): string{
+        foreach($this->_aHeader as $aData){
+            if ($aData[0] == 'content-type') {
+                return $aData[1];
+            }
+        }
+        return '';
+    }
+
+    /**
+     * Get http statuscode from set http response header
+     * @return integer
+     */
+    public function getHttpStatuscode(): int
+    {
+        foreach ($this->_aHeader as $aData) {
+            if ($aData[0] == '_status') {
+                return (int) preg_replace('#.*/.* ([0-9\.]*)#u', '\1', $aData[1]);
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Get http version from http response status line i.e. "1.1" or "2"
      * @return string
      */

@@ -180,7 +180,7 @@ header('Feature-Policy: sync-xhr \'self\'');
 // GET CONTENT
 // ----------------------------------------------------------------------
 if ($oBackend->isNavitemHidden()) {
-    header('HTTP/1.0 403 Forbidden');
+    http_response_code(403);
     $sHtmlContent = $oBackend->getHead()
         . '<h3>' . $oBackend->lB('error.403') . '</h3>'
         . $oRenderer->renderMessagebox($oBackend->lB('error.403.description'), 'warning')

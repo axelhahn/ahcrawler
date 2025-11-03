@@ -181,9 +181,13 @@ function initBase64Input(sIdInput, sIdOutput) {
     var oOut = document.getElementById(sIdOutput);
     if (oIn && oOut) {
         oIn = document.getElementById(sIdInput);
+        oOut.value = btoa(oIn.value);
+
         oIn.onchange = function () {
             oOut.value = btoa(oIn.value);
-            // console.log("IN: " + oIn.value + " | OUT: "+ oOut.value);
+        };
+        oIn.onkeydown = function () {
+            oOut.value = btoa(oIn.value);
         };
     }
 }

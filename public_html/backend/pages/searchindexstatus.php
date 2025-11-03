@@ -146,6 +146,26 @@ if ($iPageId) {
         $sCurl=$oRenderer->renderCurlMetadata($aItem[0]);
 
         return $sReturn 
+                
+                . $oRenderer->renderContextbox(
+                    ''
+                    .($iResId 
+                        ? ''
+                            .'<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
+                            . ' title="'.$this->lB('status.link-to-res').'"'
+                            . '>'.$oRenderer->_getIcon('switch-search-res').$this->lB('status.link-to-res').'</a><br><br>' 
+                        : ''
+                    )
+                    . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').$this->lB('ressources.link-to-url').'</a><br><br>'
+                    . ($this->_requiresPermission("manager", $this->_sTab) 
+                            ? '<br><hr>'
+                                . $this->lB('status.reindex-url').'<br><br>'
+                                . $oRenderer->renderIndexActions(['reindex'], 'singlepage', $this->_sTab, $aItem[0]['url'])
+                            : ''
+                        )
+
+                    , $this->lB('context.links')
+                )
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
                 /*
                 . $this->_getButton([
@@ -157,16 +177,15 @@ if ($iPageId) {
                 */
                 
                 // ---- basic page data
-                . '<span class="float-right">&nbsp;'
-                .($iResId 
-                    ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
-                        . ' title="'.$this->lB('status.link-to-res').'"'
-                        . '>'.$oRenderer->_getIcon('switch-search-res').'</a> ' 
-                    : ''
-                )
-                . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
-                . '</span>'
-                . '<strong>'.($aItem[0]['url']).'</strong><br><br>'
+                . '<strong>'.($aItem[0]['url']).'</strong>&nbsp; '
+                    .($iResId 
+                        ? '<a href="?page=ressourcedetail&id=' . $iResId . '&siteid='.$this->iSiteId.'" class="pure-button"'
+                            . ' title="'.$this->lB('status.link-to-res').'"'
+                            . '>'.$oRenderer->_getIcon('switch-search-res').'</a> ' 
+                        : ''
+                    )
+                    . '<a href="' . $aItem[0]['url'] . '" target="_blank" class="pure-button" title="'.$this->lB('ressources.link-to-url').'">'. $oRenderer->_getIcon('link-to-url').'</a>'
+                . '<br><br><br>'
 
                 . $this->_getSimpleHtmlTable($aTableInfos).'<br>'
 

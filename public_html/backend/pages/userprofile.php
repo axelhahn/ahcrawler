@@ -87,6 +87,15 @@ $sReturn .= $this->_getButton([
     'label' => 'button.back'
     ])
     . '<h3>' . $this->_getIcon('userprofile') . $this->_getUser() . '</h3>'
+    . ($this->_getUser() !== 'nobody'
+        ? ' '.$this->_getButton([
+        'href' => './?page=logoff',
+        'class' => 'button-error',
+        'label' => 'button.logoff',
+        'popup' => false
+        ])
+        : ''
+    )
     . $sGroups
     . $sGlobal
     . $sGroupTable
@@ -100,15 +109,6 @@ $sReturn .= '<br>'
         'popup' => false,
         'label' => 'button.back'
         ])
-        . ($this->_getUser() !== 'nobody'
-        ? ' '.$this->_getButton([
-            'href' => './?page=logoff',
-            'class' => 'button-error',
-            'label' => 'button.logoff',
-            'popup' => false
-        ])
-        : ''
-    )
         ;
 
 return $sReturn;

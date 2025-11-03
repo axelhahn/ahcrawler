@@ -470,18 +470,20 @@ pre{font-size: 95%; padding: 0.5em; background: #e0e4ea; color:var(--color-defau
 code{background: #e0e4ea; padding: 0.2em;}
 
 /* --- context box --- */
-div.contextbox{
-    right: 0;
+div.contextbar{
     float: right;
     margin: 0 0 2em 2em;
+    width: 30%;
+}
+
+div.contextbox{
+    margin: 0 0 2em;
     background: var(--color-bg-boxes);
     box-shadow: 0 0 2em var(--color-shadow-default);
     border-top-left-radius: 1em;
-    margin-top: 1em;
-    width: 30%;
 }
 div.contextbox .head{background: var(--context-head-bg); color:var(--context-head-fg); font-weight: normal; font-size: 120%; padding: 0.4em;border-top-left-radius: 0.5em;}
-div.contextbox .content{margin: 1em;}
+div.contextbox .content{padding: 1em;}
 
 /* --- setup page: extended areas for pro features --- */
 
@@ -754,7 +756,6 @@ div.message-error,   span.error,   tr.error,   td1.error   { background:var(--st
     background-color: var(--resource-head-bg); 
     padding: 0.5em;
     */
-    font-size: 120%;
 }
 .divRessourceContent{
     padding: 0.5em;
@@ -886,10 +887,6 @@ disabled when using select2
     padding: 1em; background: var(--debug-container-bg);
 }
 
-.float-left{float: left;}
-.float-right{float: right;}
-
-.w30{width: 30%;}
 
 /* 
 --------------------------------------------------------------------------------
@@ -907,7 +904,9 @@ div.person .name{font-weight: bold;}
 */
 
 .float-left{float: left;}
-.float-right{float: left;}
+.float-right{float: right;}
+
+.w30{width: 30%;}
 
 /* 
 --------------------------------------------------------------------------------
