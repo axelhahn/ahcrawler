@@ -11,6 +11,7 @@
 * ↗️ UPDATE: user profile: move logoff button
 * 💣 FIX: http response code of error pages do not force http v1 header
 * 💣 FIX: public http header page lost url to scan
+* 💣 FIX: remove hardcoded http v1 response code
 
 #### 2025-09-18: v0.182
 
