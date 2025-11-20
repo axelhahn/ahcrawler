@@ -39,11 +39,12 @@ The updater has a bit intelligence. It detects if it was installed by git (git p
   * The TGZ will be extracted in the install dir
 
 On each step you get a description and the console output of a command. The updater aborts if one of the steps failed.
-
+<!--
 ![Screenshot: Updater](/images/updater-03-information-before-download.png)
 ![Screenshot: Updater](/images/updater-04-information-after-download.png)
 ![Screenshot: Updater](/images/updater-05-information-after-uncompress.png)
 ![Screenshot: Updater](/images/updater-06-done.png)
+-->
 
 Last but not least:
 

@@ -15,8 +15,11 @@ On the top left is the navigation menu. The current page or subpage will be high
 On top is the name of the current page.
 The box below is a hint text for the current page
 
-(4) **Logoff**\
-On top right is a button logoff to leave the application.
+(4) **Top right**\
+On top right can be these buttons
+
+* Help - opens the online help and opens a specific page describing the current page 
+* Username - A click opens the user profile and shows your permissions and a button to logout
 
 (5) **Page content**
 
