@@ -68,7 +68,7 @@ return [
         'Content-MD5' => [],
         'Content-Range' => ['response' => true],
         'Content-Script-Type' => [],
-        'Content-Security-Policy' => ['response' => true, 'tags' => ['security'], 'badvalueregex' => 'unsafe\-'],
+        'Content-Security-Policy' => ['response' => true, 'tags' => ['security'], 'badvalueregex' => 'unsafe\-', 'important'=>true],
         'Content-Security-Policy-Report-Only' => ['response' => true, 'tags' => ['security']],
         'Content-Style-Type' => [],
         'Content-Type' => ['response' => true, 'tags' => ['security']],
@@ -108,6 +108,7 @@ return [
         'Feature-Policy' => [
             'response' => true,
             'tags' => ['feature', 'security', 'deprecated'],
+            'alt' => 'Permissions-Policy',
             "directives" => [
                 "accelerometer",
                 "ambient-light-sensor",
@@ -329,6 +330,7 @@ return [
         'Status' => ['response' => true, 'tags' => ['non-standard']],
         'Status-URI' => [],
         'Strict-Transport-Security' => ['response' => true, 'tags' => ['security'],
+            'important'=>true,
             'directives'=>[
                 'max-age=<expire-time>',
                 'includeSubDomains',
@@ -377,13 +379,18 @@ return [
         'X-AspNetMvc-Version' => ['response' => true, 'tags'=>['non-standard', 'unwanted']],
         'X-Content-Duration' => ['response' => true, 'tags' => ['non-standard']],
         'X-Content-Security-Policy' => ['response' => true, 'tags' => ['non-standard']],
-        'X-Content-Type-Options' => ['response' => true, 'tags' => ['security']],
+        'X-Content-Type-Options' => ['response' => true, 'tags' => ['security'], 'important'=>true],
         'X-Correlation-ID' => ['response' => true, 'tags' => ['non-standard']],
         'X-DNS-Prefetch-Control' => ['response' => true, 'tags' => ['non-standard']],
         'X-Forwarded-For' => ['request' => true, 'tags' => ['security-risk']],
         'X-Forwarded-Host' => ['request' => true,],
         'X-Forwarded-Proto' => ['request' => true,],
-        'X-Frame-Options' => ['response' => true, 'tags' => ['deprecated', 'security'], 'badvalueregex' => 'ALLOW-FROM'],
+        'X-Frame-Options' => [
+            'response' => true, 
+            'tags' => ['deprecated', 'security'], 
+            'badvalueregex' => 'ALLOW-FROM', 
+            'alt'=>'Content-Security-Policy',
+        ],
         'X-Permitted-Cross-Domain-Policies' => ['response' => true, 'tags' => ['security']],
         'X-Pingback' => ['response' => true, 'tags' => ['non-standard']], // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
         'X-Powered-By' => ['response' => true, 'tags' => ['non-standard', 'unwanted'], 'unwantedregex' => '[0-9]*\.[0-9\.]*'],
