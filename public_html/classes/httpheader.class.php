@@ -223,6 +223,27 @@ class httpheader
     // ----------------------------------------------------------------------
 
     /**
+     * Helper: get an array http header data by given http response header var
+     * It returns [<found-tag>, <array-of-data>] from httpheader.data.php
+     * or [] when the tag was not found
+     * 
+     * @param string  $varname  http response variable
+     * @return array
+     */
+    public function getHeaderData(string $varname): array
+    {
+        foreach ($this->_aHeaderVars as $sSection => $aSection) {
+            foreach ($aSection as $sVar => $aParams) {
+
+                if (strtolower($varname) === strtolower($sVar)) {
+                    return [$sVar, $aParams];
+                }
+            }
+        }
+        return [];
+    }
+
+    /**
      * Helper: get an array of tags by given http response header var + value
      * 
      * @param string  $varname  http response variable
@@ -241,28 +262,27 @@ class httpheader
             return [$aTags, $aRegex];
         }
         foreach ($this->_aHeaderVars as $sSection => $aSection) {
-            foreach ($aSection as $sVar => $aParams) {
+            if($aSection[$varname]??false){
+                $aParams=$aSection[$varname];
 
-                if (strtolower($varname) === strtolower($sVar)) {
                     $aTags[] = $sSection;
                     if (isset($aParams['tags'])) {
                         $aTags = array_merge($aTags, $aParams['tags']);
                     }
                     if (isset($aParams['unwantedregex'])) {
-                        preg_match('/(' . $sVar . '):\ (.*' . $aParams['unwantedregex'] . '.*)/i', "$varname: $val", $aMatches);
+                        preg_match('/(' . $varname . '):\ (.*' . $aParams['unwantedregex'] . '.*)/i', "$varname: $val", $aMatches);
                         if (count($aMatches)) {
                             $aTags[] = 'unwanted';
                             $aRegex['unwantedregex'] = $aParams['unwantedregex'];
                         }
                     }
                     if (isset($aParams['badvalueregex'])) {
-                        preg_match('/(' . $sVar . '):\ (.*' . $aParams['badvalueregex'] . '.*)/i', "$varname: $val", $aMatches);
+                        preg_match('/(' . $varname . '):\ (.*' . $aParams['badvalueregex'] . '.*)/i', "$varname: $val", $aMatches);
                         if (count($aMatches)) {
                             $aTags[] = 'badvalue';
                             $aRegex['badvalueregex'] = $aParams['badvalueregex'];
                         }
                     }
-                }
             }
         }
         if (!count($aTags)) {
@@ -536,18 +556,26 @@ class httpheader
      */
     public function parseHeaders(): array
     {
-        $aReturn = [];
+        static $aReturn;
+        if(isset($aReturn)) {
+            return $aReturn;
+        };
+        $aReturn=[];
 
         $iLine = 0;
         foreach ($this->_aHeader as $aLine) {
             $iLine++;
             list($varname, $val) = $aLine;
 
-            $aTagData = $this->_getTagsOfHeaderline($varname, $val);
+            $aFoundTag=$this->getHeaderData($varname);
+            $sHeadervar=$aFoundTag[0]??'';
+            $aTagData = $this->_getTagsOfHeaderline($sHeadervar, $val);
             $aItem = [
                 'var' => $varname,
                 'value' => $val,
                 'line' => $iLine,
+                '_tag' => $sHeadervar,
+                '_data' => $aFoundTag[1]??[],
                 'tags' => $aTagData[0],
                 'regex' => $aTagData[1],
             ];

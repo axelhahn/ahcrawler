@@ -15,6 +15,18 @@ $sResponse = '';      // http response header
 $bShowForm = false;   // flag: show input form?
 $bShowTiles = false;  // flag: show tiles in warning detail sections
 
+    function BtnData(string $sHeader): array {
+        // $o = new backend();
+        return [
+            'href' => "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/$sHeader",
+            // 'class' => 'button-secondary',
+            'popup' => false,
+            'target' => '_httpheader',
+            // 'customlabel' => $o->_getIcon('button.help') . ' ' . $sHeader,
+            'customlabel' => $sHeader,
+        ];
+
+    }
 
 if ($this->_bIsPublic || isset($_GET['url'])) {
     // ----------------------------------------------------------------------
@@ -239,14 +251,18 @@ if (is_array($aUnknownheader) && count($aUnknownheader)) {
 // --- deprecated header vars
 if ($iDeprecated) {
     $aDepr = $oHttpheader->getDeprecatedHeaders();
+    // echo '<pre>' . print_r($aDepr, 1). '</pre>';
     $iWarnings += $iDeprecated;
     $sWarnings .= ''
         . '<h4 id="warndeprecated">' . $this->lB('httpheader.header.deprecated') . '</h4>'
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning') . '<br>'
         . $this->_getHistoryCounter(['responseheaderDeprecated'])
         . '<ul>';
-    foreach ($aDepr as $sKey => $aHeaderitem) {
-        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+    foreach ($aDepr as $aHeaderitem) {
+        $sWarnings .= '<li>
+            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
+            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
+            </li>';
     }
     $sWarnings .= '</ul><br>';
 }
@@ -260,7 +276,10 @@ if ($iExperimental) {
         . $this->_getHistoryCounter(['responseheaderExperimental'])
         . '<ul>';
     foreach ($aExperimental as $sKey => $aHeaderitem) {
-        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sWarnings .= '<li>
+            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
+            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
+            </li>';
     }
     $sWarnings .= '</ul><br>';
 }
@@ -289,6 +308,7 @@ if (is_array($aWarnheader) && count($aWarnheader)) {
                 // .'<code>'.print_r($aHeaderitem['regex']['unwantedregex'], 1).'</code>'
                 : '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>'
             )
+            . ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' )
             . '<br>'
             . '</li>';
     }
@@ -314,7 +334,10 @@ if ($iNonStandard) {
                 . '</li>'
                 ;
             */
-        $sWarnings .= '<li><pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sWarnings .= '<li>
+            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
+            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
+            </li>';
     }
     $sWarnings .= '</ul><br>';
 }
@@ -360,10 +383,11 @@ foreach ($aSecHeader as $sVar => $aData) {
     if ($aData) {
         $iFoundSecHeader++;
         $bHasBadValue = in_array('badvalue', $aData['tags']);
-        $iWarnSecHeader += $bHasBadValue ? 1 : 0;
+        $bDeprecated = in_array('deprecated', $aData['tags']);
+        $iWarnSecHeader += ($bHasBadValue || $bDeprecated) ? 1 : 0;
         // $sSecOk.='<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>';
         $sLegendeSecOk .= ''
-            . $oRenderer->renderMessagebox($sVar, $bHasBadValue ? 'warning' : 'ok')
+            . $oRenderer->renderMessagebox($sVar, ($bHasBadValue || $bDeprecated) ? 'warning' : 'ok')
             // . $oRenderer->renderShortInfo($aData ? 'found': 'miss') . ' <strong>' . $sVar. '</strong><br>'
             . $this->lB('httpheader.' . $sVar . '.description') . '<br>'
             . '<pre><span class="linenumber">' . $aData['line'] . '</span> '
@@ -372,14 +396,26 @@ foreach ($aSecHeader as $sVar => $aData) {
                 : $aData['var'] . ': ' . $aData['value']
             )
             . '</pre>'
-            . '<br>';
+            . ($bDeprecated 
+                ? '<blockquote>'.$oRenderer->renderMessagebox($this->lB('httpheader.header.deprecated').'<br>' .$this->lB('httpheader.warnings.deprecated'), 'warning') . '</blockquote>' 
+                : ""
+                )
+            . $this->_getButton(BtnData($sVar))
+            .'<br><br>'
+            ;
     } else {
         // $sSecMiss.='<li><a href="#" onclick="return false;" class="tile"    title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $sVar.'<br><br><strong>'.$oRenderer->renderShortInfo('miss').'</strong></a></li>';
-        $iErrorSecHeader++;
-        $sLegendeSecMiss .= ''
-            . $oRenderer->renderMessagebox($sVar, 'error')
-            // .$oRenderer->renderShortInfo($aData ? 'found': 'miss'). ' <strong>' . $sVar. '</strong><br>'
-            . $this->lB('httpheader.' . $sVar . '.description') . '<br><br>';
+        if($aData['important']??false || true){
+            $iErrorSecHeader++;
+            $sLegendeSecMiss .= ''
+                . $oRenderer->renderMessagebox($sVar, 'error')
+                // .$oRenderer->renderShortInfo($aData ? 'found': 'miss'). ' <strong>' . $sVar. '</strong><br>'
+                . $this->lB('httpheader.' . $sVar . '.description') . '<br>'
+                . $this->_getButton(BtnData($sVar))
+                . print_r($aData, 1)
+                .'<br><br>'
+                ;
+        }
     }
 }
 
