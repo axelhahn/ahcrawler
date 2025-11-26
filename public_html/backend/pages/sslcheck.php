@@ -308,7 +308,7 @@ if ($this->_bIsPublic){
                 $aWhere=['siteid' => $this->_sTab, 'url[~]'=>'http:%'];
                 $aWhereNoLink=array_merge($aWhere, ['ressourcetype[!]' => 'link']);
 
-                $sBtnReport=$this->_getButton([
+                $sBtnReport=$this->getButton([
                     'href'=>$this->_getQs([
                         'showreport'=>1,
                         'showtable'=>0,
@@ -318,7 +318,7 @@ if ($this->_bIsPublic){
                     'label'=>'ressources.showreport',
                     'popup' => false
                 ]);
-                $sBtnTable=$this->_getButton([
+                $sBtnTable=$this->getButton([
                     'href'=>$this->_getQs([
                         'showreport'=>0,
                         'showtable'=>1,

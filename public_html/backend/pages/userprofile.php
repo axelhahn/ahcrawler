@@ -80,7 +80,7 @@ $sGroupTable = $sGroupTable
 
 // --- output
 
-$sReturn .= $this->_getButton([
+$sReturn .= $this->getButton([
     'href' => 'javascript:history.back();',
     // 'class' => 'button-secondary',
     'popup' => false,
@@ -88,7 +88,7 @@ $sReturn .= $this->_getButton([
     ])
     . '<h3>' . $this->_getIcon('userprofile') . $this->_getUser() . '</h3>'
     . ($this->_getUser() !== 'nobody'
-        ? ' '.$this->_getButton([
+        ? ' '.$this->getButton([
         'href' => './?page=logoff',
         'class' => 'button-error',
         'label' => 'button.logoff',
@@ -103,7 +103,7 @@ $sReturn .= $this->_getButton([
 ;
 
 $sReturn .= '<br>'
-    . $this->_getButton([
+    . $this->getButton([
         'href' => 'javascript:history.back();',
         // 'class' => 'button-secondary',
         'popup' => false,

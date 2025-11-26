@@ -169,14 +169,6 @@ if ($iResCount) {
             if ($bShowRessourcetable){
                 $aRow['url'] = '<a href="?page=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab.'">'. str_replace('/', '/&shy;', htmlentities($aRow['url'])).'</a>';
 
-                /*
-                $aRow['actions'] = $this->_getButton([
-                    'href' => 'overlay.php?action=ressourcedetail&id=' . $aRow['id'] . '&siteid=' . $this->_sTab . '',
-                    'class' => 'button-secondary',
-                    'label' => 'button.view'
-                ]);
-                 * 
-                 */
                 $aRow['ressourcetype'] = $oRenderer->renderArrayValue('ressourcetype', $aRow);
                 $aRow['type'] = $oRenderer->renderArrayValue('type', $aRow);
                 $aRow['http_code'] = $oRenderer->renderArrayValue('http_code', $aRow);
@@ -254,7 +246,7 @@ if ($iResCount) {
 
 // --- output
 
-$sBtnReport=$this->_getButton([
+$sBtnReport=$this->getButton([
     'href'=>$this->_getQs([
         'showreport'=>1,
         'showtable'=>0,
@@ -264,7 +256,7 @@ $sBtnReport=$this->_getButton([
     'label'=>'ressources.showreport',
     'popup' => false
 ]);
-$sBtnTable=$this->_getButton([
+$sBtnTable=$this->getButton([
     'href'=>$this->_getQs([
         'showreport'=>0,
         'showtable'=>1,
@@ -402,7 +394,7 @@ $sReturn.='<h3>' . $this->lB('ressources.overview') . '</h3>'
     if($iResCount>$this->iLimitRessourcelist && !$bIgnoreLimit){
         $sReturn.='<p>'.$this->lB('ressources.hint-manyitems')
         . '<br><br>'
-        . $this->_getButton([
+        . $this->getButton([
             'href'=>$this->_getQs([
                 'showtable1'=>1,
                 'showreport'=>0,

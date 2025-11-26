@@ -84,7 +84,7 @@ if (count($aLastSearches)) {
             $aRow[$key] = htmlentities($value);
         }
         $aKeys=$aKeys ? $aKeys : array_keys($aRow);
-        $aRow['actions'] = $this->_getButton([
+        $aRow['actions'] = $this->getButton([
             'href' => '?page=searchindextester&action=search&q=' . $aRow['query'] . '&subdir=' . $sSubdir . '&siteid=' . $this->_sTab,
             'popup' => false,
             'class' => 'pure-button',
@@ -231,7 +231,7 @@ if (count($aSearchterms)) {
         $aKeys=$aKeys ? $aKeys : array_keys($aRow);
         foreach ($aRow as $key => $value) {
             $aRow[$key] = htmlentities($value);
-            $aRow['actions'] = $this->_getButton([
+            $aRow['actions'] = $this->getButton([
                 'href' => '?page=searchindextester&action=search&q=' . $aRow['query'] . '&subdir=&siteid=' . $this->_sTab,
                 'popup' => false,
                 'class' => 'pure-button',
