@@ -2085,15 +2085,6 @@ class backend extends crawler_base
             $aRow['url'] = '<a href="./?' . $_SERVER['QUERY_STRING'] . '&id=' . $sId . '">' . str_replace('/', '/&shy;', $aRow['url']) . '</a>';
             $aRow['actions'] = ''
                 . '<a href="' . $sUrl . '" target="_blank" class="pure-button" title="' . $this->lB('ressources.link-to-url') . '">' . $oRenderer->_getIcon('link-to-url') . '</a>';
-            /*
-            $this->_getButton([
-            // 'href' => 'overlay.php?action=viewindexitem&id=' . $sId,
-            'href' => './?'.$_SERVER['QUERY_STRING'].'&id='.$sId,
-            'popup' => false,
-            'class' => 'pure-button',
-            'label' => 'button.view'
-        ]);
-            */
             $aTable[] = $aRow;
         }
         $aKeys = array_keys($aResult[0]);

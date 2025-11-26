@@ -81,13 +81,13 @@ $sNextUrl=$iStep < (count($aSteps)-1)
         ? '?page=update&doinstall='.$aSteps[($iStep+1)]
         : '?page=update&ts='.date('U')
         ;
-$sBtnBack=$this->_getButton([
+$sBtnBack=$this->getButton([
     'href' => $sBackUrl,
     'class' => 'pure-button',
     'label' => 'button.back',
     'popup' => false
 ]).' ';
-$sBtnNext=$this->_getButton([
+$sBtnNext=$this->getButton([
     'href' => $sNextUrl,
     'class' => 'button-secondary',
     'label' => 'button.continue',
@@ -154,21 +154,21 @@ switch ($sStepName) {
              . '<div>'
              
                 // --- buttons 
-                . $this->_getButton([
+                . $this->getButton([
                     'href' => '?',
                     'class' => $sCssBtnHome,
                     'label' => 'button.home',
                     'popup' => false
                 ])
                 . ' '
-                . $this->_getButton([
+                . $this->getButton([
                     'href' => $sNextUrl,
                     'class' => $sCssBtnContinue,
                     'label' => 'button.continue',
                     'popup' => false
                 ])
                 . ' '
-                .$this->_getButton([
+                .$this->getButton([
                     'href' => $sNextUrl.'&docontinue=1',
                     'class' => $sCssBtnContinue,
                     'label' => 'button.updatesinglestep',

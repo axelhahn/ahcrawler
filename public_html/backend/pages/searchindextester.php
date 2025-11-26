@@ -165,16 +165,6 @@ if(!$iUrls){
                 . '<pre>'.print_r($this->aOptions['searchindex']['rankingWeights'], 1).'</pre>',
             false
       )
-        // . (($iResults > 3) ? '<br>' . $sForm : '')
-        // . '<br>'
-        /*
-        . $this->_getButton([
-            'href' => './?page=searches',
-            'class' => 'button-secondary',
-            'target' => '_top',
-            'label' => 'button.close'
-         ])
-         */
     ;
         
 

@@ -167,14 +167,6 @@ if ($iPageId) {
                     , $this->lB('context.links')
                 )
                 . '<h3>' . $this->lB('status.detail') . '</h3>'
-                /*
-                . $this->_getButton([
-                    'href' => $sBackUrl,
-                    'class' => 'button-secondary',
-                    'popup' => false,
-                    'label' => 'button.back'
-                ]) . '<br><br>'
-                */
                 
                 // ---- basic page data
                 . '<strong>'.($aItem[0]['url']).'</strong>&nbsp; '
@@ -232,28 +224,7 @@ if ($iPageId) {
                   )
                 .'<br>'
                 
-                /*
-                  . $this->_getButton([
-                  'href' => './?page=status',
-                  'target' => '_top',
-                  'class' => 'button-secondary',
-                  'label' => 'button.close'
-                  ])
-                  . ' '
-                  . $this->_getButton([
-                  'href' => 'overlay.php?action=updateindexitem&url=' . $aItem[0]['url'] . '&siteid=' . $aItem[0]['siteid'],
-                  'class' => 'button-success',
-                  'label' => 'button.reindex'
-                  ])
-                  . ' '
-                  . $this->_getButton([
-                  'href' => 'overlay.php?action=deleteindexitem&id=' . $sId . '&siteid=' . $aItem[0]['siteid'],
-                  'class' => 'button-error',
-                  'label' => 'button.delete'
-                  ])
-                 * 
-                 */
-                . $this->_getButton([
+                . $this->getButton([
                     'href' => $sBackUrl,
                     'class' => 'button-secondary',
                     'popup' => false,
