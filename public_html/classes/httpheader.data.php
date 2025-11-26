@@ -387,13 +387,18 @@ return [
         'X-Forwarded-Proto' => ['request' => true,],
         'X-Frame-Options' => [
             'response' => true, 
-            'tags' => ['deprecated', 'security'], 
+            'tags' => ['security'], 
             'badvalueregex' => 'ALLOW-FROM', 
             'alt'=>'Content-Security-Policy',
+            'directives'=>[
+                'DENY',
+                'SAMEORIGIN',
+            ]
+
         ],
         'X-Permitted-Cross-Domain-Policies' => ['response' => true, 'tags' => ['security']],
         'X-Pingback' => ['response' => true, 'tags' => ['non-standard']], // http://www.hixie.ch/specs/pingback/pingback#TOC2.1
-        'X-Powered-By' => ['response' => true, 'tags' => ['non-standard', 'unwanted'], 'unwantedregex' => '[0-9]*\.[0-9\.]*'],
+        'X-Powered-By' => ['response' => true, 'tags' => ['non-standard', 'unwanted'], 'unwantedregex' => '.*[0-9][0-9]*\.[0-9][0-9\.]*.*'],
         'X-Request-ID' => ['response' => true, 'tags' => ['non-standard']],
         'X-Robots-Tag' => ['response' => true],
         'X-XSS-Protection' => ['response' => true, 'tags' => ['deprecated', 'non-standard']],

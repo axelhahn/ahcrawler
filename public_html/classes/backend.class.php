@@ -1158,7 +1158,7 @@ class backend extends crawler_base
 
         $sRight = '';
         if (BACKEND && ($this->_aHelpPages[$this->_sPage] ?? false)) {
-            $sRight .= $this->_getButton([
+            $sRight .= $this->getButton([
                 'href' => $this->_sBaseHelpUrl . $this->_aHelpPages[$this->_sPage],
                 'label' => 'button.help',
                 'class' => 'button',
@@ -1171,14 +1171,14 @@ class backend extends crawler_base
             $sRight .=
                 $this->_sPage == 'userprofile'
                 ? 
-                    $this->_getButton([
+                    $this->getButton([
                         'href' => 'javascript:history.back();',
                         'class' => 'button button-secondary',
                         'title' => $this->lB('button.userprofile'),
                         'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
                     ]) 
                 : 
-                    $this->_getButton([
+                    $this->getButton([
                         'href' => './?page=userprofile',
                         'class' => 'button',
                         'title' => $this->lB('button.userprofile'),
@@ -1977,7 +1977,7 @@ class backend extends crawler_base
      *                         - customlabel {string}  custom label
      * @return string
      */
-    private function _getButton(array $aOptions = []): string
+    public function getButton(array $aOptions = []): string
     {
         $sReturn = '';
         if (!array_key_exists('href', $aOptions)) {

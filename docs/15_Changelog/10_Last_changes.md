@@ -2,6 +2,10 @@
 
 ### 2025
 
+#### 2025-11-26: v0.185
+
+* ↗️ UPDATE: httpheader part II
+
 #### 2025-11-25: v0.184
 
 * ↗️ UPDATE: httpheader data
@@ -30,8 +34,3 @@
 * ↗️ UPDATE: Render left navigation before content
 * ↗️ UPDATE: Shorter waiting time after saving settings
 * 💣 FIX: detect user from Basic auth without acl confg
-
-#### 2025-09-14: v0.180
-
-* ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
-* 💣 FIX: php warning ini user detection
