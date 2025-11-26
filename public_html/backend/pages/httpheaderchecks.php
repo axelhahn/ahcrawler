@@ -15,6 +15,59 @@ $sResponse = '';      // http response header
 $bShowForm = false;   // flag: show input form?
 $bShowTiles = false;  // flag: show tiles in warning detail sections
 
+
+
+    /**
+     * Render a single http response header line and get its html code
+     * 
+     * @param array $aHeaderitem  item for a single http header line
+     * @return string html
+     */
+    function showHeaderitem(array $aHeaderitem): string{
+        $bWarnTag=($aHeaderitem['unwanted']??false) || ($aHeaderitem['deprecated']??false);
+        return '<li>
+                <pre>'
+                    .'<span class="linenumber">' . $aHeaderitem['line'] . '</span> '
+                    .'<strong>'
+                    . ($bWarnTag ? '<span class="error">' . $aHeaderitem['var']  . '</span>'
+                        : $aHeaderitem['var'] 
+                    )
+                    . '</strong>'
+                    .': '
+                    .(isset($aHeaderitem['regex']['unwantedregex'])
+                        ? preg_replace('/(' . $aHeaderitem['regex']['unwantedregex'] . ')/i', '<span class="error">$1</span>', $aHeaderitem['value'])
+                        : $aHeaderitem['value']
+                    )
+                . '</pre>
+            '. DocsButton($aHeaderitem['_tag']??'').'
+            '. DocsButton($aHeaderitem['_data']['alt']??'')
+            // . '<pre>'.print_r($aHeaderitem, 1).'</pre>'
+            .'</li>';
+
+    }
+
+    /**
+     * Render a button to header doc page on developer.mozilla.org
+     * called in showHeaderitem()
+     * 
+     * @param string $sHeader http header var
+     * @return string
+     */
+    function DocsButton(string $sHeader): string {
+        $o = new backend();
+        return $sHeader 
+            ? $o->getButton([
+                'href' => "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/$sHeader",
+                // 'class' => 'button-secondary',
+                'popup' => false,
+                'target' => '_httpheader',
+                // 'customlabel' => $o->_getIcon('button.help') . ' ' . $sHeader,
+                'customlabel' => $sHeader,
+            ])
+            : ''
+        ;
+    }
+
     function BtnData(string $sHeader): array {
         // $o = new backend();
         return [
@@ -239,7 +292,8 @@ if (is_array($aUnknownheader) && count($aUnknownheader)) {
             : ''
             // .'<li><a href="#" onclick="return false;" class="tile"><br><strong>' . $aHeaderitem['var'].'</strong><br>'.$aHeaderitem['value'].'</a></li>'
         ;
-        $sLegendeUnknown .= '<li>' . '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        // $sLegendeUnknown .= '<li>' . '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre></li>';
+        $sLegendeUnknown .= showHeaderitem($aHeaderitem);
     }
     $sWarnings .= ''
         . $oRenderer->renderTileBar($sTiles)
@@ -259,10 +313,7 @@ if ($iDeprecated) {
         . $this->_getHistoryCounter(['responseheaderDeprecated'])
         . '<ul>';
     foreach ($aDepr as $aHeaderitem) {
-        $sWarnings .= '<li>
-            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
-            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
-            </li>';
+        $sWarnings.=showHeaderitem($aHeaderitem);
     }
     $sWarnings .= '</ul><br>';
 }
@@ -276,10 +327,7 @@ if ($iExperimental) {
         . $this->_getHistoryCounter(['responseheaderExperimental'])
         . '<ul>';
     foreach ($aExperimental as $sKey => $aHeaderitem) {
-        $sWarnings .= '<li>
-            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
-            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
-            </li>';
+        $sWarnings.=showHeaderitem($aHeaderitem);
     }
     $sWarnings .= '</ul><br>';
 }
@@ -299,18 +347,7 @@ if (is_array($aWarnheader) && count($aWarnheader)) {
                 $oRenderer->renderTile('warning', $aHeaderitem['var'], $aHeaderitem['value'])
             )
             : '';
-        $sLegendeWarn .= '<li>'
-            . $this->lB('httpheader.' . strtolower($aHeaderitem['var']) . '.description')
-            . (isset($aHeaderitem['regex']['unwantedregex'])
-                ? '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': '
-                . preg_replace('/(' . $aHeaderitem['regex']['unwantedregex'] . ')/i', '<span class="error">$1</span>', $aHeaderitem['value'])
-                . '</pre>'
-                // .'<code>'.print_r($aHeaderitem['regex']['unwantedregex'], 1).'</code>'
-                : '<pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>'
-            )
-            . ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' )
-            . '<br>'
-            . '</li>';
+        $sLegendeWarn.=showHeaderitem($aHeaderitem);
     }
     $sWarnings .= '</ul>'
         . '<div style="clear: both;"></div>'
@@ -334,10 +371,7 @@ if ($iNonStandard) {
                 . '</li>'
                 ;
             */
-        $sWarnings .= '<li>
-            <pre><span class="linenumber">' . $aHeaderitem['line'] . '</span> ' . $aHeaderitem['var'] . ': ' . $aHeaderitem['value'] . '</pre>
-            '. ($aHeaderitem['_tag'] ? $this->_getButton(BtnData($aHeaderitem['_tag'])) : '' ).'
-            </li>';
+        $sWarnings.=showHeaderitem($aHeaderitem);
     }
     $sWarnings .= '</ul><br>';
 }
@@ -400,7 +434,7 @@ foreach ($aSecHeader as $sVar => $aData) {
                 ? '<blockquote>'.$oRenderer->renderMessagebox($this->lB('httpheader.header.deprecated').'<br>' .$this->lB('httpheader.warnings.deprecated'), 'warning') . '</blockquote>' 
                 : ""
                 )
-            . $this->_getButton(BtnData($sVar))
+            . $this->getButton(BtnData($sVar))
             .'<br><br>'
             ;
     } else {
@@ -408,10 +442,11 @@ foreach ($aSecHeader as $sVar => $aData) {
         if($aData['important']??false || true){
             $iErrorSecHeader++;
             $sLegendeSecMiss .= ''
-                . $oRenderer->renderMessagebox($sVar, 'error')
+                // . $oRenderer->renderMessagebox($sVar, 'error')
+                . "<h5>$sVar</h5>"
                 // .$oRenderer->renderShortInfo($aData ? 'found': 'miss'). ' <strong>' . $sVar. '</strong><br>'
                 . $this->lB('httpheader.' . $sVar . '.description') . '<br>'
-                . $this->_getButton(BtnData($sVar))
+                . $this->getButton(BtnData($sVar))
                 . print_r($aData, 1)
                 .'<br><br>'
                 ;
