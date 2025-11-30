@@ -180,12 +180,21 @@ class httpheader
     {
         $aReturn = [];
         foreach ($this->_getHeaderCfgOfGivenTag('security') as $sVar => $aChecks) {
-            $aReturn[$sVar] = false;
+            $aReturn[$sVar] = $aChecks;
+            $aReturn[$sVar]['state']='other';
             $iLine = 0;
             foreach ($this->getHeadersWithGivenTag('security') as $aLine) {
                 $iLine++;
                 if (strtolower($aLine['var']) === strtolower($sVar)) {
-                    $aReturn[$sVar] = $aLine;
+                    $aReturn[$sVar]['headers'][]=$aLine;
+                }
+            }
+
+            if ($aReturn[$sVar]['headers']??false){
+                $aReturn[$sVar]['state']="found";
+            } else {
+                if($aChecks['important']??false){
+                    $aReturn[$sVar]['state']="miss";
                 }
             }
         }
@@ -193,31 +202,39 @@ class httpheader
     }
 
     /**
-     * Get count of securtity headers that were NOT found
+     * Get Security header by state
      * 
-     * @return integer
+     * @param string $sState  name of state; one of found|miss|other
+     * @return array
      */
-    public function getCountMissedSecurityHeaders(): int
-    {
-        $iReturn = 0;
-        foreach ($this->getSecurityHeaders() as $val) {
-            $iReturn += $val ? 0 : 1;
+    protected function _getSecurityHeadersByState(string $sState): array {
+        $aReturn = [];
+        foreach ($this->getSecurityHeaders() as $sVar => $aData) {
+            if($aData['state']==$sState ) {
+                $aReturn[$sVar]=$aData;
+            }
         }
-        return $iReturn;
+        return $aReturn;
+    }
+    /**
+     * Get securtity headers with flag "important" that were NOT found
+     * in the current http header
+     * 
+     * @return array
+     */
+    public function getMissedSecurityHeaders(): array
+    {
+        return $this->_getSecurityHeadersByState('miss');
     }
 
     /**
      * Get count of found securtity headers
      * 
-     * @return integer
+     * @return array
      */
-    public function getCountOkSecurityHeaders(): int
+    public function getFoundSecurityHeaders(): array
     {
-        $iReturn = 0;
-        foreach ($this->getSecurityHeaders() as $val) {
-            $iReturn += $val ? 1 : 0;
-        }
-        return $iReturn;
+        return $this->_getSecurityHeadersByState('found');
     }
 
     // ----------------------------------------------------------------------

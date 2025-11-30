@@ -43,8 +43,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.185',
-        'date' => '2025-11-26',
+        'version' => '0.186',
+        'date' => '2025-11-30',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -1356,6 +1356,7 @@ class crawler_base
                     $aReturn['responseheaderCache'] = $iCacheInfos;
                     $aReturn['responseheaderCompression'] = $iCompressionInfos;
                     $aReturn['responseheaderSecurity'] = $iSecHeader;
+                    $aReturn['responseheaderSecurityMiss'] = count($oHttpheader->getMissedSecurityHeaders());
                     $aReturn['responseheaderVersion'] = $oHttpheader->getHttpVersion();
                     $aReturn['responseheaderVersionStatus'] = $oHttpheader->getHttpVersionStatus($aReturn['responseheaderVersion']);
 
