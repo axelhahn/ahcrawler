@@ -2,6 +2,10 @@
 
 ### 2025
 
+#### 2025-11-30: v0.186
+
+* ↗️ UPDATE: httpheader part III
+
 #### 2025-11-26: v0.185
 
 * ↗️ UPDATE: httpheader part II
@@ -25,12 +29,3 @@
 #### 2025-09-18: v0.182
 
 * 💣 FIX: Damn, the login mix of login form and $_SERVER was trickier than I tought.
-
-#### 2025-09-16: v0.181
-
-* ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme
-* ↗️ UPDATE: Beautify page layout of default skin
-* ↗️ UPDATE: changelog icon in about page
-* ↗️ UPDATE: Render left navigation before content
-* ↗️ UPDATE: Shorter waiting time after saving settings
-* 💣 FIX: detect user from Basic auth without acl confg

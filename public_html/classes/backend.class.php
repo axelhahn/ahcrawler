@@ -1599,6 +1599,7 @@ class backend extends crawler_base
                             $iCacheInfos = $aMyCounters['responseheaderCache'];
                             $iCompressionInfos = $aMyCounters['responseheaderCompression'];
                             $iSecHeader = $aMyCounters['responseheaderSecurity'];
+                            $iSecHeaderMiss = $aMyCounters['responseheaderSecurityMiss'];
 
                             // $aSecHeader=$oHttpheader->getSecurityHeaders();
                             $aMsg['total'] = [
@@ -1699,6 +1700,16 @@ class backend extends crawler_base
                                 'tfoot' => '',
                                 'thash' => '#securityheaders',
                             ];
+                            $aMsg['securitymiss'] = [
+                                'counter' => $iCounter++,
+                                'status' => ($iSecHeaderMiss ? 'error' : 'ok'),
+                                'value' => $iSecHeaderMiss,
+                                'message' => false,
+                                'thead' => $this->lB('httpheader.header.securitymiss'),
+                                'tfoot' => '',
+                                'thash' => '#securityheaders',
+                            ];
+
 
                         }
 
@@ -2029,7 +2040,7 @@ class backend extends crawler_base
      * @param bool    $bEmptyIfMissing  optional: flag: return empty string if icon not found; default is false to show a text for a missing icon
      * @return string
      */
-    private function _getIcon(string $sKey, bool $bEmptyIfMissing = false): string
+    public function _getIcon(string $sKey, bool $bEmptyIfMissing = false): string
     {
         foreach (array_keys($this->_aIcons) as $sIconsection) {
             if (isset($this->_aIcons[$sIconsection][$sKey])) {

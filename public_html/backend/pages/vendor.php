@@ -80,7 +80,7 @@ if (!$this->_requiresPermission("globaladmin")){
             )
             ,
             (!$aLib['islocal'] 
-                ? $this->_getButton([
+                ? $this->getButton([
                     'onclick' => 'location.href=\''. getNewQs(['download'=>$aLib['lib'], 'version'=>$aLib['version']]).'\';',
                     'class' => 'button-secondary',
                     'label' => 'button.download'
@@ -88,7 +88,7 @@ if (!$this->_requiresPermission("globaladmin")){
                 :''
             ),
             ($aLib['islocal'] 
-                ? $this->_getButton([
+                ? $this->getButton([
                     'onclick' => 'location.href=\''. getNewQs(['delete'=>$aLib['lib'], 'version'=>$aLib['version']]).'\';',
                     'class' => 'button-error',
                     'popup' => false,
