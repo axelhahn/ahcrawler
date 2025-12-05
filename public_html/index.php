@@ -170,11 +170,11 @@ $sHtmlHead = ''
 if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) {
     header('Strict-Transport-Security: max-age=63072000');
 }
-header('X-XSS-Protection: 1; mode=block');
+// deprecated - header('X-XSS-Protection: 1; mode=block');
 header('Content-Security-Policy: frame-ancestors deny');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
-header('Feature-Policy: sync-xhr \'self\'');
+// deprecated - header('Feature-Policy: sync-xhr \'self\'');
 
 // ----------------------------------------------------------------------
 // GET CONTENT
