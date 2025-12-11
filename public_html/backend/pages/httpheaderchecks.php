@@ -4,7 +4,7 @@
  * page analysis :: Http header check
  */
 $oRenderer = new ressourcesrenderer((int)$this->_sTab);
-$oHttpheader = new httpheader();
+global $oHttpheader; $oHttpheader = new httpheader();
 
 $sReturn = '';
 $bShowResult = false;
@@ -31,42 +31,86 @@ $bShowForm = false;   // flag: show input form?
     }
 
     /**
+     * Show a section of response headers
+     * 
+     * @param string $sLevel            level of warning (info, warning, error)
+     * @param string $sTag              tag of the security headers (e.g. 'unwanted')
+     * @param string $sLabel            label of the section in left column
+     * @param string $sKeyDescription   key for description of header
+     * @param string $sKeyTodo          key for todo instructions
+     * @param int $iCount               number of security headers with the given tag
+     * @param string $sCounterId        id for the counter which should be rendered
+     * @return string html code of the section
+     */
+    function showSection(string $sLevel, string $sTag, string $sLabel, string $sKeyDescription, string $sKeyTodo, int $iCount, string $sCounterId){
+        if(!$iCount) {
+            return '';
+        }
+
+        global $iWarnings, $oHttpheader;
+        $o = new backend();
+        $oRenderer = new ressourcesrenderer();
+
+        $iWarnings += $iCount;
+        $sHeaders='';
+        foreach ($oHttpheader->getHeadersWithGivenTag($sTag) as $sKey => $aHeaderitem) {
+            $sHeaders.=showHeaderitem($aHeaderitem);
+        }
+
+        return add2Cols(
+            "<strong>".str_replace('<br>', ' ', $sLabel) ."<br><br>$iCount</strong>",
+            $o->getHistoryCounter([$sCounterId])
+            . $oRenderer->renderMessagebox($o->lB($sKeyDescription), $sLevel)
+                . ($sKeyTodo ? $o->lB($sKeyTodo) : "")
+                . '<blockquote>' . $sHeaders . '</blockquote>'
+        );
+    }
+
+    /**
      * Render a single http response header line and get its html code
      * 
      * @param array $aHeaderitem  item for a single http header line
      * @return string html
      */
-    function showHeaderitem(array $aHeaderitem): string{
+    function showHeaderitem(array $aHeaderitem, $bLong=true): string{
         $o = new backend();
+        $oRenderer = new ressourcesrenderer();
+
         $bWarnTag=($aHeaderitem['unwanted']??false) || ($aHeaderitem['deprecated']??false);
         $sDescription=$o->lB('httpheader.' . ($aHeaderitem['_tag']??'') . '.description').'<br><br>';
+        $sHint='';
+
         if(strstr($sDescription, '[backend: httpheader..description]')){
             $sDescription='';
         }
+        $sValue=$aHeaderitem['value'];
+        if($aHeaderitem['regex']['badvalueregex']??false){
+            $sValue=preg_replace('/(' . $aHeaderitem['regex']['badvalueregex'] . ')/i', '<span class="error">$1</span>', $aHeaderitem['value']);
+            $sHint.='<blockquote>'.$oRenderer->renderMessagebox($o->lB('httpheader.tag.badvalue'), "warning").'</blockquote>' ;
+        }
+        if($aHeaderitem['regex']['unwantedregex']??false){
+            $sValue=preg_replace('/(' . $aHeaderitem['regex']['unwantedregex'] . ')/i', '<span class="warning">$1</span>', $aHeaderitem['value']);
+            $sHint.='<blockquote>'.$oRenderer->renderMessagebox($o->lB('httpheader.tag.unwanted'), "warning").'</blockquote>' ;
+        }
         return ''
-            // .'<li>'
-                . ($aHeaderitem['_data']['important']??false
-                    ?' !!! '
-                    :''
-                    )
                 .'<pre>'
-                    .'<span class="linenumber">' . $aHeaderitem['line'] . '</span> '
+                    .'<span class="linenumber"><a href="#line'.$aHeaderitem['line'].'" class="scroll-link">' . $aHeaderitem['line'] . '</a></span> '
                     .'<strong>'
                     . ($bWarnTag ? '<span class="error">' . $aHeaderitem['var']  . '</span>'
                         : $aHeaderitem['var'] 
                     )
                     . '</strong>'
                     .': '
-                    .(isset($aHeaderitem['regex']['unwantedregex'])
-                        ? preg_replace('/(' . $aHeaderitem['regex']['unwantedregex'] . ')/i', '<span class="error">$1</span>', $aHeaderitem['value'])
-                        : $aHeaderitem['value']
-                    )
+                    .$sValue
                 . '</pre>
-                '. $sDescription. '
-            '. DocsButton($aHeaderitem['_tag']??'').'
-            '. DocsButton($aHeaderitem['_data']['alt']??'')
-            // . '<pre>'.print_r($aHeaderitem, 1).'</pre>'
-           //  .'</li>'
+                '
+                . $sHint
+                . ($bLong
+                ? $sDescription
+                    . DocsButton($aHeaderitem['_tag']??'')
+                    . DocsButton($aHeaderitem['_data']['alt']??'')
+                    : ''
+                )
            ;
 
     }
@@ -89,7 +133,7 @@ $bShowForm = false;   // flag: show input form?
                 'title' => "developer.mozilla.org",
                 'customlabel' => $o->_getIcon('button.openurl') . ' ' . $sHeader,
                 // 'customlabel' => $sHeader,
-            ])
+            ]).' '
             : ''
         ;
     }
@@ -256,11 +300,12 @@ $aFoundTags = $oHttpheader->getExistingTags();
 // print_r($aFoundTags);
 $iTotalHeaders = count($oHttpheader->getHeaderAsArray());
 $iSecHeader = isset($aFoundTags['security'])  ? $aFoundTags['security']  : 0;
-$iUnkKnown = isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
+$iUnknown = isset($aFoundTags['unknown'])  ? $aFoundTags['unknown']  : 0;
 $iUnwanted = isset($aFoundTags['unwanted']) ? $aFoundTags['unwanted'] : 0;
 $iDeprecated = isset($aFoundTags['deprecated']) ? $aFoundTags['deprecated'] : 0;
 $iExperimental = $aFoundTags['experimental'] ?? 0;
 $iNonStandard = isset($aFoundTags['non-standard']) ? $aFoundTags['non-standard'] : 0;
+$iBadValue = $aFoundTags['badvalue']??0;
 
 // $sTiles = $this->_getTilesOfAPage();
 
@@ -302,95 +347,144 @@ if ($sHttpVer < 2) {
 
 // ----------------------------------------------------------------------
 // unknown header vars
-$aUnknownheader = $oHttpheader->getUnknowHeaders();
-if (is_array($aUnknownheader) && count($aUnknownheader)) {
-    $iWarnings += $iUnkKnown;
-    $sHeaders='';
 
-    foreach ($aUnknownheader as $sKey => $aHeaderitem) {
-        $sHeaders .= showHeaderitem($aHeaderitem);
-    }
+$sWarnings.=showSection(
+    'warning',
+    'unknown',
+    '<strong id="warnunknown">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')) . '</strong>',
+    'httpheader.unknown.description',
+    'httpheader.unknown.todo',
+    $iUnknown,
+    'responseheaderUnknown'
+);
+// if($iUnknown) {
+//     $iWarnings += $iUnknown;
+//     $sHeaders='';
+//     foreach ($oHttpheader->getUnknowHeaders() as $sKey => $aHeaderitem) {
+//         $sHeaders .= showHeaderitem($aHeaderitem);
+//     }
 
-    $sWarnings .= add2Cols(
-        '<strong id="warnunknown">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')) . '</strong>',
-        $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning') . '<br>'
-            . $this->_getHistoryCounter(['responseheaderUnknown'])
-            . $this->lB('httpheader.unknown.todo')
-            . '<blockquote>' . $sHeaders . '</blockquote>'
+//     $sWarnings .= add2Cols(
+//         '<strong id="warnunknown">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')) . '</strong>',
+//         $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning') . '<br>'
+//             . $this->getHistoryCounter(['responseheaderUnknown'])
+//             . $this->lB('httpheader.unknown.todo')
+//             . '<blockquote>' . $sHeaders . '</blockquote>'
 
-    );
-}
+//     );
+// }
 
 // ----------------------------------------------------------------------
 // deprecated header vars
-if ($iDeprecated) {
-    $aDepr = $oHttpheader->getDeprecatedHeaders();
-    $sHeaders='';
+$sWarnings.=showSection(
+    'warning',
+    'deprecated',
+    '<strong id="warndeprecated">' . str_replace('<br>', ' ', $this->lB('httpheader.header.deprecated')) . '</strong>',
+    'httpheader.warnings.deprecated',
+    '',
+    $iDeprecated,
+    'responseheaderDeprecated'
+);
 
-    // echo '<pre>' . print_r($aDepr, 1). '</pre>';
-    $iWarnings += $iDeprecated;
-    foreach ($aDepr as $aHeaderitem) {
-        $sHeaders.=showHeaderitem($aHeaderitem);
-    }
-    $sWarnings .= add2Cols(
-        '<strong id="warndeprecated">' . $this->lB('httpheader.header.deprecated') . '</strong>',
-        $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning') . '<br>'
-        . $this->_getHistoryCounter(['responseheaderDeprecated'])
-        . '<blockquote>' . $sHeaders . '</blockquote>'
-    );
-}
+// if ($iDeprecated) {
+//     $iWarnings += $iDeprecated;
+//     $sHeaders='';
+//     foreach ($oHttpheader->getDeprecatedHeaders() as $aHeaderitem) {
+//         $sHeaders.=showHeaderitem($aHeaderitem);
+//     }
+//     $sWarnings .= add2Cols(
+//         '<strong id="warndeprecated">' . $this->lB('httpheader.header.deprecated') . '</strong>',
+//         $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning') . '<br>'
+//         . $this->getHistoryCounter(['responseheaderDeprecated'])
+//         . '<blockquote>' . $sHeaders . '</blockquote>'
+//     );
+// }
+
+// ----------------------------------------------------------------------
 // --- experimental header vars
-if ($iExperimental) {
-    $aExperimental = $oHttpheader->getExperimentalHeaders();
-    $iWarnings += $iExperimental;
-    $sHeaders='';
+$sWarnings.=showSection(
+    'warning',
+    'experimental',
+    '<strong id="warnexperimental">' . str_replace('<br>', ' ', $this->lB('httpheader.header.experimental')) . '</strong>',
+    'httpheader.warnings.experimental',
+    '',
+    $iExperimental,
+    'responseheaderExperimental'
+);
 
-    foreach ($aExperimental as $sKey => $aHeaderitem) {
-        $sHeaders.=showHeaderitem($aHeaderitem);
-    }
+// if ($iExperimental) {
+//     $iWarnings += $iExperimental;
+//     $sHeaders='';
+//     foreach ($oHttpheader->getExperimentalHeaders() as $sKey => $aHeaderitem) {
+//         $sHeaders.=showHeaderitem($aHeaderitem);
+//     }
 
-    $sWarnings .= add2Cols(
-        '<strong id="warnexperimental">' . $this->lB('httpheader.header.experimental') . '</strong>',
-          $oRenderer->renderMessagebox($this->lB('httpheader.warnings.experimental'), 'warning') . '<br>'
-        . $this->_getHistoryCounter(['responseheaderExperimental'])
-        . '<blockquote>' . $sHeaders . '</blockquote>'
-    );
-}
+//     $sWarnings .= add2Cols(
+//         '<strong id="warnexperimental">' . $this->lB('httpheader.header.experimental') . '</strong>',
+//           $oRenderer->renderMessagebox($this->lB('httpheader.warnings.experimental'), 'warning') . '<br>'
+//         . $this->getHistoryCounter(['responseheaderExperimental'])
+//         . '<blockquote>' . $sHeaders . '</blockquote>'
+//     );
+// }
 
 // ----------------------------------------------------------------------
 // unwanted header vars
-$aWarnheader = $oHttpheader->getUnwantedHeaders();
-if (is_array($aWarnheader) && count($aWarnheader)) {
-    // $iWarnings+=count($aWarnheader);
-    $iWarnings += $iUnwanted;
-    $sHeaders='';
+$sWarnings.=showSection(
+    'warning',
+    'unwanted',
+    '<strong id="warnunwanted">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')) . '</strong>',
+    'httpheader.warnings.unwanted',
+    '',
+    $iUnwanted,
+    'responseheaderUnwanted'
+);
 
-    foreach ($aWarnheader as $sKey => $aHeaderitem) {
+// if ($iUnwanted) {
+//     $iWarnings += $iUnwanted;
+//     $sHeaders='';
+
+//     foreach ($oHttpheader->getUnwantedHeaders() as $sKey => $aHeaderitem) {
+//         $sHeaders.=showHeaderitem($aHeaderitem);
+//     }
+
+//     $sWarnings .= add2Cols(
+//         '<strong id="warnunwanted">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')) . '</strong>',
+//             $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning') . '<br>'
+//             . $this->getHistoryCounter(['responseheaderUnwanted'])
+//             . '<blockquote>' . $sHeaders . '</blockquote>'
+//     );
+
+// }
+
+// ----------------------------------------------------------------------
+// unwanted values
+if($iBadValue){
+    $iWarnings += $iBadValue;
+    $sHeaders='';
+    foreach ($oHttpheader->getHeadersWithGivenTag('badvalue') as $sKey => $aHeaderitem) {
         $sHeaders.=showHeaderitem($aHeaderitem);
     }
 
     $sWarnings .= add2Cols(
-        '<strong id="warnunwanted">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')) . '</strong>',
-            $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning') . '<br>'
-            . $this->_getHistoryCounter(['responseheaderUnwanted'])
+        '<strong id="warnnonstandard">' . $this->lB('httpheader.header.badvalue') . '</strong><br>'.$iBadValue,
+         $this->getHistoryCounter(['responseheaderNonStandard'])
+        . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.badvalue'), 'warning')
             . '<blockquote>' . $sHeaders . '</blockquote>'
     );
 
 }
-
 // ----------------------------------------------------------------------
 // common but non-standard header vars
 if ($iNonStandard) {
-    $aNonStdHeader = $oHttpheader->getNonStandardHeaders();
     $iWarnings += $iNonStandard;
     $sHeaders='';
-    foreach ($aNonStdHeader as $sKey => $aHeaderitem) {
+    foreach ($oHttpheader->getNonStandardHeaders() as $sKey => $aHeaderitem) {
         $sHeaders.=showHeaderitem($aHeaderitem);
     }
 
     $sWarnings .= add2Cols(
         '<strong id="warnnonstandard">' . $this->lB('httpheader.header.non-standard') . '</strong>',
-         $this->_getHistoryCounter(['responseheaderNonStandard'])
+         $this->getHistoryCounter(['responseheaderNonStandard'])
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.non-standard'), 'warning')
             . '<blockquote>' . $sHeaders . '</blockquote>'
     );
@@ -404,7 +498,7 @@ if (!isset($aFoundTags['cache'])) {
 
     $sWarnings .= add2Cols(
         '<strong id="warnnocache">' . str_replace('<br>', ' ', $this->lB('httpheader.header.cache')) . '</strong>',
-         $this->_getHistoryCounter(['responseheaderNonStandard'])
+         $this->getHistoryCounter(['responseheaderNonStandard'])
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocache'), 'warning') . '<br>'
     );
 
@@ -416,7 +510,7 @@ if (!isset($aFoundTags['compression'])) {
     $iWarnings++;
     $sWarnings .= add2Cols(
         '<strong id="warnnocompression">' . str_replace('<br>', ' ', $this->lB('httpheader.header.compression')) . '</strong>',
-         $this->_getHistoryCounter(['responseheaderNonStandard'])
+         $this->getHistoryCounter(['responseheaderNonStandard'])
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocompression'), 'warning') . '<br>'
     );
 }
@@ -468,21 +562,9 @@ foreach ($aSecHeader as $sVar => $aData) {
                 $iWarnSecHeader += ($bHasBadValue || $bDeprecated) ? 1 : 0;
 
                 // $sSecOk.='<li><a href="#" onclick="return false;" class="tile ok" title="'.$this->lB('httpheader.'.$sVar.'.description').'">' . $aData['var'].'<br>'.$aData['value'].'<br><strong>'.$oRenderer->renderShortInfo('found').'</strong></a></li>';
-                $sLegendeSecOk .= ''
-                        . '<pre>'
-                        .'<span class="linenumber">' . $aHeader['line'] . '</span> '
-                        . "<strong>$aHeader[var]</strong>: "
-                        . ($bHasBadValue
-                            ?  preg_replace('/(' . $aHeader['regex']['badvalueregex'] . '[a-z0-9]*)/i', '<span class="error">$1</span>', $aHeader['value'])
-                            : $aHeader['value']
-                        )
-                        . '</pre>'
-                        . ($bHasBadValue
-                            ? '<blockquote>'.$oRenderer->renderMessagebox($this->lB('httpheader.tag.badvalue'), "warning").'</blockquote>' 
-                            : ""
-                            )
-                    ;
+                $sLegendeSecOk .= showHeaderitem($aHeader, false);
             }
+
             $sLegendeSecOk .= ''
                     . '</blockquote>'
                     . '<br><br>'
@@ -536,7 +618,7 @@ $sReturn .= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</
     . '</p>'
 
     // . $this->_getHtmlchecksChart(($iFoundSecHeader+$iWarnSecHeader+$iErrorSecHeader), $iWarnSecHeader, $iErrorSecHeader)
-    // . $this->_getHistoryCounter(['responseheaderSecurity'])
+    // . $this->getHistoryCounter(['responseheaderSecurity'])
     . '<div style="clear: both;"></div>'
 
     // . "<pre>" . print_r($oHttpheader->getSecurityHeaders(), 1) . "</pre>"
@@ -560,7 +642,7 @@ $sReturn .= '<h3>' . sprintf($this->lB('httpheader.warnings'), $iWarnings) . '</
     . ($sLegendeSecOther
         ? add2Cols(
             '<strong>' . $this->lB('httpheader.securityheaders.other') . '</strong>',
-            $sLegendeSecOther
+                $oRenderer->renderToggledContent($this->lB('httpheader.securityheaders.other'), $sLegendeSecOther, false)
         )
         :''
     )

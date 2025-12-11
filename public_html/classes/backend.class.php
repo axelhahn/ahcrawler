@@ -2349,7 +2349,7 @@ class backend extends crawler_base
      *                                     multiple ids its data will be stacked
      * @return string
      */
-    private function _getHistoryCounter(array $sCounteritem): string
+    public function getHistoryCounter(array $sCounteritem): string
     {
 
         $sHtml = '';

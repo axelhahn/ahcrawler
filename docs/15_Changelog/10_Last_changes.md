@@ -2,9 +2,10 @@
 
 ### 2025
 
-#### 2025-12-xx: v0.187
+#### 2025-12-11: v0.187
 
 * 💣 FIX: remove deprecated http headers X-XSS-Protection + Feature-Policy
+* ↗️ UPDATE: code of httpheader checks
 
 #### 2025-11-30: v0.186
 

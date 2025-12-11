@@ -284,12 +284,14 @@ class ressourcesrenderer extends crawler_base
         }
         $sReturn = '';
         $aTags=[];
+        $iLine=0;
         foreach ($aHeaderWithChecks as $aEntry) {
             $sIcon = $this->_getIcon('ico.' . $aEntry['found'], false, 'ico-' . $aEntry['found']);
             // foreach (['unwanted', 'badvalue', /*'unknown',*/ 'obsolete'] as $sMyTag) {
             //     $sIcon .= (array_search($sMyTag, $aEntry['tags']) !== false ? $this->_getIcon('ico.' . $sMyTag, false, 'ico-' . $sMyTag) : '');
             // }
 
+            $iLine++;
             $sComment = '';
             if (count($aEntry['tags'])) {
                 foreach ($aEntry['tags'] as $sTag) {
@@ -306,6 +308,7 @@ class ressourcesrenderer extends crawler_base
             $sReturn .= '<tr title="' . htmlentities($aEntry['var'] . ': ' . $aEntry['value']) . '" '
                 . 'class="' . implode(' ', array_values($aEntry['tags'])) . '"'
                 . '>'
+                . '<td id="line'.$iLine.'">'.$iLine.'</td>'
                 . '<td>' . (strstr($aEntry['var'], '_') ? '' : htmlentities($aEntry['var'])) . '</td>'
                 . '<td style="max-width: 30em; overflow: hidden;">' . htmlentities($aEntry['value']) . '</td>'
                 // . '<td>' . $sIcon . '</td>'
@@ -339,6 +342,7 @@ class ressourcesrenderer extends crawler_base
             . $sFilterbar
             . '<table class="pure-table pure-table-horizontal" id="httpheader-table">'
             . '<tr>'
+            . '<th>#</th>'
             . '<th>' . $this->lB('httpheader.thvariable') . '</th>'
             . '<th>' . $this->lB('httpheader.thvalue') . '</th>'
             // . '<th></th>'

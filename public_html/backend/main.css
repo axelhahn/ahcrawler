@@ -194,10 +194,9 @@
     --table-td-value-color:#0066cc;
 
     /* --- http response header tags ---  */
-    --table-tr-cache-bg:#f0f0f8;
+    --table-tr-cache-bg:rgba(0,0,255,0.03);
     --table-tr-cache-color:#44a;
-    --table-tr-compression-bg:#ede;
-    --table-tr-compression-bg:#f8f0f8;
+    --table-tr-compression-bg:rgba(255,0,255,0.03);
     --table-tr-compression-color:#848;
     --table-tr-deprecated-bg:#fdd;
     --table-tr-deprecated-color:#844;
@@ -205,7 +204,7 @@
     --table-tr-experimental-bg:#def;
     --table-tr-nonstandard-bg:#fdb;
     --table-tr-nonstandard-color:#975;
-    --table-tr-security-bg:#e0f0e0;
+    --table-tr-security-bg:rgba(0,255,0,0.05);
     --table-tr-security-color:#171;
     --table-tr-unknown-bg:none;
     --table-tr-unknown-color:#aaa;

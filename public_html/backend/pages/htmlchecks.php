@@ -83,7 +83,7 @@ if ($iCountShortTitles) {
                 .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-title'), $iMinTitleLength), $iCountShortTitles-$iCountNoTitle, (floor(($iCountShortTitles-$iCountNoTitle)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
-        . $this->_getHistoryCounter(['countShortTitles'])
+        . $this->getHistoryCounter(['countShortTitles'])
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortTitles.description'), $iMinTitleLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinTitleLength).'</p>'
         .'<div style="clear: both;"></div>'
@@ -112,7 +112,7 @@ if ($iCountShortDescr) {
                 .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-description'), $iMinDescriptionLength), $iCountShortDescr-$iCountNoDescr, (floor(($iCountShortDescr-$iCountNoDescr)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
-        . $this->_getHistoryCounter(['countShortDescr'])
+        . $this->getHistoryCounter(['countShortDescr'])
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortDescription.description'), $iMinDescriptionLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinDescriptionLength).'</p>'
         .'<div style="clear: both;"></div>'
@@ -158,7 +158,7 @@ if ($iCountShortKeywords) {
                 .$oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-short-keywords'), $iMinKeywordsLength), $iCountShortKeywords-$iCountNoKeywords, (floor(($iCountShortKeywords-$iCountNoKeywords)/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
-        . $this->_getHistoryCounter(['countShortKeywords'])
+        . $this->getHistoryCounter(['countShortKeywords'])
         .'<p>'.sprintf($this->lB('htmlchecks.tableShortKeywords.description'), $iMinKeywordsLength).'</p>'
         .'<p>'.sprintf($this->lB('htmlchecks.customvalue'), $iMinKeywordsLength).'</p>'
         .'<div style="clear: both;"></div>'
@@ -186,7 +186,7 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
                 $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-loadtime-of-pages'), $iMaxLoadtime), $iCountLongload, (floor($iCountLongload/$iPagesCount*1000)/10).'%', '')
                 , '')
         .'<div style="clear: left;"></div>'
-        . $this->_getHistoryCounter(['countLongLoad'])
+        . $this->getHistoryCounter(['countLongLoad'])
         .'<p>'.sprintf($this->lB('htmlchecks.tableLoadtimePages.description'), $iMaxLoadtime).'</p>'
 
         .'<div style="clear: right;"></div>'
@@ -232,7 +232,7 @@ $sReturn.= '<h3 id="tblloadtimepages">' . sprintf($this->lB('htmlchecks.tableLoa
                     $oRenderer->renderTile('warning', sprintf($this->lB('htmlchecks.tile-check-large-pages'), $iMaxPagesize), $iCountLargePages, (floor($iCountLargePages/$iPagesCount*1000)/10).'%', '')
                     , '')
             .'<div style="clear: left;"></div>'
-            . $this->_getHistoryCounter(['countLargePages'])
+            . $this->getHistoryCounter(['countLargePages'])
             .'<p>'.sprintf($this->lB('htmlchecks.tableLargePages.description'), $iMaxPagesize).'</p>'
             .'<div style="clear: right;"></div>'
             : ''
