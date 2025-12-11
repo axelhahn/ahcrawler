@@ -2,6 +2,10 @@
 
 ### 2025
 
+#### 2025-09-18: v0.182
+
+* 💣 FIX: Damn, the login mix of login form and $_SERVER was trickier than I tought.
+
 #### 2025-09-16: v0.181
 
 * ↗️ UPDATE: optical enhancements, css updates eg click in menu on activated dark theme

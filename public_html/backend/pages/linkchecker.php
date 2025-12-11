@@ -151,7 +151,7 @@ foreach ($aCountByStatuscode['linkchecker'] as $sSection=>$aData){
             . $oRenderer->renderTileBar($sBoxes, $sSection)
             . ($sLegende 
                 ? '<div style="clear: left;"></div>'.$this->_getHtmlLegend($sLegende).'<br>'
-                    . $this->_getHistoryCounter(['status'.$sSection2])
+                    . $this->getHistoryCounter(['status'.$sSection2])
 
                 : ''
             )
@@ -171,7 +171,7 @@ $sReturn.='<h3>'.$this->lB("linkchecker.check-links").'</h3>'
                 'type'=>'pie',
                 'data'=>$aChartItems
             ])
-            . $this->_getHistoryCounter(['statusError','statusWarning','statusOk','statusTodo'])
+            . $this->getHistoryCounter(['statusError','statusWarning','statusOk','statusTodo'])
 
         . $sResResult
         ;

@@ -81,7 +81,7 @@ if($sSelectedCounter){
             ? '<strong>'.$sLabel.'</strong><br>' 
                 . ( $sDescription ? $sDescription.'<br><br>' : '<br>' )
             : '')
-        . $this->_getHistoryCounter([$sSelectedCounter])
+        . $this->getHistoryCounter([$sSelectedCounter])
         . $this->_getHtmlTable($aTable, 'counter.', 'tblCounterdata')
         // . '<pre>'.print_r($oCounter->getCountersHistory($sSelectedCounter), 1).'</pre>'
     ;    

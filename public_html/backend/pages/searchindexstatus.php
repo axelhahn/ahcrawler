@@ -275,7 +275,7 @@ $sTiles .= ''
 ;
 
 $sReturn .= $oRenderer->renderTileBar($sTiles) . '<div style="clear: both;"></div>'
-        . $this->_getHistoryCounter(['pages'])
+        . $this->getHistoryCounter(['pages'])
 ;
 // ----------------------------------------------------------------------
 // actions

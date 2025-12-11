@@ -68,7 +68,7 @@ return [
         'Content-MD5' => [],
         'Content-Range' => ['response' => true],
         'Content-Script-Type' => [],
-        'Content-Security-Policy' => ['response' => true, 'tags' => ['security'], 'badvalueregex' => 'unsafe\-', 'important'=>true],
+        'Content-Security-Policy' => ['response' => true, 'tags' => ['security'], 'badvalueregex' => 'unsafe\-[a-z0-9]*', 'important'=>true],
         'Content-Security-Policy-Report-Only' => ['response' => true, 'tags' => ['security']],
         'Content-Style-Type' => [],
         'Content-Type' => ['response' => true, 'tags' => ['security']],
@@ -188,7 +188,7 @@ return [
         'P3P' => [],
         'PEP' => [],
         'Pep-Info' => [],
-        'Permissions-Policy' => ['response'=>true, 'tags' => ['experimental'],
+        'Permissions-Policy' => ['response'=>true, 'tags' => ['experimental', 'feature'],
             "directives" => [
                 "accelerometer",
                 "ambient-light-sensor",

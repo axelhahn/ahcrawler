@@ -2,6 +2,11 @@
 
 ### 2025
 
+#### 2025-12-11: v0.187
+
+* 💣 FIX: remove deprecated http headers X-XSS-Protection + Feature-Policy
+* ↗️ UPDATE: code of httpheader checks
+
 #### 2025-11-30: v0.186
 
 * ↗️ UPDATE: httpheader part III
@@ -25,7 +30,3 @@
 * 💣 FIX: http response code of error pages do not force http v1 header
 * 💣 FIX: public http header page lost url to scan
 * 💣 FIX: remove hardcoded http v1 response code
-
-#### 2025-09-18: v0.182
-
-* 💣 FIX: Damn, the login mix of login form and $_SERVER was trickier than I tought.

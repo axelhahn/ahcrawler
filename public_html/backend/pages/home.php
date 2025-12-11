@@ -174,7 +174,7 @@ if(!$this->_configExists() ){
                 // ----- hints for improvements
                 .($sHints
                      ?  '<h3>'.$this->lB('home.hints').'</h3>'
-                        . $this->_getHistoryCounter(['TotalWarnings','TotalErrors'])
+                        . $this->getHistoryCounter(['TotalWarnings','TotalErrors'])
                         .$sHints
                      : ''
                 )
