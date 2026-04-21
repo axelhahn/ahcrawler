@@ -411,7 +411,7 @@ $sWarnings.=showSection(
 // common but non-standard header vars
 $sWarnings.=showSection(
     'warning',
-    'badvalue',
+    'non-standard',
     '<strong id="warnnonstandard">' . str_replace('<br>', ' ', $this->lB('httpheader.header.non-standard')) . '</strong>',
     'httpheader.warnings.non-standard',
     '',
