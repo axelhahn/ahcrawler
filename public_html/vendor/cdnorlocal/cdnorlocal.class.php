@@ -29,7 +29,7 @@ namespace axelhahn;
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @package cdnorlocal
  * 
- * 2024-07-19  v1.0.14  WIP: php 8 only; declare variable types
+ * 2025-02-06  v1.0.14  php 8 only; declare variable types; debug shows milliseconds
  */
 class cdnorlocal
 {
@@ -146,7 +146,10 @@ class cdnorlocal
     protected function _wd(string $sText): bool
     {
         if ($this->_bDebug) {
-            echo "DEBUG " . __CLASS__ . " - " . $sText . "<br>\n";
+            static $iTimestart;
+            $iTimestart ??= microtime(true);
+            $sDelta=(string) round((microtime(true)-$iTimestart)*1000).' ms';
+            echo "DEBUG $sDelta " . __CLASS__ . " - " . $sText . "<br>\n";
         }
         return true;
     }

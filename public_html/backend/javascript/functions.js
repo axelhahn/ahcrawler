@@ -285,6 +285,101 @@ function initSelectProject() {
 }
 
 // ----------------------------------------------------------------------
+// internal search, http request
+// ----------------------------------------------------------------------
+
+/**
+ * get query parameters from url as object
+ * 
+ * @example:
+ *   var _GET=getQueryParams();
+ *   console.log(_GET['app']);
+ * 
+ * @returns {object}
+ */
+function getQueryParams() {
+    var qs = document.location.search.split('+').join(' ');
+    var params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+    return params;
+}
+
+/**
+ * Make an http request with given method, url, form data.
+ * The response can be shown in a given dom id or in the full browser window.
+ * 
+ * TODO: beautify
+ * - Example POST method implementation:
+ *   https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+ * - Parse Javascript fetch in PHP
+ *   https://stackoverflow.com/questions/35091757/parse-javascript-fetch-in-php
+ * 
+ * @param {string}  method  http method; eg. GET, POST, PUT, ...
+ * @param {string}  url     url to request
+ * @param {json}    data    request body as key -> value in a JSON
+ * @param {string}  idOut   optional: id of output element in DOM; default: write response in browser
+ * @return void
+ */
+async function httprequest(method="GET", url = "", data = {}, idOut = null) {
+
+    // console.log("httprequest("+method+", "+url+", "+data+", "+idOut+")");
+
+    if (method == "POST" || method == "PUT") {
+        var fd = new FormData();
+        for (var key in data) {
+            fd.append(key, data[key]);
+        }
+    } else {
+        var fd = null;
+    }
+
+    // Default options are marked with *
+    const response = await fetch(url, {
+        method: method, // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            // "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            // 'Content-Type': 'multipart/form-data',
+        },
+        redirect: "follow", // manual, *follow, error
+        referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: fd, // body data type must match "Content-Type" header
+    });
+    // return response.json(); // parses JSON response into native JavaScript objects
+
+    var responsebody = await response.text();
+    if (idOut) {
+        document.getElementById(idOut).innerHTML = responsebody;
+    } else {
+        document.open();
+        document.write(responsebody);
+        document.close();
+    }
+
+}
+
+
+function dosearch(){
+  var _GET=getQueryParams();
+  var q=$("#searchtop").val();
+  localStorage.setItem("search", q);
+
+  if(q){
+    httprequest("GET", "?siteid="+_GET['siteid']+"&page=search&q="+q, {}, "dialogcontent");
+    showModalWindow();
+  } else {
+    hideModal();
+  }
+}
+
+// ----------------------------------------------------------------------
 // modal dialog
 // ----------------------------------------------------------------------
 
@@ -472,6 +567,22 @@ window.addEventListener('load', function () {
     initTextareas();
 
     initSelect2();
+
+    // local search
+    // var _GET=getQueryParams();
+    $('#searchtop').val(localStorage.getItem("search") ? localStorage.getItem("search") : "");
+
+    // search field on top right
+    $('#searchtop').click(function () {
+      dosearch();
+    });
+    $('#searchtop').keyup(function () {
+      dosearch();
+    });
+    $('#searchtop').keypress(function () {
+      dosearch();
+    });
+    // local search
 
     $('.filterbarHttpHeader a').each(function () {
         $(this).click(function () {

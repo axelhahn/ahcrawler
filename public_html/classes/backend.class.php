@@ -391,7 +391,7 @@ class backend extends crawler_base
         // print_r($this->aOptions); 
         // override fotawsome icons
         // $this->_aIcons = include 'icons_fontawesome.php';
-        $this->_aIcons = include 'icons_tabler.php';
+        $this->_aIcons = include 'icons_'.($this->aOptions['icons']??'tabler').'.php';
         // $this->_aIcons = include 'icons_lineawesome.php';
 
         $this->getPage();
@@ -1168,8 +1168,17 @@ class backend extends crawler_base
 
         if (!$this->_bIsPublic && $this->checkAuth() && $this->_getUser()) {
 
-            $sRight .=
-                $this->_sPage == 'userprofile'
+            $sRight =
+                /*
+                '<form class="pure-form float-left">
+                    <input type="hidden" name="siteid" value="' . $this->_sTab . '" >
+                    <input type="text" id="searchtop" placeholder="🔎 ...">
+                </form>&nbsp;'
+                . 
+                */
+                $sRight
+                .
+                ($this->_sPage == 'userprofile'
                 ? 
                     $this->getButton([
                         'href' => 'javascript:history.back();',
@@ -1184,7 +1193,7 @@ class backend extends crawler_base
                         'title' => $this->lB('button.userprofile'),
                         'customlabel' => $this->_getIcon('button.userprofile') . ' ' . $this->_getUser(),
                     ]) 
-                    
+                )
                 . ' '
 
             ;
@@ -1195,7 +1204,7 @@ class backend extends crawler_base
         }
 
 
-        $sRight = $sRight ? '<span class="topright">' . $sRight . '</span>' : '';
+        $sRight = $sRight ? '<div class="topright">' . $sRight . '</div>' : '';
 
 
         $this->logAdd(__METHOD__ . ' H2 = "' . $sH2 . '"');

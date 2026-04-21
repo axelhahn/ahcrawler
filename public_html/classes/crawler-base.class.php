@@ -43,8 +43,8 @@ class crawler_base
      */
     public array $aAbout = [
         'product' => 'ahCrawler',
-        'version' => '0.187',
-        'date' => '2025-12-11',
+        'version' => '0.188',
+        'date' => '2026-04-21',
         'author' => 'Axel Hahn',
         'license' => 'GNU GPL 3.0',
         'urlHome' => 'https://www.axel-hahn.de/ahcrawler',
@@ -772,7 +772,6 @@ class crawler_base
             $aReturn['error'] = curl_error($ch);
             $aReturn['errorcode'] = curl_errno($ch);
         }
-        curl_close($ch);
 
         return $aReturn;
     }

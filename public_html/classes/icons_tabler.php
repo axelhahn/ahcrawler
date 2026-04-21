@@ -4,6 +4,7 @@
  * https://tabler.io/icons
  */
 return [
+    'load' => 'tabler-icons/3.28.1',
     'menu' => [
         'login' => 'ti ti-lock',
         'home' => 'ti ti-home',

@@ -37,11 +37,13 @@
 # 2025-07-25  v1.30 <axel.hahn@unibe.ch>      Hide DB info block if no database is configured
 # 2025-09-16  v1.31 <axel.hahn@unibe.ch>      adpations for new docker dev setup
 # 2025-09-18  v1.32 <axel.hahn@unibe.ch>      add select menu
+# 2025-12-19  v1.33 <axel.hahn@unibe.ch>      Fix linter when using proxy + php-fpm, more select menus
+# 2025-12-19  v1.34 <axel.hahn@unibe.ch>      2x esc or 'q' abort menu selection
 # ======================================================================
 
 cd "$( dirname "$0" )" || exit 1
 
-_version="1.32"
+_version="1.34"
 
 # init used vars
 gittarget=
@@ -189,6 +191,7 @@ function _getWebUrl(){
 # OUTPUT
 
 # select menu
+# used in _selectFromList()
 # taken from https://github.com/axelhahn/bash-input-tab-completion/tree/main
 function input.select {
     local options=("$@")
@@ -199,21 +202,25 @@ function input.select {
 
     cursor_blink_on()       { printf "$ESC[?25h"; }
     cursor_blink_off()      { printf "$ESC[?25l"; }
-    cursor_to()                     { printf "$ESC[$1;${2:-1}H"; }
+    cursor_to()             { printf "$ESC[$1;${2:-1}H"; }
     print_option()          { printf "${itemsPre} $1 "; }
     print_selected()        { printf "${itemsPre}${COLOR_GREEN}$ESC[7m $1 $ESC[27m${NC}"; }
     get_cursor_row()        { IFS=';' read -sdR -p $'\E[6n' ROW COL; echo ${ROW#*[}; }
 
     key_input() {
         local key
+        local input
+        local hex='#'
         # read 3 chars, 1 at a time
         for ((i=0; i < 3; ++i)); do
             read -s -n1 input 2>/dev/null >&2
             # concatenate chars together
             key+="$input"
+            hex+=$(printf "%02x" "'$input")
             # if a number is encountered, echo it back
-            if [[ $input =~ ^[1-9]$ ]]; then
+            if [[ $input =~ ^[1-9q]$ ]]; then
                 echo $input; return;
+
             # if enter, early return
             elif [[ $input = "" ]]; then
                 echo enter; return;
@@ -221,11 +228,14 @@ function input.select {
             # then consider it an invalid input and exit without echoing back
             elif [[ ! $input = $ESC && i -eq 0 ]]; then
                 return
+            elif [[ $hex = '#1b1b' ]]; then
+                echo "esc"; return
             fi
         done
 
         if [[ $key = $ESC[A ]]; then echo up; fi;
         if [[ $key = $ESC[B ]]; then echo down; fi;
+
     }
 
     function cursorUp() { printf "$ESC[A"; }
@@ -245,7 +255,7 @@ function input.select {
     for opt in "${options[@]}"; do printf "\n"; done
 
     # determine current screen position for overwriting the options
-    local lastrow=`get_cursor_row`
+    local lastrow=$( get_cursor_row )
     local startrow=$(($lastrow - $#))
     local selected=0
 
@@ -272,6 +282,7 @@ function input.select {
         input=$(key_input)
 
         case $input in
+            esc) selected=-1; break;;
             enter) break;;
             [1-9])
                 # If a digit is encountered, consider it a selection (if within range)
@@ -291,6 +302,48 @@ function input.select {
     cursor_blink_on
 
     return $selected
+}
+
+# helper: select from list
+# Render a selection list of multiline items and return the 1st text column of
+# the selected line.
+# By Flag "last" the last item will be returned.
+# If the text has a single line only then this line will be used for return value.
+#
+# The return value is in variable $SELECTED
+#
+# param  string   list of multiline items
+# param  string   optional: set to "last" to return the last item
+# return void
+function _selectFromList(){
+    local lines
+    local _multilinetext="$1"
+    local _pos="${2:-first}"
+    local inputval
+
+    local _replacer='###I_AM_A_REPLACER###'
+    SELECTED=""
+
+    test -z "$_multilinetext" && return
+
+    lines=()
+    for line in $( echo "$_multilinetext" | sed "s/ /$_replacer/g" )
+    do
+        lines+=( "${line//$_replacer/ }" )
+    done
+    if [ "${#lines[@]}" -eq 1 ]; then
+        inputval="${lines[0]}"
+    else
+        lines+=( "<< back" )
+        input.select "${lines[@]}"
+        inputval="${lines[$?]}"
+        test "$inputval" = "<< back" && return
+    fi
+    if [ "$_pos" = "last" ]; then
+        SELECTED="$( rev <<< "$inputval" | cut -d' ' -f1 | rev )"
+    else
+        SELECTED="$( echo "${inputval}" | awk '{ print $1 }' )"
+    fi
 }
 
 # draw a headline 2
@@ -761,14 +814,19 @@ function _dbDump(){
 
 # DB TOOL - import local database dump into container
 function _dbImport(){
-    echo "--- Available dumps:"
-    ls -ltr ${DC_DUMP_DIR}/*.gz | sed "s#^#    #g"
     if [ $DC_DB_UP -eq 0 ]; then
         echo "Database container is not running. Aborting."
         return
     fi
-    echo -n "Dump file to import into ${MYSQL_DB} > "
-    read -r dumpfile
+
+    local dumpfile
+
+    echo "--- Available dumps (newest first):"
+    _selectFromList "$( ls -lt ${DC_DUMP_DIR}/*.gz )" "last"
+    dumpfile="$SELECTED"
+
+    # echo -n "Dump file to import into ${MYSQL_DB} > "
+    # read -r dumpfile
     if [ -z "$dumpfile" ]; then
         echo "Abort - no value was given."
         return
@@ -781,8 +839,7 @@ function _dbImport(){
     dockerid="${APP_NAME}-db"
     grep -q "$dockerid" <<< "$DC_PS" || dockerid="db"
     
-    echo -n "Importing $dumpfile to $dockerid ... "
-
+    echo -n "Importing file '$dumpfile' into container '$dockerid' ... "
     # Mac OS compatibility
     # if zcat "$dumpfile" | docker exec -i "${APP_NAME}-db" mysql -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
     if cat "$dumpfile" | zcat | docker exec -i "$dockerid" ${DBTOOL} -uroot -p${MYSQL_ROOT_PASS} "${MYSQL_DB}"
@@ -886,16 +943,9 @@ while true; do
         c)
             h2 "Console"
             echo "Select a container:"
-            lines=()
-            lines+=( $( echo "$DC_PS" | awk '{ print $1 }' | sed "s#^#    #g" ) )
-            lines+=( "<< back" )
+            _selectFromList "$DC_PS"
+            dockerid="$SELECTED"
 
-            input.select "${lines[@]}"
-            dockerid="${lines[$?]}"
-
-            # echo "$DC_PS" | awk '{ print $1 }' | sed "s#^#    #g"
-            # echo -n "id or name >"
-            # read -r dockerid            
             test -n "$dockerid" && test "$dockerid" != "<< back" && (
                 echo
                 echo "> docker exec -it $dockerid /bin/bash     (type 'exit' + Return when finished)"
@@ -903,26 +953,33 @@ while true; do
             )
             ;;
         p)
-            h2 "PHP $APP_PHP_VERSION linter"
+            h2 "PHP linter with version $APP_PHP_VERSION"
 
-            dockerid="${APP_NAME}-web"
-            grep -q "$dockerid" <<< "$DC_PS" || dockerid="php-fpm"
-            echo -n "Scanning php files in '$dockerid' ... "
-            typeset -i _iFiles
-            _iFiles=$( docker exec -it "$dockerid" /bin/bash -c "find . -name '*.php' " | wc -l )
+            # dockerid="${APP_NAME}-web"
+            # grep -q "$dockerid" <<< "$DC_PS" || dockerid="${APP_NAME}-php-fpm"
 
-            if [ $_iFiles -gt 0 ]; then
-                echo "found $_iFiles [*.php] files ... errors from PHP $APP_PHP_VERSION linter:"
-                time if echo "$APP_PHP_VERSION" | grep -E "([567]\.|8\.[012])" >/dev/null ; then
-                    docker exec -it "$dockerid" /bin/bash -c "find . -name '*.php' -exec php -l {} \; | grep -v '^No syntax errors detected'"
+            echo "Select a container:"
+            _selectFromList "$( echo "$DC_PS" | grep -v ">3306/tcp" )"
+            dockerid="$SELECTED"
+
+            test -n "$dockerid" && test "$dockerid" != "<< back" && (
+                echo -n "Scanning php files in '$dockerid' ... "
+                typeset -i _iFiles
+                _iFiles=$( docker exec -it "$dockerid" /bin/bash -c "find . -name '*.php' " | wc -l )
+
+                if [ $_iFiles -gt 0 ]; then
+                    echo "found $_iFiles [*.php] files ... errors from PHP $APP_PHP_VERSION linter:"
+                    time if echo "$APP_PHP_VERSION" | grep -E "([567]\.|8\.[012])" >/dev/null ; then
+                        docker exec -it "$dockerid" /bin/bash -c "find . -name '*.php' -exec php -l {} \; | grep -v '^No syntax errors detected'"
+                    else
+                        docker exec -it "$dockerid" /bin/bash -c "php -l \$( find . -name '*.php' ) | grep -v '^No syntax errors detected' "
+                    fi
+                    echo
+                    _wait
                 else
-                    docker exec -it "$dockerid" /bin/bash -c "php -l \$( find . -name '*.php' ) | grep -v '^No syntax errors detected' "
+                    echo "Start your docker container first."
                 fi
-                echo
-                _wait
-            else
-                echo "Start your docker container first."
-            fi
+            )
             ;;
         d) 
             h2 "DB tools :: dump"
