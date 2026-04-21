@@ -59,7 +59,7 @@ $bShowForm = false;   // flag: show input form?
 
         return add2Cols(
             "<strong>".str_replace('<br>', ' ', $sLabel) ."<br><br>$iCount</strong>",
-            $o->getHistoryCounter([$sCounterId])
+            ($sCounterId ? $o->getHistoryCounter([$sCounterId]) : '')
             . $oRenderer->renderMessagebox($o->lB($sKeyDescription), $sLevel)
                 . ($sKeyTodo ? $o->lB($sKeyTodo) : "")
                 . '<blockquote>' . $sHeaders . '</blockquote>'
@@ -355,24 +355,8 @@ $sWarnings.=showSection(
     'httpheader.unknown.description',
     'httpheader.unknown.todo',
     $iUnknown,
-    'responseheaderUnknown'
+    $this->_bIsPublic ? '' : 'responseheaderUnknown'
 );
-// if($iUnknown) {
-//     $iWarnings += $iUnknown;
-//     $sHeaders='';
-//     foreach ($oHttpheader->getUnknowHeaders() as $sKey => $aHeaderitem) {
-//         $sHeaders .= showHeaderitem($aHeaderitem);
-//     }
-
-//     $sWarnings .= add2Cols(
-//         '<strong id="warnunknown">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unknown')) . '</strong>',
-//         $oRenderer->renderMessagebox($this->lB('httpheader.unknown.description'), 'warning') . '<br>'
-//             . $this->getHistoryCounter(['responseheaderUnknown'])
-//             . $this->lB('httpheader.unknown.todo')
-//             . '<blockquote>' . $sHeaders . '</blockquote>'
-
-//     );
-// }
 
 // ----------------------------------------------------------------------
 // deprecated header vars
@@ -383,22 +367,8 @@ $sWarnings.=showSection(
     'httpheader.warnings.deprecated',
     '',
     $iDeprecated,
-    'responseheaderDeprecated'
+    $this->_bIsPublic ? '' : 'responseheaderDeprecated'
 );
-
-// if ($iDeprecated) {
-//     $iWarnings += $iDeprecated;
-//     $sHeaders='';
-//     foreach ($oHttpheader->getDeprecatedHeaders() as $aHeaderitem) {
-//         $sHeaders.=showHeaderitem($aHeaderitem);
-//     }
-//     $sWarnings .= add2Cols(
-//         '<strong id="warndeprecated">' . $this->lB('httpheader.header.deprecated') . '</strong>',
-//         $oRenderer->renderMessagebox($this->lB('httpheader.warnings.deprecated'), 'warning') . '<br>'
-//         . $this->getHistoryCounter(['responseheaderDeprecated'])
-//         . '<blockquote>' . $sHeaders . '</blockquote>'
-//     );
-// }
 
 // ----------------------------------------------------------------------
 // --- experimental header vars
@@ -409,23 +379,8 @@ $sWarnings.=showSection(
     'httpheader.warnings.experimental',
     '',
     $iExperimental,
-    'responseheaderExperimental'
+    $this->_bIsPublic ? '' : 'responseheaderExperimental'
 );
-
-// if ($iExperimental) {
-//     $iWarnings += $iExperimental;
-//     $sHeaders='';
-//     foreach ($oHttpheader->getExperimentalHeaders() as $sKey => $aHeaderitem) {
-//         $sHeaders.=showHeaderitem($aHeaderitem);
-//     }
-
-//     $sWarnings .= add2Cols(
-//         '<strong id="warnexperimental">' . $this->lB('httpheader.header.experimental') . '</strong>',
-//           $oRenderer->renderMessagebox($this->lB('httpheader.warnings.experimental'), 'warning') . '<br>'
-//         . $this->getHistoryCounter(['responseheaderExperimental'])
-//         . '<blockquote>' . $sHeaders . '</blockquote>'
-//     );
-// }
 
 // ----------------------------------------------------------------------
 // unwanted header vars
@@ -436,60 +391,34 @@ $sWarnings.=showSection(
     'httpheader.warnings.unwanted',
     '',
     $iUnwanted,
-    'responseheaderUnwanted'
+    $this->_bIsPublic ? '' : 'responseheaderUnwanted'
 );
-
-// if ($iUnwanted) {
-//     $iWarnings += $iUnwanted;
-//     $sHeaders='';
-
-//     foreach ($oHttpheader->getUnwantedHeaders() as $sKey => $aHeaderitem) {
-//         $sHeaders.=showHeaderitem($aHeaderitem);
-//     }
-
-//     $sWarnings .= add2Cols(
-//         '<strong id="warnunwanted">' . str_replace('<br>', ' ', $this->lB('httpheader.header.unwanted')) . '</strong>',
-//             $oRenderer->renderMessagebox($this->lB('httpheader.warnings.unwanted'), 'warning') . '<br>'
-//             . $this->getHistoryCounter(['responseheaderUnwanted'])
-//             . '<blockquote>' . $sHeaders . '</blockquote>'
-//     );
-
-// }
 
 // ----------------------------------------------------------------------
 // unwanted values
-if($iBadValue){
-    $iWarnings += $iBadValue;
-    $sHeaders='';
-    foreach ($oHttpheader->getHeadersWithGivenTag('badvalue') as $sKey => $aHeaderitem) {
-        $sHeaders.=showHeaderitem($aHeaderitem);
-    }
+$sWarnings.=showSection(
+    'warning',
+    'badvalue',
+    '<strong id="warnbadvalue">' . str_replace('<br>', ' ', $this->lB('httpheader.header.badvalue')) . '</strong>',
+    'httpheader.warnings.badvalue',
+    '',
+    $iBadValue,
+    // $this->_bIsPublic ? '' : 'responseheaderNonStandard'
+    ''
+);
 
-    $sWarnings .= add2Cols(
-        '<strong id="warnnonstandard">' . $this->lB('httpheader.header.badvalue') . '</strong><br>'.$iBadValue,
-         $this->getHistoryCounter(['responseheaderNonStandard'])
-        . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.badvalue'), 'warning')
-            . '<blockquote>' . $sHeaders . '</blockquote>'
-    );
-
-}
 // ----------------------------------------------------------------------
 // common but non-standard header vars
-if ($iNonStandard) {
-    $iWarnings += $iNonStandard;
-    $sHeaders='';
-    foreach ($oHttpheader->getNonStandardHeaders() as $sKey => $aHeaderitem) {
-        $sHeaders.=showHeaderitem($aHeaderitem);
-    }
+$sWarnings.=showSection(
+    'warning',
+    'badvalue',
+    '<strong id="warnnonstandard">' . str_replace('<br>', ' ', $this->lB('httpheader.header.non-standard')) . '</strong>',
+    'httpheader.warnings.non-standard',
+    '',
+    $iNonStandard,
+    $this->_bIsPublic ? '' : 'responseheaderNonStandard'
+);
 
-    $sWarnings .= add2Cols(
-        '<strong id="warnnonstandard">' . $this->lB('httpheader.header.non-standard') . '</strong>',
-         $this->getHistoryCounter(['responseheaderNonStandard'])
-        . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.non-standard'), 'warning')
-            . '<blockquote>' . $sHeaders . '</blockquote>'
-    );
-
-}
 
 // ----------------------------------------------------------------------
 // no caching?
@@ -498,7 +427,7 @@ if (!isset($aFoundTags['cache'])) {
 
     $sWarnings .= add2Cols(
         '<strong id="warnnocache">' . str_replace('<br>', ' ', $this->lB('httpheader.header.cache')) . '</strong>',
-         $this->getHistoryCounter(['responseheaderNonStandard'])
+        ($this->_bIsPublic ? '' : $this->getHistoryCounter(['responseheaderNonStandard']))
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocache'), 'warning') . '<br>'
     );
 
@@ -510,7 +439,7 @@ if (!isset($aFoundTags['compression'])) {
     $iWarnings++;
     $sWarnings .= add2Cols(
         '<strong id="warnnocompression">' . str_replace('<br>', ' ', $this->lB('httpheader.header.compression')) . '</strong>',
-         $this->getHistoryCounter(['responseheaderNonStandard'])
+        ($this->_bIsPublic ? '' : $this->getHistoryCounter(['responseheaderNonStandard']))
         . $oRenderer->renderMessagebox($this->lB('httpheader.warnings.nocompression'), 'warning') . '<br>'
     );
 }

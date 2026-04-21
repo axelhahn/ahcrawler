@@ -17,7 +17,7 @@ require_once 'cdnorlocal.class.php';
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL 3.0
  * @package cdnorlocal
  * 
- * 2024-07-19  v1.0.14  WIP: php 8 only; declare variable types
+ * 2025-02-06  v1.0.14  php 8 only; declare variable types; speedup admin ui
  */
 class cdnorlocaladmin extends cdnorlocal
 {
@@ -29,6 +29,12 @@ class cdnorlocaladmin extends cdnorlocal
     protected string $sUrlApiPackage = 'https://api.cdnjs.com/libraries/%s';
 
     protected array $aLibs = [];
+
+    /**
+     * Caching time of library meta data in seconds
+     * @var int
+     */
+    protected int $iTTLLibMetadata = 60*60; // 1h
 
     // ----------------------------------------------------------------------
     // 
@@ -89,6 +95,13 @@ class cdnorlocaladmin extends cdnorlocal
         if (!isset($this->aLibs[$sLibrary]['_cdn'])) {
 
             $aJson = false;
+            $sLibMetaCachefile = $this->_getLibMetaFile($sLibrary);
+            if (file_exists($sLibMetaCachefile)
+                && filemtime($sLibMetaCachefile) > (time() - $this->iTTLLibMetadata)
+                && !$bRefresh
+            ) {
+                $aJson = json_decode(file_get_contents($sLibMetaCachefile), 1);
+            }
             // if(!$bRefresh){
             //     $aJson=$this->_getLibraryMetadataFromCache($sLibrary);
             // } 
@@ -96,7 +109,9 @@ class cdnorlocaladmin extends cdnorlocal
                 $bHasDoneRefresh = true;
                 $sApiUrl = sprintf($this->sUrlApiPackage, $sLibrary);
                 $this->_wd(__METHOD__ . "($sLibrary) fetch $sApiUrl");
-                $aJson = json_decode(file_get_contents($sApiUrl));
+                if ($aJson = json_decode(file_get_contents($sApiUrl))){
+                    file_put_contents($sLibMetaCachefile, json_encode($aJson, JSON_PRETTY_PRINT));
+                }
             }
             // echo '<pre>'.print_r($aJson, 1).'</pre>';
             if ($aJson) {
@@ -142,7 +157,10 @@ class cdnorlocaladmin extends cdnorlocal
                 if(!is_dir(dirname($sLibCachefile))){
                     mkdir(dirname($sLibCachefile));
                 }
+                $this->_wd(__METHOD__ . "($sLibrary, $sVersion) update cache file $sLibCachefile");
                 file_put_contents($sLibCachefile, json_encode($aJson, JSON_PRETTY_PRINT));
+            } else {
+                $this->_wd(__METHOD__ . "($sLibrary, $sVersion) ERROR: no json returned");
             }
         } else {
             $this->_wd(__METHOD__ . "($sLibrary, $sVersion) read cache $sLibCachefile");
@@ -266,7 +284,7 @@ class cdnorlocaladmin extends cdnorlocal
         $aReturn = [];
         if ($this->aLibs[$sLibrary]['_cdn']) {
             $iCount = 0;
-            foreach ($this->aLibs[$sLibrary]['_cdn']->versions as $sVersion) {
+            foreach ($this->aLibs[$sLibrary]['_cdn']['versions'] as $sVersion) {
                 $iCount++;
                 if (!$iMax || $iCount <= $iMax) {
                     array_unshift($aReturn, $sVersion);
