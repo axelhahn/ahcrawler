@@ -9,6 +9,10 @@ if (!defined('BACKEND')) {
 
 
 require_once(__DIR__ . "/classes/backend.class.php");
+require_once(__DIR__ . "/vendor/php-codemirror/classes/cm-helper.class.php");
+
+$oCodemirror = new cmhelper();
+$oCodemirror->setBase('/vendor/codemirror/6.65.7');
 
 $bIsBackend = preg_match('#\/backend\/#', $_SERVER["REQUEST_URI"]);
 $sBaseUrl = preg_replace('/(\/backend\/|\?.*)/', '', $_SERVER["REQUEST_URI"]);
@@ -59,6 +63,9 @@ if ($bUseCache) {
         header("X-CACHE-DELIVERY: YES");
         echo $oCache->read();
         return true;
+    } else {
+        $oCache2 = new AhCache($oBackend->getCacheModule());
+        $oCache2->cleanup();
     }
 }
 // ----- START PAGE
@@ -226,7 +233,12 @@ $sBodyClasses .= $aNavPages[0] ?? false ? "page-$aNavPages[0]" : "";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex,nofollow">
-    <?php echo $sHtmlHead; ?>
+    <?php 
+    echo $sHtmlHead
+    . $oCodemirror->getHtmlHead()
+    ; 
+    
+    ?>
 </head>
 
 <body class="<?php echo $sBodyClasses; ?>">
@@ -293,8 +305,11 @@ $sBodyClasses .= $aNavPages[0] ?? false ? "page-$aNavPages[0]" : "";
     $sMoreJs = $oBackend->getMoreJS();
     echo $sMoreJs ? '<script src="' . $sBackendRel . '/' . $sMoreJs . '"></script>' : '';
 
-    echo $oBackend->getCustomFooter();
-    echo $oBackend->logRender();
+    echo $oBackend->getCustomFooter()
+        . $oBackend->logRender()
+        . $oCodemirror->getJs()
+        ;
+    
     // echo '<pre>'.print_r($_SERVER, 1).'</pre>';
     ?>
 </body>

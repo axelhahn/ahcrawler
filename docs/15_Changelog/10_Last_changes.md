@@ -2,6 +2,10 @@
 
 ### 2026
 
+#### 2026-06-NN: v0.189
+
+* 🟢 ADDED: php-codemirror for syntax highlighter editor
+
 #### 2026-04-21: v0.188
 
 * 💣 FIX: page httpheader: don't show graphs on public page
@@ -26,8 +30,3 @@
 #### 2025-11-26: v0.185
 
 * ↗️ UPDATE: httpheader part II
-
-#### 2025-11-25: v0.184
-
-* ↗️ UPDATE: httpheader data
-* ↗️ UPDATE: http header check
