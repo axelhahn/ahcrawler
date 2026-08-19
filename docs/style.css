@@ -1,7 +1,7 @@
 /*
 
     patch css elements of daux.io blue theme
-    version 2025-08-18
+    version 2026-05-25
 
 */
 
@@ -14,6 +14,7 @@
     --brand-background: var(--body-background);
     --hr-color: none;
 
+    --font-family-heading: 'Arial', sans-serif;
     --pager-background-color: #f8fafc;
     --pager-hover-background-color: #f8ecf4;
 
@@ -164,6 +165,16 @@ a.Brand {
     height: 4em;
 }
 
+.Nav__item--open .Nav{
+    margin-bottom: 0.5em;
+}
+
+.Nav__item--open .Nav li:last-child{
+    border-bottom: 1px dashed #8888;
+}
+.Nav__item--open .Nav{
+    border-left: 1px dashed #8888;
+}
 
 .Nav__item--open > a, .Nav__item--active > a {
 	background: var(--axel_sidebar-link-active-background);
@@ -231,7 +242,7 @@ article nav{border-top: var(--axel-article-nav-border-top); margin: 8em 0 5em;}
 .required{color:#a42;}
 .optional{color:#888;}
 
-div.hero{background: var(--axel_hero_bg);border-radius: 2em; border: 10px solid rgba(0,0,0,0.01); padding: 5em 2em;text-align: center;
+div.hero{background: var(--axel_hero_bg);border-radius: 2em; border: 5px solid rgba(0,0,0,0.09); padding: 5em 2em;text-align: center;
     box-shadow: var(--axel_hero_shadow);
 } 
 div.hero h2{background: none; _border: none; text-align: center; font-size: 300%; margin: 0 0 2em;}
