@@ -5,6 +5,8 @@
  * Show current content of some special urls
  */
 
+global $oCodemirror;
+
 $aList=[
     'favicon.ico',
     'human.txt',
@@ -17,6 +19,8 @@ $sSelector='';
 $sDetails='';
 
 $sRequest=$this->_getRequestParam('relurl');
+$sRequest=in_array($sRequest, $aList) ? $sRequest : '';
+
 $iProfileId=$this->_getTab();
 $this->setSiteId($iProfileId);
 
@@ -66,7 +70,7 @@ if($sRequest){
 
 
             $sDetails.=""
-                .$oHeader->getContentType()."<br><br>"
+                // .$oHeader->getContentType()."<br><br>"
                 // . $oRenderer->renderValue('http_code', $i).'<br>'
                 . $oRenderer->renderToggledContent($this->lB('httpheader.plain'), '<pre>' . htmlentities(print_r($sHeader, 1)) . '</pre>', false)
                 .'<br>'
@@ -75,7 +79,28 @@ if($sRequest){
             if(strstr($oHeader->getContentType(), "image")){
                 $sDetails.="<img src=\"$sUrl\" width=\"128\"/>";
             } else {
-                $sDetails.="<pre>".htmlentities($sBody, 1)."</pre>";
+                $aTaClasses=[
+                    'application/xml' => 'highlight-xml',
+                ];
+                $sTAClass= isset($aTaClasses[$oHeader->getContentType()]) 
+                    ? ' '.$aTaClasses[$oHeader->getContentType()] 
+                    : 'highlight-text'
+                ;
+
+                $sDetails.=""
+                    . $oCodemirror->addTextarea(
+                        [
+                            'id' => 'viewurlsbody',
+                            'class' => $sTAClass,
+                            'value' => $sBody,
+                        ],
+                        [
+                            'theme' => 'base16-light',
+                            'readOnly' => true,
+                            ]
+                    )
+                    // ."<pre>".htmlentities($sBody, 1)."</pre>"
+                    ;
             }
         } else {
             $sDetails.=$oRenderer->renderToggledContent($this->lB('httpheader.plain'), '<pre>' . htmlentities(print_r($sHeader, 1)) . '</pre>', false)

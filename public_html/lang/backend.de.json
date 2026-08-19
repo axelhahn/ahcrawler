@@ -236,7 +236,7 @@
     "counter.statusWarning[].description" :"Warnungen mit Http-Code %s beim Linkcheck; %s",
 
     "viewurls.head.select": "W&auml;hle eine Datei ...",
-    "viewurls.head.show": "Anzeige des Inhalts einer Datei",
+    "viewurls.head.show": "Anzeige des Inhalts einer Datei: %s",
     "viewurls.head.hint": "Klicke die anzuzeigende Datei an",
 
     "curl.timer.lookup": "DNS Lookup",

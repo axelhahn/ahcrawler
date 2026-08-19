@@ -228,7 +228,7 @@
     "counter.statusWarning[].description" :"Http warnings with code %s during link check; %s",
     
     "viewurls.head.select": "Select a file...",
-    "viewurls.head.show": "Show content of an url",
+    "viewurls.head.show": "Show content of an url: %s",
     "viewurls.head.hint": "Click to a file to show",
 
     "curl.timer.lookup": "DNS lookup",

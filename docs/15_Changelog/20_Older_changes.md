@@ -2,6 +2,11 @@
 
 ### 2025
 
+#### 2025-11-25: v0.184
+
+* ↗️ UPDATE: httpheader data
+* ↗️ UPDATE: http header check
+
 #### 2025-11-03: v0.183
 
 * 🟢 ADDED: reindex a single url to update it in the search index

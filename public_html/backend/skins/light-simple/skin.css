@@ -70,3 +70,7 @@ h2{
     padding-left: 0em;
     }
 }
+
+.CodeMirror-sizer{
+    font-size: 1.2em;
+}
